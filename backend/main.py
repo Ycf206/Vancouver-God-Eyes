@@ -1560,37 +1560,36 @@ async def get_ferry_terminal_schedule(terminal_code: str):
             data = r.json()
             cached_bcferries_raw_data = {"timestamp": now_ts, "data": data}
         
-        schedule = []
+        departures = []
+        arrivals = []
         now = get_vancouver_now()
         now_naive = now.replace(tzinfo=None)
         
-        # We should use a dict to avoid duplicates. Key: (destination, time)
-        seen = {}
+        seen_dep = {}
+        seen_arr = {}
         
         all_routes = data.get('capacityRoutes', []) + data.get('nonCapacityRoutes', [])
         for route in all_routes:
-            if route.get('fromTerminalCode') == terminal_code:
-                arr_code = route.get('toTerminalCode')
+            from_code = route.get('fromTerminalCode')
+            to_code = route.get('toTerminalCode')
+
+            # 出發班次 (Departures)
+            if from_code == terminal_code:
+                arr_code = to_code
                 for sailing in route.get('sailings', []):
                     time_str = sailing.get('time')
                     arr_time_str = sailing.get('arrivalTime')
-                    
-                    # Get true deck capacity fill rate (Option B)
                     fill = sailing.get('fill') or sailing.get('carFill') or 0
                     status = sailing.get('sailingStatus')
                     
-                    # Calculate status based on time to ensure past/current/future are always accurate
                     if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
                         try:
                             dep_time = datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
                             dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
-                            
                             arr_time = datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
                             arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
-                            
                             if arr_time < dep_time:
                                 arr_time += timedelta(days=1)
-                                
                             if now_naive > arr_time:
                                 status = 'past'
                             elif dep_time <= now_naive <= arr_time:
@@ -1599,14 +1598,11 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                                 status = 'future'
                         except Exception:
                             if not status: status = 'future'
-                            
-                    if not status:
-                        status = 'future'
+                    if not status: status = 'future'
                     
                     key = f"{arr_code}_{time_str}"
-                    # If duplicate, prefer the one with a vessel name or real capacity
-                    if key in seen:
-                        existing = seen[key]
+                    if key in seen_dep:
+                        existing = seen_dep[key]
                         if sailing.get('vesselName') and (not existing.get('vessel_name') or existing.get('vessel_name') == 'BC Ferries'):
                             existing['vessel_name'] = sailing.get('vesselName')
                         if fill > 0 and existing.get('fill') == 0:
@@ -1616,28 +1612,94 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                         continue
 
                     entry = {
+                        "origin": from_code,
                         "destination": arr_code,
                         "time": time_str,
                         "arrival_time": arr_time_str,
                         "vessel_name": sailing.get('vesselName'),
                         "status": status,
-                        "fill": fill
+                        "fill": fill,
+                        "direction": "departure"
                     }
-                    seen[key] = entry
-                    schedule.append(entry)
+                    seen_dep[key] = entry
+                    departures.append(entry)
+
+            # 抵達班次 (Arrivals)
+            if to_code == terminal_code:
+                dep_code = from_code
+                for sailing in route.get('sailings', []):
+                    time_str = sailing.get('time')
+                    arr_time_str = sailing.get('arrivalTime')
+                    fill = sailing.get('fill') or sailing.get('carFill') or 0
+                    status = sailing.get('sailingStatus')
+                    
+                    if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
+                        try:
+                            dep_time = datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
+                            arr_time = datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
+                            if arr_time < dep_time:
+                                arr_time += timedelta(days=1)
+                            if now_naive > arr_time:
+                                status = 'past'
+                            elif dep_time <= now_naive <= arr_time:
+                                status = 'current'
+                            else:
+                                status = 'future'
+                        except Exception:
+                            if not status: status = 'future'
+                    if not status: status = 'future'
+                    
+                    key = f"{dep_code}_{time_str}"
+                    if key in seen_arr:
+                        existing = seen_arr[key]
+                        if sailing.get('vesselName') and (not existing.get('vessel_name') or existing.get('vessel_name') == 'BC Ferries'):
+                            existing['vessel_name'] = sailing.get('vesselName')
+                        if fill > 0 and existing.get('fill') == 0:
+                            existing['fill'] = fill
+                        if status != 'future' and existing.get('status') == 'future':
+                            existing['status'] = status
+                        continue
+
+                    entry = {
+                        "origin": dep_code,
+                        "destination": to_code,
+                        "time": time_str,
+                        "arrival_time": arr_time_str,
+                        "vessel_name": sailing.get('vesselName'),
+                        "status": status,
+                        "fill": fill,
+                        "direction": "arrival"
+                    }
+                    seen_arr[key] = entry
+                    arrivals.append(entry)
                     
         # Sort by time
         def parse_time(t_str):
             if not t_str or t_str.lower() == 'variable' or t_str.lower() == 'cancelled':
-                return datetime(2000, 1, 1) # put at top
+                return datetime(2000, 1, 1)
             try:
                 return datetime.strptime(t_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
             except:
                 return datetime(2000, 1, 1)
                 
-        schedule.sort(key=lambda x: parse_time(x['time']))
-        return {"terminal": terminal_code, "schedule": schedule}
+        departures.sort(key=lambda x: parse_time(x['time']))
+        arrivals.sort(key=lambda x: parse_time(x['arrival_time'] or x['time']))
+        return {
+            "terminal": terminal_code, 
+            "schedule": departures, 
+            "departures": departures, 
+            "arrivals": arrivals
+        }
     except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/bcferries/vehicles")
+@app.get("/api/ferries/vehicles")
+async def get_ferry_vehicles_api():
+    global cached_bcferries_vehicles
+    return {"vehicles": cached_bcferries_vehicles or []}
         return {"error": str(e)}
 
 @app.get("/api/stops/{stop_id}/arrivals")

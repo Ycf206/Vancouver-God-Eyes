@@ -757,6 +757,21 @@ function ExploreContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [satelliteModalOpen, enlargedAuroraImage]);
 
+  // 重設探索視圖與標記輔助函數 (針對天氣、泳灘、工作、3-1-1、油站、充電站、路況、意外等分頁)
+  const handleResetExplorationMapState = (tabId?: ExploreTabType) => {
+    const targetTabs: ExploreTabType[] = [
+      'weather', 'beach', 'jobs', '311', 'fuel', 'charging', 'ev', 'traffic', 'crashes'
+    ];
+    if (!tabId || targetTabs.includes(tabId)) {
+      setSearchTarget(null);
+      setSelectedCrash(null);
+      if (typeof window !== 'undefined') {
+        (window as any).__godsEyeCloseFacilityPopup?.();
+        (window as any).__godsEyeResetView?.();
+      }
+    }
+  };
+
   // --- 3-1-1 市政服務請求狀態 ---
   const [requests311, setRequests311] = useState<Array<{
     department?: string | null;
@@ -3493,16 +3508,7 @@ function ExploreContent() {
                 type="button"
                 onClick={() => {
                   setShowCloseConfirm(false);
-                  if (selectedCrash) {
-                    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
-                    if (mapInstance) {
-                      mapInstance.flyTo({
-                        center: [selectedCrash.lon, selectedCrash.lat],
-                        zoom: 16.5,
-                        essential: true
-                      });
-                    }
-                  }
+                  handleResetExplorationMapState();
                   closeAllExploreTabs();
                   setSearchTarget(null);
                 }}
@@ -3586,16 +3592,7 @@ function ExploreContent() {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (tabId === 'crashes' && selectedCrash) {
-                      const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
-                      if (mapInstance) {
-                        mapInstance.flyTo({
-                          center: [selectedCrash.lon, selectedCrash.lat],
-                          zoom: 16.5,
-                          essential: true
-                        });
-                      }
-                    }
+                    handleResetExplorationMapState(tabId);
                     closeExploreTab(tabId);
                   }}
                   className="ml-0.5 p-0.5 rounded hover:bg-white/10 text-gray-400 hover:text-rose-400 transition-colors"
@@ -3624,16 +3621,7 @@ function ExploreContent() {
             if (tabsToRender.length > 1) {
               setShowCloseConfirm(true);
             } else {
-              if (selectedCrash) {
-                const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
-                if (mapInstance) {
-                  mapInstance.flyTo({
-                    center: [selectedCrash.lon, selectedCrash.lat],
-                    zoom: 16.5,
-                    essential: true
-                  });
-                }
-              }
+              handleResetExplorationMapState(tabsToRender[0]);
               closeAllExploreTabs();
               setSearchTarget(null);
             }
@@ -4774,7 +4762,7 @@ function ExploreContent() {
                       <div className="flex flex-col">
                         <span className="text-[10px] text-gray-400">纜車開放</span>
                         <span className="font-mono font-bold text-white text-[12px] mt-0.5">
-                          {resort.lifts_label || `${resort.lifts_open} / ${resort.lifts_total} 座`}
+                          {(resort.lifts_label || '').replace(/\s*lifts?/gi, ' 座').replace(/\s*of\s*/gi, ' / ') || `${resort.lifts_open} / ${resort.lifts_total} 座`}
                         </span>
                       </div>
                       {/* 積雪深度 */}

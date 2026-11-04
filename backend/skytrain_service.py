@@ -554,71 +554,266 @@ def _get_station_metadata(st_name: str, lines: list, stop_id: str):
     has_bike_parkade = any(k in lower for k in bike_parkade_stations)
 
     # 4. First and Last Trains schedule estimate (TransLink standard timetable)
-    is_canada_line = any("Canada" in l for l in lines) or any(k in lower for k in ["yvr", "richmond", "bridgeport", "oakridge", "langara", "broadway-city hall", "olympic village", "yaletown", "vancouver city centre", "marine drive"])
+    # Check for multi-line transfer stations first
+    is_comm_broadway = "commercial-broadway" in lower
+    is_lougheed = "lougheed" in lower
+    is_production = "production way" in lower
+    is_waterfront = "waterfront" in lower
 
-    if is_canada_line:
-        first_last = {
-            "weekday": {
-                "first_train": "04:48 (to YVR-Airport) / 05:02 (to Richmond-Brighouse)",
-                "last_train": "01:05 (to Waterfront) / 01:15 (to Richmond-Brighouse)"
+    if is_comm_broadway:
+        lines_schedule = [
+            {
+                "line_name": "Expo Line",
+                "color": "#0033a0",
+                "weekday": {
+                    "first_train": "05:40 (to King George / Production Way) / 05:12 (to Waterfront)",
+                    "last_train": "01:30 (to King George) / 01:15 (to Waterfront)"
+                },
+                "saturday": {
+                    "first_train": "06:50 (to King George) / 06:12 (to Waterfront)",
+                    "last_train": "01:30 (to King George) / 01:15 (to Waterfront)"
+                },
+                "sunday_holiday": {
+                    "first_train": "07:50 (to King George) / 07:12 (to Waterfront)",
+                    "last_train": "00:30 (to King George) / 00:15 (to Waterfront)"
+                }
             },
-            "saturday": {
-                "first_train": "05:05 (to YVR-Airport) / 05:32 (to Richmond-Brighouse)",
-                "last_train": "01:05 (to Waterfront) / 01:15 (to Richmond-Brighouse)"
-            },
-            "sunday_holiday": {
-                "first_train": "05:05 (to YVR-Airport) / 05:32 (to Richmond-Brighouse)",
-                "last_train": "00:05 (to Waterfront) / 00:15 (to Richmond-Brighouse)"
+            {
+                "line_name": "Millennium Line",
+                "color": "#eab308",
+                "weekday": {
+                    "first_train": "05:03 (to VCC-Clark) / 05:30 (to Lafarge Lake-Douglas)",
+                    "last_train": "01:00 (to VCC-Clark) / 01:22 (to Lafarge Lake-Douglas)"
+                },
+                "saturday": {
+                    "first_train": "06:04 (to VCC-Clark) / 06:29 (to Lafarge Lake-Douglas)",
+                    "last_train": "12:58 (to VCC-Clark) / 01:22 (to Lafarge Lake-Douglas)"
+                },
+                "sunday_holiday": {
+                    "first_train": "06:56 (to VCC-Clark) / 07:30 (to Lafarge Lake-Douglas)",
+                    "last_train": "23:58 (to VCC-Clark) / 00:22 (to Lafarge Lake-Douglas)"
+                }
             }
+        ]
+        first_last = {
+            "weekday": lines_schedule[0]["weekday"],
+            "saturday": lines_schedule[0]["saturday"],
+            "sunday_holiday": lines_schedule[0]["sunday_holiday"],
+            "lines": lines_schedule
         }
         frequencies = {
-            "peak": "每 3 - 3.5 分鐘 (分支每 6 分鐘)",
-            "midday": "每 5 - 6 分鐘 (分支每 10 - 12 分鐘)",
-            "evening": "每 7.5 - 10 分鐘 (分支每 15 分鐘)",
-            "late_night": "每 12 - 20 分鐘"
+            "peak": "Expo: 每 2 - 3 分鐘 / Millennium: 每 3 - 4 分鐘",
+            "midday": "Expo: 每 3 - 5 分鐘 / Millennium: 每 5 - 6 分鐘",
+            "evening": "Expo: 每 6 - 8 分鐘 / Millennium: 每 6 - 8 分鐘",
+            "late_night": "每 10 - 15 分鐘"
         }
-    elif any("Millennium" in l for l in lines) and not any("Expo" in l for l in lines):
-        first_last = {
-            "weekday": {
-                "first_train": "05:05 (to VCC-Clark) / 05:30 (to Lafarge Lake-Douglas)",
-                "last_train": "01:22 (to Lafarge Lake-Douglas) / 00:59 (to VCC-Clark)"
+    elif is_lougheed:
+        lines_schedule = [
+            {
+                "line_name": "Expo Line",
+                "color": "#0033a0",
+                "weekday": {
+                    "first_train": "05:14 (to Waterfront) / 05:58 (to Production Way)",
+                    "last_train": "12:35 (to Waterfront) / 01:25 (to Production Way)"
+                },
+                "saturday": {
+                    "first_train": "06:14 (to Waterfront) / 07:05 (to Production Way)",
+                    "last_train": "12:35 (to Waterfront) / 01:25 (to Production Way)"
+                },
+                "sunday_holiday": {
+                    "first_train": "07:14 (to Waterfront) / 08:05 (to Production Way)",
+                    "last_train": "11:35 (to Waterfront) / 00:25 (to Production Way)"
+                }
             },
-            "saturday": {
-                "first_train": "06:05 (to VCC-Clark) / 06:30 (to Lafarge Lake-Douglas)",
-                "last_train": "01:22 (to Lafarge Lake-Douglas) / 00:59 (to VCC-Clark)"
-            },
-            "sunday_holiday": {
-                "first_train": "07:05 (to VCC-Clark) / 07:30 (to Lafarge Lake-Douglas)",
-                "last_train": "00:22 (to Lafarge Lake-Douglas) / 23:59 (to VCC-Clark)"
+            {
+                "line_name": "Millennium Line",
+                "color": "#eab308",
+                "weekday": {
+                    "first_train": "05:03 (to VCC-Clark) / 05:42 (to Lafarge Lake-Douglas)",
+                    "last_train": "01:00 (to VCC-Clark) / 01:35 (to Lafarge Lake-Douglas)"
+                },
+                "saturday": {
+                    "first_train": "06:04 (to VCC-Clark) / 06:41 (to Lafarge Lake-Douglas)",
+                    "last_train": "12:58 (to VCC-Clark) / 01:35 (to Lafarge Lake-Douglas)"
+                },
+                "sunday_holiday": {
+                    "first_train": "06:56 (to VCC-Clark) / 07:42 (to Lafarge Lake-Douglas)",
+                    "last_train": "23:58 (to VCC-Clark) / 00:35 (to Lafarge Lake-Douglas)"
+                }
             }
+        ]
+        first_last = {
+            "weekday": lines_schedule[0]["weekday"],
+            "saturday": lines_schedule[0]["saturday"],
+            "sunday_holiday": lines_schedule[0]["sunday_holiday"],
+            "lines": lines_schedule
         }
         frequencies = {
-            "peak": "每 3 - 4 分鐘",
-            "midday": "每 5 - 6 分鐘",
-            "evening": "每 6 - 8 分鐘",
-            "late_night": "每 10 - 12 分鐘"
-        }
-    else:
-        first_last = {
-            "weekday": {
-                "first_train": "05:32 (to King George) / 05:38 (to Production Way-University)",
-                "last_train": "01:16 (to King George) / 01:11 (to Waterfront)"
-            },
-            "saturday": {
-                "first_train": "06:48 (to King George) / 06:38 (to Production Way-University)",
-                "last_train": "01:16 (to King George) / 01:11 (to Waterfront)"
-            },
-            "sunday_holiday": {
-                "first_train": "07:48 (to King George) / 07:38 (to Production Way-University)",
-                "last_train": "00:16 (to King George) / 00:11 (to Waterfront)"
-            }
-        }
-        frequencies = {
-            "peak": "每 2 - 3 分鐘 (兩大分支每 4 - 5 分鐘)",
-            "midday": "每 3 - 5 分鐘 (分支每 6 - 8 分鐘)",
+            "peak": "Expo: 每 4 - 5 分鐘 / Millennium: 每 3 - 4 分鐘",
+            "midday": "Expo: 每 6 - 8 分鐘 / Millennium: 每 5 - 6 分鐘",
             "evening": "每 6 - 8 分鐘",
             "late_night": "每 10 - 15 分鐘"
         }
+    elif is_production:
+        lines_schedule = [
+            {
+                "line_name": "Expo Line",
+                "color": "#0033a0",
+                "weekday": {
+                    "first_train": "05:08 (to Waterfront)",
+                    "last_train": "12:30 (to Waterfront) / 01:28 (to New Westminster)"
+                },
+                "saturday": {
+                    "first_train": "06:08 (to Waterfront)",
+                    "last_train": "12:31 (to Waterfront) / 01:31 (to New Westminster)"
+                },
+                "sunday_holiday": {
+                    "first_train": "07:09 (to Waterfront)",
+                    "last_train": "11:44 (to Waterfront) / 12:32 (to New Westminster)"
+                }
+            },
+            {
+                "line_name": "Millennium Line",
+                "color": "#eab308",
+                "weekday": {
+                    "first_train": "05:01 (to VCC-Clark) / 05:44 (to Lafarge Lake-Douglas)",
+                    "last_train": "00:58 (to VCC-Clark) / 01:37 (to Lafarge Lake-Douglas)"
+                },
+                "saturday": {
+                    "first_train": "06:02 (to VCC-Clark) / 06:43 (to Lafarge Lake-Douglas)",
+                    "last_train": "12:56 (to VCC-Clark) / 01:37 (to Lafarge Lake-Douglas)"
+                },
+                "sunday_holiday": {
+                    "first_train": "06:54 (to VCC-Clark) / 07:44 (to Lafarge Lake-Douglas)",
+                    "last_train": "23:56 (to VCC-Clark) / 00:37 (to Lafarge Lake-Douglas)"
+                }
+            }
+        ]
+        first_last = {
+            "weekday": lines_schedule[0]["weekday"],
+            "saturday": lines_schedule[0]["saturday"],
+            "sunday_holiday": lines_schedule[0]["sunday_holiday"],
+            "lines": lines_schedule
+        }
+        frequencies = {
+            "peak": "Expo: 每 4 - 5 分鐘 / Millennium: 每 3 - 4 分鐘",
+            "midday": "Expo: 每 6 - 8 分鐘 / Millennium: 每 5 - 6 分鐘",
+            "evening": "每 6 - 8 分鐘",
+            "late_night": "每 10 - 15 分鐘"
+        }
+    elif is_waterfront:
+        lines_schedule = [
+            {
+                "line_name": "Expo Line",
+                "color": "#0033a0",
+                "weekday": {
+                    "first_train": "05:32 (to King George) / 05:38 (to Production Way)",
+                    "last_train": "01:16 (to King George) / 01:11 (to Production Way)"
+                },
+                "saturday": {
+                    "first_train": "06:48 (to King George) / 06:38 (to Production Way)",
+                    "last_train": "01:16 (to King George) / 01:11 (to Production Way)"
+                },
+                "sunday_holiday": {
+                    "first_train": "07:48 (to King George) / 07:38 (to Production Way)",
+                    "last_train": "00:16 (to King George) / 00:11 (to Production Way)"
+                }
+            },
+            {
+                "line_name": "Canada Line",
+                "color": "#0d9488",
+                "weekday": {
+                    "first_train": "04:48 (to YVR-Airport) / 05:02 (to Richmond-Brighouse)",
+                    "last_train": "01:05 (to YVR-Airport / Richmond-Brighouse)"
+                },
+                "saturday": {
+                    "first_train": "05:05 (to YVR-Airport) / 05:32 (to Richmond-Brighouse)",
+                    "last_train": "01:05 (to YVR-Airport / Richmond-Brighouse)"
+                },
+                "sunday_holiday": {
+                    "first_train": "05:05 (to YVR-Airport) / 05:32 (to Richmond-Brighouse)",
+                    "last_train": "00:05 (to YVR-Airport / Richmond-Brighouse)"
+                }
+            }
+        ]
+        first_last = {
+            "weekday": lines_schedule[0]["weekday"],
+            "saturday": lines_schedule[0]["saturday"],
+            "sunday_holiday": lines_schedule[0]["sunday_holiday"],
+            "lines": lines_schedule
+        }
+        frequencies = {
+            "peak": "Expo: 每 2 - 3 分鐘 / Canada Line: 每 3 - 3.5 分鐘",
+            "midday": "Expo: 每 3 - 5 分鐘 / Canada Line: 每 5 - 6 分鐘",
+            "evening": "Expo: 每 6 - 8 分鐘 / Canada Line: 每 7.5 - 10 分鐘",
+            "late_night": "每 10 - 20 分鐘"
+        }
+    else:
+        is_canada_line = any("Canada" in l for l in lines) or any(k in lower for k in ["yvr", "richmond", "bridgeport", "oakridge", "langara", "broadway-city hall", "olympic village", "yaletown", "vancouver city centre", "marine drive"])
+
+        if is_canada_line:
+            first_last = {
+                "weekday": {
+                    "first_train": "04:48 (to YVR-Airport) / 05:02 (to Richmond-Brighouse)",
+                    "last_train": "01:05 (to Waterfront) / 01:15 (to Richmond-Brighouse)"
+                },
+                "saturday": {
+                    "first_train": "05:05 (to YVR-Airport) / 05:32 (to Richmond-Brighouse)",
+                    "last_train": "01:05 (to Waterfront) / 01:15 (to Richmond-Brighouse)"
+                },
+                "sunday_holiday": {
+                    "first_train": "05:05 (to YVR-Airport) / 05:32 (to Richmond-Brighouse)",
+                    "last_train": "00:05 (to Waterfront) / 00:15 (to Richmond-Brighouse)"
+                }
+            }
+            frequencies = {
+                "peak": "每 3 - 3.5 分鐘 (分支每 6 分鐘)",
+                "midday": "每 5 - 6 分鐘 (分支每 10 - 12 分鐘)",
+                "evening": "每 7.5 - 10 分鐘 (分支每 15 分鐘)",
+                "late_night": "每 12 - 20 分鐘"
+            }
+        elif any("Millennium" in l for l in lines) and not any("Expo" in l for l in lines):
+            first_last = {
+                "weekday": {
+                    "first_train": "05:05 (to VCC-Clark) / 05:30 (to Lafarge Lake-Douglas)",
+                    "last_train": "01:22 (to Lafarge Lake-Douglas) / 00:59 (to VCC-Clark)"
+                },
+                "saturday": {
+                    "first_train": "06:05 (to VCC-Clark) / 06:30 (to Lafarge Lake-Douglas)",
+                    "last_train": "01:22 (to Lafarge Lake-Douglas) / 00:59 (to VCC-Clark)"
+                },
+                "sunday_holiday": {
+                    "first_train": "07:05 (to VCC-Clark) / 07:30 (to Lafarge Lake-Douglas)",
+                    "last_train": "00:22 (to Lafarge Lake-Douglas) / 23:59 (to VCC-Clark)"
+                }
+            }
+            frequencies = {
+                "peak": "每 3 - 4 分鐘",
+                "midday": "每 5 - 6 分鐘",
+                "evening": "每 6 - 8 分鐘",
+                "late_night": "每 10 - 12 分鐘"
+            }
+        else:
+            first_last = {
+                "weekday": {
+                    "first_train": "05:32 (to King George) / 05:38 (to Production Way-University)",
+                    "last_train": "01:16 (to King George) / 01:11 (to Waterfront)"
+                },
+                "saturday": {
+                    "first_train": "06:48 (to King George) / 06:38 (to Production Way-University)",
+                    "last_train": "01:16 (to King George) / 01:11 (to Waterfront)"
+                },
+                "sunday_holiday": {
+                    "first_train": "07:48 (to King George) / 07:38 (to Production Way-University)",
+                    "last_train": "00:16 (to King George) / 00:11 (to Waterfront)"
+                }
+            }
+            frequencies = {
+                "peak": "每 2 - 3 分鐘 (兩大分支每 4 - 5 分鐘)",
+                "midday": "每 3 - 5 分鐘 (分支每 6 - 8 分鐘)",
+                "evening": "每 6 - 8 分鐘",
+                "late_night": "每 10 - 15 分鐘"
+            }
 
     maps = _find_station_maps(st_name, lines)
     station_map_url = (maps.get('Station') if maps else None) or 'https://www.translink.ca/schedules-and-maps/skytrain'

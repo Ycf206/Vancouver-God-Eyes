@@ -48,11 +48,12 @@ const FERRY_TERMINAL_NAMES_EN: Record<string, string> = {
 };
 
 export default function FerryScheduleModal() {
-  const { isFerryScheduleOpen, setFerryScheduleOpen, timeFormat } = useUIStore();
+  const { isFerryScheduleOpen, setFerryScheduleOpen, setSearchTarget, timeFormat } = useUIStore();
   const [selectedTerminal, setSelectedTerminal] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [sailings, setSailings] = useState<SailingItem[]>([]);
+  const [liveVessels, setLiveVessels] = useState<any[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const fetchSchedules = async () => {
@@ -65,6 +66,14 @@ export default function FerryScheduleModal() {
     const results: SailingItem[] = [];
 
     try {
+      // Fetch live ferry vehicles concurrently
+      fetch(`${apiUrl}/api/bcferries/vehicles`)
+        .then(r => r.json())
+        .then(vData => {
+          if (Array.isArray(vData.vehicles)) setLiveVessels(vData.vehicles);
+        })
+        .catch(() => {});
+
       await Promise.all(
         codesToFetch.map(async (code) => {
           try {
@@ -114,6 +123,68 @@ export default function FerryScheduleModal() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFerryScheduleOpen, setFerryScheduleOpen]);
 
+  const getMatchVessel = (sailing: SailingItem) => {
+    const list = (typeof window !== 'undefined' && (window as any).__godsEyeFerryVehicles) || liveVessels;
+    if (!list || !Array.isArray(list)) return null;
+    return list.find(v => 
+      (sailing.vessel_name && v.vessel_name && (
+        v.vessel_name.toLowerCase().includes(sailing.vessel_name.toLowerCase()) ||
+        sailing.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase())
+      ))
+    );
+  };
+
+  const calculateProgressAndEta = (s: SailingItem, matchVessel: any) => {
+    if (matchVessel && matchVessel.progress !== undefined) {
+      const prog = Math.min(100, Math.max(0, matchVessel.progress));
+      let etaMins: number | null = null;
+      if (matchVessel.arrival_time) {
+        const parts = matchVessel.arrival_time.split(':');
+        if (parts.length >= 2) {
+          const arrH = parseInt(parts[0], 10);
+          const arrM = parseInt(parts[1], 10);
+          if (!isNaN(arrH) && !isNaN(arrM)) {
+            const now = new Date();
+            let diff = (arrH * 60 + arrM) - (now.getHours() * 60 + now.getMinutes());
+            if (diff < 0) diff += 1440;
+            if (diff >= 0 && diff <= 360) etaMins = diff;
+          }
+        }
+      }
+      return { progress: prog, etaMinutes: etaMins };
+    }
+    if (s.time && s.arrival_time && s.time.toLowerCase() !== 'variable' && s.arrival_time.toLowerCase() !== 'variable') {
+      try {
+        const parseTimeToMinutes = (tStr: string) => {
+          const clean = tStr.trim().toLowerCase().replace('a.m.', 'am').replace('p.m.', 'pm');
+          const isPm = clean.includes('pm');
+          const isAm = clean.includes('am');
+          const timePart = clean.replace(/[^0-9:]/g, '');
+          const [hStr, mStr] = timePart.split(':');
+          let h = parseInt(hStr, 10);
+          const m = parseInt(mStr || '0', 10);
+          if (isPm && h < 12) h += 12;
+          if (isAm && h === 12) h = 0;
+          return h * 60 + m;
+        };
+        const depM = parseTimeToMinutes(s.time);
+        let arrM = parseTimeToMinutes(s.arrival_time);
+        if (arrM < depM) arrM += 1440;
+        const now = new Date();
+        let nowM = now.getHours() * 60 + now.getMinutes();
+        if (nowM < depM && (depM - nowM) > 720) nowM += 1440;
+        if (nowM >= depM && nowM <= arrM) {
+          const total = arrM - depM;
+          const elapsed = nowM - depM;
+          const prog = total > 0 ? Math.round((elapsed / total) * 100) : 50;
+          const eta = arrM - nowM;
+          return { progress: Math.min(100, Math.max(0, prog)), etaMinutes: eta };
+        }
+      } catch {}
+    }
+    return null;
+  };
+
   const filteredSailings = useMemo(() => {
     let list = sailings;
     if (searchQuery.trim()) {
@@ -152,35 +223,31 @@ export default function FerryScheduleModal() {
                   BC Ferries Schedule
                 </span>
               </h3>
-              <p className="text-[11px] text-gray-400">
-                即時開航時間、車位載車率與在途航行狀況 · 每 1 分鐘更新
-                {lastUpdated && ` · ${lastUpdated.toLocaleTimeString()}`}
-              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {/* 重新整理按鈕 (只保留圖示) */}
             <button
               onClick={fetchSchedules}
               disabled={loading}
-              className="p-1.5 px-2.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 transition-colors flex items-center gap-1.5 text-xs cursor-pointer font-medium disabled:opacity-50"
+              className="p-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 transition-colors flex items-center justify-center text-xs cursor-pointer disabled:opacity-50"
               title="重新整理班次"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-              <span className="hidden sm:inline">重新整理</span>
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
             <a
               href="https://www.bcferries.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 rounded-lg text-gray-400 hover:text-sky-300 hover:bg-white/10 transition-colors"
+              className="p-2 rounded-xl text-gray-400 hover:text-sky-300 hover:bg-white/10 transition-colors"
               title="前往 BC Ferries 官方網頁"
             >
               <ExternalLink className="w-4 h-4" />
             </a>
             <button
               onClick={() => setFerryScheduleOpen(false)}
-              className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               title="關閉"
             >
               <X className="w-4 h-4" />
@@ -236,56 +303,136 @@ export default function FerryScheduleModal() {
             </div>
           ) : (
             <>
-              {/* Active / Upcoming Sailings Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {/* Active / Upcoming Sailings List (一行一行的清單) */}
+              <div className="flex flex-col gap-2.5">
                 {activeSailings.map((s, idx) => {
                   const destNameEn = FERRY_TERMINAL_NAMES_EN[s.destination] || s.destination;
                   const fromNameEn = FERRY_TERMINAL_NAMES_EN[s.terminal_code] || s.terminal_code;
+                  const matchVessel = getMatchVessel(s);
+                  const isCurrent = s.status === 'current' || Boolean(matchVessel);
+                  const progInfo = calculateProgressAndEta(s, matchVessel);
+
+                  const handleJump = () => {
+                    if (matchVessel) {
+                      setSearchTarget({
+                        id: matchVessel.id,
+                        title: matchVessel.vessel_name || s.vessel_name,
+                        category: 'ferry_vehicle',
+                        lon: matchVessel.lon,
+                        lat: matchVessel.lat,
+                        zoom: 13,
+                        icon: 'ship'
+                      });
+                      if (typeof window !== 'undefined') {
+                        const map = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+                        if (map) {
+                          map.flyTo({
+                            center: [matchVessel.lon, matchVessel.lat],
+                            zoom: 13,
+                            duration: 1200,
+                            essential: true
+                          });
+                        }
+                        (window as any).__godsEyeSelectFerry?.(matchVessel);
+                      }
+                    }
+                  };
+
                   return (
                     <div 
                       key={`${s.terminal_code}-${s.time}-${idx}`}
-                      className="p-3.5 rounded-xl bg-[#171b26] border border-gray-800/80 hover:border-sky-500/50 transition-all flex flex-col gap-2 shadow-sm"
+                      onClick={handleJump}
+                      className={`p-3.5 rounded-xl bg-[#171b26] border border-gray-800/80 transition-all flex flex-col gap-2.5 shadow-sm ${
+                        matchVessel ? 'hover:border-sky-400 hover:bg-[#1e2538] cursor-pointer' : 'cursor-default'
+                      }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-base text-sky-400 font-mono">
-                          {formatTimePreference(s.time, timeFormat)}
-                          {s.arrival_time ? ` ➝ ${formatTimePreference(s.arrival_time, timeFormat)}` : ''}
-                        </span>
-                        <span className={`text-[10.5px] font-semibold px-2.5 py-0.5 rounded-full ${
-                          s.status === 'current'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse'
-                            : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                        }`}>
-                          {s.status === 'current' ? '航行中' : '即將開航'}
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-white text-sm">
-                          {s.vessel_name || 'BC Ferries 渡輪'}
-                        </span>
-                        <span className="text-xs text-sky-300 font-medium mt-0.5">
-                          To: {destNameEn}
-                        </span>
-                        <span className="text-[11px] text-gray-400">
-                          From: {fromNameEn}
-                        </span>
-                      </div>
-
-                      {s.fill > 0 && (
-                        <div className="pt-2 border-t border-gray-800/80">
-                          <div className="flex justify-between items-center text-[11px] text-gray-400 mb-1">
-                            <span>車位載車率 (Deck Space)</span>
-                            <span className="font-mono font-bold text-gray-200">{s.fill}%</span>
-                          </div>
-                          <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
-                            <div 
-                              className={`h-full rounded-full transition-all duration-300 ${s.fill >= 80 ? 'bg-amber-400' : 'bg-sky-500'}`}
-                              style={{ width: `${Math.min(100, Math.max(0, s.fill))}%` }}
-                            />
-                          </div>
+                      {/* 上排：時間、渡輪名稱、狀態徽章 */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                          <span className="font-bold text-base text-sky-400 font-mono tracking-tight">
+                            {formatTimePreference(s.time, timeFormat)}
+                            {s.arrival_time ? ` ➝ ${formatTimePreference(s.arrival_time, timeFormat)}` : ''}
+                          </span>
+                          <span className="font-bold text-white text-sm">
+                            {s.vessel_name || 'BC Ferries 渡輪'}
+                          </span>
+                          {matchVessel && (
+                            <span className="inline-flex items-center gap-1 text-[9.5px] font-semibold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/40">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                              在地圖在途中 (點擊跳轉)
+                            </span>
+                          )}
                         </div>
-                      )}
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${
+                            isCurrent
+                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse'
+                              : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                          }`}>
+                            {isCurrent ? '航行中' : '即將開航'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* 中排：美化出發點和目的地顯示風格 */}
+                      <div className="flex items-center gap-2 flex-wrap text-xs">
+                        <div className="px-2.5 py-1 rounded-lg bg-[#11141c] border border-gray-700/60 text-gray-300 font-medium flex items-center gap-1.5 shadow-2xs">
+                          <span className="text-[10px] text-gray-500 font-normal">出發</span>
+                          <span className="font-semibold text-gray-200">{fromNameEn}</span>
+                        </div>
+                        <ArrowRight className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                        <div className="px-2.5 py-1 rounded-lg bg-sky-950/60 border border-sky-500/40 text-sky-300 font-semibold flex items-center gap-1.5 shadow-2xs">
+                          <span className="text-[10px] text-sky-400/80 font-normal">抵達</span>
+                          <span>{destNameEn}</span>
+                        </div>
+                      </div>
+
+                      {/* 下排：航程進度、預計剩餘抵達時間與車位載車率 */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-gray-800/80 text-xs">
+                        {/* 航程進度與剩餘抵達時間 */}
+                        {progInfo ? (
+                          <div className="flex flex-col gap-1">
+                            <div className="flex justify-between items-center text-[11px] text-gray-400">
+                              <span className="flex items-center gap-1">
+                                <span>航程進度</span>
+                                <span className="font-bold text-emerald-400">{progInfo.progress}%</span>
+                              </span>
+                              {progInfo.etaMinutes !== null && (
+                                <span className="text-emerald-400 font-semibold">
+                                  {progInfo.etaMinutes <= 0 ? '即將抵達' : `約 ${progInfo.etaMinutes} 分鐘抵達`}
+                                </span>
+                              )}
+                            </div>
+                            <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                              <div 
+                                className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                                style={{ width: `${progInfo.progress}%` }}
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center text-[11px] text-gray-500">
+                            <span>即將於開航後推估航程進度</span>
+                          </div>
+                        )}
+
+                        {/* 車位載車率 (刪除英文 Deck Space) */}
+                        {s.fill > 0 && (
+                          <div className="flex flex-col gap-1">
+                            <div className="flex justify-between items-center text-[11px] text-gray-400">
+                              <span>車位載車率</span>
+                              <span className="font-mono font-bold text-gray-200">{s.fill}%</span>
+                            </div>
+                            <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                              <div 
+                                className={`h-full rounded-full transition-all duration-300 ${s.fill >= 80 ? 'bg-amber-400' : 'bg-sky-500'}`}
+                                style={{ width: `${Math.min(100, Math.max(0, s.fill))}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -304,15 +451,15 @@ export default function FerryScheduleModal() {
                     </span>
                     <span className="text-[10px] text-gray-500 group-open:rotate-180 transition-transform">▼</span>
                   </summary>
-                  <div className="p-3 pt-0 grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-gray-800/60">
+                  <div className="p-3 pt-0 flex flex-col gap-2 border-t border-gray-800/60">
                     {pastSailings.map((s, idx) => (
                       <div key={`past-${idx}`} className="p-2.5 rounded-lg bg-[#11141c] border border-gray-800/50 flex justify-between items-center text-xs text-gray-400">
                         <div>
                           <div className="font-mono text-gray-300 font-medium">
                             {formatTimePreference(s.time, timeFormat)}
                           </div>
-                          <div className="text-[11px] text-gray-400">
-                            {s.vessel_name} ➝ {FERRY_TERMINAL_NAMES_EN[s.destination] || s.destination}
+                          <div className="text-[11px] text-gray-400 mt-0.5">
+                            {s.vessel_name} · {FERRY_TERMINAL_NAMES_EN[s.terminal_code] || s.terminal_code} ➝ {FERRY_TERMINAL_NAMES_EN[s.destination] || s.destination}
                           </div>
                         </div>
                         <span className="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">
@@ -327,17 +474,11 @@ export default function FerryScheduleModal() {
           )}
         </div>
 
-        {/* Footer */}
+        {/* Footer (刪除右下關閉文字) */}
         <div className="px-5 py-2.5 bg-[#121620] border-t border-gray-800 flex items-center justify-between text-xs shrink-0">
           <span className="text-gray-400 text-[11px]">
-            資料來源：BC Ferries 卑詩渡輪官方即時系統
+            資料來源：BC Ferries 卑詩渡輪官方即時系統 · 每 1 分鐘自動更新
           </span>
-          <button
-            onClick={() => setFerryScheduleOpen(false)}
-            className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors cursor-pointer text-xs"
-          >
-            關閉
-          </button>
         </div>
       </div>
     </div>

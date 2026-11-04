@@ -1,7 +1,7 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye-TomTomTraffic",
-  "updated_at": "2026-11-02T12:53:18.216408+00:00",
+  "updated_at": "2026-11-03T14:22:01.463426+00:00",
   "update_interval": "每 5 分鐘自動更新 (TomTom Flow)",
   "total_count": 13,
   "features": [
@@ -2344,7 +2344,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -4687,7 +4687,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -4986,7 +4986,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -6149,7 +6149,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -7120,7 +7120,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -8427,7 +8427,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -9362,7 +9362,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -9785,7 +9785,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -11332,7 +11332,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -13839,7 +13839,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -15598,7 +15598,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -18269,7 +18269,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     },
@@ -19476,7 +19476,7 @@
         "color": "#10b981",
         "casing_color": "#064e3b",
         "trend": "stable",
-        "pub_time": 1793623998184,
+        "pub_time": 1793715721445,
         "source": "DriveBC Open511 Live Traffic"
       }
     }

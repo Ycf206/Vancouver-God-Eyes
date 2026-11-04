@@ -93,7 +93,7 @@ def fetch_single_resort(cfg: dict) -> dict:
 
     lifts_open = raw_json.get("liftsOpen", 0)
     lifts_tot = raw_json.get("liftsTot", 0)
-    lift_label = raw_json.get("liftLabel") or f"{lifts_open} of {lifts_tot} lifts"
+    lift_label = f"{lifts_open} / {lifts_tot} 座"
 
     snow_base = raw_json.get("snowBase") or "-"
     snow_top = raw_json.get("snowTop") or "-"
@@ -105,7 +105,32 @@ def fetch_single_resort(cfg: dict) -> dict:
     alt_base = raw_json.get("altitudeBase") or "800"
     alt_top = raw_json.get("altitudeTop") or "1400"
 
-    season_range = raw_json.get("seasonRangeLabel") or ""
+    season_raw = raw_json.get("seasonRangeLabel") or ""
+    def _format_season_range_ymd(raw: str) -> str:
+        if not raw:
+            return ""
+        months = {
+            'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04', 'may': '05', 'jun': '06',
+            'jul': '07', 'aug': '08', 'sep': '09', 'oct': '10', 'nov': '11', 'dec': '12'
+        }
+        parts = re.split(r'\s*[-–—至~]\s*', raw.strip())
+        if len(parts) == 2:
+            formatted = []
+            for p in parts:
+                m = re.match(r'^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$', p.strip())
+                if m:
+                    day = m.group(1).zfill(2)
+                    mon = months.get(m.group(2)[:3].lower(), '01')
+                    yr = m.group(3)
+                    formatted.append(f"{yr}-{mon}-{day}")
+                elif re.match(r'^\d{4}-\d{2}-\d{2}$', p.strip()):
+                    formatted.append(p.strip())
+                else:
+                    formatted.append(p.strip())
+            return f"{formatted[0]} 至 {formatted[1]}"
+        return raw
+
+    season_range = _format_season_range_ymd(season_raw)
     last_snow = raw_json.get("snowreportLastsnowLabel") or "-"
     night_ski = bool(raw_json.get("nightskiingAvailable", True))
 
