@@ -8532,7 +8532,7 @@ export default function AppMap() {
                   className={`w-3.5 h-3.5 rounded-full bg-white border-[2.5px] border-emerald-600 shadow-md group-hover:scale-125 transition-transform ${
                     isSelected ? 'ring-4 ring-emerald-400 bg-emerald-500 scale-125' : ''
                   }`}
-                  title={`${exc.name} (${exc.name_en})`}
+                  title={exc.name_en || exc.name}
                 />
               </div>
             </Marker>
@@ -19799,13 +19799,19 @@ export default function AppMap() {
                   const pastSailings = currentList.filter(s => s.status === 'past');
 
                   const renderSailingCard = (sailing: any, i: number, isDimmed = false) => {
-                    const matchVessel = ferryVehicles.find(v => 
-                      (sailing.vessel_name && v.vessel_name && (
-                        v.vessel_name.toLowerCase().includes(sailing.vessel_name.toLowerCase()) ||
-                        sailing.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase())
-                      ))
-                    );
-                    const isSailing = sailing.status === 'current' || (Boolean(matchVessel) && sailing.status !== 'past');
+                    const matchVessel = ferryVehicles.find(v => {
+                      if (!sailing.vessel_name || !v.vessel_name) return false;
+                      const nameMatch = v.vessel_name.toLowerCase().includes(sailing.vessel_name.toLowerCase()) ||
+                        sailing.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase());
+                      if (!nameMatch) return false;
+                      if (v.departure_time && sailing.time) {
+                        const cleanV = v.departure_time.trim().toLowerCase().replace(/\s+/g, '').replace('a.m.', 'am').replace('p.m.', 'pm');
+                        const cleanS = sailing.time.trim().toLowerCase().replace(/\s+/g, '').replace('a.m.', 'am').replace('p.m.', 'pm');
+                        if (cleanV !== cleanS) return false;
+                      }
+                      return true;
+                    });
+                    const isSailing = sailing.status === 'current' && Boolean(matchVessel);
 
                     return (
                       <div 
@@ -19836,7 +19842,7 @@ export default function AppMap() {
                             <span className={`font-bold text-xs tracking-tight ${isDimmed ? 'text-gray-400' : 'text-sky-300 font-mono'}`}>
                               {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
                             </span>
-                            {matchVessel && (
+                            {isSailing && matchVessel && (
                               <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-400 font-semibold bg-emerald-950/60 px-1 rounded border border-emerald-500/30">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                                 在途
@@ -19943,10 +19949,10 @@ export default function AppMap() {
                       setTerminalWebcamRefreshKey(Date.now());
                       setTerminalWebcamSecondsAgo(0);
                     }}
-                    className="p-1 px-2 rounded bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 border border-sky-500/30 transition-colors flex items-center gap-1 text-[10.5px] cursor-pointer"
+                    className="p-1.5 rounded-md bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 border border-sky-500/30 transition-colors flex items-center justify-center cursor-pointer shadow-xs"
+                    title="立即更新"
                   >
-                    <RotateCw className="w-3 h-3" />
-                    <span>立即更新</span>
+                    <RotateCw className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
@@ -20050,8 +20056,8 @@ export default function AppMap() {
                   onClick={() => setEnlargedCameraImage({
                     src: selectedBusExchange.image,
                     directSrc: selectedBusExchange.image,
-                    alt: selectedBusExchange.name,
-                    title: `${selectedBusExchange.name} 路線地圖`,
+                    alt: selectedBusExchange.name_en || selectedBusExchange.name,
+                    title: `${selectedBusExchange.name_en || selectedBusExchange.name} Map`,
                     direction: selectedBusExchange.location
                   })}
                   className="p-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 hover:text-white transition-all shadow-sm cursor-pointer"
@@ -20754,11 +20760,10 @@ export default function AppMap() {
                     setTerminalWebcamRefreshKey(Date.now());
                     setTerminalWebcamSecondsAgo(0);
                   }}
-                  className="p-1.5 px-2.5 rounded-lg bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 border border-sky-500/30 transition-colors flex items-center gap-1.5 text-xs font-medium cursor-pointer"
-                  title="立即重新整理攝影機影像"
+                  className="p-1.5 rounded-lg bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 border border-sky-500/30 transition-colors flex items-center justify-center cursor-pointer"
+                  title="立即更新"
                 >
                   <RotateCw className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">立即更新</span>
                 </button>
                 <button
                   onClick={() => setIsTerminalWebcamModalOpen(false)}

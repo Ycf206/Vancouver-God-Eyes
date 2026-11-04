@@ -123,15 +123,42 @@ export default function FerryScheduleModal() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFerryScheduleOpen, setFerryScheduleOpen]);
 
+  const normalizeTimeStr = (t?: string) => {
+    return (t || '').trim().toLowerCase().replace(/\s+/g, '').replace('a.m.', 'am').replace('p.m.', 'pm');
+  };
+
+  const parseTimeToMinutes = (tStr?: string) => {
+    if (!tStr) return null;
+    const clean = tStr.trim().toLowerCase().replace('a.m.', 'am').replace('p.m.', 'pm');
+    const isPm = clean.includes('pm');
+    const isAm = clean.includes('am');
+    const timePart = clean.replace(/[^0-9:]/g, '');
+    const [hStr, mStr] = timePart.split(':');
+    let h = parseInt(hStr, 10);
+    const m = parseInt(mStr || '0', 10);
+    if (isNaN(h) || isNaN(m)) return null;
+    if (isPm && h < 12) h += 12;
+    if (isAm && h === 12) h = 0;
+    return h * 60 + m;
+  };
+
   const getMatchVessel = (sailing: SailingItem) => {
     const list = (typeof window !== 'undefined' && (window as any).__godsEyeFerryVehicles) || liveVessels;
     if (!list || !Array.isArray(list)) return null;
-    return list.find(v => 
-      (sailing.vessel_name && v.vessel_name && (
-        v.vessel_name.toLowerCase().includes(sailing.vessel_name.toLowerCase()) ||
-        sailing.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase())
-      ))
-    );
+    return list.find(v => {
+      if (!sailing.vessel_name || !v.vessel_name) return false;
+      const nameMatch = v.vessel_name.toLowerCase().includes(sailing.vessel_name.toLowerCase()) ||
+        sailing.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase());
+      if (!nameMatch) return false;
+
+      // 比對開航時間：必須是同一個班次
+      if (v.departure_time && sailing.time) {
+        if (normalizeTimeStr(v.departure_time) !== normalizeTimeStr(sailing.time)) {
+          return false;
+        }
+      }
+      return true;
+    });
   };
 
   const calculateProgressAndEta = (s: SailingItem, matchVessel: any) => {
@@ -139,46 +166,35 @@ export default function FerryScheduleModal() {
       const prog = Math.min(100, Math.max(0, matchVessel.progress));
       let etaMins: number | null = null;
       if (matchVessel.arrival_time) {
-        const parts = matchVessel.arrival_time.split(':');
-        if (parts.length >= 2) {
-          const arrH = parseInt(parts[0], 10);
-          const arrM = parseInt(parts[1], 10);
-          if (!isNaN(arrH) && !isNaN(arrM)) {
-            const now = new Date();
-            let diff = (arrH * 60 + arrM) - (now.getHours() * 60 + now.getMinutes());
-            if (diff < 0) diff += 1440;
-            if (diff >= 0 && diff <= 360) etaMins = diff;
-          }
+        const depM = parseTimeToMinutes(matchVessel.departure_time || s.time);
+        let arrM = parseTimeToMinutes(matchVessel.arrival_time);
+        if (arrM !== null && depM !== null) {
+          if (arrM < depM) arrM += 1440;
+          const now = new Date();
+          let nowM = now.getHours() * 60 + now.getMinutes();
+          if (nowM < depM && arrM > 1440) nowM += 1440;
+          let diff = arrM - nowM;
+          if (diff >= 0 && diff <= 360) etaMins = diff;
         }
       }
       return { progress: prog, etaMinutes: etaMins };
     }
     if (s.time && s.arrival_time && s.time.toLowerCase() !== 'variable' && s.arrival_time.toLowerCase() !== 'variable') {
       try {
-        const parseTimeToMinutes = (tStr: string) => {
-          const clean = tStr.trim().toLowerCase().replace('a.m.', 'am').replace('p.m.', 'pm');
-          const isPm = clean.includes('pm');
-          const isAm = clean.includes('am');
-          const timePart = clean.replace(/[^0-9:]/g, '');
-          const [hStr, mStr] = timePart.split(':');
-          let h = parseInt(hStr, 10);
-          const m = parseInt(mStr || '0', 10);
-          if (isPm && h < 12) h += 12;
-          if (isAm && h === 12) h = 0;
-          return h * 60 + m;
-        };
         const depM = parseTimeToMinutes(s.time);
         let arrM = parseTimeToMinutes(s.arrival_time);
-        if (arrM < depM) arrM += 1440;
-        const now = new Date();
-        let nowM = now.getHours() * 60 + now.getMinutes();
-        if (nowM < depM && (depM - nowM) > 720) nowM += 1440;
-        if (nowM >= depM && nowM <= arrM) {
-          const total = arrM - depM;
-          const elapsed = nowM - depM;
-          const prog = total > 0 ? Math.round((elapsed / total) * 100) : 50;
-          const eta = arrM - nowM;
-          return { progress: Math.min(100, Math.max(0, prog)), etaMinutes: eta };
+        if (depM !== null && arrM !== null) {
+          if (arrM < depM) arrM += 1440;
+          const now = new Date();
+          let nowM = now.getHours() * 60 + now.getMinutes();
+          if (nowM < depM && arrM > 1440) nowM += 1440;
+          if (nowM >= depM && nowM <= arrM) {
+            const total = arrM - depM;
+            const elapsed = nowM - depM;
+            const prog = total > 0 ? Math.round((elapsed / total) * 100) : 50;
+            const eta = arrM - nowM;
+            return { progress: Math.min(100, Math.max(0, prog)), etaMinutes: Math.max(0, eta) };
+          }
         }
       } catch {}
     }
@@ -306,11 +322,12 @@ export default function FerryScheduleModal() {
                   const destNameEn = FERRY_TERMINAL_NAMES_EN[s.destination] || s.destination;
                   const fromNameEn = FERRY_TERMINAL_NAMES_EN[s.terminal_code] || s.terminal_code;
                   const matchVessel = getMatchVessel(s);
-                  const isCurrent = s.status === 'current' || Boolean(matchVessel);
-                  const progInfo = calculateProgressAndEta(s, matchVessel);
+                  const isCurrent = s.status === 'current';
+                  const isEnRoute = isCurrent && Boolean(matchVessel);
+                  const progInfo = isCurrent ? calculateProgressAndEta(s, matchVessel) : null;
 
                   const handleJump = () => {
-                    if (matchVessel) {
+                    if (isEnRoute && matchVessel) {
                       setSearchTarget({
                         id: matchVessel.id,
                         title: matchVessel.vessel_name || s.vessel_name,
@@ -340,7 +357,7 @@ export default function FerryScheduleModal() {
                       key={`${s.terminal_code}-${s.time}-${idx}`}
                       onClick={handleJump}
                       className={`p-3.5 rounded-xl bg-[#171b26] border border-gray-800/80 transition-all flex flex-col gap-2.5 shadow-sm ${
-                        matchVessel ? 'hover:border-sky-400 hover:bg-[#1e2538] cursor-pointer' : 'cursor-default'
+                        isEnRoute ? 'hover:border-sky-400 hover:bg-[#1e2538] cursor-pointer' : 'cursor-default'
                       }`}
                     >
                       {/* 上排：時間、渡輪名稱、狀態徽章 */}
@@ -353,7 +370,7 @@ export default function FerryScheduleModal() {
                           <span className="font-bold text-white text-sm">
                             {s.vessel_name || 'BC Ferries 渡輪'}
                           </span>
-                          {matchVessel && (
+                          {isEnRoute && (
                             <span className="inline-flex items-center gap-1 text-[9.5px] font-semibold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/40">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                               在地圖在途中 (點擊跳轉)

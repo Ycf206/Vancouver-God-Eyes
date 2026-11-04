@@ -17,6 +17,7 @@ from google.transit import gtfs_realtime_pb2
 import database
 import models
 import os
+import re
 import uuid
 import hashlib
 import logging
@@ -655,12 +656,15 @@ async def fetch_bcferries_realtime():
                     progress = 0.5
                     
                     try:
-                        if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
+                        if time_str and time_str.lower() != 'variable':
                             dep_time = datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
                             dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
                             
-                            arr_time = datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
-                            arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
+                            if arr_time_str and arr_time_str.lower() != 'variable':
+                                arr_time = datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                                arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
+                            else:
+                                arr_time = dep_time + timedelta(minutes=95)
                             
                             if arr_time < dep_time:
                                 arr_time += timedelta(days=1)
@@ -674,7 +678,8 @@ async def fetch_bcferries_realtime():
                     except Exception:
                         pass
                         
-                    if status == 'current' or is_sailing:
+                    # 只有真正處於開航與預計抵達時間區間內的船隻，才視為在途船隻
+                    if is_sailing:
                         # A physical vessel can only be at one place; skip repeats
                         if sailing.get('vesselName') and vessel_name in seen_vessels:
                             continue
@@ -1582,23 +1587,33 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                     fill = sailing.get('fill') or sailing.get('carFill') or 0
                     status = sailing.get('sailingStatus')
                     
-                    if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
+                    parsed_dep = None
+                    parsed_arr = None
+                    if time_str and time_str.lower() != 'variable':
                         try:
-                            dep_time = datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
-                            dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
-                            arr_time = datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
-                            arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
-                            if arr_time < dep_time:
-                                arr_time += timedelta(days=1)
-                            if now_naive > arr_time:
-                                status = 'past'
-                            elif dep_time <= now_naive <= arr_time:
-                                status = 'current'
+                            clean_t = time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower()
+                            parsed_dep = datetime.strptime(clean_t, '%I:%M %p')
+                            parsed_dep = now_naive.replace(hour=parsed_dep.hour, minute=parsed_dep.minute, second=0, microsecond=0)
+                            if arr_time_str and arr_time_str.lower() != 'variable':
+                                clean_arr = arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower()
+                                parsed_arr = datetime.strptime(clean_arr, '%I:%M %p')
+                                parsed_arr = now_naive.replace(hour=parsed_arr.hour, minute=parsed_arr.minute, second=0, microsecond=0)
                             else:
-                                status = 'future'
+                                parsed_arr = parsed_dep + timedelta(minutes=95)
+                            if parsed_arr < parsed_dep:
+                                parsed_arr += timedelta(days=1)
                         except Exception:
-                            if not status: status = 'future'
-                    if not status: status = 'future'
+                            pass
+
+                    if parsed_dep and parsed_arr:
+                        if now_naive > parsed_arr:
+                            status = 'past'
+                        elif parsed_dep <= now_naive <= parsed_arr:
+                            status = 'current'
+                        else:
+                            status = 'future'
+                    elif not status or status.lower() not in ('past', 'current', 'cancelled'):
+                        status = 'future'
                     
                     key = f"{arr_code}_{time_str}"
                     if key in seen_dep:
@@ -1607,8 +1622,10 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                             existing['vessel_name'] = sailing.get('vesselName')
                         if fill > 0 and existing.get('fill') == 0:
                             existing['fill'] = fill
-                        if status != 'future' and existing.get('status') == 'future':
-                            existing['status'] = status
+                        if status == 'future':
+                            existing['status'] = 'future'
+                        elif status == 'current' and existing.get('status') != 'past':
+                            existing['status'] = 'current'
                         continue
 
                     entry = {
@@ -1633,23 +1650,33 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                     fill = sailing.get('fill') or sailing.get('carFill') or 0
                     status = sailing.get('sailingStatus')
                     
-                    if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
+                    parsed_dep = None
+                    parsed_arr = None
+                    if time_str and time_str.lower() != 'variable':
                         try:
-                            dep_time = datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
-                            dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
-                            arr_time = datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
-                            arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
-                            if arr_time < dep_time:
-                                arr_time += timedelta(days=1)
-                            if now_naive > arr_time:
-                                status = 'past'
-                            elif dep_time <= now_naive <= arr_time:
-                                status = 'current'
+                            clean_t = time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower()
+                            parsed_dep = datetime.strptime(clean_t, '%I:%M %p')
+                            parsed_dep = now_naive.replace(hour=parsed_dep.hour, minute=parsed_dep.minute, second=0, microsecond=0)
+                            if arr_time_str and arr_time_str.lower() != 'variable':
+                                clean_arr = arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower()
+                                parsed_arr = datetime.strptime(clean_arr, '%I:%M %p')
+                                parsed_arr = now_naive.replace(hour=parsed_arr.hour, minute=parsed_arr.minute, second=0, microsecond=0)
                             else:
-                                status = 'future'
+                                parsed_arr = parsed_dep + timedelta(minutes=95)
+                            if parsed_arr < parsed_dep:
+                                parsed_arr += timedelta(days=1)
                         except Exception:
-                            if not status: status = 'future'
-                    if not status: status = 'future'
+                            pass
+
+                    if parsed_dep and parsed_arr:
+                        if now_naive > parsed_arr:
+                            status = 'past'
+                        elif parsed_dep <= now_naive <= parsed_arr:
+                            status = 'current'
+                        else:
+                            status = 'future'
+                    elif not status or status.lower() not in ('past', 'current', 'cancelled'):
+                        status = 'future'
                     
                     key = f"{dep_code}_{time_str}"
                     if key in seen_arr:
@@ -1658,8 +1685,10 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                             existing['vessel_name'] = sailing.get('vesselName')
                         if fill > 0 and existing.get('fill') == 0:
                             existing['fill'] = fill
-                        if status != 'future' and existing.get('status') == 'future':
-                            existing['status'] = status
+                        if status == 'future':
+                            existing['status'] = 'future'
+                        elif status == 'current' and existing.get('status') != 'past':
+                            existing['status'] = 'current'
                         continue
 
                     entry = {
@@ -2547,17 +2576,15 @@ def get_road_facilities_geojson(
     if facility_type in ('parking_meters', 'motorcycle_parking'):
         if os.path.exists(static_geojson_path):
             try:
-                import re
-                import datetime
                 with open(static_geojson_path, "r", encoding="utf-8") as f:
                     static_data = json.load(f)
 
                 # 判定溫哥華當地時間時段
                 try:
                     from zoneinfo import ZoneInfo
-                    vancouver_now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
+                    vancouver_now = datetime.now(ZoneInfo("America/Vancouver"))
                 except Exception:
-                    vancouver_now = datetime.datetime.utcnow() - datetime.timedelta(hours=7)
+                    vancouver_now = datetime.utcnow() - timedelta(hours=7)
 
                 current_hour = vancouver_now.hour
                 period_mode = (time_period or "auto").lower()
@@ -2730,12 +2757,11 @@ def get_road_facilities_geojson(
 
         if facility_type in ('parking_meters', 'motorcycle_parking'):
             # 判斷時段：auto (根據溫哥華當地時間), day (日間 9am-6pm), night (夜間 6pm-10pm)
-            import datetime
             try:
                 from zoneinfo import ZoneInfo
-                vancouver_now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
+                vancouver_now = datetime.now(ZoneInfo("America/Vancouver"))
             except Exception:
-                vancouver_now = datetime.datetime.utcnow() - datetime.timedelta(hours=7)
+                vancouver_now = datetime.utcnow() - timedelta(hours=7)
             
             current_hour = vancouver_now.hour
 
@@ -3067,6 +3093,34 @@ def explore_nearby_facilities(
         'items': nearby_items[:150]
     }
 
+def _get_rapidbus_main_variants(gtfs_meta):
+    """獲取 7 條 RapidBus/B-Line 路線在去程與返程 (direction 0 & 1) 最完整的主線變體，確保站點與軌跡完全貼合，排除非主線懸空或調度站點。"""
+    variants = gtfs_meta.get("variants", {})
+    routes_lookup = gtfs_meta.get("routes", {})
+    rapid_routes = {"99", "R1", "R2", "R3", "R4", "R5", "R6"}
+    best_variants = {}
+    for vid, v in variants.items():
+        rid = str(v.get("route_id", ""))
+        rmeta = routes_lookup.get(rid, {})
+        rnum = str(rmeta.get("route_number", "")).upper()
+        if rnum not in rapid_routes:
+            continue
+        direction = v.get("direction_id", 0)
+        key = f"{rnum}_{direction}"
+        stop_count = len(v.get("stops", []))
+        shape_count = len(v.get("shape_coords", []))
+        current = best_variants.get(key)
+        if not current or stop_count > current["stop_count"] or (stop_count == current["stop_count"] and shape_count > current["shape_count"]):
+            best_variants[key] = {
+                "vid": vid,
+                "variant": v,
+                "rnum": rnum,
+                "rmeta": rmeta,
+                "stop_count": stop_count,
+                "shape_count": shape_count
+            }
+    return best_variants
+
 @app.get("/api/geojson/stops/{group}")
 def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
     """group can be 'bus', 'skytrain', or 'seabus'"""
@@ -3160,28 +3214,27 @@ def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
 
     if not features and group == 'bus':
         gtfs_meta = get_gtfs_metadata()
-        variants = gtfs_meta.get("variants", {})
-        routes_lookup = gtfs_meta.get("routes", {})
+        main_vars = _get_rapidbus_main_variants(gtfs_meta)
         seen_stops = set()
-        for v in variants.values():
-            rid = str(v.get("route_id", ""))
-            rnum = str(routes_lookup.get(rid, {}).get("route_number", "")).upper()
-            if rnum in ("99", "R1", "R2", "R3", "R4", "R5", "R6"):
-                for s in v.get("stops", []):
-                    sid = str(s.get("stop_id", ""))
-                    if sid and sid not in seen_stops and s.get("lon") and s.get("lat"):
-                        seen_stops.add(sid)
-                        features.append({
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [s["lon"], s["lat"]]
-                            },
-                            "properties": {
-                                "stop_id": sid,
-                                "name": s.get("name", "")
-                            }
-                        })
+        for item in main_vars.values():
+            v = item["variant"]
+            rnum = item["rnum"]
+            for s in v.get("stops", []):
+                sid = str(s.get("stop_id", ""))
+                if sid and sid not in seen_stops and s.get("lon") and s.get("lat"):
+                    seen_stops.add(sid)
+                    features.append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [s["lon"], s["lat"]]
+                        },
+                        "properties": {
+                            "stop_id": sid,
+                            "name": s.get("name", ""),
+                            "route_number": rnum
+                        }
+                    })
 
     result_fc = {"type": "FeatureCollection", "features": features}
     if features:
@@ -3310,29 +3363,28 @@ def get_tracks_geojson(group: str, db: Session = Depends(database.get_db)):
             })
         elif group == 'bus':
             gtfs_meta = get_gtfs_metadata()
-            variants = gtfs_meta.get("variants", {})
-            routes_lookup = gtfs_meta.get("routes", {})
-            seen_routes = set()
-            for vkey, v in variants.items():
-                rid = str(v.get("route_id", ""))
-                rmeta = routes_lookup.get(rid, {})
-                rnum = str(rmeta.get("route_number", "")).upper()
-                if rnum in ("99", "R1", "R2", "R3", "R4", "R5", "R6") and rid not in seen_routes:
-                    coords = v.get("shape_coords", [])
-                    if len(coords) >= 2:
-                        seen_routes.add(rid)
-                        features.append({
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "LineString",
-                                "coordinates": coords
-                            },
-                            "properties": {
-                                "shape_id": vkey,
-                                "route_id": rid,
-                                "color": v.get("color") or rmeta.get("color") or "#22c55e"
-                            }
-                        })
+            main_vars = _get_rapidbus_main_variants(gtfs_meta)
+            for item in main_vars.values():
+                vid = item["vid"]
+                v = item["variant"]
+                rnum = item["rnum"]
+                rmeta = item["rmeta"]
+                coords = v.get("shape_coords", [])
+                if len(coords) >= 2:
+                    features.append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": coords
+                        },
+                        "properties": {
+                            "shape_id": vid,
+                            "route_id": str(v.get("route_id", "")),
+                            "route_number": rnum,
+                            "direction_id": v.get("direction_id", 0),
+                            "color": v.get("color") or rmeta.get("color") or "#22c55e"
+                        }
+                    })
 
     result_fc = {"type": "FeatureCollection", "features": features}
     if features:

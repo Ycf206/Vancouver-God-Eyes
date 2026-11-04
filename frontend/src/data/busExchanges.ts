@@ -22,7 +22,7 @@ export interface BusExchange {
 export const BUS_EXCHANGES: BusExchange[] = [
   {
     id: 'blanca_loop',
-    name: '布蘭卡巴士轉乘站',
+    name: 'Blanca Loop',
     name_en: 'Blanca Loop',
     location: 'Blanca St and Chancellor Blvd',
     lat: 49.265194,
@@ -36,7 +36,7 @@ export const BUS_EXCHANGES: BusExchange[] = [
   },
   {
     id: 'dunbar_loop',
-    name: '鄧巴巴士轉乘站',
+    name: 'Dunbar Loop',
     name_en: 'Dunbar Loop',
     location: 'Dunbar St and 41st Ave',
     lat: 49.23475,
@@ -54,7 +54,7 @@ export const BUS_EXCHANGES: BusExchange[] = [
   },
   {
     id: 'kootenay_loop',
-    name: '庫特尼巴士轉乘站',
+    name: 'Kootenay Loop',
     name_en: 'Kootenay Loop',
     location: 'Hastings St and Kootenay St, Vancouver',
     lat: 49.2813,
@@ -76,7 +76,7 @@ export const BUS_EXCHANGES: BusExchange[] = [
   },
   {
     id: 'marpole_loop',
-    name: '馬寶巴士轉乘站',
+    name: 'Marpole Loop',
     name_en: 'Marpole Loop',
     location: 'Marine Dr and Hudson St, Vancouver',
     lat: 49.20325,
@@ -92,7 +92,7 @@ export const BUS_EXCHANGES: BusExchange[] = [
   },
   {
     id: 'stanley_park_loop',
-    name: '史丹利公園巴士總站',
+    name: 'Stanley Park Loop',
     name_en: 'Stanley Park Loop',
     location: 'Pipeline Rd / Rose Garden Lane',
     lat: 49.3006,
@@ -106,7 +106,7 @@ export const BUS_EXCHANGES: BusExchange[] = [
   },
   {
     id: 'ubc_exchange',
-    name: 'UBC 卑詩大學巴士轉乘站',
+    name: 'UBC Exchange',
     name_en: 'UBC Exchange',
     location: 'Wesbrook Mall and University Blvd',
     lat: 49.26675,
