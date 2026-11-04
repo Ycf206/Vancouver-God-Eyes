@@ -1700,7 +1700,6 @@ async def get_ferry_terminal_schedule(terminal_code: str):
 async def get_ferry_vehicles_api():
     global cached_bcferries_vehicles
     return {"vehicles": cached_bcferries_vehicles or []}
-        return {"error": str(e)}
 
 @app.get("/api/stops/{stop_id}/arrivals")
 async def get_stop_arrivals(stop_id: str):
