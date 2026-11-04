@@ -20,7 +20,13 @@ import {
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
   Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert,
-  CircleDollarSign
+  CircleDollarSign, Globe, Ticket, Accessibility,
+  BusFront, Repeat, TrainFront, ShipCargo, Plane, Road, ParkingMeter, Motorbike, Milestone,
+  EvCharger, TrainTrack, TrafficCone, LineSquiggle, HouseHeart, UserRoundGroup, Package,
+  Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet, UserShield, FireExtinguisher,
+  Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
+  CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
+  Sun, Moon, RotateCwClock, ArrowUpToLine, Weight, Siren
 } from 'lucide-react';
 
 function formatJobDateTime(isoStr?: string, timeFormat: '12h' | '24h' = '24h', timeZone: string = 'America/Vancouver'): string {
@@ -636,10 +642,11 @@ const FERRY_TERMINAL_WEBCAMS: Record<string, TerminalWebcamItem[]> = {
     { id: 'cam1_DUK', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_DUK.jpg' },
     { id: 'cam2_DUK', name: '開往溫哥華 (Traffic to Tsawwassen)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_DUK.jpg' },
   ],
-  // 4.2 Nanaimo (Departure Bay) terminal
+  // 4.2 Nanaimo (Departure Bay) terminal (DriveBC Ferry Terminal Cameras)
   'NAN': [
-    { id: 'cam1_NAN', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_NAN.jpg' },
-    { id: 'cam2_NAN', name: '開往溫哥華 (Traffic to Horseshoe Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_NAN.jpg' },
+    { id: 'cam1_NAN', name: '碼頭現場車流 (Departure Bay Ferry Terminal)', url: 'https://www.drivebc.ca/images/743.jpg' },
+    { id: 'cam2_NAN', name: '開往溫哥華車流 (Departure Bay Northbound)', url: 'https://www.drivebc.ca/images/741.jpg' },
+    { id: 'cam3_NAN', name: '開往溫哥華車流 (Departure Bay Southbound)', url: 'https://www.drivebc.ca/images/742.jpg' },
   ],
   // 4.3 Vancouver (Tsawwassen) terminal
   'TSA': [
@@ -659,12 +666,91 @@ const FERRY_TERMINAL_WEBCAMS: Record<string, TerminalWebcamItem[]> = {
     { id: 'cam2_SWB', name: '開往溫哥華 (Traffic to Vancouver / Tsawwassen)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_SWB.jpg' },
     { id: 'cam3_SWB', name: '開往南部海灣群島與鹽泉島 (Traffic to Gulf Islands & Fulford Harbour)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam3_SWB.jpg' },
   ],
-  // 4.6 West Vancouver (Horseshoe Bay) terminal (DriveBC Highway 99 Terminal Cameras)
+  // 4.6 West Vancouver (Horseshoe Bay) terminal
   'HSB': [
-    { id: 'cam1_HSB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://www.drivebc.ca/images/1070.jpg' },
-    { id: 'cam2_HSB', name: '開往納奈莫車流 (Traffic to Departure Bay)', url: 'https://www.drivebc.ca/images/228.jpg' },
+    { id: 'cam1_HSB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://www.drivebc.ca/images/228.jpg' },
+    { id: 'cam2_HSB', name: '開往納奈莫車流 (Traffic to Departure Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_HSB.jpg' },
   ]
 };
+
+function FerryWebcamImage({ cam, refreshKey, onEnlarge }: { cam: TerminalWebcamItem; refreshKey: number; onEnlarge: (url: string) => void }) {
+  const [hasError, setHasError] = useState(false);
+  const [triedFallback, setTriedFallback] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 優先走 Next.js 本地同源 proxy，完全避開 CORS 與防盜鏈
+  const proxyUrl = `/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${refreshKey}`;
+  const directUrl = `${cam.url}?t=${refreshKey}`;
+  const [src, setSrc] = useState(proxyUrl);
+
+  useEffect(() => {
+    setHasError(false);
+    setTriedFallback(false);
+    setIsLoading(true);
+    setSrc(`/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${refreshKey}`);
+  }, [cam.url, refreshKey]);
+
+  return (
+    <div 
+      onClick={() => {
+        if (!hasError) onEnlarge(src);
+      }}
+      className="relative aspect-[16/10] bg-[#12151e] cursor-zoom-in overflow-hidden flex items-center justify-center rounded-b-lg group"
+      title={hasError ? "影像暫時無法取得" : "點擊放大檢視"}
+    >
+      {isLoading && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[#151924] z-10 animate-pulse">
+          <Camera className="w-6 h-6 text-sky-400/40 animate-pulse" />
+        </div>
+      )}
+      {!hasError ? (
+        <img
+          src={src}
+          alt={cam.name}
+          referrerPolicy="no-referrer"
+          onLoad={() => setIsLoading(false)}
+          onError={() => {
+            if (!triedFallback) {
+              setTriedFallback(true);
+              setSrc(directUrl);
+            } else {
+              setHasError(true);
+              setIsLoading(false);
+            }
+          }}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          loading="lazy"
+        />
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-1.5 p-4 text-center text-gray-400">
+          <Camera className="w-6 h-6 text-gray-500" />
+          <span className="text-[11px] text-gray-400">即時影像維護中或暫無信號</span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setHasError(false);
+              setTriedFallback(false);
+              setIsLoading(true);
+              setSrc(`/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${Date.now()}`);
+            }}
+            className="text-[10px] px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-500/30 hover:bg-sky-900 transition-colors cursor-pointer"
+          >
+            點擊重試
+          </button>
+        </div>
+      )}
+      {!hasError && !isLoading && (
+        <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <span className="px-2 py-1 rounded bg-black/75 backdrop-blur-xs text-white text-[11px] font-medium flex items-center gap-1 shadow-md">
+            <ZoomIn className="w-3 h-3 text-sky-400" />
+            點擊放大
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function AppMap() {
   const { 
@@ -3309,7 +3395,7 @@ export default function AppMap() {
       const pmQuery = pmParams.toString() ? `?${pmParams.toString()}` : '';
       style.sources['parking-meters'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/parking_meters${pmQuery}`,
+        data: `/api/geojson/road/parking_meters${pmQuery}`,
         cluster: true,
         clusterMaxZoom: 14,
         clusterRadius: 50
@@ -3333,7 +3419,7 @@ export default function AppMap() {
         mpParams.set('time_period', motorcycleParkingFilter.timePeriod);
       }
       const mpQuery = mpParams.toString() ? `?${mpParams.toString()}` : '';
-      style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking${mpQuery}` };
+      style.sources['motorcycle-parking'] = { type: 'geojson', data: `/api/geojson/road/motorcycle_parking${mpQuery}` };
     }
     if (layers.evCharging) {
       style.sources['ev-charging'] = { type: 'geojson', data: '/vancouver_ev_charging.geojson' };
@@ -4260,7 +4346,8 @@ export default function AppMap() {
         source: 'motorcycle-parking',
         minzoom: 15,
         layout: {
-          'text-field': '🏍',
+          'text-field': 'M',
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 17, 12],
           'text-allow-overlap': true,
           'text-ignore-placement': true
@@ -6139,8 +6226,8 @@ export default function AppMap() {
         layout: {
           'text-field': [
             'case',
-            ['==', ['get', 'restriction_type'], 'weight'], '⚖️',
-            '📏'
+            ['==', ['get', 'restriction_type'], 'weight'], 'W',
+            'H'
           ],
           'text-size': ['interpolate', ['linear'], ['zoom'], 10, 9, 14, 11, 16, 14],
           'text-allow-overlap': true,
@@ -7882,7 +7969,7 @@ export default function AppMap() {
                   }`}
                   title={`巴士 ${busNum}${v.destination ? ` 往 ${v.destination}` : ''}`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
+                  <BusFront className="w-2.5 h-2.5 text-white stroke-[2.5]" />
                   {v.bearing !== undefined && v.bearing > 0 && (
                     <div 
                       className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-500 ease-out"
@@ -8034,7 +8121,7 @@ export default function AppMap() {
                 }}
                 title={`${train.line_name} 往 ${(train.destination || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station'} (${train.status})`}
               >
-                <span className="text-[12px] leading-none select-none">🚆</span>
+                <TrainFront className="w-3.5 h-3.5 text-white" />
                 {train.bearing !== undefined && train.bearing > 0 && (
                   <div 
                     className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-500 ease-out"
@@ -8083,7 +8170,13 @@ export default function AppMap() {
                 return (
                   <div className="flex items-start justify-between pb-1.5 mb-2 border-b border-gray-100">
                     <div className="flex items-start gap-1.5 min-w-0 flex-1 pr-2">
-                      <span className="text-base shrink-0 mt-0.5">{isSeaBusStop ? '⛴️' : '🚏'}</span>
+                      <div className="shrink-0 mt-0.5 flex items-center justify-center">
+                        {isSeaBusStop ? (
+                          <Anchor className="w-4 h-4 text-cyan-500" />
+                        ) : (
+                          <GitCommitHorizontal className="w-4 h-4 text-emerald-500" />
+                        )}
+                      </div>
                       <div className="min-w-0 flex-1">
                         <h3 className="font-bold text-sm leading-snug text-gray-900 break-words" title={cleanStopName}>
                           {cleanStopName}
@@ -8644,13 +8737,7 @@ export default function AppMap() {
                     selectedMaritimeVessel.type_group === 'passenger' ? 'bg-[#059669]' :
                     selectedMaritimeVessel.type_group === 'other' ? 'bg-[#475569]' : 'bg-[#1d4ed8]'
                   }`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
-                      <path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/>
-                      <path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/>
-                      <path d="M12 10v4"/>
-                      <path d="M12 2v3"/>
-                    </svg>
+                    <ShipCargo className="w-4 h-4 text-white" />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 text-sm leading-tight flex items-center gap-1.5">
@@ -8778,7 +8865,7 @@ export default function AppMap() {
                   setSelectedAirport(ap);
                 }}
               >
-                <span className="text-sm">{props.icon || '🛫'}</span>
+                <Plane className="w-3.5 h-3.5 text-white" />
               </div>
             </Marker>
           );
@@ -8863,8 +8950,7 @@ export default function AppMap() {
 
               <div className="flex flex-col gap-2 text-xs">
                 {/* 16.2 藍色區塊文字 */}
-                <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-2 text-xs text-sky-950 leading-relaxed font-medium">
-                  <span className="text-base text-sky-600 font-bold shrink-0">🛫</span>
+                <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center text-xs text-sky-950 leading-relaxed font-medium">
                   <span>國際與國內航班起降核心，建議出發前預留充裕時間辦理登機手續並完成安檢。</span>
                 </div>
 
@@ -9005,7 +9091,7 @@ export default function AppMap() {
               {hasOrigCoord && (
                 <Marker longitude={selectedFlight.origin_coord[0]} latitude={selectedFlight.origin_coord[1]} anchor="center">
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-sky-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
-                    <span className="text-xs">🛫</span>
+                    <Plane className="w-3 h-3 text-sky-400" />
                     <span className="font-mono">{origCode}</span>
                     {origCity && <span className="text-[9.5px] text-gray-300 font-normal">({origCity.split(' ')[0]})</span>}
                   </div>
@@ -9014,7 +9100,7 @@ export default function AppMap() {
               {hasDestCoord && (
                 <Marker longitude={selectedFlight.dest_coord[0]} latitude={selectedFlight.dest_coord[1]} anchor="center">
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-amber-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
-                    <span className="text-xs">🛬</span>
+                    <Plane className="w-3 h-3 text-amber-400" />
                     <span className="font-mono">{destCode}</span>
                     {destCity && <span className="text-[9.5px] text-gray-300 font-normal">({destCity.split(' ')[0]})</span>}
                   </div>
@@ -9061,7 +9147,7 @@ export default function AppMap() {
                     ? 'bg-cyan-500 border-white text-white scale-120 shadow-[0_0_20px_rgba(6,182,212,0.8)] ring-4 ring-cyan-400/40' 
                     : 'bg-[#121927]/95 border-cyan-400/80 text-cyan-300 hover:border-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
                 }`}>
-                  <span className="text-base">⛷️</span>
+                  <CableCar className="w-4 h-4" />
                   {/* 小脈衝指示圈 */}
                   <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-white ${
                     resort.is_open ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'
@@ -9109,7 +9195,7 @@ export default function AppMap() {
                     ? 'bg-emerald-500 border-white text-white scale-120 shadow-[0_0_20px_rgba(16,185,129,0.8)] ring-4 ring-emerald-400/40' 
                     : 'bg-[#121927]/95 border-emerald-400/80 text-emerald-300 hover:border-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
                 }`}>
-                  <span className="text-base">🛂</span>
+                  <Fence className="w-4 h-4" />
                 </div>
 
                 {/* 底部名牌 */}
@@ -9162,7 +9248,7 @@ export default function AppMap() {
               className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
             >
               <div className="relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 bg-[#121927]/95 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]">
-                <span className="text-base">🌉</span>
+                <Waypoints className="w-4 h-4 text-emerald-400" />
               </div>
               <div className="mt-1 px-2 py-0.5 rounded-md text-[11px] font-bold shadow-lg border backdrop-blur-md whitespace-nowrap bg-[#141720]/95 text-emerald-200 border-emerald-400">
                 <span>獅門大橋</span>
@@ -9296,7 +9382,7 @@ export default function AppMap() {
                           ? 'bg-sky-100 text-sky-800 border border-sky-200' 
                           : 'bg-amber-100 text-amber-800 border border-amber-200'
                       }`}>
-                        {selectedFlight.is_domestic ? '🇨🇦 國內航班' : '🌐 國際航班'}
+                        {selectedFlight.is_domestic ? '國內航班' : '國際航班'}
                       </span>
                     </div>
                     <p className="text-xs text-gray-600 font-medium truncate max-w-[140px] sm:max-w-[165px]">
@@ -9321,7 +9407,7 @@ export default function AppMap() {
                   {/* Origin */}
                   <div className="flex flex-col min-w-0 max-w-[44%]">
                     <span className="text-[10px] text-gray-500 flex items-center gap-1 font-medium">
-                      <span>🛫</span>
+                      <Plane className="w-3 h-3 text-sky-600" />
                       <span>起飛出發</span>
                     </span>
                     <span className="font-bold text-gray-900 text-sm truncate font-mono">
@@ -9347,7 +9433,7 @@ export default function AppMap() {
                   <div className="flex flex-col min-w-0 max-w-[44%] text-right items-end">
                     <span className="text-[10px] text-gray-500 flex items-center gap-1 font-medium">
                       <span>預計抵達</span>
-                      <span>🛬</span>
+                      <Plane className="w-3 h-3 text-amber-600" />
                     </span>
                     <span className="font-bold text-gray-900 text-sm truncate font-mono">
                       {destCode}
@@ -9442,7 +9528,7 @@ export default function AppMap() {
                   <div className="mb-2 p-2.5 rounded-lg bg-sky-50/70 border border-sky-100 flex flex-col gap-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="text-base">⏱️</span>
+                        <Clock className="w-3.5 h-3.5 text-sky-700" />
                         <div>
                           <span className="text-[10px] text-gray-500 block font-medium">
                             {isDep ? '預計出發倒數' : '預計降落倒數'}
@@ -9460,8 +9546,9 @@ export default function AppMap() {
                     {/* Progress Bar inside Popup */}
                     <div className="pt-1.5 border-t border-sky-200/60">
                       <div className="flex items-center justify-between text-[10.5px] font-mono mb-1">
-                        <span className="font-semibold text-sky-900">
-                          ✈️ 飛行進度 · {phaseLabel}
+                        <span className="font-semibold text-sky-900 flex items-center gap-1">
+                          <Plane className="w-3 h-3 text-sky-600" />
+                          <span>飛行進度 · {phaseLabel}</span>
                         </span>
                         <span className="font-bold text-sky-800 bg-sky-200/70 px-1.5 py-0.2 rounded">
                           {pct}%
@@ -10102,7 +10189,7 @@ export default function AppMap() {
 
                     {props.tips && (
                       <p className="text-[11px] text-gray-600 bg-amber-50/60 p-2 rounded-lg border border-amber-200 leading-relaxed">
-                        💡 {props.tips}
+                        {props.tips}
                       </p>
                     )}
                   </div>
@@ -10515,10 +10602,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 3.1 & 3.3 湛藍色區塊：刪除道路設施行，保留許可證提醒文字 */}
-                    <div className="bg-[#0284C7]/10 p-2.5 rounded-lg border border-[#0284C7]/25 flex items-center gap-2 text-[11px] text-[#0284C7] font-medium leading-snug">
-                      <div className="w-5 h-5 rounded-full bg-[#0284C7]/20 flex items-center justify-center shrink-0">
-                        <span className="text-xs">♿</span>
-                      </div>
+                    <div className="bg-[#0284C7]/10 p-2.5 rounded-lg border border-[#0284C7]/25 flex items-center text-[11px] text-[#0284C7] font-medium leading-snug">
                       <span className="whitespace-nowrap">必須持有有效的 SPARC BC 殘障人士停車許可證。</span>
                     </div>
 
@@ -10814,7 +10898,6 @@ export default function AppMap() {
                     {/* 2. 電動車充電站「離個人位置: 設定個人位置」，右方標記 24 小時開放 */}
                     <div className="bg-[#059669]/10 p-2.5 rounded-lg border border-[#059669]/25 flex items-center justify-between text-[11px]">
                       <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
-                        <MapPin className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                         <span className="text-gray-600 shrink-0">離個人位置:</span>
                         {userDistanceToFuel ? (
                           <span className="text-gray-800 font-medium shrink-0">約 {userDistanceToFuel}</span>
@@ -11241,8 +11324,7 @@ export default function AppMap() {
               {/* Fire Halls Details */}
               {selectedFacility.facility_type === 'fire_halls' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center gap-1.5 text-xs text-rose-950 font-medium leading-snug">
-                    <span className="text-base text-rose-600 font-bold shrink-0">🚒</span>
+                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center text-xs text-rose-950 font-medium leading-snug">
                     <span>緊急求助撥打 911</span>
                   </div>
 
@@ -11268,8 +11350,7 @@ export default function AppMap() {
               {/* Police (警察) Details */}
               {selectedFacility.facility_type === 'police' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center gap-1.5 text-xs text-blue-950 font-medium leading-snug">
-                    <span className="text-base text-blue-600 font-bold shrink-0">🚨</span>
+                  <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center text-xs text-blue-950 font-medium leading-snug">
                     <div className="flex flex-col leading-tight">
                       <span>重大緊急危難撥打 911</span>
                       <span className="mt-0.5 text-[10.5px] text-blue-900">非緊急報案 604-717-3321</span>
@@ -11315,8 +11396,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'disaster_hubs' && (
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
-                    <div className="text-[11px] text-amber-950 font-medium leading-relaxed flex items-center gap-1.5">
-                      <span className="text-base text-amber-600 font-bold shrink-0">⚠️</span>
+                    <div className="text-[11px] text-amber-950 font-medium leading-relaxed">
                       <span>重大災害（如大地震、海嘯）發生後，市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。</span>
                     </div>
                   </div>
@@ -11436,29 +11516,9 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2.5 text-xs">
-                    {/* 3.4 標題下方金黃色區塊 */}
-                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/30 flex items-center justify-between text-[11px]">
-                      <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
-                        <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                        <span className="text-gray-600 shrink-0">離個人位置:</span>
-                        {userDistanceToFuel ? (
-                          <span className="text-gray-800 font-medium shrink-0">約 {userDistanceToFuel}</span>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => setSettingsModalOpen(true)}
-                            className="text-amber-700 hover:text-amber-900 underline font-normal truncate cursor-pointer transition-colors"
-                            title="點擊打開設定個人位置"
-                          >
-                            設定個人位置
-                          </button>
-                        )}
-                      </div>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium border shrink-0 ${
-                        isOpenNow ? 'text-emerald-800 bg-emerald-100/90 border-emerald-300/60' : 'text-amber-800 bg-amber-100/90 border-amber-300/60'
-                      }`}>
-                        {isOpenNow ? '營業中' : '休息中'}
-                      </span>
+                    {/* 3.4 標題下方橙色/金黃色區塊 */}
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/30 flex items-center justify-between text-[11px] text-amber-950 font-medium leading-snug">
+                      <span>理性消費、量入為出，替未來的規劃留有彈性空間。</span>
                     </div>
 
                     {/* 3.6 金黃色區塊下方的灰色區塊資料 */}
@@ -12252,8 +12312,7 @@ export default function AppMap() {
                   return (
                     <div className="flex flex-col gap-2 text-xs">
                       {/* 36.1 紫色區塊 */}
-                      <div className="bg-violet-500/10 p-2.5 rounded-lg border border-violet-500/25 flex items-center gap-1.5 text-[11px] text-violet-950 font-medium leading-relaxed">
-                        <span className="text-base text-violet-600 font-bold shrink-0">🏛️</span>
+                      <div className="bg-violet-500/10 p-2.5 rounded-lg border border-violet-500/25 flex items-center text-[11px] text-violet-950 font-medium leading-relaxed">
                         <span>鄰里共融的休閒與文康樞紐，提供各類康體設施、場地租借及豐富的社區居民活動。</span>
                       </div>
 
@@ -12366,8 +12425,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 深灰色區塊 */}
-                    <div className="bg-slate-500/10 p-2.5 rounded-lg border border-slate-500/25 flex items-center gap-1.5 text-[11px] text-slate-800 font-medium leading-relaxed">
-                      <span className="text-base text-slate-600 font-bold shrink-0">🏛️</span>
+                    <div className="bg-slate-500/10 p-2.5 rounded-lg border border-slate-500/25 flex items-center text-[11px] text-slate-800 font-medium leading-relaxed">
                       <span>典藏歷史文脈與藝術結晶，展現溫哥華多元豐富的文化景觀與人文風采。</span>
                     </div>
 
@@ -12491,14 +12549,13 @@ export default function AppMap() {
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 顏色區塊 */}
                     <div 
-                      className="p-2.5 rounded-lg border flex items-center gap-1.5 text-[11px] font-medium leading-relaxed"
+                      className="p-2.5 rounded-lg border flex items-center text-[11px] font-medium leading-relaxed"
                       style={{ 
                         backgroundColor: `${colorHex}18`, 
                         borderColor: `${colorHex}45`,
                         color: '#431407'
                       }}
                     >
-                      <span className="text-base font-bold shrink-0">🚛</span>
                       <span>溫哥華市政公共垃圾與綠色廚餘定期收集分區排程，落實資源循環減碳。</span>
                     </div>
 
@@ -12644,9 +12701,8 @@ export default function AppMap() {
                         borderColor: `${themeColor}40`,
                         color: isWeight ? '#c2410c' : '#b45309'
                       }} 
-                      className="p-2.5 rounded-lg border flex items-center gap-2 text-xs font-bold leading-snug"
+                      className="p-2.5 rounded-lg border flex items-center text-xs font-bold leading-snug"
                     >
-                      <Truck className="w-4 h-4 shrink-0" />
                       <span>{restrictionText}</span>
                     </div>
 
@@ -12679,8 +12735,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 標題下顏色區塊 */}
-                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center gap-2 text-xs font-bold text-amber-800 leading-snug">
-                      <span className="text-base">🚦</span>
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center text-xs font-bold text-amber-800 leading-snug">
                       <span>{sigTypeZh}</span>
                     </div>
                   </div>
@@ -12700,10 +12755,7 @@ export default function AppMap() {
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 標題下顏色區塊 */}
                     <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center justify-between text-xs font-bold text-rose-800 leading-snug">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-base">🚫</span>
-                        <span>路口轉向管制規範</span>
-                      </div>
+                      <span>路口轉向管制規範</span>
                       <span className="text-[10px] font-mono text-rose-700 bg-rose-100 px-1.5 py-0.5 rounded">
                         {restrictions.length} 項限制
                       </span>
@@ -13151,7 +13203,7 @@ export default function AppMap() {
                       <div className="relative flex items-center justify-center">
                         <div className="w-8 h-8 border-2 border-cyan-500/30 rounded-full"></div>
                         <div className="absolute w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-                        <span className="text-xs">📷</span>
+                        <Camera className="w-3.5 h-3.5 text-cyan-400" />
                       </div>
                       <div className="flex flex-col items-center gap-1 text-center">
                         <span className="text-[11px] font-bold text-cyan-300 tracking-wide">
@@ -13253,12 +13305,11 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 16.1.1 #DC2626 / 16.2.1 #991B1B */}
-                    <div className={`p-2.5 rounded-lg border flex items-center gap-1.5 leading-snug ${
+                    <div className={`p-2.5 rounded-lg border flex items-center leading-snug ${
                       hasSpeed 
                         ? 'bg-[#991B1B]/10 border-[#991B1B]/25 text-[#991B1B]' 
                         : 'bg-[#DC2626]/10 border-[#DC2626]/25 text-[#DC2626]'
                     }`}>
-                      <span className="text-base shrink-0">{hasSpeed ? '🚨' : '🛑'}</span>
                       <span className="text-xs font-bold">
                         {hasSpeed ? '闖紅燈及超速照相取締' : '闖紅燈照相取締'}
                       </span>
@@ -13368,19 +13419,15 @@ export default function AppMap() {
                   <div className="flex flex-col gap-2 text-xs">
                     {/* Facility Type Green Block: 刪除英文 (如: Emergency Hospital/UPCC) */}
                     <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between text-[11px] text-emerald-950 font-medium leading-snug">
-                      <span className="flex items-center gap-1.5">
-                        <span className="text-base text-emerald-600 font-bold">🏥</span>
-                        <span>{cleanTypeLabel(rawTypeLabel)}</span>
-                      </span>
+                      <span>{cleanTypeLabel(rawTypeLabel)}</span>
                     </div>
 
                     {/* Live ER/UPCC Wait Time Card OR Rehab Facility Notice */}
                     {isRehab ? (
                       <div className="p-2.5 rounded-lg border bg-teal-50/90 border-teal-200 text-teal-950 flex flex-col gap-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-xs flex items-center gap-1.5">
-                            <span>🏥</span>
-                            <span>專科復健與長者照護醫院</span>
+                          <span className="font-bold text-xs">
+                            專科復健與長者照護醫院
                           </span>
                           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-700 text-white">
                             非急診機構
@@ -13393,9 +13440,8 @@ export default function AppMap() {
                     ) : (
                       <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${statusBg}`}>
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-xs flex items-center gap-1.5">
-                            <span>⏱️</span>
-                            <span>{isUPCC ? '門診預估等候時間' : '急診預估等候時間'}</span>
+                          <span className="font-bold text-xs">
+                            {isUPCC ? '門診預估等候時間' : '急診預估等候時間'}
                           </span>
                           <div className="flex items-center gap-1.5">
                             {loadingWaitTimes ? (
@@ -13489,8 +13535,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'parks' && (
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 33.1 公園：已移至左上角膠囊，保留公園設施標題 */}
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center gap-1.5 text-xs font-bold text-emerald-950">
-                    <span className="text-base text-emerald-600 font-bold">🌲</span>
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center text-xs font-bold text-emerald-950">
                     <span>公園設施</span>
                   </div>
 
@@ -13544,8 +13589,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'parks_facilities' && (
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 33.2 公園設施：已移至左上角膠囊 */}
-                  <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center gap-1.5 text-xs font-bold text-teal-950">
-                    <span className="text-base text-teal-600 font-bold">🛝</span>
+                  <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center text-xs font-bold text-teal-950">
                     <span>公園設施</span>
                   </div>
 
@@ -13579,8 +13623,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'community_gardens' && (
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 33.3 社區花園：已移至左上角膠囊 */}
-                  <div className="bg-lime-500/10 p-2.5 rounded-lg border border-lime-500/25 flex items-center gap-1.5 text-xs font-bold text-lime-950">
-                    <span className="text-base text-lime-600 font-bold">🌻</span>
+                  <div className="bg-lime-500/10 p-2.5 rounded-lg border border-lime-500/25 flex items-center text-xs font-bold text-lime-950">
                     <span>公園設施</span>
                   </div>
 
@@ -13682,8 +13725,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 30.5 公園設施標題 */}
-                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-1.5 text-xs font-bold text-sky-950">
-                      <span className="text-base text-sky-600 font-bold">💧</span>
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center text-xs font-bold text-sky-950">
                       <span>公園設施</span>
                     </div>
 
@@ -13782,8 +13824,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 31.2 公園設施標題 */}
-                    <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex items-center gap-1.5 text-xs font-bold text-cyan-950">
-                      <span className="text-base text-cyan-600 font-bold">🚻</span>
+                    <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex items-center text-xs font-bold text-cyan-950">
                       <span>公園設施</span>
                     </div>
 
@@ -13842,8 +13883,7 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center gap-1.5 text-[11px] font-medium text-blue-950 leading-relaxed">
-                      <span className="text-sm shrink-0">🚸</span>
+                    <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center text-[11px] font-medium text-blue-950 leading-relaxed">
                       <span>留意校區慢行管制路段，上課日 08:00 - 17:00 法定最高限速 30/40 km/h，請隨時注意學童穿越。</span>
                     </div>
 
@@ -13954,8 +13994,7 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center gap-1.5 text-[11px] font-medium text-amber-950 leading-relaxed">
-                      <span className="text-sm shrink-0">📚</span>
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center text-[11px] font-medium text-amber-950 leading-relaxed">
                       <span>共同維護優質閱覽環境，館內請保持安靜與輕聲細語。</span>
                     </div>
 
@@ -14044,8 +14083,7 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center gap-1.5 text-[11px] font-medium text-orange-950 leading-relaxed">
-                      <span className="text-base text-orange-600 font-bold shrink-0">🍱</span>
+                    <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center text-[11px] font-medium text-orange-950 leading-relaxed">
                       <span>特色街頭餐車與小吃點，營業時間與出攤位置可能受天候與活動影響。</span>
                     </div>
 
@@ -14088,8 +14126,7 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center gap-1.5 text-[11px] font-medium text-rose-950 leading-relaxed">
-                      <span className="text-base text-rose-600 font-bold shrink-0">🏠</span>
+                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center text-[11px] font-medium text-rose-950 leading-relaxed">
                       <span>全天候庇護與包容性收容空間，守護每一位需要協助的市民，提供尊嚴、安全與重返穩定的轉機。</span>
                     </div>
 
@@ -14181,8 +14218,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 22.2 綠色區塊 */}
-                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center gap-1.5 text-[11px] font-medium text-emerald-950 leading-relaxed">
-                      <span className="text-base text-emerald-600 font-bold shrink-0">🥫</span>
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center text-[11px] font-medium text-emerald-950 leading-relaxed">
                       <span>歡迎捐贈未開封常溫食品與善款，攜手守護鄰里溫飽與社區互助網。</span>
                     </div>
 
@@ -14326,8 +14362,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 34.1 綠色區塊標語 */}
-                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center gap-1.5 text-[11px] font-medium leading-relaxed text-emerald-950">
-                      <span className="text-base text-emerald-600 font-bold shrink-0">♻️</span>
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center text-[11px] font-medium leading-relaxed text-emerald-950">
                       <span>分類與減廢是城市守護綠色永續的具體實踐，落實資源循環，讓日常廢棄物轉化為新生資源。</span>
                     </div>
 
@@ -14462,7 +14497,7 @@ export default function AppMap() {
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 紅色區塊：急救重要提示 */}
                     <div className="bg-red-50/90 p-2.5 rounded-lg border border-red-200 text-[11px] text-red-800 leading-relaxed font-medium">
-                      ⚠️ 若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，依照語音指引施救。
+                      若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，依照語音指引施救。
                     </div>
 
                     {/* 紅區塊下方顯示設備編號 */}
@@ -14561,8 +14596,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 32.2 刪除「政府設施」列，改為簡潔標語 */}
-                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-1.5 text-[11px] font-medium leading-relaxed text-sky-950">
-                      <span className="text-base text-sky-600 font-bold shrink-0">📶</span>
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center text-[11px] font-medium leading-relaxed text-sky-950">
                       <span>市政公共免費無線網絡（免註冊登入）</span>
                     </div>
 
@@ -14648,7 +14682,6 @@ export default function AppMap() {
                     {/* 2.1 刪除「道路設施」列；2.2 改為「設定個人位置」，右方貼邊顯示營業狀態 */}
                     <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between text-[11px]">
                       <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
-                        <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0" />
                         <span className="text-gray-600 shrink-0">離個人位置:</span>
                         {userDistanceToFuel ? (
                           <span className="text-gray-800 font-medium shrink-0">約 {userDistanceToFuel}</span>
@@ -14787,9 +14820,8 @@ export default function AppMap() {
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 18.1 & 18.2 主題 #E82127，右側顯示 Tesla 圖示 */}
                     <div className="bg-[#E82127]/10 p-2.5 rounded-lg border border-[#E82127]/25 flex items-center justify-between">
-                      <span className="font-bold text-[#E82127] text-xs flex items-center gap-1.5">
-                        <span className="text-base font-bold">⚡</span>
-                        <span>{subTypeTitle}</span>
+                      <span className="font-bold text-[#E82127] text-xs">
+                        {subTypeTitle}
                       </span>
                       {/* Tesla Logo SVG */}
                       <svg className="w-4 h-4 text-[#E82127] shrink-0" viewBox="0 0 342.4 342.4" fill="currentColor">
@@ -14952,8 +14984,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'snow_removal_routes' && (
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 17.1 主題 #F0F9FF；17.2 刪除「道路設施」列 */}
-                  <div className="bg-[#F0F9FF] p-2.5 rounded-lg border border-sky-200/80 text-[11px] text-sky-950 font-medium flex items-center gap-2 leading-snug">
-                    <span className="text-base text-sky-600 font-bold shrink-0">❄️</span>
+                  <div className="bg-[#F0F9FF] p-2.5 rounded-lg border border-sky-200/80 text-[11px] text-sky-950 font-medium flex items-center leading-snug">
                     <span>
                       {selectedFacility.properties.priority === 1 
                         ? '第 1 優先 · 清掃主要幹道與急救動線' 
@@ -14987,9 +15018,8 @@ export default function AppMap() {
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 4.1 淺藍區塊:左方是公共事業 */}
                   <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
-                      <span className="text-base text-sky-600 font-bold">💧</span>
-                      <span>公共事業</span>
+                    <span className="font-bold text-xs text-sky-950">
+                      公共事業
                     </span>
                   </div>
 
@@ -15043,9 +15073,8 @@ export default function AppMap() {
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 5.1 青綠區塊 (與膠囊標籤相同): 左方是公共事業 */}
                     <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs text-teal-950 flex items-center gap-1.5">
-                        <span className="text-base text-teal-600 font-bold">🌊</span>
-                        <span>公共事業</span>
+                      <span className="font-bold text-xs text-teal-950">
+                        公共事業
                       </span>
                     </div>
 
@@ -15186,8 +15215,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 9.1 刪除「道路設施」列；9.2 主題 #065F46；標語 */}
-                    <div className="bg-[#065F46]/10 p-2.5 rounded-lg border border-[#065F46]/25 flex items-center gap-1.5 text-[11px] text-[#065F46] font-medium leading-snug">
-                      <Bike className="w-3.5 h-3.5 text-[#065F46] shrink-0" />
+                    <div className="bg-[#065F46]/10 p-2.5 rounded-lg border border-[#065F46]/25 flex items-center text-[11px] text-[#065F46] font-medium leading-snug">
                       <span>市政公共單車停放設施，請自備防盜車鎖。</span>
                     </div>
 
@@ -15245,16 +15273,15 @@ export default function AppMap() {
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-indigo-500/10 p-2.5 rounded-lg border border-indigo-500/25 flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-indigo-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-indigo-600 font-bold">📮</span>
-                        <span>郵遞前瞻轉運區 (FSA)</span>
+                      <span className="font-bold text-indigo-950 text-xs">
+                        郵遞前瞻轉運區 (FSA)
                       </span>
                       <span className="text-sm font-black px-2 py-0.5 rounded bg-indigo-600 text-white shrink-0 tracking-wider font-mono">
                         {selectedFacility.properties.fsa}
                       </span>
                     </div>
                     <div className="text-[11px] text-indigo-900 font-medium">
-                      🇨🇦 加拿大郵政前瞻性排序區 (Forward Sortation Area)
+                      加拿大郵政前瞻性排序區 (Forward Sortation Area)
                     </div>
                   </div>
 
@@ -15306,8 +15333,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 26.1 紫色區塊使用藝術標題 */}
-                    <div className="bg-fuchsia-500/10 p-2.5 rounded-lg border border-fuchsia-500/25 flex items-center gap-2">
-                      <span className="text-base text-fuchsia-600 font-bold shrink-0">🎨</span>
+                    <div className="bg-fuchsia-500/10 p-2.5 rounded-lg border border-fuchsia-500/25 flex items-center">
                       <span className="font-bold text-fuchsia-950 text-xs leading-snug">
                         {props.title_of_work || '公共藝術品'}
                       </span>
@@ -15403,8 +15429,7 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center gap-1.5 text-[11px] font-medium leading-relaxed text-amber-950">
-                      <span className="text-base text-amber-600 font-bold shrink-0">🗑️</span>
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center text-[11px] font-medium leading-relaxed text-amber-950">
                       <span>善用公共分類垃圾桶，攜手維護乾淨整潔的街道與市容。</span>
                     </div>
 
@@ -15443,8 +15468,7 @@ export default function AppMap() {
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-teal-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-teal-600 font-bold">📍</span>
+                      <span className="font-bold text-teal-950 text-xs">
                         <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
                       </span>
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-600 text-white shrink-0">
@@ -15452,7 +15476,7 @@ export default function AppMap() {
                       </span>
                     </div>
                     <div className="text-[11px] text-teal-900 font-medium">
-                      🗺️ 溫哥華官方劃定社區分區 (Local Area Boundary)
+                      溫哥華官方劃定社區分區 (Local Area Boundary)
                     </div>
                   </div>
 
@@ -15666,7 +15690,7 @@ export default function AppMap() {
                     {/* Detailed Description */}
                     {props.description && (
                       <div className={`p-2 rounded-lg border text-gray-700 text-[11px] leading-relaxed ${isFreeFlow ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-amber-500/10 border-amber-500/20'}`}>
-                        <span className={`font-semibold mr-1 ${isFreeFlow ? 'text-emerald-700' : 'text-amber-700'}`}>📌 路況說明:</span>
+                        <span className={`font-semibold mr-1 ${isFreeFlow ? 'text-emerald-700' : 'text-amber-700'}`}>路況說明:</span>
                         {props.description}
                       </div>
                     )}
@@ -15902,8 +15926,7 @@ export default function AppMap() {
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-amber-500 font-bold">💡</span>
+                      <span className="font-bold text-amber-950 text-xs">
                         <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
                       </span>
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white shrink-0">
@@ -15911,7 +15934,7 @@ export default function AppMap() {
                       </span>
                     </div>
                     <div className="text-[11px] text-amber-900 font-medium">
-                      💡 溫哥華市政公用照明路燈柱 (Street Lighting Poles)
+                      溫哥華市政公用照明路燈柱 (Street Lighting Poles)
                     </div>
                   </div>
 
@@ -15967,9 +15990,8 @@ export default function AppMap() {
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 6.2 黃區塊:左方是公共事業 */}
                   <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
-                      <span className="text-base text-amber-500 font-bold">⚡</span>
-                      <span>公共事業</span>
+                    <span className="font-bold text-xs text-amber-950">
+                      公共事業
                     </span>
                   </div>
 
@@ -15996,8 +16018,7 @@ export default function AppMap() {
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/30 flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-teal-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-teal-600 font-bold">🏖️</span>
+                      <span className="font-bold text-teal-950 text-xs">
                         <span className="truncate max-w-[180px]">{selectedFacility.name}</span>
                       </span>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 ${
@@ -16009,7 +16030,7 @@ export default function AppMap() {
                       </span>
                     </div>
                     <div className="text-[11px] text-teal-900 font-medium">
-                      💧 大溫哥華海灘與休閒水質監測 (Metro Vancouver Beach Monitoring)
+                      大溫哥華海灘與休閒水質監測 (Metro Vancouver Beach Monitoring)
                     </div>
                   </div>
 
@@ -16111,8 +16132,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 29.2 刪除「政府設施」列 */}
-                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center gap-2 text-[11px] text-rose-950 font-medium leading-snug">
-                      <span className="text-base text-rose-600 font-bold shrink-0">🧯</span>
+                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center text-[11px] text-rose-950 font-medium leading-snug">
                       <span>緊急求助撥打 911</span>
                     </div>
 
@@ -16166,8 +16186,7 @@ export default function AppMap() {
               {/* Zoning Districts (土地規劃分區) Details */}
               {selectedFacility.facility_type === 'zoning_districts' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex items-center gap-1.5 text-[11px] text-purple-950 font-medium leading-snug">
-                    <span className="text-base text-purple-600 font-bold shrink-0">📐</span>
+                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex items-center text-[11px] text-purple-950 font-medium leading-snug">
                     <span>都市土地規劃與使用分區</span>
                   </div>
 
@@ -16202,8 +16221,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'public_trees' && (
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 33.4 公園設施標題 */}
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center gap-1.5 text-xs font-bold text-emerald-950">
-                    <span className="text-base text-emerald-600 font-bold">🌳</span>
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center text-xs font-bold text-emerald-950">
                     <span>公園設施</span>
                   </div>
 
@@ -16259,9 +16277,8 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'ski_resort' && (
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/30 flex items-center justify-between">
-                    <span className="font-bold text-cyan-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-cyan-600 font-bold">⛷️</span>
-                      <span>{selectedFacility.properties.status_zh || '季節休園'}</span>
+                    <span className="font-bold text-cyan-950 text-xs">
+                      {selectedFacility.properties.status_zh || '季節休園'}
                     </span>
                   </div>
 
@@ -16513,10 +16530,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/30 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-emerald-600" />
-                        <span className="font-bold text-emerald-950 text-xs">溫哥華法定門牌地址</span>
-                      </div>
+                      <span className="font-bold text-emerald-950 text-xs">溫哥華法定門牌地址</span>
                       <span className="text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded">
                         City of Vancouver
                       </span>
@@ -16829,43 +16843,43 @@ export default function AppMap() {
               <span>探索分頁建議</span>
               <span className="text-emerald-400 font-mono">
                 {[
-                  { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
-                  { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
-                  { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
-                  { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
-                  { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
-                  { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+                  { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
+                  { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
+                  { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
+                  { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
+                  { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
+                  { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
                   { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
                   { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
                   { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
                   { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
-                  { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
+                  { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
                   { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-                  { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
-                  { id: 'crashes', label: '意外', icon: AlertTriangle, color: 'text-rose-400' },
-                  { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+                  { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
+                  { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
+                  { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },
                   { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
-                  { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
+                  { id: 'cargo', label: '航運', icon: ShipCargo, color: 'text-teal-400' },
                 ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).length} 項
               </span>
             </div>
             <div className="max-h-48 overflow-y-auto flex flex-col gap-0.5">
               {[
-                { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
-                { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
-                { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
-                { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
-                { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
-                { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+                { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
+                { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
+                { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
+                { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
+                { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
+                { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
                 { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
                 { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
                 { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
                 { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
-                { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
+                { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
                 { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-                { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
-                { id: 'crashes', label: '意外', icon: AlertTriangle, color: 'text-rose-400' },
-                { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+                { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
+                { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
+                { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },
               ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).map(t => {
                 const TabIcon = t.icon;
                 return (
@@ -16943,21 +16957,21 @@ export default function AppMap() {
           )}
 
           {[
-            { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
-            { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
-            { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
-            { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
-            { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
-            { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+            { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
+            { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
+            { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
+            { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
+            { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
+            { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
             { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
             { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
             { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
             { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
-            { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
+            { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
             { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-            { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
-            { id: 'crashes', label: '意外', icon: AlertTriangle, color: 'text-rose-400' },
-            { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+            { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
+            { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
+            { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },
           ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).map((tab) => {
             const isActive = isExploreOpen && exploreTab === tab.id;
             const Icon = tab.icon;
@@ -17156,9 +17170,7 @@ export default function AppMap() {
                   {selectedBus.is_seabus ? (
                     <Ship className="w-4 h-4 text-sky-400" />
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
-                    </svg>
+                    <BusFront className="w-4 h-4 text-emerald-400" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -17328,7 +17340,7 @@ export default function AppMap() {
                   className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 shadow-sm text-white"
                   style={{ backgroundColor: `${selectedTrain.color}33`, borderColor: `${selectedTrain.color}88`, borderWidth: '1px' }}
                 >
-                  <Train className="w-4 h-4" style={{ color: selectedTrain.color }} />
+                  <TrainFront className="w-4 h-4" style={{ color: selectedTrain.color }} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
@@ -17481,28 +17493,35 @@ export default function AppMap() {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">時段費率計算:</span>
                   <span className="text-[10.5px] text-blue-400 font-medium">
-                    {(parkingMeterFilter.timePeriod || 'auto') === 'day' ? '🌞 日間標準' :
-                     parkingMeterFilter.timePeriod === 'night' ? '🌙 夜間標準' : '⏰ 依當前時間自動'}
+                    {(parkingMeterFilter.timePeriod || 'auto') === 'day' ? (
+                      <span className="inline-flex items-center gap-1"><Sun className="w-3 h-3 text-amber-400" /> 日間標準</span>
+                    ) : parkingMeterFilter.timePeriod === 'night' ? (
+                      <span className="inline-flex items-center gap-1"><Moon className="w-3 h-3 text-indigo-400" /> 夜間標準</span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1"><RotateCwClock className="w-3 h-3 text-cyan-400" /> 依當前時間自動</span>
+                    )}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-1 mt-0.5">
                   {[
-                    { id: 'auto', label: '⏰ 自動' },
-                    { id: 'day', label: '🌞 日間' },
-                    { id: 'night', label: '🌙 夜間' }
+                    { id: 'auto', label: '自動', icon: RotateCwClock },
+                    { id: 'day', label: '日間', icon: Sun },
+                    { id: 'night', label: '夜間', icon: Moon }
                   ].map((p) => {
                     const isSelected = (parkingMeterFilter.timePeriod || 'auto') === p.id;
+                    const IconComp = p.icon;
                     return (
                       <button
                         key={p.id}
                         onClick={() => setParkingMeterFilter({ timePeriod: p.id as 'auto' | 'day' | 'night' })}
-                        className={`py-1 text-[11px] rounded font-medium transition-all ${
+                        className={`py-1 text-[11px] rounded font-medium transition-all flex items-center justify-center gap-1 ${
                           isSelected
                             ? 'bg-blue-600 text-white font-bold shadow-sm'
                             : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
                         }`}
                       >
-                        {p.label}
+                        <IconComp className="w-3 h-3" />
+                        <span>{p.label}</span>
                       </button>
                     );
                   })}
@@ -17615,28 +17634,35 @@ export default function AppMap() {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">時段費率計算:</span>
                   <span className="text-[10.5px] text-blue-400 font-medium">
-                    {(motorcycleParkingFilter.timePeriod || 'auto') === 'day' ? '🌞 日間標準' :
-                     motorcycleParkingFilter.timePeriod === 'night' ? '🌙 夜間標準' : '⏰ 依當前時間自動'}
+                    {(motorcycleParkingFilter.timePeriod || 'auto') === 'day' ? (
+                      <span className="inline-flex items-center gap-1"><Sun className="w-3 h-3 text-amber-400" /> 日間標準</span>
+                    ) : motorcycleParkingFilter.timePeriod === 'night' ? (
+                      <span className="inline-flex items-center gap-1"><Moon className="w-3 h-3 text-indigo-400" /> 夜間標準</span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1"><RotateCwClock className="w-3 h-3 text-cyan-400" /> 依當前時間自動</span>
+                    )}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-1 mt-0.5">
                   {[
-                    { id: 'auto', label: '⏰ 自動' },
-                    { id: 'day', label: '🌞 日間' },
-                    { id: 'night', label: '🌙 夜間' }
+                    { id: 'auto', label: '自動', icon: RotateCwClock },
+                    { id: 'day', label: '日間', icon: Sun },
+                    { id: 'night', label: '夜間', icon: Moon }
                   ].map((p) => {
                     const isSelected = (motorcycleParkingFilter.timePeriod || 'auto') === p.id;
+                    const IconComp = p.icon;
                     return (
                       <button
                         key={p.id}
                         onClick={() => setMotorcycleParkingFilter({ timePeriod: p.id as 'auto' | 'day' | 'night' })}
-                        className={`py-1 text-[11px] rounded font-medium transition-all ${
+                        className={`py-1 text-[11px] rounded font-medium transition-all flex items-center justify-center gap-1 ${
                           isSelected
                             ? 'bg-blue-600 text-white font-bold shadow-sm'
                             : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
                         }`}
                       >
-                        {p.label}
+                        <IconComp className="w-3 h-3" />
+                        <span>{p.label}</span>
                       </button>
                     );
                   })}
@@ -18242,8 +18268,8 @@ export default function AppMap() {
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
-              <span className="p-1 rounded bg-rose-500/20 text-rose-400">
-                <span className="text-xs">🚨</span>
+              <span className="p-1 rounded bg-rose-500/20 text-rose-400 flex items-center justify-center">
+                <Siren className="w-3.5 h-3.5 text-rose-500" />
               </span>
               <div className="flex flex-col">
                 <span className="font-bold text-xs text-white">安全相機篩選</span>
@@ -18374,8 +18400,8 @@ export default function AppMap() {
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-[#d9261c] text-white flex items-center justify-center font-bold text-[10px] shadow-sm">
-                P
+              <span className="p-1 rounded bg-[#d9261c]/20 text-[#d9261c] flex items-center justify-center">
+                <SlidersHorizontal className="w-3.5 h-3.5 text-[#d9261c]" />
               </span>
               <div className="flex flex-col">
                 <span className="font-bold text-xs text-white">私人停車場篩選</span>
@@ -18886,7 +18912,7 @@ export default function AppMap() {
           <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
             <div className="flex items-start gap-2.5 min-w-0 flex-1">
               <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0 mt-0.5 shadow-sm">
-                <span className="text-base select-none">🚉</span>
+                <TrainFront className="w-4 h-4 text-sky-400" />
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
@@ -19226,7 +19252,7 @@ export default function AppMap() {
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2 flex flex-col gap-1.5 shadow-sm">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-white text-xs flex items-center gap-1.5">
-                    <span>🗺️</span> 收費分區地圖
+                    <MapIcon className="w-3.5 h-3.5 text-blue-400" /> 收費分區地圖
                   </span>
                 </div>
                 
@@ -19247,7 +19273,7 @@ export default function AppMap() {
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2 shadow-sm">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-white text-xs flex items-center gap-1.5">
-                    <span>💳</span> 單程票價 (90 分鐘內有效)
+                    <CreditCard className="w-3.5 h-3.5 text-emerald-400" /> 單程票價 (90 分鐘內有效)
                   </span>
                   <span className="text-[10px] text-gray-400">現金 / 儲值卡</span>
                 </div>
@@ -19289,7 +19315,7 @@ export default function AppMap() {
               {/* 月票與日票 */}
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2 shadow-sm">
                 <span className="font-bold text-white text-xs flex items-center gap-1.5">
-                  <span>🎫</span> 月票與日票
+                  <Ticket className="w-3.5 h-3.5 text-amber-400" /> 月票與日票
                 </span>
 
                 <div className="grid grid-cols-2 gap-2 text-[11px]">
@@ -19386,7 +19412,7 @@ export default function AppMap() {
                 <div className="flex flex-col gap-1.5 text-[11px]">
                   <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
                     <span className="text-gray-400 flex items-center gap-1.5">
-                      <span>♿</span> 無障礙設施
+                      <Accessibility className="w-3.5 h-3.5 text-sky-400" /> 無障礙設施
                     </span>
                     <span className="text-emerald-400 font-medium">全線配置升降電梯 / 盲道</span>
                   </div>
@@ -19411,7 +19437,7 @@ export default function AppMap() {
 
                   <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
                     <span className="text-gray-400 flex items-center gap-1.5">
-                      <span>💳</span> 票價與支付方式
+                      <CreditCard className="w-3.5 h-3.5 text-blue-400" /> 票價與支付方式
                     </span>
                     <span className="text-blue-300">Compass / 信用卡感應</span>
                   </div>
@@ -19445,7 +19471,7 @@ export default function AppMap() {
             <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
               <div className="flex items-start gap-2.5 min-w-0 flex-1">
                 <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5 shadow-sm">
-                  <Ship className="w-4 h-4 text-cyan-400" />
+                  <Anchor className="w-4 h-4 text-cyan-400" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
@@ -19670,7 +19696,7 @@ export default function AppMap() {
               </div>
             </div>
 
-            {/* 右側按鈕組：第一行坐標、導航、關閉；關閉按鈕下方為碼頭攝影機、收費表及官方網站連結 */}
+            {/* 右側按鈕組：第一行坐標、導航、關閉；關閉按鈕下方為收費表及官方網站連結 */}
             <div className="flex flex-col items-end gap-1.5 shrink-0">
               <div className="flex items-center gap-1">
                 <button
@@ -19701,28 +19727,13 @@ export default function AppMap() {
                 </button>
               </div>
 
-              {/* 關閉按鈕下方：碼頭攝影機放到收費表左方，收費表 (錢 SVG) 放在連結圖示左方 */}
+              {/* 關閉按鈕下方：收費表 (錢 SVG) 放在連結圖示左方 */}
               <div className="flex items-center gap-1.5 pr-0.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const code = selectedTerminal.properties.code;
-                    const validCode = FERRY_TERMINAL_WEBCAMS[code] ? code : 'HSB';
-                    setTerminalWebcamTerminalCode(validCode);
-                    setTerminalWebcamRefreshKey(Date.now());
-                    setTerminalWebcamSecondsAgo(0);
-                    setIsTerminalWebcamModalOpen(true);
-                  }}
-                  className="p-1 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 transition-colors flex items-center justify-center border border-sky-500/30 shadow-2xs cursor-pointer"
-                  title="碼頭現場路況攝影機"
-                >
-                  <Camera className="w-3.5 h-3.5 text-sky-400" />
-                </button>
                 <a
                   href="https://www.bcferries.com/web_image/h90/h4b/9089486028830.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-1 rounded-md text-amber-400 hover:text-amber-300 hover:bg-amber-500/20 transition-colors flex items-center justify-center border border-amber-500/30 shadow-2xs"
+                  className="p-1 rounded-md text-amber-400 hover:text-amber-300 hover:bg-amber-500/20 transition-colors flex items-center justify-center border border-amber-500/30 shadow-2xs cursor-pointer"
                   title="官方收費表 (Fares PDF)"
                 >
                   <CircleDollarSign className="w-3.5 h-3.5 text-amber-400" />
@@ -19731,7 +19742,7 @@ export default function AppMap() {
                   href="https://www.bcferries.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-1 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 transition-colors flex items-center justify-center border border-sky-500/30 shadow-2xs"
+                  className="p-1 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 transition-colors flex items-center justify-center border border-sky-500/30 shadow-2xs cursor-pointer"
                   title="前往 BC Ferries 官方網頁"
                 >
                   <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
@@ -19740,169 +19751,255 @@ export default function AppMap() {
             </div>
           </div>
 
-          {/* 導覽分頁 (Tabs: 用分頁顯示抵達和出發的船班次) */}
+          {/* 一級導覽分頁 (Tabs: 班次 vs 碼頭攝影機) */}
           <div className="flex border-b border-[#262b38] mb-2.5 shrink-0 text-xs">
             <button
-              onClick={() => setTerminalSailingDirection('departures')}
+              onClick={() => setTerminalDetailTab('schedule')}
               className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer ${
-                terminalSailingDirection === 'departures'
+                terminalDetailTab === 'schedule'
                   ? 'border-sky-400 text-sky-400 font-bold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
-              出發班次 {terminalDepartures.length > 0 && `(${terminalDepartures.filter(s => s.status !== 'past').length})`}
+              班次
             </button>
             <button
-              onClick={() => setTerminalSailingDirection('arrivals')}
+              onClick={() => setTerminalDetailTab('webcams')}
               className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer ${
-                terminalSailingDirection === 'arrivals'
+                terminalDetailTab === 'webcams'
                   ? 'border-sky-400 text-sky-400 font-bold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
-              抵達班次 {terminalArrivals.length > 0 && `(${terminalArrivals.filter(s => s.status !== 'past').length})`}
+              碼頭攝影機
             </button>
           </div>
 
           {/* 分頁內容 */}
           <div className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2a2f3d] [&::-webkit-scrollbar-thumb]:rounded-full">
-            {(() => {
-              const currentList = terminalSailingDirection === 'departures' 
-                ? (terminalDepartures.length > 0 ? terminalDepartures : terminalSchedule)
-                : (terminalArrivals.length > 0 ? terminalArrivals : []);
-              const activeSailings = currentList.filter(s => s.status !== 'past');
-              const pastSailings = currentList.filter(s => s.status === 'past');
-
-              const renderSailingCard = (sailing: any, i: number, isDimmed = false) => {
-                const matchVessel = ferryVehicles.find(v => 
-                  (sailing.vessel_name && v.vessel_name && (
-                    v.vessel_name.toLowerCase().includes(sailing.vessel_name.toLowerCase()) ||
-                    sailing.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase())
-                  ))
-                );
-                const isSailing = sailing.status === 'current' || (Boolean(matchVessel) && sailing.status !== 'past');
-
-                return (
-                  <div 
-                    key={i} 
-                    onClick={() => {
-                      if (isSailing && matchVessel) {
-                        setSelectedFerry(matchVessel);
-                        mapRef.current?.flyTo({
-                          center: [matchVessel.lon, matchVessel.lat],
-                          zoom: 13,
-                          duration: 1200
-                        });
-                      }
-                    }}
-                    className={`flex items-center justify-between p-2 rounded-lg border transition-all ${
-                      isSailing && matchVessel 
-                        ? 'hover:border-sky-400 hover:bg-[#202738] cursor-pointer' 
-                        : 'cursor-default select-none'
-                    } ${
-                      isDimmed 
-                        ? 'bg-[#181c26]/60 border-[#242936] text-gray-400 opacity-75' 
-                        : 'bg-[#1e2330] border-[#2c3345] shadow-xs'
+            {terminalDetailTab === 'schedule' ? (
+              <div className="flex flex-col gap-2">
+                {/* 班次子分頁：出發班次 vs 抵達班次 */}
+                <div className="flex items-center gap-1.5 p-0.5 bg-[#141722] rounded-lg border border-[#222838] mb-1">
+                  <button
+                    type="button"
+                    onClick={() => setTerminalSailingDirection('departures')}
+                    className={`flex-1 py-1 text-center text-[11px] rounded-md transition-all font-medium cursor-pointer ${
+                      terminalSailingDirection === 'departures'
+                        ? 'bg-sky-600 text-white shadow-xs font-semibold'
+                        : 'text-gray-400 hover:text-gray-200'
                     }`}
                   >
-                    {/* 左方：時間與渡輪名稱/目的地 (緊湊清單式) */}
-                    <div className="flex flex-col gap-0.5 min-w-0 flex-1 pr-2">
-                      <div className="flex items-center gap-2">
-                        <span className={`font-bold text-xs tracking-tight ${isDimmed ? 'text-gray-400' : 'text-sky-300 font-mono'}`}>
-                          {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
-                        </span>
-                        {matchVessel && (
-                          <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-400 font-semibold bg-emerald-950/60 px-1 rounded border border-emerald-500/30">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            在途
+                    出發班次 {terminalDepartures.length > 0 && `(${terminalDepartures.filter(s => s.status !== 'past').length})`}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTerminalSailingDirection('arrivals')}
+                    className={`flex-1 py-1 text-center text-[11px] rounded-md transition-all font-medium cursor-pointer ${
+                      terminalSailingDirection === 'arrivals'
+                        ? 'bg-sky-600 text-white shadow-xs font-semibold'
+                        : 'text-gray-400 hover:text-gray-200'
+                    }`}
+                  >
+                    抵達班次 {terminalArrivals.length > 0 && `(${terminalArrivals.filter(s => s.status !== 'past').length})`}
+                  </button>
+                </div>
+
+                {(() => {
+                  const currentList = terminalSailingDirection === 'departures' 
+                    ? (terminalDepartures.length > 0 ? terminalDepartures : terminalSchedule)
+                    : (terminalArrivals.length > 0 ? terminalArrivals : []);
+                  const activeSailings = currentList.filter(s => s.status !== 'past');
+                  const pastSailings = currentList.filter(s => s.status === 'past');
+
+                  const renderSailingCard = (sailing: any, i: number, isDimmed = false) => {
+                    const matchVessel = ferryVehicles.find(v => 
+                      (sailing.vessel_name && v.vessel_name && (
+                        v.vessel_name.toLowerCase().includes(sailing.vessel_name.toLowerCase()) ||
+                        sailing.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase())
+                      ))
+                    );
+                    const isSailing = sailing.status === 'current' || (Boolean(matchVessel) && sailing.status !== 'past');
+
+                    return (
+                      <div 
+                        key={i} 
+                        onClick={() => {
+                          if (isSailing && matchVessel) {
+                            setSelectedFerry(matchVessel);
+                            mapRef.current?.flyTo({
+                              center: [matchVessel.lon, matchVessel.lat],
+                              zoom: 13,
+                              duration: 1200
+                            });
+                          }
+                        }}
+                        className={`flex items-center justify-between p-2 rounded-lg border transition-all ${
+                          isSailing && matchVessel 
+                            ? 'hover:border-sky-400 hover:bg-[#202738] cursor-pointer' 
+                            : 'cursor-default select-none'
+                        } ${
+                          isDimmed 
+                            ? 'bg-[#181c26]/60 border-[#242936] text-gray-400 opacity-75' 
+                            : 'bg-[#1e2330] border-[#2c3345] shadow-xs'
+                        }`}
+                      >
+                        {/* 左方：時間與渡輪名稱/目的地 (緊湊清單式) */}
+                        <div className="flex flex-col gap-0.5 min-w-0 flex-1 pr-2">
+                          <div className="flex items-center gap-2">
+                            <span className={`font-bold text-xs tracking-tight ${isDimmed ? 'text-gray-400' : 'text-sky-300 font-mono'}`}>
+                              {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
+                            </span>
+                            {matchVessel && (
+                              <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-400 font-semibold bg-emerald-950/60 px-1 rounded border border-emerald-500/30">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                在途
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs truncate">
+                            <span className="font-semibold text-gray-200 truncate">
+                              {sailing.vessel_name || 'BC Ferries'}
+                            </span>
+                            {terminalSailingDirection === 'departures' ? (
+                              <>
+                                <span className="text-gray-500 text-[10px]">往</span>
+                                <span className="text-sky-400 text-[11px] truncate font-medium">
+                                  {FERRY_TERMINAL_NAMES_EN[sailing.destination] || sailing.destination}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="text-gray-500 text-[10px]">來自</span>
+                                <span className="text-sky-400 text-[11px] truncate font-medium">
+                                  {FERRY_TERMINAL_NAMES_EN[sailing.origin || sailing.destination] || sailing.origin || sailing.destination}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* 右方：狀態與載車率徽章 */}
+                        <div className="flex flex-col items-end gap-1 shrink-0">
+                          <span className={`text-[9.5px] font-semibold px-2 py-0.5 rounded-full ${
+                            sailing.status === 'past' ? 'bg-gray-800 text-gray-400 border border-gray-700' : 
+                            sailing.status === 'current' ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-bold animate-pulse' : 
+                            'bg-sky-950/80 text-sky-300 border border-sky-500/40'
+                          }`}>
+                            {sailing.status === 'past' ? '已抵達' : sailing.status === 'current' ? '航行中' : '即將開航'}
                           </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs truncate">
-                        <span className="font-semibold text-gray-200 truncate">
-                          {sailing.vessel_name || 'BC Ferries'}
-                        </span>
-                        {terminalSailingDirection === 'departures' ? (
-                          <>
-                            <span className="text-gray-500 text-[10px]">往</span>
-                            <span className="text-sky-400 text-[11px] truncate font-medium">
-                              {FERRY_TERMINAL_NAMES_EN[sailing.destination] || sailing.destination}
+                          {sailing.fill > 0 && (
+                            <span className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${
+                              sailing.fill >= 80 ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30' : 'bg-sky-950/60 text-sky-300 border border-sky-500/30'
+                            }`}>
+                              載車 {sailing.fill}%
                             </span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="text-gray-500 text-[10px]">來自</span>
-                            <span className="text-sky-400 text-[11px] truncate font-medium">
-                              {FERRY_TERMINAL_NAMES_EN[sailing.origin || sailing.destination] || sailing.origin || sailing.destination}
-                            </span>
-                          </>
-                        )}
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    );
+                  };
 
-                    {/* 右方：狀態與載車率徽章 */}
-                    <div className="flex flex-col items-end gap-1 shrink-0">
-                      <span className={`text-[9.5px] font-semibold px-2 py-0.5 rounded-full ${
-                        sailing.status === 'past' ? 'bg-gray-800 text-gray-400 border border-gray-700' : 
-                        sailing.status === 'current' ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-bold animate-pulse' : 
-                        'bg-sky-950/80 text-sky-300 border border-sky-500/40'
-                      }`}>
-                        {sailing.status === 'past' ? '已抵達' : sailing.status === 'current' ? '航行中' : '即將開航'}
-                      </span>
-                      {sailing.fill > 0 && (
-                        <span className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${
-                          sailing.fill >= 80 ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30' : 'bg-sky-950/60 text-sky-300 border border-sky-500/30'
-                        }`}>
-                          載車 {sailing.fill}%
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              };
-
-              return (
-                <div className="flex flex-col gap-2">
-                  {loadingSchedule ? (
-                    <div className="flex flex-col items-center justify-center py-8 text-gray-400 text-xs gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-sky-400 border-t-transparent"></div>
-                      載入{terminalSailingDirection === 'departures' ? '出發' : '抵達'}渡輪班次中...
-                    </div>
-                  ) : currentList.length === 0 ? (
-                    <div className="text-xs text-gray-400 py-6 text-center bg-[#1c202d] rounded-lg border border-[#262b38]">
-                      今日目前沒有{terminalSailingDirection === 'departures' ? '開航' : '抵達'}的班次。
-                    </div>
-                  ) : (
-                    <>
-                      {activeSailings.length === 0 ? (
-                        <div className="text-xs text-gray-400 py-4 text-center bg-[#1c202d] rounded-lg border border-[#262b38]">
-                          目前無即將{terminalSailingDirection === 'departures' ? '開航' : '抵達'}的班次。
+                  return (
+                    <div className="flex flex-col gap-2">
+                      {loadingSchedule ? (
+                        <div className="flex flex-col items-center justify-center py-8 text-gray-400 text-xs gap-2">
+                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-sky-400 border-t-transparent"></div>
+                          載入{terminalSailingDirection === 'departures' ? '出發' : '抵達'}渡輪班次中...
+                        </div>
+                      ) : currentList.length === 0 ? (
+                        <div className="text-xs text-gray-400 py-6 text-center bg-[#1c202d] rounded-lg border border-[#262b38]">
+                          今日目前沒有{terminalSailingDirection === 'departures' ? '開航' : '抵達'}的班次。
                         </div>
                       ) : (
-                        activeSailings.map((sailing, i) => renderSailingCard(sailing, i))
-                      )}
+                        <>
+                          {activeSailings.length === 0 ? (
+                            <div className="text-xs text-gray-400 py-4 text-center bg-[#1c202d] rounded-lg border border-[#262b38]">
+                              目前無即將{terminalSailingDirection === 'departures' ? '開航' : '抵達'}的班次。
+                            </div>
+                          ) : (
+                            activeSailings.map((sailing, i) => renderSailingCard(sailing, i))
+                          )}
 
-                      {pastSailings.length > 0 && (
-                        <details className="group mt-1 border-t border-[#262b38] pt-2">
-                          <summary className="flex justify-between items-center text-[11px] text-gray-400 hover:text-gray-200 cursor-pointer list-none select-none py-1 px-1 rounded hover:bg-[#1f2432]">
-                            <span className="font-medium flex items-center gap-1.5">
-                              <span>已抵達班次</span>
-                              <span className="px-1.5 py-0.2 rounded-full bg-gray-800 text-gray-300 text-[9.5px] font-mono">
-                                {pastSailings.length}
-                              </span>
-                            </span>
-                            <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform" />
-                          </summary>
-                          <div className="flex flex-col gap-1.5 mt-2">
-                            {pastSailings.map((sailing, i) => renderSailingCard(sailing, i + 100, true))}
-                          </div>
-                        </details>
+                          {pastSailings.length > 0 && (
+                            <details className="group mt-1 border-t border-[#262b38] pt-2">
+                              <summary className="flex justify-between items-center text-[11px] text-gray-400 hover:text-gray-200 cursor-pointer list-none select-none py-1 px-1 rounded hover:bg-[#1f2432]">
+                                <span className="font-medium flex items-center gap-1.5">
+                                  <span>已抵達班次</span>
+                                  <span className="px-1.5 py-0.2 rounded-full bg-gray-800 text-gray-300 text-[9.5px] font-mono">
+                                    {pastSailings.length}
+                                  </span>
+                                </span>
+                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform" />
+                              </summary>
+                              <div className="flex flex-col gap-1.5 mt-2">
+                                {pastSailings.map((sailing, i) => renderSailingCard(sailing, i + 100, true))}
+                              </div>
+                            </details>
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
+                    </div>
+                  );
+                })()}
+              </div>
+            ) : (
+              /* 碼頭攝影機分頁 */
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center justify-between text-[11px] text-gray-400 px-0.5">
+                  <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    每 1 分鐘自動更新
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTerminalWebcamRefreshKey(Date.now());
+                      setTerminalWebcamSecondsAgo(0);
+                    }}
+                    className="p-1 px-2 rounded bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 border border-sky-500/30 transition-colors flex items-center gap-1 text-[10.5px] cursor-pointer"
+                  >
+                    <RotateCw className="w-3 h-3" />
+                    <span>立即更新</span>
+                  </button>
                 </div>
-              );
-            })()}
+
+                {((FERRY_TERMINAL_WEBCAMS[selectedTerminal.properties.code] || [])).length === 0 ? (
+                  <div className="text-xs text-gray-400 py-6 text-center bg-[#1c202d] rounded-lg border border-[#262b38]">
+                    此碼頭暫無路況攝影機畫面。
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {(FERRY_TERMINAL_WEBCAMS[selectedTerminal.properties.code] || []).map((cam) => (
+                      <div key={cam.id} className="bg-[#1b202e] rounded-xl border border-gray-800 overflow-hidden shadow-md flex flex-col">
+                        <div className="px-2.5 py-1.5 bg-[#212738] border-b border-gray-800/80 flex items-center justify-between text-xs">
+                          <span className="font-semibold text-gray-200 text-[11px] truncate flex items-center gap-1.5" title={cam.name}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                            {cam.name}
+                          </span>
+                          <span className="text-[9.5px] text-gray-400 font-mono shrink-0">
+                            {cam.id}
+                          </span>
+                        </div>
+                        <FerryWebcamImage
+                          cam={cam}
+                          refreshKey={terminalWebcamRefreshKey}
+                          onEnlarge={(imageUrl) => {
+                            setEnlargedCameraImage({
+                              src: imageUrl,
+                              directSrc: cam.url,
+                              alt: cam.name,
+                              title: `${FERRY_TERMINAL_SHORT_NAMES_EN[selectedTerminal.properties.code] || selectedTerminal.properties.code} Terminal Webcam`,
+                              direction: cam.name
+                            });
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -19914,7 +20011,7 @@ export default function AppMap() {
           <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
             <div className="flex items-start gap-2.5 min-w-0 flex-1">
               <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
-                <span className="text-base leading-none">🚏</span>
+                <Repeat className="w-4 h-4 text-emerald-400" />
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
@@ -19996,7 +20093,7 @@ export default function AppMap() {
                         id: `route_${rt}`,
                         title: `巴士 ${rt}`,
                         category: 'bus_route',
-                        icon: '🚌',
+                        icon: 'bus_route',
                         lon: selectedBusExchange.lon,
                         lat: selectedBusExchange.lat,
                         meta: { route_id: rt }
@@ -20105,7 +20202,7 @@ export default function AppMap() {
             <div className="relative flex items-center justify-center w-14 h-14">
               <div className="absolute inset-0 rounded-full border-2 border-emerald-500/20"></div>
               <div className="absolute inset-0 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin"></div>
-              <span className="text-2xl">🌐</span>
+              <Globe className="w-6 h-6 text-emerald-400" />
             </div>
 
             <div className="flex flex-col items-center gap-1 text-center">
@@ -20396,7 +20493,7 @@ export default function AppMap() {
             {/* Modal Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
-                <span className="text-base text-cyan-400">📷</span>
+                <Camera className="w-4 h-4 text-cyan-400" />
                 <div className="flex flex-col min-w-0">
                   <h4 className="text-sm font-bold text-gray-100 truncate">
                     {enlargedCameraImage.title}
@@ -20749,14 +20846,13 @@ export default function AppMap() {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={camUrlWithT}
+                          src={`/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${terminalWebcamRefreshKey}`}
                           alt={cam.name}
                           referrerPolicy="no-referrer"
                           onError={(e) => {
                             const target = e.currentTarget;
-                            const proxyUrl = `${getApiUrl()}/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${terminalWebcamRefreshKey}`;
-                            if (target.src !== proxyUrl) {
-                              target.src = proxyUrl;
+                            if (target.src !== camUrlWithT) {
+                              target.src = camUrlWithT;
                             }
                           }}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"

@@ -1,7 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, MoreHorizontal, Compass, Filter, Check, Bus, Milestone, Store, Trees, Landmark, Droplets, Clock, Sparkles, Navigation } from 'lucide-react';
+import { 
+  Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, MoreHorizontal, Compass, Filter, Check, 
+  Milestone, Store, Trees, Landmark, Droplets, Clock, Sparkles, Navigation,
+  CircleDollarSign, Toilet, Fuel, EvCharger, Hospital, TrainFront, ParkingMeter, Package, Waves, Fence, Repeat, BusFront,
+  Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
+  UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
+  Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
+  Camera, Megaphone, Ban, Accessibility, Gauge
+} from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
@@ -90,16 +98,16 @@ function HighlightMatch({ text, query, subtle = false }: { text: string; query: 
 }
 
 const QUICK_SEARCH_SHORTCUTS = [
-  { label: '銀行', query: '銀行', icon: '🏦' },
-  { label: '洗手間', query: '公共洗手間', icon: '🚻' },
-  { label: '油站', query: '油站', icon: '⛽' },
-  { label: '充電站', query: '充電站', icon: '⚡' },
-  { label: '醫院', query: '醫院', icon: '🏥' },
-  { label: '天車站', query: '天車站', icon: '🚇' },
-  { label: '停車場', query: '停車場', icon: '🅿️' },
-  { label: '郵寄快遞', query: '郵寄', icon: '📮' },
-  { label: '潮汐站', query: '潮汐', icon: '🌊' },
-  { label: '邊境關卡', query: '邊境', icon: '🛂' },
+  { label: '銀行', query: '銀行', icon: CircleDollarSign },
+  { label: '洗手間', query: '公共洗手間', icon: Toilet },
+  { label: '油站', query: '油站', icon: Fuel },
+  { label: '充電站', query: '充電站', icon: EvCharger },
+  { label: '醫院', query: '醫院', icon: Hospital },
+  { label: '天車站', query: '天車站', icon: TrainFront },
+  { label: '停車場', query: '停車場', icon: ParkingMeter },
+  { label: '郵寄快遞', query: '郵寄', icon: Package },
+  { label: '潮汐站', query: '潮汐', icon: Waves },
+  { label: '邊境關卡', query: '邊境', icon: Fence },
 ];
 
 type QuickGroupTab = 'all' | 'poi' | 'transit' | 'road' | 'area';
@@ -117,6 +125,145 @@ function inferUiGroup(item: SearchTarget): Exclude<QuickGroupTab, 'all'> {
     return 'road';
   }
   return 'poi';
+}
+
+function renderSearchItemIcon(item: SearchTarget) {
+  const c = item.category;
+  const cls = "w-4 h-4";
+  switch (c) {
+    case 'bus':
+    case 'bus_vehicle':
+      return <BusFront className={`${cls} text-emerald-400`} />;
+    case 'bus_route':
+      return <Route className={`${cls} text-emerald-400`} />;
+    case 'bus_stop':
+      return <GitCommitHorizontal className={`${cls} text-emerald-400`} />;
+    case 'bus_exchange':
+      return <Repeat className={`${cls} text-emerald-400`} />;
+    case 'skytrain':
+    case 'skytrain_station':
+    case 'skytrain_train':
+      return <TrainFront className={`${cls} text-sky-400`} />;
+    case 'seabus':
+    case 'ferry_vehicle':
+      return <Ship className={`${cls} text-sky-400`} />;
+    case 'ferry_terminal':
+    case 'marine_terminals':
+      return <Anchor className={`${cls} text-sky-400`} />;
+    case 'maritime_vessel':
+      return <ShipCargo className={`${cls} text-cyan-400`} />;
+    case 'airports':
+      return <Plane className={`${cls} text-indigo-400`} />;
+    case 'parking_meters':
+      return <ParkingMeter className={`${cls} text-blue-400`} />;
+    case 'motorcycle_parking':
+      return <Motorbike className={`${cls} text-blue-400`} />;
+    case 'accessible_parking':
+      return <Accessibility className={`${cls} text-sky-400`} />;
+    case 'one_way_streets':
+      return <Milestone className={`${cls} text-slate-300`} />;
+    case 'traffic_speed_limits':
+      return <Gauge className={`${cls} text-amber-400`} />;
+    case 'traffic_crosswalks':
+      return <Footprints className={`${cls} text-amber-200`} />;
+    case 'car_sharing':
+      return <Car className={`${cls} text-sky-400`} />;
+    case 'bikeways':
+      return <Route className={`${cls} text-teal-400`} />;
+    case 'shared_bikes':
+      return <Bike className={`${cls} text-teal-400`} />;
+    case 'escooter':
+      return <Scooter className={`${cls} text-lime-400`} />;
+    case 'ev_charging':
+    case 'tesla':
+      return <EvCharger className={`${cls} text-emerald-400`} />;
+    case 'truck_routes':
+    case 'truck_routes_restriction':
+      return <Truck className={`${cls} text-sky-400`} />;
+    case 'railways':
+      return <TrainTrack className={`${cls} text-indigo-400`} />;
+    case 'road_closures':
+      return <Ban className={`${cls} text-rose-400`} />;
+    case 'road_construction':
+      return <TrafficCone className={`${cls} text-orange-400`} />;
+    case 'traffic_cameras':
+      return <Camera className={`${cls} text-sky-400`} />;
+    case 'safety_cameras':
+      return <Siren className={`${cls} text-rose-500`} />;
+    case 'traffic_conditions':
+      return <LineSquiggle className={`${cls} text-emerald-400`} />;
+    case 'traffic_alerts':
+      return <Megaphone className={`${cls} text-amber-400`} />;
+    case 'fuel':
+      return <Fuel className={`${cls} text-amber-400`} />;
+    case 'community_centres':
+      return <UserRoundGroup className={`${cls} text-violet-400`} />;
+    case 'libraries':
+      return <BookOpen className={`${cls} text-amber-400`} />;
+    case 'schools':
+      return <GraduationCap className={`${cls} text-blue-400`} />;
+    case 'canada_post':
+    case 'fedex':
+    case 'purolator':
+      return <Package className={`${cls} text-rose-400`} />;
+    case 'banks':
+    case 'atm':
+      return <CircleDollarSign className={`${cls} text-amber-400`} />;
+    case 'public_art':
+      return <Palette className={`${cls} text-fuchsia-400`} />;
+    case 'museums':
+      return <Landmark className={`${cls} text-slate-300`} />;
+    case 'food_vendors':
+      return <Soup className={`${cls} text-orange-400`} />;
+    case 'food_banks':
+      return <HeartHandshake className={`${cls} text-emerald-400`} />;
+    case 'recycling':
+      return <Recycle className={`${cls} text-teal-400`} />;
+    case 'garbage_collection':
+      return <Truck className={`${cls} text-orange-400`} />;
+    case 'litter_containers':
+      return <Trash2 className={`${cls} text-amber-400`} />;
+    case 'homeless_shelters':
+      return <Bed className={`${cls} text-rose-400`} />;
+    case 'parks':
+      return <Trees className={`${cls} text-emerald-400`} />;
+    case 'parks_facilities':
+      return <Park className={`${cls} text-teal-400`} />;
+    case 'public_trees':
+    case 'street_trees':
+    case 'heritage_trees':
+      return <TreePine className={`${cls} text-emerald-400`} />;
+    case 'drinking_fountains':
+      return <Droplets className={`${cls} text-sky-400`} />;
+    case 'public_washrooms':
+      return <Toilet className={`${cls} text-cyan-400`} />;
+    case 'police':
+      return <UserShield className={`${cls} text-blue-400`} />;
+    case 'fire_halls':
+      return <FireExtinguisher className={`${cls} text-rose-400`} />;
+    case 'hospitals':
+      return <Hospital className={`${cls} text-emerald-400`} />;
+    case 'disaster_hubs':
+      return <LifeBuoy className={`${cls} text-amber-400`} />;
+    case 'van_wifi':
+      return <Wifi className={`${cls} text-cyan-400`} />;
+    case 'water_distribution_mains':
+      return <Faucet className={`${cls} text-sky-400`} />;
+    case 'street_lighting_conduits':
+      return <UtilityPole className={`${cls} text-amber-300`} />;
+    case 'local_area_boundary':
+      return <Grid3x2 className={`${cls} text-teal-400`} />;
+    case 'beach_water_quality':
+      return <Parasol className={`${cls} text-teal-300`} />;
+    case 'border_crossing':
+      return <Fence className={`${cls} text-cyan-400`} />;
+    case 'ski_resort':
+      return <CableCar className={`${cls} text-sky-400`} />;
+    case 'tide_stations':
+      return <Waves className={`${cls} text-teal-400`} />;
+    default:
+      return <MapPin className={`${cls} text-emerald-400`} />;
+  }
 }
 
 export default function TopBar() {
@@ -151,7 +298,7 @@ export default function TopBar() {
     {
       id: 'transport',
       label: '交通',
-      icon: Bus,
+      icon: BusFront,
       iconColor: 'text-emerald-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
@@ -490,7 +637,7 @@ export default function TopBar() {
       subtitle: `巴士轉乘站 · ${exc.location} · 路線: ${exc.routes.join(', ')}`,
       category: 'bus_exchange',
       badge: '巴士轉乘站',
-      icon: '🚏',
+      icon: '',
       lon: exc.lon,
       lat: exc.lat,
       zoom: 17,
@@ -898,20 +1045,23 @@ export default function TopBar() {
                 <span>熱門分類捷徑</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
-                {QUICK_SEARCH_SHORTCUTS.map(sc => (
-                  <button
-                    key={sc.query}
-                    type="button"
-                    onClick={() => {
-                      setQuery(sc.query);
-                      searchInputRef.current?.focus();
-                    }}
-                    className="flex items-center gap-1.5 bg-[#23262e] hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-[#343740] rounded-lg px-2 py-1.5 text-gray-300 hover:text-emerald-300 transition-all text-left text-xs"
-                  >
-                    <span className="text-sm shrink-0">{sc.icon}</span>
-                    <span className="truncate font-medium">{sc.label}</span>
-                  </button>
-                ))}
+                {QUICK_SEARCH_SHORTCUTS.map(sc => {
+                  const Icon = sc.icon;
+                  return (
+                    <button
+                      key={sc.query}
+                      type="button"
+                      onClick={() => {
+                        setQuery(sc.query);
+                        searchInputRef.current?.focus();
+                      }}
+                      className="flex items-center gap-1.5 bg-[#23262e] hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-[#343740] rounded-lg px-2 py-1.5 text-gray-300 hover:text-emerald-300 transition-all text-left text-xs"
+                    >
+                      <Icon className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
+                      <span className="truncate font-medium">{sc.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -981,7 +1131,7 @@ export default function TopBar() {
                         }`}
                       >
                         <span className="text-base flex-shrink-0 w-7 h-7 flex items-center justify-center bg-[#282a30] rounded border border-gray-700/50 group-hover:scale-110 transition-transform">
-                          {item.icon}
+                          {renderSearchItemIcon(item)}
                         </span>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-semibold text-gray-100 group-hover:text-white truncate">

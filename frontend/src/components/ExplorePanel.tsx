@@ -10,7 +10,8 @@ import { Landmark,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
   Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain, CreditCard,
   Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign,
-  PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle
+  PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle,
+  Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -3385,8 +3386,8 @@ function ExploreContent() {
     weather: { label: '天氣資訊', icon: CloudSun, color: 'text-sky-400' },
     news: { label: '新聞快訊', icon: Newspaper, color: 'text-amber-400' },
     events: { label: '活動情報', icon: CalendarDays, color: 'text-purple-400' },
-    beach: { label: '海灘水質', icon: Droplets, color: 'text-teal-300' },
-    ski: { label: '滑雪場現況', icon: MountainSnow, color: 'text-cyan-400' },
+    beach: { label: '海灘水質', icon: Parasol, color: 'text-teal-300' },
+    ski: { label: '滑雪場現況', icon: CableCar, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
     jobs: { label: '工作職位', icon: Briefcase, color: 'text-indigo-400' },
     '311': { label: '3-1-1 市政服務', icon: PhoneCall, color: 'text-emerald-400' },
@@ -3394,12 +3395,12 @@ function ExploreContent() {
     banks: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     atm: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     fuel: { label: '油站', icon: Fuel, color: 'text-amber-500' },
-    charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
-    ev: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
+    charging: { label: '充電站', icon: EvCharger, color: 'text-emerald-400' },
+    ev: { label: '充電站', icon: EvCharger, color: 'text-emerald-400' },
     alerts: { label: '通報', icon: AlertTriangle, color: 'text-rose-400' },
-    traffic: { label: '即時路況', icon: Activity, color: 'text-orange-400' },
-    crashes: { label: '車禍意外', icon: ShieldAlert, color: 'text-rose-400' },
-    border: { label: '美加邊境關口', icon: Flag, color: 'text-blue-400' },
+    traffic: { label: '即時路況', icon: Waypoints, color: 'text-orange-400' },
+    crashes: { label: '車禍意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
+    border: { label: '美加邊境關口', icon: Fence, color: 'text-blue-400' },
     ferry: { label: 'BC 渡輪', icon: Anchor, color: 'text-sky-400' },
     shipping: { label: '即時航運', icon: Ship, color: 'text-teal-400' },
     cargo: { label: '即時航運', icon: Ship, color: 'text-teal-400' },
