@@ -642,11 +642,10 @@ const FERRY_TERMINAL_WEBCAMS: Record<string, TerminalWebcamItem[]> = {
     { id: 'cam1_DUK', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_DUK.jpg' },
     { id: 'cam2_DUK', name: '開往溫哥華 (Traffic to Tsawwassen)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_DUK.jpg' },
   ],
-  // 4.2 Nanaimo (Departure Bay) terminal (DriveBC Ferry Terminal Cameras)
+  // 4.2 Nanaimo (Departure Bay) terminal
   'NAN': [
-    { id: 'cam1_NAN', name: '碼頭現場車流 (Departure Bay Ferry Terminal)', url: 'https://www.drivebc.ca/images/743.jpg' },
-    { id: 'cam2_NAN', name: '開往溫哥華車流 (Departure Bay Northbound)', url: 'https://www.drivebc.ca/images/741.jpg' },
-    { id: 'cam3_NAN', name: '開往溫哥華車流 (Departure Bay Southbound)', url: 'https://www.drivebc.ca/images/742.jpg' },
+    { id: 'cam1_NAN', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_NAN.jpg' },
+    { id: 'cam2_NAN', name: '開往溫哥華 (Traffic to Horseshoe Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_NAN.jpg' },
   ],
   // 4.3 Vancouver (Tsawwassen) terminal
   'TSA': [
@@ -668,26 +667,20 @@ const FERRY_TERMINAL_WEBCAMS: Record<string, TerminalWebcamItem[]> = {
   ],
   // 4.6 West Vancouver (Horseshoe Bay) terminal
   'HSB': [
-    { id: 'cam1_HSB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://www.drivebc.ca/images/228.jpg' },
-    { id: 'cam2_HSB', name: '開往納奈莫車流 (Traffic to Departure Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_HSB.jpg' },
+    { id: 'cam1_HSB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_HSB.jpg' },
+    { id: 'cam2_HSB', name: '開往納奈莫車流 (Traffic to Departure Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_HSB.jpg' },
   ]
 };
 
 function FerryWebcamImage({ cam, refreshKey, onEnlarge }: { cam: TerminalWebcamItem; refreshKey: number; onEnlarge: (url: string) => void }) {
   const [hasError, setHasError] = useState(false);
-  const [triedFallback, setTriedFallback] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 優先走 Next.js 本地同源 proxy，完全避開 CORS 與防盜鏈
-  const proxyUrl = `/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${refreshKey}`;
-  const directUrl = `${cam.url}?t=${refreshKey}`;
-  const [src, setSrc] = useState(proxyUrl);
+  const src = `${cam.url}?t=${refreshKey}`;
 
   useEffect(() => {
     setHasError(false);
-    setTriedFallback(false);
     setIsLoading(true);
-    setSrc(`/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${refreshKey}`);
   }, [cam.url, refreshKey]);
 
   return (
@@ -710,13 +703,8 @@ function FerryWebcamImage({ cam, refreshKey, onEnlarge }: { cam: TerminalWebcamI
           referrerPolicy="no-referrer"
           onLoad={() => setIsLoading(false)}
           onError={() => {
-            if (!triedFallback) {
-              setTriedFallback(true);
-              setSrc(directUrl);
-            } else {
-              setHasError(true);
-              setIsLoading(false);
-            }
+            setHasError(true);
+            setIsLoading(false);
           }}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           loading="lazy"
@@ -730,9 +718,7 @@ function FerryWebcamImage({ cam, refreshKey, onEnlarge }: { cam: TerminalWebcamI
             onClick={(e) => {
               e.stopPropagation();
               setHasError(false);
-              setTriedFallback(false);
               setIsLoading(true);
-              setSrc(`/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${Date.now()}`);
             }}
             className="text-[10px] px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-500/30 hover:bg-sky-900 transition-colors cursor-pointer"
           >
@@ -743,8 +729,8 @@ function FerryWebcamImage({ cam, refreshKey, onEnlarge }: { cam: TerminalWebcamI
       {!hasError && !isLoading && (
         <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <span className="px-2 py-1 rounded bg-black/75 backdrop-blur-xs text-white text-[11px] font-medium flex items-center gap-1 shadow-md">
-            <ZoomIn className="w-3 h-3 text-sky-400" />
-            點擊放大
+            <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+            點擊放大檢視
           </span>
         </div>
       )}
@@ -20846,15 +20832,9 @@ export default function AppMap() {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={`/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${terminalWebcamRefreshKey}`}
+                          src={camUrlWithT}
                           alt={cam.name}
                           referrerPolicy="no-referrer"
-                          onError={(e) => {
-                            const target = e.currentTarget;
-                            if (target.src !== camUrlWithT) {
-                              target.src = camUrlWithT;
-                            }
-                          }}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                           loading="lazy"
                         />

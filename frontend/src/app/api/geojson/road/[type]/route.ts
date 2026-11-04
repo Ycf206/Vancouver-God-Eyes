@@ -88,7 +88,7 @@ export async function GET(
       props.effective_rate = activePeriod === 'free' ? '免費' : (rateNum !== null ? `$${rateNum.toFixed(2)}` : '未提供');
 
       // 篩選 max_rate
-      if (maxRateParam !== null && maxRateParam > 0) {
+      if (maxRateParam !== null && maxRateParam >= 0) {
         if (rateNum !== null && rateNum > maxRateParam) {
           continue;
         }

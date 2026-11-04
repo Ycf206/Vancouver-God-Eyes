@@ -2542,6 +2542,87 @@ def get_road_facilities_geojson(
 
     # 2. Prioritize verified precompiled static GeoJSON files (instant zero-copy static serving)
     static_geojson_path = os.path.join(os.path.dirname(__file__), "data", f"vancouver_{facility_type}.geojson")
+
+    # 針對 parking_meters 與 motorcycle_parking，直接由靜態 GeoJSON 解析並支援時段與費率過濾，避開 SQLite 缺乏 AsEWKB 空間擴充之例外
+    if facility_type in ('parking_meters', 'motorcycle_parking'):
+        if os.path.exists(static_geojson_path):
+            try:
+                import re
+                import datetime
+                with open(static_geojson_path, "r", encoding="utf-8") as f:
+                    static_data = json.load(f)
+
+                # 判定溫哥華當地時間時段
+                try:
+                    from zoneinfo import ZoneInfo
+                    vancouver_now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
+                except Exception:
+                    vancouver_now = datetime.datetime.utcnow() - datetime.timedelta(hours=7)
+
+                current_hour = vancouver_now.hour
+                period_mode = (time_period or "auto").lower()
+                if period_mode == "night":
+                    active_period = "night"
+                elif period_mode == "day":
+                    active_period = "day"
+                else:  # auto
+                    if 9 <= current_hour < 18:
+                        active_period = "day"
+                    elif 18 <= current_hour < 22:
+                        active_period = "night"
+                    else:
+                        active_period = "free"
+
+                filtered_features = []
+                for feat in static_data.get("features", []):
+                    coords = feat.get("geometry", {}).get("coordinates", [])
+                    if not coords or len(coords) < 2:
+                        continue
+                    props = dict(feat.get("properties", {}) or {})
+                    props['active_period'] = active_period
+                    props['vancouver_time'] = vancouver_now.strftime("%H:%M")
+
+                    if active_period == "night":
+                        raw_rate = props.get('rate_6pm_10pm') or props.get('rate_9am_6pm') or props.get('rate') or ''
+                    elif active_period == "free":
+                        raw_rate = '0'
+                    else:  # day
+                        raw_rate = props.get('rate_9am_6pm') or props.get('r_mf_9a_6p') or props.get('rate') or ''
+
+                    rate_num = None
+                    rate_match = re.search(r'(\d+(?:\.\d+)?)', str(raw_rate))
+                    if rate_match:
+                        try:
+                            rate_num = float(rate_match.group(1))
+                        except ValueError:
+                            rate_num = None
+                    elif active_period == "free":
+                        rate_num = 0.0
+
+                    props['rate_numeric'] = rate_num
+                    props['effective_rate'] = f"${rate_num:.2f}" if rate_num is not None and active_period != "free" else "免費" if active_period == "free" else "未提供"
+
+                    if max_rate is not None and max_rate >= 0:
+                        if rate_num is not None and rate_num > max_rate:
+                            continue
+                    if credit_card_only:
+                        cc = str(props.get('credit_card') or props.get('creditcard') or '').lower()
+                        if cc not in ('yes', 'true', '1'):
+                            continue
+
+                    filtered_features.append({
+                        "type": "Feature",
+                        "geometry": feat.get("geometry"),
+                        "properties": props
+                    })
+
+                return JSONResponse(
+                    content={"type": "FeatureCollection", "features": filtered_features},
+                    headers={"Cache-Control": "public, max-age=60, stale-while-revalidate=300"}
+                )
+            except Exception as e:
+                print(f"Error serving {facility_type} from static geojson: {e}")
+
     if facility_type not in ('parking_meters', 'motorcycle_parking'):
         if os.path.exists(static_geojson_path):
             return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
@@ -2549,12 +2630,13 @@ def get_road_facilities_geojson(
     if facility_type not in _ALLOWED_DB_ROAD_FACILITY_TYPES:
         return {"type": "FeatureCollection", "features": []}
 
-    facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
+    from sqlalchemy.orm import defer
+    facilities = db.query(models.RoadFacility).options(defer(models.RoadFacility.geom)).filter(models.RoadFacility.facility_type == facility_type).all()
     
     # Auto-import on-the-fly if not yet populated in DB (加鎖保護，防止高並發冷啟動重複寫入衝突)
     if not facilities:
         with _road_seed_lock:
-            facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
+            facilities = db.query(models.RoadFacility).options(defer(models.RoadFacility.geom)).filter(models.RoadFacility.facility_type == facility_type).all()
             if not facilities:
                 # 1. Check for precompiled verified GeoJSON in backend/data/
                 if os.path.exists(static_geojson_path):
@@ -2586,7 +2668,7 @@ def get_road_facilities_geojson(
                         db.commit()
                         if facility_type not in ('parking_meters', 'motorcycle_parking'):
                             return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
-                        facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
+                        facilities = db.query(models.RoadFacility).options(defer(models.RoadFacility.geom)).filter(models.RoadFacility.facility_type == facility_type).all()
                     except Exception as e:
                         db.rollback()
                         print(f"Error populating {facility_type} from static geojson: {e}")
@@ -2598,7 +2680,7 @@ def get_road_facilities_geojson(
                     try:
                         from scripts.import_road_data import import_single_facility_type
                         import_single_facility_type(facility_type, db)
-                        facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
+                        facilities = db.query(models.RoadFacility).options(defer(models.RoadFacility.geom)).filter(models.RoadFacility.facility_type == facility_type).all()
                     except Exception as e:
                         db.rollback()
                         print(f"Auto-import error for {facility_type}: {e}")
