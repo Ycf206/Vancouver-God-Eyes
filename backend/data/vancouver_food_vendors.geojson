@@ -1,8 +1,8 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
-  "total_count": 9,
-  "updated_at": "2026-11-04T13:54:56.248Z",
+  "total_count": 11,
+  "updated_at": "2026-11-05T14:11:24.018Z",
   "features": [
     {
       "type": "Feature",
@@ -10,8 +10,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.078661,
-          49.282109
+          -123.030974,
+          49.206493
         ]
       },
       "properties": {
@@ -19,8 +19,8 @@
         "facility_type": "food_vendors",
         "name": "Babb D Thai Food",
         "business_name": "Babb D Thai Food",
-        "address": "Container Brewing, 1216 Franklin St, Vancouver, BC",
-        "hours": "4 PM – 8 PM",
+        "address": "River District Town Centre, 8558 River District Cross, Vancouver, BC",
+        "hours": "11 AM – 7 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -32,8 +32,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.094138,
-          49.28491
+          -123.10647,
+          49.271262
         ]
       },
       "properties": {
@@ -41,7 +41,7 @@
         "facility_type": "food_vendors",
         "name": "Crack On",
         "business_name": "Crack On",
-        "address": "439 Railway St, Vancouver, BC",
+        "address": "Olympic Village Square, 1650 Manitoba St, Vancouver, BC",
         "hours": "9 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
@@ -76,17 +76,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.106362,
-          49.271272
+          -123.133731,
+          49.263539
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_4",
         "facility_type": "food_vendors",
-        "name": "Indish",
-        "business_name": "Indish",
-        "address": "Olympic Village Square, Vancouver",
-        "hours": "11 AM – 7 PM",
+        "name": "Miss Siam",
+        "business_name": "Miss Siam",
+        "address": "Broadway/Birch",
+        "hours": "11 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -98,17 +98,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1458,
-          49.270698
+          -123.090527,
+          49.26734
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_5",
         "facility_type": "food_vendors",
-        "name": "Miss Siam",
-        "business_name": "Miss Siam",
-        "address": "Burrard/1st",
-        "hours": "11 AM – 2 PM",
+        "name": "Super Thai Food",
+        "business_name": "Super Thai Food",
+        "address": "Centre for Digital Media, 577 Great Northern Way (west side of the building)",
+        "hours": "11:30 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -198,6 +198,50 @@
         "address": "9015 Shaughnessy St, Vancouver",
         "hours": "8:45 AM – 4 PM",
         "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_10",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.157335,
+          49.268244
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_10",
+        "facility_type": "food_vendors",
+        "name": "Planted Love",
+        "business_name": "Planted Love",
+        "address": "2239 W 4th Ave, Vancouver, BC",
+        "hours": "11 AM – 7 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_11",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044216,
+          49.259771
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_11",
+        "facility_type": "food_vendors",
+        "name": "Thai Box On Truck",
+        "business_name": "Thai Box On Truck",
+        "address": "2665 Renfrew St, Vancouver (Broadway tech centre)",
+        "hours": "11:30 AM – 2 PM",
+        "has_credit_card": false,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
       }
