@@ -1,8 +1,8 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
-  "total_count": 11,
-  "updated_at": "2026-11-05T14:11:24.018Z",
+  "total_count": 10,
+  "updated_at": "2026-11-06T13:53:10.069Z",
   "features": [
     {
       "type": "Feature",
@@ -10,17 +10,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.030974,
-          49.206493
+          -123.086469,
+          49.266943
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_1",
         "facility_type": "food_vendors",
-        "name": "Babb D Thai Food",
-        "business_name": "Babb D Thai Food",
-        "address": "River District Town Centre, 8558 River District Cross, Vancouver, BC",
-        "hours": "11 AM – 7 PM",
+        "name": "Crack On",
+        "business_name": "Crack On",
+        "address": "Emily Carr University of Art   Design, 520 East 1st Avenue, Vancouver, BC",
+        "hours": "10 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -32,34 +32,12 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.10647,
-          49.271262
-        ]
-      },
-      "properties": {
-        "id": "food_vendor_sfa_2",
-        "facility_type": "food_vendors",
-        "name": "Crack On",
-        "business_name": "Crack On",
-        "address": "Olympic Village Square, 1650 Manitoba St, Vancouver, BC",
-        "hours": "9 AM – 2 PM",
-        "has_credit_card": true,
-        "local_area": "Vancouver",
-        "source": "StreetFoodApp"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "food_vendor_sfa_3",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           -123.120729,
           49.282129
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_3",
+        "id": "food_vendor_sfa_2",
         "facility_type": "food_vendors",
         "name": "Disco Cheetah Korean Bowl",
         "business_name": "Disco Cheetah Korean Bowl",
@@ -72,12 +50,34 @@
     },
     {
       "type": "Feature",
+      "id": "food_vendor_sfa_3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10166,
+          49.225621
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_3",
+        "facility_type": "food_vendors",
+        "name": "Indish",
+        "business_name": "Indish",
+        "address": "Punjabi Market, Vancouver",
+        "hours": "11 AM – 9 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "food_vendor_sfa_4",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.133731,
-          49.263539
+          -123.1458,
+          49.270698
         ]
       },
       "properties": {
@@ -85,7 +85,7 @@
         "facility_type": "food_vendors",
         "name": "Miss Siam",
         "business_name": "Miss Siam",
-        "address": "Broadway/Birch",
+        "address": "Burrard/1st",
         "hours": "11 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
@@ -98,34 +98,12 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.090527,
-          49.26734
-        ]
-      },
-      "properties": {
-        "id": "food_vendor_sfa_5",
-        "facility_type": "food_vendors",
-        "name": "Super Thai Food",
-        "business_name": "Super Thai Food",
-        "address": "Centre for Digital Media, 577 Great Northern Way (west side of the building)",
-        "hours": "11:30 AM – 2 PM",
-        "has_credit_card": true,
-        "local_area": "Vancouver",
-        "source": "StreetFoodApp"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "food_vendor_sfa_6",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           -123.113481,
           49.286466
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_6",
+        "id": "food_vendor_sfa_5",
         "facility_type": "food_vendors",
         "name": "arturosmexico2go",
         "business_name": "arturosmexico2go",
@@ -138,7 +116,7 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_7",
+      "id": "food_vendor_sfa_6",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -147,7 +125,7 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_7",
+        "id": "food_vendor_sfa_6",
         "facility_type": "food_vendors",
         "name": "Il Saltimbocca by Via Tevere",
         "business_name": "Il Saltimbocca by Via Tevere",
@@ -160,7 +138,7 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_8",
+      "id": "food_vendor_sfa_7",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -169,12 +147,12 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_8",
+        "id": "food_vendor_sfa_7",
         "facility_type": "food_vendors",
         "name": "JAPADOG",
         "business_name": "JAPADOG",
         "address": "Burrard St & Smithe St",
-        "hours": "11 AM – 10 PM",
+        "hours": "11 AM – 11 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -182,7 +160,7 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_9",
+      "id": "food_vendor_sfa_8",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -191,7 +169,7 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_9",
+        "id": "food_vendor_sfa_8",
         "facility_type": "food_vendors",
         "name": "Meet2Eat",
         "business_name": "Meet2Eat",
@@ -204,7 +182,7 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_10",
+      "id": "food_vendor_sfa_9",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -213,7 +191,7 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_10",
+        "id": "food_vendor_sfa_9",
         "facility_type": "food_vendors",
         "name": "Planted Love",
         "business_name": "Planted Love",
@@ -226,21 +204,21 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_11",
+      "id": "food_vendor_sfa_10",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.044216,
-          49.259771
+          -123.116337,
+          49.233464
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_11",
+        "id": "food_vendor_sfa_10",
         "facility_type": "food_vendors",
         "name": "Thai Box On Truck",
         "business_name": "Thai Box On Truck",
-        "address": "2665 Renfrew St, Vancouver (Broadway tech centre)",
-        "hours": "11:30 AM – 2 PM",
+        "address": "Cambie Street & West 41st Avenue, Cambie St. & W 41st Ave, Vancouver",
+        "hours": "11 AM – 1:30 PM",
         "has_credit_card": false,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
