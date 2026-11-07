@@ -47,6 +47,15 @@ const FERRY_TERMINAL_NAMES_EN: Record<string, string> = {
   'PRR': 'Powell River',
 };
 
+const TERMINAL_DEFAULT_COORDS: Record<string, [number, number]> = {
+  'TSA': [-123.1278, 49.0067],
+  'HSB': [-123.2728, 49.3742],
+  'SWB': [-123.4111, 48.6881],
+  'DUK': [-123.8906, 49.1627],
+  'NAN': [-123.9556, 49.1947],
+  'LNG': [-123.4683, 49.4344],
+};
+
 export default function FerryScheduleModal() {
   const { isFerryScheduleOpen, setFerryScheduleOpen, setSearchTarget, timeFormat } = useUIStore();
   const [selectedTerminal, setSelectedTerminal] = useState<string>('ALL');
@@ -215,7 +224,13 @@ export default function FerryScheduleModal() {
     return list;
   }, [sailings, searchQuery]);
 
-  const activeSailings = useMemo(() => filteredSailings.filter(s => s.status !== 'past'), [filteredSailings]);
+  const activeSailings = useMemo(() => {
+    const current = filteredSailings.filter(s => s.status === 'current');
+    const upcoming = filteredSailings.filter(s => s.status !== 'current' && s.status !== 'past');
+    current.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+    upcoming.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+    return [...current, ...upcoming];
+  }, [filteredSailings]);
   const pastSailings = useMemo(() => filteredSailings.filter(s => s.status === 'past'), [filteredSailings]);
 
   if (!isFerryScheduleOpen) return null;
@@ -327,38 +342,55 @@ export default function FerryScheduleModal() {
                   const progInfo = isCurrent ? calculateProgressAndEta(s, matchVessel) : null;
 
                   const handleJump = () => {
-                    if (isEnRoute && matchVessel) {
-                      setSearchTarget({
-                        id: matchVessel.id,
-                        title: matchVessel.vessel_name || s.vessel_name,
-                        category: 'ferry_vehicle',
-                        lon: matchVessel.lon,
-                        lat: matchVessel.lat,
-                        zoom: 13,
-                        icon: 'ship'
-                      });
-                      if (typeof window !== 'undefined') {
-                        const map = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
-                        if (map) {
-                          map.flyTo({
-                            center: [matchVessel.lon, matchVessel.lat],
-                            zoom: 13,
-                            duration: 1200,
-                            essential: true
-                          });
-                        }
-                        (window as any).__godsEyeSelectFerry?.(matchVessel);
+                    const targetVessel = matchVessel || liveVessels.find(v => 
+                      v.vessel_name && s.vessel_name && (
+                        v.vessel_name.toLowerCase().includes(s.vessel_name.toLowerCase()) ||
+                        s.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase())
+                      )
+                    );
+
+                    let targetLon = targetVessel?.lon;
+                    let targetLat = targetVessel?.lat;
+
+                    if (!targetLon || !targetLat) {
+                      const coords = TERMINAL_DEFAULT_COORDS[s.terminal_code] || [-123.1278, 49.0067];
+                      targetLon = coords[0];
+                      targetLat = coords[1];
+                    }
+
+                    setSearchTarget({
+                      id: targetVessel?.id || `ferry_${s.vessel_name || s.terminal_code}`,
+                      title: targetVessel?.vessel_name || s.vessel_name || 'BC Ferries 渡輪',
+                      category: 'ferry_vehicle',
+                      lon: targetLon,
+                      lat: targetLat,
+                      zoom: 13,
+                      icon: 'ship',
+                      meta: targetVessel || s
+                    });
+
+                    if (typeof window !== 'undefined') {
+                      const map = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+                      if (map) {
+                        map.flyTo({
+                          center: [targetLon, targetLat],
+                          zoom: 13,
+                          duration: 1200,
+                          essential: true
+                        });
+                      }
+                      if (targetVessel) {
+                        (window as any).__godsEyeSelectFerry?.(targetVessel);
                       }
                     }
+                    setFerryScheduleOpen(false);
                   };
 
                   return (
                     <div 
                       key={`${s.terminal_code}-${s.time}-${idx}`}
                       onClick={handleJump}
-                      className={`p-3.5 rounded-xl bg-[#171b26] border border-gray-800/80 transition-all flex flex-col gap-2.5 shadow-sm ${
-                        isEnRoute ? 'hover:border-sky-400 hover:bg-[#1e2538] cursor-pointer' : 'cursor-default'
-                      }`}
+                      className="p-3.5 rounded-xl bg-[#171b26] border border-gray-800/80 transition-all flex flex-col gap-2.5 shadow-sm hover:border-sky-400 hover:bg-[#1e2538] cursor-pointer"
                     >
                       {/* 上排：時間、渡輪名稱、狀態徽章 */}
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -486,13 +518,6 @@ export default function FerryScheduleModal() {
               )}
             </>
           )}
-        </div>
-
-        {/* Footer (刪除右下關閉文字) */}
-        <div className="px-5 py-2.5 bg-[#121620] border-t border-gray-800 flex items-center justify-between text-xs shrink-0">
-          <span className="text-gray-400 text-[11px]">
-            資料來源：BC Ferries 卑詩渡輪官方即時系統 · 每 1 分鐘自動更新
-          </span>
         </div>
       </div>
     </div>

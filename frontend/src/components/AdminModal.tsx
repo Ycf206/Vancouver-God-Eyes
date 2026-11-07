@@ -44,6 +44,9 @@ export interface AdminSourceItem {
   status: 'healthy' | 'updating' | 'warning' | 'error';
   description: string;
   data_pipeline_notes?: string;
+  source_url?: string;
+  source_links?: Array<{ name: string; url: string }>;
+  hidden_in_layer_panel?: boolean;
 }
 
 export interface AdminLogItem {
@@ -89,6 +92,51 @@ const DEFAULT_GEOJSON_LAYERS = [
   { id: 'ev_charging', name: '電動車充電站點', filename: 'vancouver_ev_charging.geojson' },
 ];
 
+const LAYER_CONTROLS_LIST = [
+  // 交通
+  { id: 'bus', name: '巴士車輛', category: '交通', defaultColor: '#10b981' },
+  { id: 'busRoutes', name: '巴士路線', category: '交通', defaultColor: '#10b981' },
+  { id: 'busExchanges', name: '巴士轉車站', category: '交通', defaultColor: '#10b981' },
+  { id: 'skytrainTrains', name: '天車列車 (推算)', category: '交通', defaultColor: '#3b82f6' },
+  { id: 'skytrainRoutes', name: '天車路線與車站', category: '交通', defaultColor: '#3b82f6' },
+  { id: 'skytrainFareZones', name: '天車區域 (Zone 1/2/3)', category: '交通', defaultColor: '#3b82f6' },
+  { id: 'seabusVehicles', name: '水上巴士船隻', category: '交通', defaultColor: '#00a4e4' },
+  { id: 'seabusRoutes', name: '水上巴士航線', category: '交通', defaultColor: '#00a4e4' },
+  { id: 'bcferriesVehicles', name: '卑詩渡輪船隻', category: '交通', defaultColor: '#0060a9' },
+  { id: 'bcferriesRoutes', name: '卑詩渡輪航線', category: '交通', defaultColor: '#0060a9' },
+  { id: 'maritimeShipping', name: '船運船隻', category: '交通', defaultColor: '#06b6d4' },
+  { id: 'marineTerminals', name: '船運碼頭', category: '交通', defaultColor: '#06b6d4' },
+  { id: 'airports', name: '機場', category: '交通', defaultColor: '#38bdf8' },
+  // 道路
+  { id: 'trafficConditions', name: '路況色帶', category: '道路', defaultColor: '#f97316' },
+  { id: 'trafficAlerts', name: '即時路況通報', category: '道路', defaultColor: '#ef4444' },
+  { id: 'trafficCameras', name: '交通攝影機', category: '道路', defaultColor: '#38bdf8' },
+  { id: 'safetyCameras', name: '安全攝影機', category: '道路', defaultColor: '#f43f5e' },
+  { id: 'parkingMeters', name: '咪錶停車位', category: '道路', defaultColor: '#3b82f6' },
+  { id: 'motorcycleParking', name: '電單車位', category: '道路', defaultColor: '#3b82f6' },
+  { id: 'accessibleParking', name: '無障礙車位', category: '道路', defaultColor: '#38bdf8' },
+  { id: 'evCharging', name: '充電站', category: '道路', defaultColor: '#10b981' },
+  { id: 'fuel', name: '加油站', category: '道路', defaultColor: '#f59e0b' },
+  { id: 'bikeways', name: '單車專用徑', category: '道路', defaultColor: '#14b8a6' },
+  { id: 'sharedBikes', name: '共享單車 (Mobi)', category: '道路', defaultColor: '#14b8a6' },
+  { id: 'escooter', name: '共享滑板車', category: '道路', defaultColor: '#84cc16' },
+  // 民生
+  { id: 'schools', name: '學校教育機構', category: '民生', defaultColor: '#3b82f6' },
+  { id: 'libraries', name: '公共圖書館', category: '民生', defaultColor: '#f59e0b' },
+  { id: 'communityCentres', name: '社區中心', category: '民生', defaultColor: '#8b5cf6' },
+  { id: 'parks', name: '都會公園', category: '民生', defaultColor: '#10b981' },
+  { id: 'drinkingFountains', name: '公共飲水台', category: '民生', defaultColor: '#38bdf8' },
+  { id: 'publicWashrooms', name: '公共洗手間', category: '民生', defaultColor: '#06b6d4' },
+  { id: 'hospitals', name: '醫院與緊急醫療', category: '安全', defaultColor: '#10b981' },
+  { id: 'police', name: '警察局', category: '安全', defaultColor: '#3b82f6' },
+  { id: 'fireHalls', name: '消防局', category: '安全', defaultColor: '#ef4444' },
+  { id: 'fireHydrants', name: '消防栓', category: '安全', defaultColor: '#ef4444' },
+  { id: 'disasterHubs', name: '災害支援中心', category: '安全', defaultColor: '#f59e0b' },
+  { id: 'beachWaterQuality', name: '海灘水質', category: '環境', defaultColor: '#06b6d4' },
+  { id: 'contours', name: '等高線高程', category: '地理', defaultColor: '#14b8a6' },
+  { id: 'tideStations', name: '潮汐監測站', category: '地理', defaultColor: '#0ea5e9' },
+];
+
 export default function AdminModal() {
   const { 
     isAdminModalOpen, 
@@ -96,10 +144,17 @@ export default function AdminModal() {
     timeZone, 
     timeFormat, 
     isAdminAuthenticated, 
-    setAdminAuthenticated 
+    setAdminAuthenticated,
+    layers,
+    toggleLayer,
+    hiddenLayersInPanel,
+    toggleLayerPanelHidden,
+    layerCustomColors,
+    setLayerCustomColor,
+    resetLayerCustomColors
   } = useUIStore();
 
-  const [activeTab, setActiveTab] = useState<'sources' | 'schedules' | 'upload' | 'logs'>('sources');
+  const [activeTab, setActiveTab] = useState<'sources' | 'layers' | 'schedules' | 'upload' | 'logs'>('sources');
   const [sources, setSources] = useState<AdminSourceItem[]>([]);
   const [logs, setLogs] = useState<AdminLogItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -109,6 +164,10 @@ export default function AdminModal() {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | 'api' | 'geojson'>('all');
   const [expandedPipelineId, setExpandedPipelineId] = useState<string | null>(null);
+
+  // Tab: Layers Control state
+  const [layerSearchQuery, setLayerSearchQuery] = useState('');
+  const [layerCategoryFilter, setLayerCategoryFilter] = useState<string>('all');
 
   // Tab 2 (Schedules) Search & Sort state
   const [scheduleSearchQuery, setScheduleSearchQuery] = useState('');
@@ -600,7 +659,8 @@ export default function AdminModal() {
               <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
                 {[
                   { id: 'sources', label: '數據源總覽與更新程序', icon: Database, count: sources.length },
-                  { id: 'schedules', label: '排程週期設定', icon: Sliders, count: sources.length },
+                  { id: 'layers', label: '圖層控制', icon: Sliders, count: LAYER_CONTROLS_LIST.length },
+                  { id: 'schedules', label: '排程週期設定', icon: Clock, count: sources.length },
                   { id: 'upload', label: '經網頁上傳更新 GeoJSON', icon: Upload },
                   { id: 'logs', label: '系統更新記錄', icon: FileCode, count: logs.length },
                 ].map((tab) => {
@@ -727,6 +787,7 @@ export default function AdminModal() {
                           <tr>
                             <th className="py-3 px-4">數據源 / 分類</th>
                             <th className="py-3 px-4">類型</th>
+                            <th className="py-3 px-4">來源連結</th>
                             <th className="py-3 px-4">排程週期</th>
                             <th className="py-3 px-4">資料筆數</th>
                             <th className="py-3 px-4">最後更新時間</th>
@@ -775,6 +836,25 @@ export default function AdminModal() {
                                     </span>
                                   </td>
 
+                                  <td className="py-3 px-4 max-w-[200px]">
+                                    {source.source_url ? (
+                                      <a
+                                        href={source.source_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-cyan-400 hover:text-cyan-300 hover:underline inline-flex items-center gap-1 font-mono text-[10.5px] truncate max-w-[190px]"
+                                        title={source.source_url}
+                                      >
+                                        <ExternalLink className="w-3 h-3 shrink-0" />
+                                        <span className="truncate">{source.source_url}</span>
+                                      </a>
+                                    ) : (
+                                      <span className="text-gray-500 font-mono text-[10.5px]">
+                                        {source.filename ? `/api/geojson/${source.id}` : '內部服務'}
+                                      </span>
+                                    )}
+                                  </td>
+
                                   <td className="py-3 px-4 whitespace-nowrap">
                                     <div className="text-gray-200 font-medium">{source.schedule_interval}</div>
                                     <div className="text-[10px] text-gray-500 font-mono">{source.cron_expr}</div>
@@ -812,7 +892,7 @@ export default function AdminModal() {
                                 {/* Expandable Procedure Details */}
                                 {isExpanded && source.data_pipeline_notes && (
                                   <tr className="bg-[#111422]">
-                                    <td colSpan={7} className="px-4 py-3 border-t border-[#1f2638]">
+                                    <td colSpan={8} className="px-4 py-3 border-t border-[#1f2638]">
                                       <div className="flex items-start gap-2.5 text-xs text-cyan-200/90 leading-relaxed bg-[#151c2e] p-3 rounded-lg border border-cyan-500/30">
                                         <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                                         <div>
@@ -828,6 +908,178 @@ export default function AdminModal() {
                                   </tr>
                                 )}
                               </React.Fragment>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB: 圖層控制 (面板顯示、圖層資料開關、主題色彩修改) */}
+              {activeTab === 'layers' && (
+                <div className="space-y-4">
+                  <div className="bg-indigo-950/30 p-3 rounded-xl border border-indigo-500/30 text-xs text-indigo-200 flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-2.5">
+                      <Sliders className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                      <div className="leading-relaxed">
+                        管理員可在此自訂全域各圖層在左側控制面板之顯示/隱藏、直接開關底圖圖層資料，以及隨選調整圖層專屬主題顏色（包含控制按鈕、地圖圓點、色帶與彈出視窗）。
+                      </div>
+                    </div>
+                    {Object.keys(layerCustomColors).length > 0 && (
+                      <button
+                        onClick={resetLayerCustomColors}
+                        className="px-2.5 py-1 rounded bg-[#232b3f] hover:bg-rose-950/50 hover:text-rose-300 border border-gray-700 text-gray-300 text-xs shrink-0 cursor-pointer transition-colors"
+                      >
+                        還原預設色彩
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Search and Category Filter */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                    <div className="relative flex-1 max-w-md">
+                      <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type="text"
+                        value={layerSearchQuery}
+                        onChange={(e) => setLayerSearchQuery(e.target.value)}
+                        placeholder="搜尋圖層名稱或分類..."
+                        className="w-full bg-[#161a29] text-gray-200 text-xs pl-9 pr-4 py-2 rounded-xl border border-[#273047] focus:outline-none focus:border-indigo-500 transition-colors"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-1.5 bg-[#161a29] p-1 rounded-xl border border-[#2a334d] text-xs overflow-x-auto">
+                      {['all', '交通', '道路', '民生', '安全', '地理', '環境'].map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => setLayerCategoryFilter(cat)}
+                          className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
+                            layerCategoryFilter === cat ? 'bg-indigo-600 text-white font-medium' : 'text-gray-400 hover:text-white'
+                          }`}
+                        >
+                          {cat === 'all' ? '全部' : cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Layers Table */}
+                  <div className="bg-[#161b2a] border border-[#273047] rounded-xl overflow-hidden shadow-sm">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-[#1c2235] text-gray-400 border-b border-[#273047] text-[11px] uppercase tracking-wider">
+                          <tr>
+                            <th className="py-3 px-4">圖層名稱 / 標識</th>
+                            <th className="py-3 px-4">分類</th>
+                            <th className="py-3 px-4 text-center">面板顯示</th>
+                            <th className="py-3 px-4 text-center">圖層資料</th>
+                            <th className="py-3 px-4">主題色彩自訂</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#232b3f]">
+                          {LAYER_CONTROLS_LIST.filter(l => {
+                            if (layerCategoryFilter !== 'all' && l.category !== layerCategoryFilter) return false;
+                            if (layerSearchQuery.trim()) {
+                              const q = layerSearchQuery.trim().toLowerCase();
+                              return l.name.toLowerCase().includes(q) || l.id.toLowerCase().includes(q) || l.category.toLowerCase().includes(q);
+                            }
+                            return true;
+                          }).map((layerItem) => {
+                            const isHiddenInPanel = !!hiddenLayersInPanel[layerItem.id];
+                            const isDataActive = !!(layers as any)[layerItem.id];
+                            const currentColor = layerCustomColors[layerItem.id] || layerItem.defaultColor;
+
+                            return (
+                              <tr key={layerItem.id} className="hover:bg-[#1a2133] transition-colors">
+                                <td className="py-3 px-4">
+                                  <div className="font-bold text-white flex items-center gap-2">
+                                    <span 
+                                      className="w-2.5 h-2.5 rounded-full inline-block shrink-0 shadow-sm"
+                                      style={{ backgroundColor: currentColor }}
+                                    />
+                                    <span>{layerItem.name}</span>
+                                  </div>
+                                  <div className="text-[10px] text-gray-500 font-mono mt-0.5">
+                                    {layerItem.id}
+                                  </div>
+                                </td>
+
+                                <td className="py-3 px-4 whitespace-nowrap">
+                                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#22293d] text-gray-300 border border-[#2f3954]">
+                                    {layerItem.category}
+                                  </span>
+                                </td>
+
+                                <td className="py-3 px-4 whitespace-nowrap text-center">
+                                  <button
+                                    type="button"
+                                    onClick={async () => {
+                                      toggleLayerPanelHidden(layerItem.id);
+                                      try {
+                                        const apiUrl = getApiUrl();
+                                        await fetch(`${apiUrl}/api/admin/sources/visibility`, {
+                                          method: 'POST',
+                                          headers: getAdminHeaders(),
+                                          body: JSON.stringify({
+                                            source_id: layerItem.id,
+                                            hidden: !isHiddenInPanel
+                                          })
+                                        });
+                                      } catch {
+                                        // local store already updated
+                                      }
+                                    }}
+                                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all cursor-pointer ${
+                                      !isHiddenInPanel
+                                        ? 'bg-emerald-950/80 text-emerald-300 border-emerald-600/50 hover:bg-emerald-900/90'
+                                        : 'bg-gray-800/80 text-gray-400 border-gray-700 hover:text-gray-200'
+                                    }`}
+                                  >
+                                    {!isHiddenInPanel ? '👁️ 面板顯示' : '🚫 面板隱藏'}
+                                  </button>
+                                </td>
+
+                                <td className="py-3 px-4 whitespace-nowrap text-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleLayer(layerItem.id as any)}
+                                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all cursor-pointer ${
+                                      isDataActive
+                                        ? 'bg-indigo-950/80 text-indigo-300 border-indigo-600/50 hover:bg-indigo-900/90'
+                                        : 'bg-gray-800/80 text-gray-400 border-gray-700 hover:text-gray-200'
+                                    }`}
+                                  >
+                                    {isDataActive ? '啟用中' : '關閉'}
+                                  </button>
+                                </td>
+
+                                <td className="py-3 px-4 whitespace-nowrap">
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="color"
+                                      value={currentColor}
+                                      onChange={(e) => setLayerCustomColor(layerItem.id, e.target.value)}
+                                      className="w-7 h-7 rounded border border-gray-700 bg-transparent cursor-pointer p-0.5"
+                                      title="點擊挑選自訂色彩"
+                                    />
+                                    <span className="font-mono text-[11px] text-gray-300 uppercase">
+                                      {currentColor}
+                                    </span>
+                                    {layerCustomColors[layerItem.id] && (
+                                      <button
+                                        type="button"
+                                        onClick={() => setLayerCustomColor(layerItem.id, layerItem.defaultColor)}
+                                        className="text-[10px] text-gray-400 hover:text-rose-400 hover:underline ml-1 cursor-pointer"
+                                        title="恢復此圖層預設色彩"
+                                      >
+                                        重設
+                                      </button>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
                             );
                           })}
                         </tbody>

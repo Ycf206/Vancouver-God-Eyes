@@ -31,11 +31,30 @@
           "Wednesday": "8:30am - 7:00pm",
           "Thursday": "8:30am - 7:00pm",
           "Friday": "8:30am - 7:00pm",
-          "Saturday": "Closed (Pool/Rink/Fitness have separate weekend hours: 9:00am - 5:00pm)",
-          "Sunday": "Closed (Pool/Rink/Fitness have separate weekend hours: 10:00am - 4:00pm)"
+          "Saturday": "Closed",
+          "Sunday": "Closed"
         },
         "facility_type": "community_centres",
-        "id": 1
+        "id": 1,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 6:30am - 9pm",
+              "週六 8am - 10am 僅限女性 (包括跨性別者)",
+              "週六 10am - 7pm",
+              "週日 8am - 10am (55歲以上)",
+              "週日 10am - 7pm"
+            ]
+          },
+          {
+            "title": "游泳池開放時間",
+            "items": [
+              "週一至五 6:30am - 9pm",
+              "週六及日 11am - 7pm"
+            ]
+          }
+        ]
       },
       "id": 1
     },
@@ -137,10 +156,18 @@
           "Thursday": "9:00am - 10:00pm",
           "Friday": "9:00am - 9:00pm",
           "Saturday": "9:00am - 5:00pm",
-          "Sunday": "9:00am - 5:00pm"
+          "Sunday": "10:00am - 5:00pm"
         },
         "facility_type": "community_centres",
-        "id": 4
+        "id": 4,
+        "detailed_info": [
+          {
+            "title": "特別開放時間",
+            "items": [
+              "夏天時間 平日週一至五 9am - 9pm (週末相同)"
+            ]
+          }
+        ]
       },
       "id": 4
     },
@@ -175,7 +202,15 @@
           "Sunday": "9:00am - 5:00pm"
         },
         "facility_type": "community_centres",
-        "id": 5
+        "id": 5,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "健身室開放時間相同"
+            ]
+          }
+        ]
       },
       "id": 5
     },
@@ -207,10 +242,32 @@
           "Thursday": "7:30am - 9:00pm",
           "Friday": "7:30am - 9:00pm",
           "Saturday": "9:00am - 4:00pm",
-          "Sunday": "9:00am - 4:00pm (Closed on Sundays in summer)"
+          "Sunday": "Closed"
         },
         "facility_type": "community_centres",
-        "id": 6
+        "id": 6,
+        "detailed_info": [
+          {
+            "title": "季節開放時間",
+            "items": [
+              "夏天關閉，9月7日開始重新開放週日"
+            ]
+          },
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 7:30am - 8:45pm",
+              "週六 9:00am - 3:30pm"
+            ]
+          },
+          {
+            "title": "辦公時間",
+            "items": [
+              "週一至五 7:30am - 8:45pm",
+              "週六 9am - 3:30pm"
+            ]
+          }
+        ]
       },
       "id": 6
     },
@@ -245,7 +302,16 @@
           "Sunday": "8:45am - 4:00pm"
         },
         "facility_type": "community_centres",
-        "id": 7
+        "id": 7,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 7:30am - 8:45pm",
+              "週六及日 9am - 4pm"
+            ]
+          }
+        ]
       },
       "id": 7
     },
@@ -280,7 +346,19 @@
           "Sunday": "10:00am - 8:00pm"
         },
         "facility_type": "community_centres",
-        "id": 8
+        "id": 8,
+        "detailed_info": [
+          {
+            "title": "設施開放時間",
+            "items": [
+              "餐廳開放時間: 每日 10am - 5:50pm",
+              "康樂項目開放時間: 每日 10am - 8pm",
+              "淋浴間開放時間: 週一至五 9:15am - 7pm、週六及日 10:30am - 6pm",
+              "洗衣開放時間: 週一至五 9am - 2pm、週六及日 (僅供提取)",
+              "蟲子治療開放時間: 週一至五 10am - 4pm"
+            ]
+          }
+        ]
       },
       "id": 8
     },
@@ -315,7 +393,16 @@
           "Sunday": "9:00am - 4:00pm"
         },
         "facility_type": "community_centres",
-        "id": 9
+        "id": 9,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 6:30am - 9:30pm",
+              "週六及日 9am - 4pm"
+            ]
+          }
+        ]
       },
       "id": 9
     },
@@ -350,7 +437,76 @@
           "Sunday": "9:00am - 8:00pm"
         },
         "facility_type": "community_centres",
-        "id": 10
+        "id": 10,
+        "detailed_info": [
+          {
+            "title": "辦公時間",
+            "items": [
+              "週一 10am - 4:30pm",
+              "週二至四 9:30am - 4:30pm",
+              "週五 10am - 4:30pm",
+              "週末及公眾假期 關閉"
+            ]
+          },
+          {
+            "title": "餐廳開放時間",
+            "items": [
+              "每日 9am - 7pm",
+              "用膳時間: 早餐 9am - 11:15am, 午餐 11:30am - 4:15pm, 晚餐 4:30pm - 7pm"
+            ]
+          },
+          {
+            "title": "淋浴間開放時間",
+            "items": [
+              "週一至五 9am - 1pm, 1:50pm - 5:30pm"
+            ]
+          },
+          {
+            "title": "洗衣開放時間",
+            "items": [
+              "每日 10am - 6pm",
+              "健康中心資料櫃枱 (2樓提取)"
+            ],
+            "table": {
+              "headers": [
+                "投遞時間",
+                "提取時間",
+                "最多衣服"
+              ],
+              "rows": [
+                [
+                  "9am",
+                  "2pm",
+                  "14"
+                ],
+                [
+                  "12pm",
+                  "4:30pm",
+                  "13"
+                ],
+                [
+                  "2:45pm",
+                  "5:45pm",
+                  "5"
+                ]
+              ]
+            }
+          },
+          {
+            "title": "舉重室開放時間",
+            "items": [
+              "週一至五 3pm - 7pm",
+              "週六及日 10am - 3pm, 3:30pm - 6pm",
+              "女性專用時段: 2pm - 3pm"
+            ]
+          },
+          {
+            "title": "2樓遊戲室",
+            "items": [
+              "每日 9am - 7:30pm"
+            ]
+          }
+        ]
       },
       "id": 10
     },
@@ -385,7 +541,15 @@
           "Sunday": "10:00am - 2:00pm"
         },
         "facility_type": "community_centres",
-        "id": 11
+        "id": 11,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "健身室開放時間相同"
+            ]
+          }
+        ]
       },
       "id": 11
     },
@@ -420,7 +584,15 @@
           "Sunday": "9:00am - 5:00pm"
         },
         "facility_type": "community_centres",
-        "id": 12
+        "id": 12,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "每日 6am - 9pm"
+            ]
+          }
+        ]
       },
       "id": 12
     },
@@ -455,7 +627,16 @@
           "Sunday": "9:00am - 4:00pm"
         },
         "facility_type": "community_centres",
-        "id": 13
+        "id": 13,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 7:30am - 9:30pm",
+              "週六及日 9am - 4pm"
+            ]
+          }
+        ]
       },
       "id": 13
     },
@@ -491,7 +672,23 @@
           "Holidays": "9:00am - 6:00pm"
         },
         "facility_type": "community_centres",
-        "id": 14
+        "id": 14,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 6:30am - 10pm",
+              "週六及日 9am - 6pm"
+            ]
+          },
+          {
+            "title": "長者中心開放時間",
+            "items": [
+              "週一至五 9am - 6pm",
+              "週六 9am - 4pm"
+            ]
+          }
+        ]
       },
       "id": 14
     },
@@ -526,7 +723,17 @@
           "Sunday": "8:45am - 7:00pm"
         },
         "facility_type": "community_centres",
-        "id": 15
+        "id": 15,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 6:30am - 9pm",
+              "週六及日 8am - 7pm",
+              "公眾假期 8am - 3pm"
+            ]
+          }
+        ]
       },
       "id": 15
     },
@@ -561,7 +768,17 @@
           "Sunday": "8:30am - 8:00pm"
         },
         "facility_type": "community_centres",
-        "id": 16
+        "id": 16,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 6am - 10pm",
+              "週六及日 7am - 8pm",
+              "公眾假期 7am - 8pm"
+            ]
+          }
+        ]
       },
       "id": 16
     },
@@ -587,17 +804,25 @@
           "lat": 49.2163
         },
         "hours": {
-          "Monday": "9:00am - 9:00pm",
-          "Tuesday": "9:00am - 9:00pm",
-          "Wednesday": "9:00am - 9:00pm",
-          "Thursday": "9:00am - 9:00pm",
-          "Friday": "9:00am - 8:00pm",
-          "Saturday": "9:00am - 4:00pm",
-          "Sunday": "Closed",
+          "Monday": "8:00am - 8:00pm",
+          "Tuesday": "8:00am - 8:00pm",
+          "Wednesday": "8:00am - 8:00pm",
+          "Thursday": "8:00am - 8:00pm",
+          "Friday": "8:00am - 8:00pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "9:00am - 5:00pm",
           "Holidays": "Closed"
         },
         "facility_type": "community_centres",
-        "id": 17
+        "id": 17,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "健身室開放時間相同"
+            ]
+          }
+        ]
       },
       "id": 17
     },
@@ -632,7 +857,15 @@
           "Sunday": "9:00am - 6:00pm"
         },
         "facility_type": "community_centres",
-        "id": 18
+        "id": 18,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "健身室開放時間相同"
+            ]
+          }
+        ]
       },
       "id": 18
     },
@@ -668,7 +901,16 @@
           "Holidays": "Closed"
         },
         "facility_type": "community_centres",
-        "id": 19
+        "id": 19,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "健身室開放時間相同",
+              "健身室女性專用時間 12nn - 2pm"
+            ]
+          }
+        ]
       },
       "id": 19
     },
@@ -703,7 +945,15 @@
           "Sunday": "9:00am - 4:30pm"
         },
         "facility_type": "community_centres",
-        "id": 20
+        "id": 20,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "健身室開放時間相同"
+            ]
+          }
+        ]
       },
       "id": 20
     },
@@ -739,7 +989,15 @@
           "Holidays": "Closed"
         },
         "facility_type": "community_centres",
-        "id": 21
+        "id": 21,
+        "detailed_info": [
+          {
+            "title": "公眾假期",
+            "items": [
+              "公眾假期開放時間請參考中心官方公告"
+            ]
+          }
+        ]
       },
       "id": 21
     },
@@ -774,7 +1032,17 @@
           "Sunday": "10:00am - 2:00pm"
         },
         "facility_type": "community_centres",
-        "id": 22
+        "id": 22,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 9am - 8:30pm",
+              "週六 9am - 4:30pm",
+              "週日 10am - 1:30pm"
+            ]
+          }
+        ]
       },
       "id": 22
     },
@@ -809,7 +1077,22 @@
           "Sunday": "9:00am - 5:00pm"
         },
         "facility_type": "community_centres",
-        "id": 23
+        "id": 23,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "健身室開放時間相同"
+            ]
+          },
+          {
+            "title": "夏季開放時間 (7 - 8 月)",
+            "items": [
+              "週一至五 8:30am - 8pm",
+              "週六及日 9am - 1:30pm"
+            ]
+          }
+        ]
       },
       "id": 23
     },
@@ -845,7 +1128,17 @@
           "Holidays": "Closed"
         },
         "facility_type": "community_centres",
-        "id": 24
+        "id": 24,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 9am - 8:50pm",
+              "週六 9am - 4:50pm",
+              "週日 關閉"
+            ]
+          }
+        ]
       },
       "id": 24
     },
@@ -880,7 +1173,16 @@
           "Sunday": "8:00am - 5:00pm"
         },
         "facility_type": "community_centres",
-        "id": 25
+        "id": 25,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 6am - 9:45pm",
+              "週六及日 8am - 4:45pm"
+            ]
+          }
+        ]
       },
       "id": 25
     },
@@ -915,7 +1217,16 @@
           "Sunday": "9:00am - 5:00pm"
         },
         "facility_type": "community_centres",
-        "id": 26
+        "id": 26,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "週一至五 6am - 9pm",
+              "週六及日 9am - 5pm"
+            ]
+          }
+        ]
       },
       "id": 26
     },
@@ -950,7 +1261,15 @@
           "Sunday": "9:00am - 5:00pm"
         },
         "facility_type": "community_centres",
-        "id": 27
+        "id": 27,
+        "detailed_info": [
+          {
+            "title": "健身室開放時間",
+            "items": [
+              "健身室開放時間相同"
+            ]
+          }
+        ]
       },
       "id": 27
     }

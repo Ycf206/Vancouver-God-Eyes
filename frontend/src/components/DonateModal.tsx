@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Heart, X, ExternalLink, ShieldCheck, Coffee, Sparkles, CreditCard, Info } from 'lucide-react';
+import { Heart, X, ExternalLink, ShieldCheck, Coffee, Sparkles, CreditCard, Info, Lock, TriangleAlert, HeartHandshake } from 'lucide-react';
 
 interface DonateModalProps {
   isOpen: boolean;
@@ -70,8 +70,7 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
         <div className="p-5 overflow-y-auto flex flex-col gap-4 text-xs leading-relaxed">
           {/* Mission / Appreciation Card */}
           <div className="bg-[#25262c] p-3.5 rounded-lg border border-[#373a40]/70 flex flex-col gap-2">
-            <div className="flex items-center gap-1.5 text-rose-300 font-semibold text-xs">
-              <Sparkles className="w-4 h-4 text-amber-400" />
+            <div className="flex items-center text-rose-300 font-semibold text-xs">
               <span>如果您喜歡這個作品，歡迎給予一份溫暖鼓勵！</span>
             </div>
             <p className="text-gray-300 text-[11.5px] leading-relaxed">
@@ -191,8 +190,7 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
           {/* Compliance & Legal Notice Box (金流合規與條款聲明) */}
           <div className="mt-2 bg-[#191a1e] p-3 rounded-lg border border-[#2d2e34] text-[10.5px] text-gray-400 flex flex-col gap-1.5 leading-relaxed relative">
             <div className="flex items-center justify-between font-bold text-gray-300">
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="flex items-center">
                 <span>贊助條款、隱私與合規聲明</span>
               </div>
               
@@ -215,7 +213,6 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
                   <div className="absolute right-0 bottom-full mb-2 w-[280px] sm:w-[320px] bg-[#161922]/95 backdrop-blur-md text-gray-200 p-3 rounded-lg shadow-2xl border border-gray-700 text-[10.5px] leading-relaxed z-50 animate-in fade-in duration-150">
                     <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-gray-700/80">
                       <span className="font-bold text-white text-[11px] flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3 text-emerald-400" />
                         <span>Terms &amp; Compliance Statement</span>
                       </span>
                       <span className="text-[9.5px] text-emerald-400 font-mono">English</span>
@@ -232,19 +229,19 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
             </div>
 
             <div className="flex items-start gap-1.5">
-              <span className="text-gray-500 shrink-0">•</span>
+              <HeartHandshake className="w-3.5 h-3.5 text-rose-400 shrink-0 mt-0.5" />
               <span><strong>贊助性質</strong>：本贊助純屬對本專案與作者心血付出之自願贈與及打賞，不包含任何實體商品、商業回饋或特定服務對價。</span>
             </div>
             <div className="flex items-start gap-1.5">
-              <span className="text-gray-500 shrink-0">•</span>
+              <CreditCard className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
               <span><strong>不可退款說明</strong>：贊助為自願性無償支持行為，款項一經處理完成恕無法提供退款，請於支付前確認金額。</span>
             </div>
             <div className="flex items-start gap-1.5">
-              <span className="text-amber-400 shrink-0">⚠️</span>
+              <TriangleAlert className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
               <span><strong>不可申報扣抵稅額聲明</strong>：本專案為個人獨立開發之開源公益地圖工具，非加拿大政府立案之慈善機構，<strong>因此贊助款項無法開立免稅收據，亦不可申報抵扣個人或企業所得稅額</strong>。</span>
             </div>
             <div className="flex items-start gap-1.5">
-              <span className="text-emerald-400 shrink-0">🔒</span>
+              <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
               <span><strong>支付安全與隱私</strong>：所有線上付款均經由符合國際最高 PCI-DSS Level 1 認證標準之 Stripe 金流伺服器加密處理，本網站絕不儲存亦不會接觸您的信用卡敏感資訊。</span>
             </div>
           </div>

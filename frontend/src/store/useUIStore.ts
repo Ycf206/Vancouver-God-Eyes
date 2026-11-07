@@ -35,6 +35,7 @@ export interface UIState {
     skytrainTrains: boolean;
     skytrainRoutes: boolean;
     skytrainStops: boolean;
+    skytrainFareZones: boolean;
     seabusVehicles: boolean;
     seabusRoutes: boolean;
     seabusStops: boolean;
@@ -185,7 +186,7 @@ export interface UIState {
   disableLayer: (layer: keyof UIState['layers']) => void;
   resetAllLayers: () => void;
   parkingMeterFilter: {
-    maxRate: number; // 0 = all
+    maxRate: number; // 20 = all
     creditCardOnly: boolean;
     timePeriod: 'auto' | 'day' | 'night';
   };
@@ -245,6 +246,10 @@ export interface UIState {
   hiddenLayersInPanel: Record<string, boolean>;
   toggleLayerPanelHidden: (layerKey: string) => void;
   setHiddenLayersInPanel: (hidden: Record<string, boolean>) => void;
+  // 11.6 圖層控制顏色客製化
+  layerCustomColors: Record<string, string>;
+  setLayerCustomColor: (layerKey: string, color: string) => void;
+  resetLayerCustomColors: () => void;
 }
 
 
@@ -271,6 +276,7 @@ export const useUIStore = create<UIState>()(
         skytrainTrains: true,
         skytrainRoutes: true,
         skytrainStops: true,
+        skytrainFareZones: false,
         seabusVehicles: true,
         seabusRoutes: true,
         seabusStops: true,
@@ -588,7 +594,7 @@ export const useUIStore = create<UIState>()(
             contourInterval: 'off',
             searchTarget: null,
             parkingMeterFilter: {
-              maxRate: 0,
+              maxRate: 20,
               creditCardOnly: false,
               timePeriod: 'auto',
             },
@@ -600,7 +606,7 @@ export const useUIStore = create<UIState>()(
           };
         }),
       parkingMeterFilter: {
-        maxRate: 0,
+        maxRate: 20,
         creditCardOnly: false,
         timePeriod: 'auto',
       },
@@ -706,6 +712,15 @@ export const useUIStore = create<UIState>()(
           },
         })),
       setHiddenLayersInPanel: (hidden) => set({ hiddenLayersInPanel: hidden }),
+      layerCustomColors: {},
+      setLayerCustomColor: (layerKey, color) =>
+        set((state) => ({
+          layerCustomColors: {
+            ...state.layerCustomColors,
+            [layerKey]: color,
+          },
+        })),
+      resetLayerCustomColors: () => set({ layerCustomColors: {} }),
     }),
 
     {
@@ -724,6 +739,7 @@ export const useUIStore = create<UIState>()(
         userLocation: (state.userLocation && !state.userLocation.isRealtime && !state.userLocation.address?.includes('即時') && !state.userLocation.address?.includes('GPS')) ? state.userLocation : null,
         navigationAddress: state.navigationAddress,
         hiddenLayersInPanel: state.hiddenLayersInPanel,
+        layerCustomColors: state.layerCustomColors,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       merge: (persistedState: any, currentState: UIState) => {
@@ -741,11 +757,13 @@ export const useUIStore = create<UIState>()(
           userLocation: (persistedState?.userLocation && !persistedState?.userLocation?.isRealtime && !persistedState?.userLocation?.address?.includes('即時') && !persistedState?.userLocation?.address?.includes('GPS')) ? persistedState.userLocation : null,
           navigationAddress: persistedState?.navigationAddress || '',
           hiddenLayersInPanel: persistedState?.hiddenLayersInPanel || {},
+          layerCustomColors: persistedState?.layerCustomColors || {},
           layers: {
             ...currentState.layers,
             ...(persistedState?.layers || {}),
             contours: contourInterval !== 'off',
             busExchanges: persistedState?.layers?.busExchanges ?? true,
+            skytrainFareZones: persistedState?.layers?.skytrainFareZones || false,
             localAreaBoundary: persistedState?.layers?.localAreaBoundary || false,
             fuel: persistedState?.layers?.fuel || false,
             tesla: persistedState?.layers?.tesla || false,

@@ -370,6 +370,11 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "水上飛機": ("airports",),
     "airport": ("airports",),
     "yvr": ("airports",),
+    "機場停車場": ("airports",),
+    "yvr parking": ("airports",),
+    "parkade": ("airports",),
+    "jetset": ("airports",),
+    "valet": ("airports",),
     "商船": ("maritime_vessel",),
     "貨輪": ("maritime_vessel",),
     "船運": ("maritime_vessel", "marine_terminals"),
@@ -1275,23 +1280,34 @@ class LayerSearchEngine:
                     name = str(props.get("name") or "機場").strip()
                     name_en = str(props.get("name_en") or "").strip()
                     sub = f"{name_en} · {icao} / {iata}".strip(" ·/")
+                    is_parking = props.get("facility_type") == "airport_parking"
                     is_main_intl = props.get("sub_type") == "international_airport" or feat.get("id") == "airport_yvr_main"
-                    ap_codes = [iata, icao] if is_main_intl else ([f"{iata} south"] if props.get("sub_type") == "south_terminal" else [iata, icao])
+                    ap_codes = []
+                    if is_parking:
+                        badge = "機場停車場"
+                        icon = "🅿️"
+                        extra_kw = f"{name} {name_en} {props.get('address', '')} 機場停車場 停車場 parking parkade valet jetset yvr"
+                    else:
+                        badge = str(props.get("badge") or "機場")
+                        icon = str(props.get("icon") or "🛫")
+                        extra_kw = f"{name_en} {iata} {icao} {props.get('local_area', '')} {props.get('operators', '')} 機場 飛機場 水上飛機 airport seaplane"
+                        ap_codes = [iata, icao] if is_main_intl else ([f"{iata} south"] if props.get("sub_type") == "south_terminal" else [iata, icao])
+
                     self._add_doc(
                         snap,
                         item_id=str(feat.get("id") or props.get("id") or f"airport_{iata}"),
                         title=name,
-                        subtitle=sub,
+                        subtitle=sub if not is_parking else str(props.get("address") or "Vancouver, BC"),
                         category="airports",
-                        badge=str(props.get("badge") or "機場"),
-                        icon=str(props.get("icon") or "🛫"),
+                        badge=badge,
+                        icon=icon,
                         lon=lon,
                         lat=lat,
-                        zoom=14,
+                        zoom=15 if is_parking else 14,
                         layer_key="airports",
                         meta=props,
                         addr_text=str(props.get("address") or ""),
-                        extra_keywords=f"{name_en} {iata} {icao} {props.get('local_area', '')} {props.get('operators', '')} 機場 飛機場 水上飛機 airport seaplane",
+                        extra_keywords=extra_kw,
                         exact_codes=ap_codes,
                     )
                     indexed_airports = True

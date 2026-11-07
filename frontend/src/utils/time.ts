@@ -74,6 +74,8 @@ export function formatOpeningHours(
   function parseSingleTimeToken(token: string, inferredAmpm: string | null = null): string | null {
     const m = token.trim().match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]\.?m\.?)?$/i);
     if (!m) return null;
+    // Pure integer like "14", "13", "5" without minutes and without am/pm is not a standalone time token
+    if (!m[2] && !m[3] && !inferredAmpm) return null;
     let hour = parseInt(m[1], 10);
     const min = m[2] || '00';
     let ampm = m[3] ? m[3].toLowerCase().replace(/\./g, '') : inferredAmpm;

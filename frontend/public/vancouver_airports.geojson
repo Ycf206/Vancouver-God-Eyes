@@ -25,7 +25,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-123.184444, 49.193889]
+        "coordinates": [
+          -123.184444,
+          49.193889
+        ]
       }
     },
     {
@@ -50,7 +53,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-123.1610, 49.1795]
+        "coordinates": [
+          -123.161,
+          49.1795
+        ]
       }
     },
     {
@@ -76,7 +82,111 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-123.1147, 49.2894]
+        "coordinates": [
+          -123.1147,
+          49.2894
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "airport_parking_gateway_valet",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17548834782669,
+          49.19484539504399
+        ]
+      },
+      "properties": {
+        "id": "airport_parking_gateway_valet",
+        "name": "Gateway Valet Parking",
+        "name_en": "Gateway Valet Parking",
+        "facility_type": "airport_parking",
+        "sub_type": "airport_parking",
+        "address": "Grant McConachie Wy, Richmond, BC V7B 1K7",
+        "half_hour_hourly": null,
+        "daily": "$67.75 + $20.00 Valet Fee (Valet fee is applied only once per visit)",
+        "weekly": null,
+        "distance": "Curbside (0 min. walk)",
+        "information": "The quickest, most convenient option for parking at YVR. Leave your car with a valet attendant right outside the Departures area on Level 3 — no shuttle or walk necessary. Treat your car to exterior and interior detailing while you're away (additional charges apply). Free EV charging and luggage assistance upon request. Contact: feedback@gatewayvalet.ca",
+        "booking_url": "https://parking.yvr.ca/vancouverbooking/?fresh_start=Y&shop=p"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "airport_parking_terminal_parkade",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17892783182207,
+          49.19353997616383
+        ]
+      },
+      "properties": {
+        "id": "airport_parking_terminal_parkade",
+        "name": "Terminal Parkade",
+        "name_en": "Terminal Parkade",
+        "facility_type": "airport_parking",
+        "sub_type": "airport_parking",
+        "has_live_capacity": true,
+        "address": "Parkade, 3211 Grant McConachie Wy, Richmond, BC V7B 0A4",
+        "half_hour_hourly": "$14.75 per half hour (First 30 minutes free)",
+        "daily": "$67.75 (Pre-book to save)",
+        "weekly": null,
+        "distance": "1-5 min. walk",
+        "information": "Multi-level, covered parking, just steps away from the terminal. P1 provides hourly parking only (4 hours maximum). Ideal for short overnight trips or picking up and dropping off family and friends. One DC fast charging stall on P1 and two Level 2 EV charging stalls on P1, P2, and P3.",
+        "booking_url": "https://parking.yvr.ca/vancouverbooking/?fresh_start=Y&shop=p"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "airport_parking_jetset",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16642652600653,
+          49.19400607216194
+        ]
+      },
+      "properties": {
+        "id": "airport_parking_jetset",
+        "name": "jetSet",
+        "name_en": "jetSet",
+        "facility_type": "airport_parking",
+        "sub_type": "airport_parking",
+        "address": "5911 N Service Rd, Richmond, BC V7B 0A4",
+        "half_hour_hourly": null,
+        "daily": "$36.00 (Pre-book to save)",
+        "weekly": "Pre-book to save",
+        "distance": "5-7 min free shuttle. Departs every 15-20 min. Learn more.",
+        "information": "Guaranteed parking now available for both reservations and drive-up customers. Drop-off your car and hop on the 5-minute shuttle to the terminal (every 20 minutes, available 24/7). Treat your car to exterior and interior detailing while you're away (additional charges apply). Free EV charging. Lounge equipped with washrooms and live flight information. Contact: jetset@yvr.ca",
+        "booking_url": "https://parking.yvr.ca/vancouverbooking/?fresh_start=Y&shop=p"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "airport_parking_value_long_term",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14713356917093,
+          49.19538790244895
+        ]
+      },
+      "properties": {
+        "id": "airport_parking_value_long_term",
+        "name": "Value Long Term Lot",
+        "name_en": "Value Long Term Lot",
+        "facility_type": "airport_parking",
+        "sub_type": "airport_parking",
+        "address": "Templeton Station Rd, Richmond, BC V7B 1L3",
+        "half_hour_hourly": "$4.50 per hour",
+        "daily": "$31.00 (Pre-book to save)",
+        "weekly": "$165.00 (Pre-book to save)",
+        "distance": "4 min. free train. Departs every 6-20 min",
+        "information": "Free train to terminal between 5:10 am – 00:56 am (trains run up to every 6 minutes). Free shuttle to terminal every 20 minutes provided outside of train operating hours only. 10 Level 2 EV charging stalls.",
+        "booking_url": "https://parking.yvr.ca/vancouverbooking/?fresh_start=Y&shop=p"
       }
     }
   ]

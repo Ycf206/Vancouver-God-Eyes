@@ -300,6 +300,9 @@ export default function FacilityWeeklyHoursSchedule({
       if (rawTodayVal) {
         const fmt = formatOpeningHours(rawTodayVal, timeFormat);
         todayHoursStr = typeof fmt === 'string' ? fmt : (typeof fmt === 'object' && fmt ? String(Object.values(fmt)[0] || '') : String(fmt || ''));
+        if (theme === 'amber' && todayHoursStr === '全日') {
+          todayHoursStr = '24小時';
+        }
         if (/^(closed|休館|休息|off)$/i.test(todayHoursStr.trim())) {
           todayHoursStr = '休息';
         }
@@ -315,6 +318,9 @@ export default function FacilityWeeklyHoursSchedule({
         if (val) {
           const fmt = formatOpeningHours(val, timeFormat);
           displayHours = typeof fmt === 'string' ? fmt : (typeof fmt === 'object' && fmt ? String(Object.values(fmt)[0] || '休息') : String(fmt || '休息'));
+        }
+        if (theme === 'amber' && displayHours === '全日') {
+          displayHours = '24小時';
         }
         if (/^(closed|休館|休息|off)$/i.test(displayHours.trim())) {
           displayHours = '休息';
@@ -395,7 +401,8 @@ export default function FacilityWeeklyHoursSchedule({
     const rawSingle = typeof normalizedHours === 'string'
       ? formatOpeningHours(normalizedHours, timeFormat)
       : (todayHoursStr || (typeof normalizedHours === 'object' && normalizedHours ? formatOpeningHours(Object.values(normalizedHours)[0] as string, timeFormat) : ''));
-    const singleDisplay = typeof rawSingle === 'string' ? rawSingle : (typeof rawSingle === 'object' && rawSingle ? String(Object.values(rawSingle)[0] || '') : String(rawSingle || ''));
+    const rawDisplay = typeof rawSingle === 'string' ? rawSingle : (typeof rawSingle === 'object' && rawSingle ? String(Object.values(rawSingle)[0] || '') : String(rawSingle || ''));
+    const singleDisplay = (theme === 'amber' && rawDisplay === '全日') ? '24小時' : rawDisplay;
 
     if (singleDisplay.length > 25) {
       return (

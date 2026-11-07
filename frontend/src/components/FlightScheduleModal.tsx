@@ -1,398 +1,376 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useUIStore } from '@/store/useUIStore';
-import { getApiUrl } from '@/utils/api';
 import { formatTimePreference } from '@/utils/time';
 import { 
   X, Plane, PlaneTakeoff, PlaneLanding, Search, RefreshCw, 
-  Clock, ArrowRight
+  ArrowRight, ChevronDown, ChevronUp, MapPin
 } from 'lucide-react';
 
-interface FlightScheduleItem {
+// Known airport coordinates dictionary for route drawing fallback
+const AIRPORT_COORDS: Record<string, [number, number]> = {
+  YVR: [-123.184444, 49.193889],
+  CDG: [2.55, 49.0097],
+  YXS: [-122.678, 53.883],
+  SEA: [-122.3088, 47.4502],
+  KEF: [-22.6056, 63.985],
+  YYF: [-119.602, 49.463],
+  YWL: [-122.054, 52.183],
+  PVR: [-105.254, 20.68],
+  YLW: [-119.378, 49.956],
+  YEG: [-113.5797, 53.3097],
+  YYC: [-114.02, 51.13],
+  YYZ: [-79.63, 43.68],
+  YUL: [-73.74, 45.47],
+  SFO: [-122.375, 37.618],
+  LAX: [-118.408, 33.942],
+  HKG: [113.914, 22.308],
+  NRT: [140.386, 35.764],
+  HND: [139.78, 35.55],
+  ICN: [126.45, 37.46],
+  TPE: [121.23, 25.07],
+  SYD: [151.177, -33.946],
+  SIN: [103.99, 1.36],
+  LHR: [-0.46, 51.47],
+  OGG: [-156.43, 20.89],
+  HNL: [-157.92, 21.31],
+  CUN: [-86.87, 21.03],
+  PHX: [-112.01, 33.43],
+  ORD: [-87.90, 41.97],
+  JFK: [-73.78, 40.64],
+  SLC: [-111.97, 40.78],
+  DEN: [-104.67, 39.86],
+  DFW: [-97.04, 32.89],
+  YYJ: [-123.42, 48.64],
+  YQQ: [-124.88, 49.71]
+};
+
+interface MergedFlight {
   id: string;
-  flight_id?: string;
-  flight_no: string;
+  flight_number: string;
   airline: string;
-  category: string;
-  is_domestic: boolean;
-  flight_type?: 'arr' | 'dep';
-  origin_code?: string;
-  origin_name?: string;
-  origin_city?: string;
-  origin_coord?: [number, number];
-  dest_code?: string;
-  dest_name?: string;
-  dest_city?: string;
-  dest_coord?: [number, number];
-  departure_time?: string;
-  arrival_time?: string;
-  dep_dt_iso?: string;
-  arr_dt_iso?: string;
-  progress_percent?: number;
-  date?: string;
-  time: string;
-  target_dt_iso?: string;
+  carrier?: string;
+  type: 'A' | 'D';
+  range: string; // 'T' | 'D' | 'I'
   city: string;
-  terminal: string;
-  gate: string;
+  airport_code: string;
+  scheduled_time: string;
+  estimated_time?: string;
+  origin_departure_time?: string;
+  dest_arrival_time?: string;
+  desk_from?: string;
+  desk_to?: string;
+  gate?: string;
+  carousel?: string;
   status: string;
-  status_code: string;
-  remaining_time?: string;
-  remaining_code?: string;
-  route_coords?: [number, number][];
+  aircraft_type?: string;
+  yvr_coords: [number, number];
+  remote_coords?: [number, number] | null;
 }
-
-interface ScheduleData {
-  airport: string;
-  airport_name: string;
-  updated_at: string;
-  total_arrivals: number;
-  total_departures: number;
-  source?: string;
-  arrivals: FlightScheduleItem[];
-  departures: FlightScheduleItem[];
-}
-
-const formatDurationMin = (mins: number) => {
-  const safeMins = Math.max(1, Math.round(mins));
-  const h = Math.floor(safeMins / 60);
-  const m = safeMins % 60;
-  if (h > 0 && m > 0) return `${h}時${m}分`;
-  if (h > 0) return `${h}小時`;
-  return `${m}分`;
-};
-
-const formatGateDisplay = (gate?: string) => {
-  if (!gate || gate === '--' || gate.trim() === '') {
-    return '航廈候機區';
-  }
-  const g = gate.trim();
-  if (
-    g.startsWith('Gate') ||
-    g.includes('登機門') ||
-    g.includes('轉盤') ||
-    g.includes('出發') ||
-    g.includes('抵達') ||
-    g.includes('航廈') ||
-    g.includes('Pier')
-  ) {
-    return g;
-  }
-  return `Gate ${g}`;
-};
 
 export default function FlightScheduleModal() {
   const { isFlightScheduleOpen, setFlightScheduleOpen, searchTarget, setSearchTarget, timeFormat } = useUIStore();
   const [activeTab, setActiveTab] = useState<'arrivals' | 'departures'>('arrivals');
-  const [filterType, setFilterType] = useState<'all' | 'domestic' | 'international'>('all');
+  const [filterRange, setFilterRange] = useState<'all' | 'D' | 'T' | 'I'>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [data, setData] = useState<ScheduleData | null>(null);
+  const [arrivals, setArrivals] = useState<MergedFlight[]>([]);
+  const [departures, setDepartures] = useState<MergedFlight[]>([]);
   const [loading, setLoading] = useState(false);
-  
-  // Real-time tick every 10 seconds for dynamic countdown & flight progress bar
-  const [currentTime, setCurrentTime] = useState<number>(Date.now());
+  const [showCompletedAccordion, setShowCompletedAccordion] = useState(false);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 10000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const fetchSchedules = () => {
+  const fetchFlights = async () => {
     setLoading(true);
-    const apiUrl = getApiUrl();
-    fetch(`${apiUrl}/api/flights/schedules`)
-      .then(res => res.json())
-      .then(json => {
-        setData(json);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch flight schedules:', err);
-        setLoading(false);
-      });
+    try {
+      const res = await fetch('/api/airports/flights');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.arrivals) setArrivals(json.arrivals);
+        if (json.departures) setDepartures(json.departures);
+      } else {
+        // Fallback to static cache
+        const cacheRes = await fetch('/vancouver_yvr_flights.json');
+        if (cacheRes.ok) {
+          const json = await cacheRes.json();
+          if (json.arrivals) setArrivals(json.arrivals);
+          if (json.departures) setDepartures(json.departures);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch flights:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     if (isFlightScheduleOpen) {
-      fetchSchedules();
+      fetchFlights();
+      const timer = setInterval(fetchFlights, 60000); // 1 min auto-refresh
+      return () => clearInterval(timer);
     }
   }, [isFlightScheduleOpen]);
 
-  if (!isFlightScheduleOpen) return null;
-
-  // Calculate live countdown, status, and real-time flight progress dynamically against currentTime
-  const getLiveFlightTiming = (flight: FlightScheduleItem) => {
-    let targetMs: number | null = null;
-    if (flight.target_dt_iso) {
-      const parsed = new Date(flight.target_dt_iso).getTime();
-      if (!isNaN(parsed)) {
-        targetMs = parsed;
-      }
-    }
-
-    const isArr = flight.flight_type === 'arr';
-
-    // Parse departure and arrival timestamps for time-based progress bar
-    let depMs: number | null = flight.dep_dt_iso ? new Date(flight.dep_dt_iso).getTime() : null;
-    let arrMs: number | null = flight.arr_dt_iso ? new Date(flight.arr_dt_iso).getTime() : null;
-    if (depMs && isNaN(depMs)) depMs = null;
-    if (arrMs && isNaN(arrMs)) arrMs = null;
-
-    if (targetMs) {
-      const defaultDurMs = (flight.is_domestic ? 2.5 : 8.5) * 3600000;
-      if (isArr) {
-        if (!arrMs) arrMs = targetMs;
-        if (!depMs) depMs = arrMs - defaultDurMs;
-      } else {
-        if (!depMs) depMs = targetMs;
-        if (!arrMs) arrMs = depMs + defaultDurMs;
-      }
-    }
-
-    let progressPercent = typeof flight.progress_percent === 'number' ? flight.progress_percent : 0;
-    let progressPhase: 'scheduled' | 'enroute' | 'landed' = 'scheduled';
-    let progressLabel = '尚未起飛';
-    let progressDetail = '';
-
-    if (depMs && arrMs && arrMs > depMs) {
-      const totalDurMin = Math.max(1, Math.round((arrMs - depMs) / 60000));
-      if (currentTime <= depMs) {
-        progressPercent = 0;
-        progressPhase = 'scheduled';
-        progressLabel = '尚未起飛';
-        progressDetail = `總航程 ${formatDurationMin(totalDurMin)}`;
-      } else if (currentTime >= arrMs) {
-        progressPercent = 100;
-        progressPhase = 'landed';
-        progressLabel = '已抵達';
-        progressDetail = `總航程 ${formatDurationMin(totalDurMin)}`;
-      } else {
-        const ratio = (currentTime - depMs) / (arrMs - depMs);
-        progressPercent = Math.max(1, Math.min(99, Math.round(ratio * 100)));
-        progressPhase = 'enroute';
-        const elapsedMin = Math.max(1, Math.round((currentTime - depMs) / 60000));
-        const remToArrMin = Math.max(1, Math.round((arrMs - currentTime) / 60000));
-        progressLabel = '飛行中';
-        progressDetail = `已飛 ${formatDurationMin(elapsedMin)} · 距抵 ${formatDurationMin(remToArrMin)}`;
-      }
-    }
-
-    if (!targetMs) {
-      return {
-        remainingText: flight.remaining_time || '--',
-        liveStatusCode: flight.remaining_code || 'normal',
-        isPast: flight.remaining_code === 'past',
-        displayStatus: flight.status || '依時刻表排程',
-        badgeType: 'sky',
-        progressPercent,
-        progressPhase,
-        progressLabel,
-        progressDetail
-      };
-    }
-
-    const diffMs = targetMs - currentTime;
-    const diffMin = Math.round(diffMs / 60000);
-
-    // Filter out past flights:
-    // - Arrivals: > 20 mins after landing
-    // - Departures: > 45 mins after takeoff (so recently departed flights stay visible with live progress bar!)
-    const pastThresholdMin = isArr ? -20 : -45;
-    if (diffMin < pastThresholdMin) {
-      return {
-        remainingText: isArr ? '已降落' : '已起飛',
-        liveStatusCode: 'past',
-        isPast: true,
-        displayStatus: isArr ? '已降落' : '已起飛',
-        badgeType: 'gray',
-        progressPercent,
-        progressPhase,
-        progressLabel,
-        progressDetail
-      };
-    }
-
-    // Just arrived / departed (within 0 to pastThresholdMin)
-    if (diffMin < 0) {
-      const absMin = Math.abs(diffMin);
-      return {
-        remainingText: isArr ? `已降落 (${absMin}分前)` : `已起飛 (${absMin}分前)`,
-        liveStatusCode: 'active',
-        isPast: false,
-        displayStatus: isArr ? '已降落 (滑行中)' : '已起飛 (航行中)',
-        badgeType: 'emerald',
-        progressPercent,
-        progressPhase,
-        progressLabel,
-        progressDetail
-      };
-    }
-
-    // Imminent (0 to 10 mins)
-    if (diffMin <= 10) {
-      return {
-        remainingText: isArr ? `即將降落 (${diffMin}分)` : `即將起飛 (${diffMin}分)`,
-        liveStatusCode: 'urgent',
-        isPast: false,
-        displayStatus: isArr ? '進場降落中' : '最後登機 / 關艙',
-        badgeType: 'amber',
-        progressPercent,
-        progressPhase,
-        progressLabel,
-        progressDetail
-      };
-    }
-
-    // Within 1 hour
-    if (diffMin < 60) {
-      return {
-        remainingText: `剩餘 ${diffMin} 分鐘`,
-        liveStatusCode: 'soon',
-        isPast: false,
-        displayStatus: flight.status || (isArr ? '航行中 (準點)' : '準備登機'),
-        badgeType: 'sky',
-        progressPercent,
-        progressPhase,
-        progressLabel,
-        progressDetail
-      };
-    }
-
-    // More than 1 hour
-    const hours = Math.floor(diffMin / 60);
-    const mins = diffMin % 60;
-    const remStr = mins > 0 ? `剩餘 ${hours}時 ${mins}分` : `剩餘 ${hours} 小時`;
-
-    return {
-      remainingText: remStr,
-      liveStatusCode: 'normal',
-      isPast: false,
-      displayStatus: flight.status || '準點',
-      badgeType: 'sky',
-      progressPercent,
-      progressPhase,
-      progressLabel,
-      progressDetail
-    };
+  // Format flight status text and colors
+  const formatStatus = (statusStr?: string) => {
+    if (!statusStr) return { text: '準點', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
+    const s = statusStr.trim();
+    if (/arrived|已降落|已抵達/i.test(s)) return { text: '已抵達', color: 'text-gray-400 bg-gray-500/10 border-gray-500/30' };
+    if (/departed|已起飛/i.test(s)) return { text: '已起飛', color: 'text-gray-400 bg-gray-500/10 border-gray-500/30' };
+    if (/delayed|延誤/i.test(s)) return { text: '延誤', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' };
+    if (/cancelled|取消/i.test(s)) return { text: '已取消', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' };
+    if (/early|提早/i.test(s)) return { text: '提早', color: 'text-sky-400 bg-sky-500/10 border-sky-500/30' };
+    if (/boarding|登機中/i.test(s)) return { text: '登機中', color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/40 animate-pulse' };
+    return { text: s, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
   };
 
-  const currentList = activeTab === 'arrivals' ? (data?.arrivals || []) : (data?.departures || []);
-
-  const filteredList = currentList.filter(item => {
-    const timing = getLiveFlightTiming(item);
-    if (timing.isPast) return false;
-
-    // Filter by domestic / international
-    if (filterType === 'domestic' && !item.is_domestic) return false;
-    if (filterType === 'international' && item.is_domestic) return false;
-
-    // Filter by search (航班號、航空公司、城市、出發/目的代碼、登機門)
-    if (searchTerm.trim()) {
-      const q = searchTerm.toLowerCase();
-      const matchNo = item.flight_no.toLowerCase().includes(q);
-      const matchAirline = item.airline.toLowerCase().includes(q);
-      const matchCity = item.city.toLowerCase().includes(q);
-      const matchOrig = (item.origin_code || '').toLowerCase().includes(q);
-      const matchDest = (item.dest_code || '').toLowerCase().includes(q);
-      const matchGate = (item.gate || '').toLowerCase().includes(q);
-      return matchNo || matchAirline || matchCity || matchOrig || matchDest || matchGate;
+  // Determine if a flight is completed (arrived or departed)
+  const isFlightCompleted = (f: MergedFlight) => {
+    const s = (f.status || '').toLowerCase();
+    if (f.type === 'A') {
+      return s.includes('arrived') || s.includes('已抵達') || s.includes('已降落');
     }
-    return true;
-  });
+    return s.includes('departed') || s.includes('已起飛');
+  };
 
-  const handleFlightClick = (flight: FlightScheduleItem) => {
-    const isDom = flight.is_domestic;
-    const isDep = flight.flight_type === 'dep';
+  // Progress Bar & Duration calculation
+  const getFlightProgress = (f: MergedFlight) => {
+    const depTimeStr = f.origin_departure_time || (f.type === 'D' ? f.estimated_time || f.scheduled_time : '');
+    const arrTimeStr = f.dest_arrival_time || (f.type === 'A' ? f.estimated_time || f.scheduled_time : '');
 
-    let safeOriginCode = flight.origin_code;
-    let safeDestCode = flight.dest_code;
-    let safeOriginCity = flight.origin_city || flight.origin_name;
-    let safeDestCity = flight.dest_city || flight.dest_name;
-
-    if (!safeOriginCode && !safeDestCode) {
-      safeOriginCode = isDep ? 'YVR' : (isDom ? 'YYC' : 'SEA');
-      safeOriginCity = isDep ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
-      safeDestCode = isDep ? (isDom ? 'YYC' : 'SEA') : 'YVR';
-      safeDestCity = isDep ? (isDom ? '卡加利' : '西雅圖') : '溫哥華';
-    } else if (safeOriginCode === safeDestCode || (safeOriginCode === 'YVR' && safeDestCode === 'YVR')) {
-      if (isDep) {
-        safeOriginCode = 'YVR';
-        safeOriginCity = '溫哥華';
-        safeDestCode = isDom ? 'YYC' : 'SEA';
-        safeDestCity = isDom ? '卡加利' : '西雅圖';
-      } else {
-        safeOriginCode = isDom ? 'YYC' : 'SEA';
-        safeOriginCity = isDom ? '卡加利' : '西雅圖';
-        safeDestCode = 'YVR';
-        safeDestCity = '溫哥華';
-      }
-    } else {
-      if (!safeOriginCode) {
-        safeOriginCode = safeDestCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
-        safeOriginCity = safeOriginCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
-      }
-      if (!safeDestCode) {
-        safeDestCode = safeOriginCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
-        safeDestCity = safeDestCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
-      }
+    if (!depTimeStr || !arrTimeStr) {
+      return { hasProgress: false, percent: 50, durationText: '--' };
     }
 
-    const timing = getLiveFlightTiming(flight);
-    const gateFormatted = formatGateDisplay(flight.gate);
+    const tDep = new Date(depTimeStr).getTime();
+    const tArr = new Date(arrTimeStr).getTime();
+    const now = Date.now();
 
-    const flightMeta = {
-      ...flight,
-      origin_code: safeOriginCode,
-      dest_code: safeDestCode,
-      origin_city: safeOriginCity,
-      dest_city: safeDestCity,
-      origin_name: flight.origin_name || safeOriginCity,
-      dest_name: flight.dest_name || safeDestCity,
-      departure_time: flight.departure_time,
-      arrival_time: flight.arrival_time,
-      remaining_time: timing.remainingText,
-      progress_percent: timing.progressPercent,
-      status: timing.displayStatus || flight.status || '依時刻表排程',
-    };
+    if (isNaN(tDep) || isNaN(tArr) || tArr <= tDep) {
+      return { hasProgress: false, percent: 50, durationText: '--' };
+    }
+
+    const totalDurationMin = Math.round((tArr - tDep) / 60000);
+    const durH = Math.floor(totalDurationMin / 60);
+    const durM = totalDurationMin % 60;
+    const durationText = durH > 0 ? `${durH}小時${durM}分` : `${durM}分`;
+
+    if (now >= tArr) {
+      return { hasProgress: true, percent: 100, durationText, isDone: true };
+    }
+    if (now <= tDep) {
+      return { hasProgress: true, percent: 0, durationText, notStarted: true };
+    }
+
+    const elapsed = now - tDep;
+    const pct = Math.min(100, Math.max(0, Math.round((elapsed / (tArr - tDep)) * 100)));
+    return { hasProgress: true, percent: pct, durationText };
+  };
+
+  const currentRawList = activeTab === 'arrivals' ? arrivals : departures;
+
+  // Filter list
+  const filteredList = useMemo(() => {
+    return currentRawList.filter(f => {
+      if (filterRange !== 'all' && f.range !== filterRange) return false;
+      if (searchTerm.trim()) {
+        const q = searchTerm.toLowerCase();
+        const mNo = (f.flight_number || '').toLowerCase().includes(q);
+        const mAir = (f.airline || '').toLowerCase().includes(q);
+        const mCity = (f.city || '').toLowerCase().includes(q);
+        const mCode = (f.airport_code || '').toLowerCase().includes(q);
+        const mGate = (f.gate || '').toLowerCase().includes(q);
+        return mNo || mAir || mCity || mCode || mGate;
+      }
+      return true;
+    });
+  }, [currentRawList, filterRange, searchTerm]);
+
+  // Separate upcoming and completed flights
+  const upcomingFlights = useMemo(() => filteredList.filter(f => !isFlightCompleted(f)), [filteredList]);
+  const completedFlights = useMemo(() => filteredList.filter(f => isFlightCompleted(f)), [filteredList]);
+
+  // Draw Flight Route on Map
+  const handleDrawRoute = (f: MergedFlight, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const isArr = f.type === 'A';
+    const isDom = f.range === 'D';
+
+    const yvrCoords: [number, number] = [-123.184444, 49.193889];
+    const remoteCode = (f.airport_code || '').toUpperCase();
+    const remoteCoords: [number, number] = AIRPORT_COORDS[remoteCode] || (isDom ? [-114.02, 51.13] : [-122.3088, 47.4502]);
+
+    const originCode = isArr ? remoteCode : 'YVR';
+    const destCode = isArr ? 'YVR' : remoteCode;
+    const originCoords = isArr ? remoteCoords : yvrCoords;
+    const destCoords = isArr ? yvrCoords : remoteCoords;
+    const originCity = isArr ? f.city : 'Vancouver';
+    const destCity = isArr ? 'Vancouver' : f.city;
 
     setSearchTarget({
-      id: flight.id,
-      title: `${flight.flight_no} · ${flight.airline}`,
-      subtitle: `${flight.city} (${flightMeta.status}) · ${flight.terminal} ${gateFormatted}`,
+      id: f.id,
+      title: `${f.flight_number} · ${f.airline}`,
+      subtitle: `${f.city} (${f.status}) · Gate ${f.gate || '--'}`,
       category: 'flight_schedule',
-      badge: flight.is_domestic ? '🇨🇦 國內航班' : '🌐 國際航班',
+      badge: f.range === 'D' ? '🇨🇦 國內線' : f.range === 'T' ? '🇺🇸 美加線' : '🌐 國際線',
       icon: '✈️',
-      lon: -123.1815,
-      lat: 49.1967,
-      zoom: 8,
-      meta: flightMeta
+      lon: (originCoords[0] + destCoords[0]) / 2,
+      lat: (originCoords[1] + destCoords[1]) / 2,
+      zoom: 6,
+      meta: {
+        id: f.id,
+        flight_no: f.flight_number,
+        airline: f.airline,
+        is_domestic: isDom,
+        flight_type: isArr ? 'arr' : 'dep',
+        origin_code: originCode,
+        dest_code: destCode,
+        origin_city: originCity,
+        dest_city: destCity,
+        origin_coord: originCoords,
+        dest_coord: destCoords,
+        departure_time: isArr ? f.origin_departure_time : f.estimated_time || f.scheduled_time,
+        arrival_time: isArr ? f.estimated_time || f.scheduled_time : f.dest_arrival_time,
+        status: f.status
+      }
     });
+
+    // Close modal to view map route
+    setFlightScheduleOpen(false);
   };
 
+  const renderFlightRow = (flight: MergedFlight) => {
+    const isArr = flight.type === 'A';
+    const stStatus = formatStatus(flight.status);
+    const prog = getFlightProgress(flight);
+    const timeDisplay = flight.scheduled_time 
+      ? formatTimePreference(flight.scheduled_time.split('T')[1]?.substring(0, 5) || flight.scheduled_time, timeFormat)
+      : '--';
+
+    const depDisplay = isArr 
+      ? (flight.origin_departure_time ? formatTimePreference(flight.origin_departure_time.split('T')[1]?.substring(0, 5) || flight.origin_departure_time, timeFormat) : '--')
+      : (flight.estimated_time ? formatTimePreference(flight.estimated_time.split('T')[1]?.substring(0, 5) || flight.estimated_time, timeFormat) : timeDisplay);
+
+    const arrDisplay = isArr
+      ? (flight.estimated_time ? formatTimePreference(flight.estimated_time.split('T')[1]?.substring(0, 5) || flight.estimated_time, timeFormat) : timeDisplay)
+      : (flight.dest_arrival_time ? formatTimePreference(flight.dest_arrival_time.split('T')[1]?.substring(0, 5) || flight.dest_arrival_time, timeFormat) : '--');
+
+    const rangeLabel = flight.range === 'D' ? '國內' : flight.range === 'T' ? '美國' : '國際';
+    const rangeColor = flight.range === 'D' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : flight.range === 'T' ? 'bg-sky-500/20 text-sky-300 border-sky-500/40' : 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+
+    return (
+      <div 
+        key={flight.id} 
+        className="px-3 py-2.5 hover:bg-[#181c26] transition-colors border-b border-[#202532] text-xs flex flex-col gap-1.5"
+      >
+        <div className="grid grid-cols-12 gap-2 items-center">
+          {/* 1. 時間 FlightScheduledTime */}
+          <div className="col-span-1 text-center font-mono font-bold text-white text-xs">
+            {timeDisplay}
+          </div>
+
+          {/* 2. 航班 + Range + 航空公司 */}
+          <div className="col-span-2 min-w-0 pr-1">
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-sky-300 font-mono text-xs">{flight.flight_number}</span>
+              <span className={`text-[9.5px] px-1 py-0.2 rounded border font-medium ${rangeColor}`}>
+                {rangeLabel}
+              </span>
+            </div>
+            <div className="text-[11px] text-gray-400 truncate mt-0.5" title={flight.airline}>
+              {flight.airline}
+            </div>
+          </div>
+
+          {/* 3. 航線 (Code -> Code & City -> City) (調窄) */}
+          <div className="col-span-2 min-w-0">
+            <div className="flex items-center gap-1 text-[11px] font-mono font-bold text-gray-200">
+              <span>{isArr ? flight.airport_code : 'YVR'}</span>
+              <ArrowRight className="w-3 h-3 text-sky-400 shrink-0" />
+              <span>{isArr ? 'YVR' : flight.airport_code}</span>
+            </div>
+            <div className="text-[10px] text-gray-400 truncate mt-0.5">
+              {isArr ? `${flight.city} → 溫哥華` : `溫哥華 → ${flight.city}`}
+            </div>
+          </div>
+
+          {/* 4. 起飛時間 */}
+          <div className="col-span-1 text-center font-mono text-[11px] text-gray-300">
+            {depDisplay}
+          </div>
+
+          {/* 5. 抵達時間 */}
+          <div className="col-span-1 text-center font-mono text-[11px] text-gray-300">
+            {arrDisplay}
+          </div>
+
+          {/* 6. 進度條 + 總航程 */}
+          <div className="col-span-2 px-1">
+            <div className="flex items-center justify-between text-[9.5px] font-mono text-gray-400 mb-0.5">
+              <span>航程</span>
+              <span className="text-gray-300">{prog.durationText}</span>
+            </div>
+            <div className="w-full bg-[#1b202c] h-1.5 rounded-full overflow-hidden border border-[#2b3244]">
+              <div 
+                className="bg-gradient-to-r from-sky-400 to-emerald-400 h-full rounded-full transition-all duration-300"
+                style={{ width: `${prog.percent}%` }}
+              />
+            </div>
+          </div>
+
+          {/* 7. 櫃檯 (出發) / 閘口 / 行李 (抵達) */}
+          <div className="col-span-1 text-center font-mono text-[10.5px] text-gray-300">
+            {isArr ? (
+              <span title="行李提取轉盤">{flight.carousel ? `轉盤 ${flight.carousel}` : '--'}</span>
+            ) : (
+              <span title="離境櫃檯">{flight.desk_from && flight.desk_to ? `${flight.desk_from}-${flight.desk_to}` : (flight.desk_from || '--')}</span>
+            )}
+          </div>
+
+          <div className="col-span-1 text-center font-mono text-[11px] text-gray-200">
+            {flight.gate ? `Gate ${flight.gate}` : '--'}
+          </div>
+
+          {/* 8. 狀態 + 繪製航線按鈕 */}
+          <div className="col-span-1 flex items-center justify-end gap-1.5">
+            <span className={`text-[10px] px-1.5 py-0.5 rounded border whitespace-nowrap font-medium ${stStatus.color}`}>
+              {stStatus.text}
+            </span>
+            <button
+              onClick={(e) => handleDrawRoute(flight, e)}
+              className="p-1 rounded bg-[#202737] hover:bg-sky-500/20 hover:text-sky-300 text-gray-400 border border-[#30394f] transition-colors"
+              title="在地圖上繪製航線"
+            >
+              <MapPin className="w-3.5 h-3.5 text-sky-400" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  if (!isFlightScheduleOpen) return null;
+
   return (
-    <div className="fixed top-[64px] right-2 sm:right-4 md:right-6 bottom-4 w-[96vw] sm:w-[94vw] md:w-[920px] lg:w-[1040px] xl:w-[1140px] max-w-[calc(100vw-24px)] z-40 flex flex-col pointer-events-none animate-fade-in">
+    <div className="fixed top-[64px] right-2 sm:right-4 md:right-6 bottom-4 w-[96vw] sm:w-[94vw] md:w-[960px] lg:w-[1080px] xl:w-[1180px] max-w-[calc(100vw-24px)] z-40 flex flex-col pointer-events-none animate-fade-in select-none">
       <div 
         className="w-full h-full bg-[#13151a]/95 backdrop-blur-md border border-[#2b303c] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-200 pointer-events-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-5 py-3.5 border-b border-[#242832] bg-gradient-to-r from-[#171b24] via-[#14161d] to-[#121419] flex items-center justify-between shrink-0">
+        <div className="px-5 py-3 border-b border-[#242832] bg-gradient-to-r from-[#171b24] via-[#14161d] to-[#121419] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+            <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
               <Plane className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white tracking-wide">YVR 溫哥華國際機場航班資訊板</h3>
-              </div>
+              <h3 className="text-base font-bold text-white tracking-wide">YVR 溫哥華國際機場航班資訊板</h3>
+              <p className="text-[11px] text-gray-400 font-mono">官方 YVR API 即時排程時刻 · 每 1 分鐘更新</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={fetchSchedules}
+              onClick={fetchFlights}
               disabled={loading}
               className="p-2 rounded-xl bg-[#1b1f28] hover:bg-[#252a36] text-gray-300 hover:text-white transition-colors border border-[#2b313f] flex items-center justify-center text-xs"
               title="重新整理航班"
@@ -409,14 +387,14 @@ export default function FlightScheduleModal() {
           </div>
         </div>
 
-        {/* Tab & Filter Bar */}
-        <div className="px-5 py-3 border-b border-[#21252e] bg-[#15171e] flex flex-col gap-2.5 shrink-0">
+        {/* Filters and Tabs */}
+        <div className="px-5 py-2.5 border-b border-[#21252e] bg-[#15171e] flex flex-col gap-2.5 shrink-0">
           <div className="flex items-center justify-between flex-wrap gap-2.5">
             {/* Arrivals vs Departures */}
             <div className="flex items-center bg-[#101217] p-1 rounded-xl border border-[#252833]">
               <button
                 onClick={() => setActiveTab('arrivals')}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeTab === 'arrivals'
                     ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 shadow-sm'
                     : 'text-gray-400 hover:text-gray-200'
@@ -424,15 +402,13 @@ export default function FlightScheduleModal() {
               >
                 <PlaneLanding className="w-4 h-4 text-emerald-400" />
                 <span>抵達航班</span>
-                {data && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">
-                    {data.arrivals.length}
-                  </span>
-                )}
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">
+                  {arrivals.length}
+                </span>
               </button>
               <button
                 onClick={() => setActiveTab('departures')}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeTab === 'departures'
                     ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40 shadow-sm'
                     : 'text-gray-400 hover:text-gray-200'
@@ -440,20 +416,18 @@ export default function FlightScheduleModal() {
               >
                 <PlaneTakeoff className="w-4 h-4 text-amber-400" />
                 <span>出發航班</span>
-                {data && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-mono">
-                    {data.departures.length}
-                  </span>
-                )}
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-mono">
+                  {departures.length}
+                </span>
               </button>
             </div>
 
-            {/* Quick Filters */}
+            {/* Range Filters: T / D / I */}
             <div className="flex items-center gap-1.5 text-xs">
               <button
-                onClick={() => setFilterType('all')}
-                className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
-                  filterType === 'all'
+                onClick={() => setFilterRange('all')}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors ${
+                  filterRange === 'all'
                     ? 'bg-sky-500/20 border-sky-500/50 text-sky-300'
                     : 'bg-[#181a22] border-[#262933] text-gray-400 hover:text-gray-200'
                 }`}
@@ -461,37 +435,47 @@ export default function FlightScheduleModal() {
                 全部
               </button>
               <button
-                onClick={() => setFilterType('domestic')}
-                className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
-                  filterType === 'domestic'
+                onClick={() => setFilterRange('D')}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors ${
+                  filterRange === 'D'
                     ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
                     : 'bg-[#181a22] border-[#262933] text-gray-400 hover:text-gray-200'
                 }`}
               >
-                🇨🇦 國內線
+                🇨🇦 國內線 (D)
               </button>
               <button
-                onClick={() => setFilterType('international')}
-                className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
-                  filterType === 'international'
+                onClick={() => setFilterRange('T')}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors ${
+                  filterRange === 'T'
+                    ? 'bg-sky-500/20 border-sky-500/50 text-sky-300'
+                    : 'bg-[#181a22] border-[#262933] text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                🇺🇸 美加線 (T)
+              </button>
+              <button
+                onClick={() => setFilterRange('I')}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors ${
+                  filterRange === 'I'
                     ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
                     : 'bg-[#181a22] border-[#262933] text-gray-400 hover:text-gray-200'
                 }`}
               >
-                🌐 國際線
+                🌐 國際線 (I)
               </button>
             </div>
           </div>
 
-          {/* Search Box */}
+          {/* Search Input */}
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3.5 top-2.5 text-gray-400" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-gray-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="搜尋航班號、航空公司或目的地城市..."
-              className="w-full pl-10 pr-12 py-1.5 bg-[#0f1116] border border-[#262a35] rounded-xl text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500 transition-colors"
+              placeholder="搜尋航班號、航空公司、目的地城市或登機門..."
+              className="w-full pl-9 pr-12 py-1.5 bg-[#0f1116] border border-[#262a35] rounded-xl text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500 transition-colors"
             />
             {searchTerm && (
               <button 
@@ -504,275 +488,66 @@ export default function FlightScheduleModal() {
           </div>
         </div>
 
-        {/* Table Header (visible on md screens and up) */}
-        <div className="hidden md:grid grid-cols-[58px_130px_1fr_135px_110px_80px] gap-3 px-4 py-2 bg-[#101217] border-b border-[#21252e] text-[11px] font-semibold text-gray-400 uppercase tracking-wider shrink-0">
-          <div>
-            <span>時間</span>
-          </div>
-          <div>
-            <span>航班 / 航空</span>
-          </div>
-          <div>
-            <span>起迄航線 (機場 · 城市)</span>
-          </div>
-          <div>
-            <span>航廈 / 閘口</span>
-          </div>
-          <div>
-            <span>動態倒數</span>
-          </div>
-          <div className="text-right">
-            <span>狀態</span>
-          </div>
+        {/* Table Column Headers (Image 1 Layout) */}
+        <div className="grid grid-cols-12 gap-2 px-3 py-2 bg-[#101217] border-b border-[#21252e] text-[11px] font-semibold text-gray-400 uppercase tracking-wider shrink-0">
+          <div className="col-span-1 text-center">時間</div>
+          <div className="col-span-2">航班 / 航空公司</div>
+          <div className="col-span-2">航線</div>
+          <div className="col-span-1 text-center">起飛時間</div>
+          <div className="col-span-1 text-center">抵達時間</div>
+          <div className="col-span-2 text-center">進度條 · 總航程</div>
+          <div className="col-span-1 text-center">{activeTab === 'arrivals' ? '行李提取' : '離境櫃檯'}</div>
+          <div className="col-span-1 text-center">閘口</div>
+          <div className="col-span-1 text-right">狀態 · 航線</div>
         </div>
 
-        {/* Flight Table / List */}
-        <div className="flex-1 overflow-y-auto divide-y divide-[#1e222a] p-2 sm:p-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c313d] [&::-webkit-scrollbar-thumb]:rounded-full">
-          {loading && !data ? (
+        {/* Flight Rows */}
+        <div className="flex-1 overflow-y-auto divide-y divide-[#1b1f2a] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c313d] [&::-webkit-scrollbar-thumb]:rounded-full">
+          {loading && arrivals.length === 0 && departures.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-3">
               <RefreshCw className="w-7 h-7 animate-spin text-sky-400" />
-              <p className="text-sm font-medium">正在載入溫哥華國際機場官方排程時刻表 (FlightAware AeroAPI)...</p>
-              <p className="text-xs text-gray-500">自動同步起迄城市、航廈閘口與動態預估時間</p>
+              <p className="text-sm font-medium">正在載入溫哥華國際機場官方排程時刻表...</p>
             </div>
           ) : filteredList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-2">
               <Plane className="w-10 h-10 text-gray-600 mb-1" />
-              <p className="text-sm font-medium">目前無符合條件的即將或後續航班</p>
-              <p className="text-xs text-gray-500">已自動過濾過往航班，您可點擊上方重新整理按鈕獲取最新資料</p>
+              <p className="text-sm font-medium">目前無符合條件的航班</p>
             </div>
           ) : (
-            filteredList.map((flight) => {
-              const isSelected = searchTarget?.id === flight.id;
-              const timing = getLiveFlightTiming(flight);
-              const orig = flight.origin_code || (flight.flight_type === 'dep' ? 'YVR' : '--');
-              const dest = flight.dest_code || (flight.flight_type === 'arr' ? 'YVR' : '--');
-              const isArr = flight.flight_type === 'arr';
+            <>
+              {/* 1. Upcoming Flights (Closest / Upcoming at Top) */}
+              {upcomingFlights.map(flight => renderFlightRow(flight))}
 
-              // Badge styling for countdown
-              let countdownBadgeClass = 'bg-sky-500/15 border-sky-500/30 text-sky-300';
-              if (timing.badgeType === 'amber') {
-                countdownBadgeClass = 'bg-amber-500/20 border-amber-500/40 text-amber-300 font-bold animate-pulse';
-              } else if (timing.badgeType === 'emerald') {
-                countdownBadgeClass = 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300 font-bold';
-              } else if (timing.badgeType === 'gray') {
-                countdownBadgeClass = 'bg-gray-700/30 border-gray-600/40 text-gray-400';
-              }
-
-              return (
-                <div
-                  key={flight.id}
-                  onClick={() => handleFlightClick(flight)}
-                  className={`px-3 py-2.5 rounded-xl transition-all cursor-pointer border ${
-                    isSelected
-                      ? 'bg-sky-500/20 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.25)] ring-1 ring-sky-400/40'
-                      : 'hover:bg-[#1a212e] hover:border-[#384152] border-transparent'
-                  }`}
-                >
-                  {/* Grid Layout for Medium+ Screens */}
-                  <div className="hidden md:grid grid-cols-[70px_150px_1fr_140px_120px_85px] gap-3 items-center">
-                    {/* Col 1: Date & Time (Compact, tight width) */}
-                    <div className="w-[70px] shrink-0">
-                      <div className="text-center w-[66px] py-1 px-0.5 rounded-lg bg-[#0e1015] border border-[#232732]">
-                        {flight.date && (
-                          <div className="text-[10px] font-mono font-medium text-sky-400 leading-tight">
-                            {flight.date}
-                          </div>
-                        )}
-                        <div className="text-xs font-bold font-mono text-white tracking-tight leading-tight">
-                          {formatTimePreference(flight.time, timeFormat)}
-                        </div>
-                        <div className="text-[8.5px] text-gray-400 font-mono scale-90">
-                          {isArr ? '預計抵達' : '預計出發'}
-                        </div>
-                      </div>
+              {/* 2. Collapsible Completed Flights (參考卑詩渡輪 BC Ferries) */}
+              {completedFlights.length > 0 && (
+                <div className="bg-[#0e1015]/90 border-t-2 border-[#222838]">
+                  <button
+                    onClick={() => setShowCompletedAccordion(v => !v)}
+                    className="w-full px-4 py-2.5 flex items-center justify-between text-xs text-gray-400 hover:text-gray-200 hover:bg-[#151924] transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-300">
+                        {activeTab === 'arrivals' ? '已抵達 / 已降落航班' : '已起飛 / 航行完畢航班'}
+                      </span>
+                      <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-gray-700/40 text-gray-400 font-mono">
+                        {completedFlights.length}
+                      </span>
                     </div>
-
-                    {/* Col 2: Flight No & Airline */}
-                    <div className="min-w-0 pr-1">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-sm text-sky-300 font-mono tracking-wide">{flight.flight_no}</span>
-                        {flight.is_domestic ? (
-                          <span className="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shrink-0 font-medium">
-                            CA 國內
-                          </span>
-                        ) : (
-                          <span className="px-1.5 py-0.2 rounded text-[9px] bg-amber-500/15 border border-amber-500/30 text-amber-400 shrink-0 font-medium">
-                            國際
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-gray-300 truncate font-medium mt-0.5" title={flight.airline}>
-                        {flight.airline}
-                      </div>
+                    <div className="flex items-center gap-1 text-[11px] text-sky-400">
+                      <span>{showCompletedAccordion ? '收合' : '展開檢視'}</span>
+                      {showCompletedAccordion ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
+                  </button>
 
-                    {/* Col 3: Route & Cities + Live Flight Progress Bar */}
-                    <div className="min-w-0 pr-1">
-                      {/* Line 1: Airport Code Badges */}
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-mono font-bold text-white bg-[#101217] px-1.5 py-0.5 rounded border border-[#262a35] text-xs">
-                          {orig}
-                        </span>
-                        <ArrowRight className="w-3 h-3 text-sky-400 shrink-0" />
-                        <span className="font-mono font-bold text-white bg-[#101217] px-1.5 py-0.5 rounded border border-[#262a35] text-xs">
-                          {dest}
-                        </span>
-                      </div>
-                      {/* Line 2: Full City Names on their own line (never cut off!) */}
-                      <div className="text-xs text-gray-200 font-medium mt-1 leading-tight" title={flight.city}>
-                        {flight.city}
-                      </div>
-                      {/* Line 3: Exact Departure & Arrival Dates and Times */}
-                      <div className="text-[11px] text-gray-400 font-mono mt-0.5 flex items-center gap-1.5 flex-wrap">
-                        {flight.departure_time && (
-                          <span>起: <strong className="text-gray-300 font-normal">{formatTimePreference(flight.departure_time, timeFormat)}</strong></span>
-                        )}
-                        {flight.departure_time && flight.arrival_time && <span>-</span>}
-                        {flight.arrival_time && (
-                          <span>抵: <strong className="text-gray-300 font-normal">{formatTimePreference(flight.arrival_time, timeFormat)}</strong></span>
-                        )}
-                      </div>
-                      {/* Line 4: Time-calculated Flight Progress Bar */}
-                      <div className="mt-1.5 pt-1 border-t border-[#1e232d]/80">
-                        <div className="flex items-center justify-between text-[10px] font-mono mb-1">
-                          <span className={
-                            timing.progressPhase === 'enroute'
-                              ? 'text-cyan-300 font-semibold flex items-center gap-1'
-                              : timing.progressPhase === 'landed'
-                              ? 'text-emerald-400 font-semibold'
-                              : 'text-gray-400'
-                          }>
-                            <span>{timing.progressPhase === 'enroute' ? '✈️' : timing.progressPhase === 'landed' ? '🛬' : '🛫'}</span>
-                            <span>{timing.progressLabel}</span>
-                            {timing.progressDetail && (
-                              <span className="text-gray-400 font-normal ml-1">({timing.progressDetail})</span>
-                            )}
-                          </span>
-                          <span className={`font-bold px-1.5 py-0.2 rounded text-[9.5px] ${
-                            timing.progressPhase === 'enroute'
-                              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                              : timing.progressPhase === 'landed'
-                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                              : 'bg-gray-800 text-gray-400 border border-gray-700'
-                          }`}>
-                            {timing.progressPercent}%
-                          </span>
-                        </div>
-                        <div className="w-full h-1.5 bg-[#0b0d12] rounded-full overflow-hidden border border-[#232834] relative">
-                          <div
-                            className={`h-full rounded-full transition-all duration-500 ${
-                              timing.progressPhase === 'enroute'
-                                ? 'bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]'
-                                : timing.progressPhase === 'landed'
-                                ? 'bg-emerald-500'
-                                : 'bg-slate-600'
-                            }`}
-                            style={{ width: `${Math.max(timing.progressPercent, timing.progressPhase === 'enroute' ? 4 : 0)}%` }}
-                          />
-                        </div>
-                      </div>
+                  {showCompletedAccordion && (
+                    <div className="opacity-75 divide-y divide-[#1b1f2a]">
+                      {completedFlights.map(flight => renderFlightRow(flight))}
                     </div>
-
-                    {/* Col 4: Terminal & Gate */}
-                    <div className="min-w-0 pr-1">
-                      <div className="text-xs text-gray-300 font-medium truncate" title={flight.terminal}>
-                        {flight.terminal}
-                      </div>
-                      <div className="text-xs font-mono text-amber-300 font-bold mt-0.5 truncate" title={formatGateDisplay(flight.gate)}>
-                        {formatGateDisplay(flight.gate)}
-                      </div>
-                    </div>
-
-                    {/* Col 5: Live Countdown */}
-                    <div className="shrink-0">
-                      <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-mono ${countdownBadgeClass}`}>
-                        <Clock className="w-3.5 h-3.5 shrink-0" />
-                        <span>{timing.remainingText}</span>
-                      </div>
-                    </div>
-
-                    {/* Col 6: Status & Action */}
-                    <div className="text-right shrink-0">
-                      <div className="inline-block px-2 py-0.5 rounded text-[11px] font-semibold bg-[#1a1c24] border border-[#292d3b] text-gray-200">
-                        {timing.displayStatus}
-                      </div>
-                      <div className="text-[9px] text-sky-400 hover:text-sky-300 font-mono mt-1 flex items-center justify-end gap-0.5">
-                        <span>繪製航線</span>
-                        <span>➔</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mobile Compact Layout (< md screens) */}
-                  <div className="flex md:hidden flex-col gap-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="text-center w-14 py-1 px-1 rounded-lg bg-[#0e1015] border border-[#232732] shrink-0">
-                          {flight.date && <div className="text-[9px] font-mono text-sky-400">{flight.date}</div>}
-                          <div className="text-[11px] font-bold font-mono text-white leading-tight">{formatTimePreference(flight.time, timeFormat)}</div>
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-sm text-sky-300 font-mono">{flight.flight_no}</span>
-                            <span className="text-xs text-gray-300 truncate max-w-[160px]">{flight.airline}</span>
-                          </div>
-                          <div className="text-[11px] text-gray-300 font-mono mt-0.5">
-                            {orig} ➔ {dest}
-                          </div>
-                          <div className="text-[10px] text-gray-400 font-medium truncate max-w-[240px]">
-                            {flight.city}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="text-right">
-                        <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[11px] font-mono ${countdownBadgeClass}`}>
-                          <Clock className="w-3 h-3" />
-                          <span>{timing.remainingText}</span>
-                        </div>
-                        <div className="text-[10px] text-gray-400 mt-1">
-                          {timing.displayStatus}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Mobile Progress Bar */}
-                    <div className="pt-1">
-                      <div className="flex items-center justify-between text-[10px] font-mono mb-1">
-                        <span className="text-cyan-300">
-                          {timing.progressLabel} {timing.progressDetail ? `(${timing.progressDetail})` : ''}
-                        </span>
-                        <span className="text-cyan-300 font-bold">{timing.progressPercent}%</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-[#0b0d12] rounded-full overflow-hidden border border-[#232834]">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400"
-                          style={{ width: `${timing.progressPercent}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#1e222a] text-gray-400 font-mono">
-                      <span>起: {formatTimePreference(flight.departure_time, timeFormat)} · 抵: {formatTimePreference(flight.arrival_time, timeFormat)}</span>
-                      <span className="text-amber-300 font-bold">{formatGateDisplay(flight.gate)}</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
-              );
-            })
+              )}
+            </>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="px-5 py-2.5 border-t border-[#21252e] bg-[#111318] text-[11px] text-gray-400 flex items-center justify-between shrink-0 flex-wrap gap-2">
-          <div className="flex items-center gap-2">
-            <span>
-              📡 資料來源：
-              {data?.source
-                ? data.source.replace(/\s*\(官方[^\)]*排程\)/g, '').replace(/\s*\(官方[^\)]*計畫\)/g, '').trim()
-                : 'FlightAware AeroAPI'}
-            </span>
-          </div>
         </div>
       </div>
     </div>

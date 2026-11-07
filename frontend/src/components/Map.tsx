@@ -15,7 +15,7 @@ import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
 import { BUS_EXCHANGES, BusExchange, BusExchangeBay } from '@/data/busExchanges';
 import { 
-  LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
+  LocateFixed, Train, Compass, ZoomIn, ZoomOut, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
@@ -26,8 +26,29 @@ import {
   Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet, UserShield, FireExtinguisher,
   Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
-  Sun, Moon, RotateCwClock, ArrowUpToLine, Weight, Siren
+  Sun, Moon, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking
 } from 'lucide-react';
+
+const BridgeIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M4 19V8" />
+    <path d="M20 19V8" />
+    <path d="M2 16h20" />
+    <path d="M4 8c4 4 12 4 16 0" />
+    <path d="M8 11.5v4.5" />
+    <path d="M12 12.5v3.5" />
+    <path d="M16 11.5v4.5" />
+  </svg>
+);
 
 function formatJobDateTime(isoStr?: string, timeFormat: '12h' | '24h' = '24h', timeZone: string = 'America/Vancouver'): string {
   if (!isoStr) return '';
@@ -195,6 +216,7 @@ interface SkytrainTrain {
 interface SkytrainStationSchedule {
   stop_id: string;
   name: string;
+  name_en?: string;
   raw_name?: string;
   lat: number;
   lon: number;
@@ -757,7 +779,8 @@ export default function AppMap() {
     selectedCrash,
     setSelectedCrash,
     activeJobSkillModal,
-    setActiveJobSkillModal
+    setActiveJobSkillModal,
+    layerCustomColors
   } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
@@ -1062,6 +1085,7 @@ export default function AppMap() {
   const [skytrainDetailTab, setSkytrainDetailTab] = useState<'departures' | 'schedules' | 'fares' | 'facilities'>('departures');
   const [isFareZoneMapModalOpen, setIsFareZoneMapModalOpen] = useState(false);
   const [currentZoom, setCurrentZoom] = useState<number>(11);
+  const currentZoomRef = useRef<number>(11);
   const [loadingHeavyLayers, setLoadingHeavyLayers] = useState<{ [key: string]: string }>({});
   const [zoomNotification, setZoomNotification] = useState<{
     show: boolean;
@@ -1079,6 +1103,8 @@ export default function AppMap() {
   } | null>(null);
   const [copiedCoordsToast, setCopiedCoordsToast] = useState(false);
   const [copiedFacilityToast, setCopiedFacilityToast] = useState(false);
+  const [lionsGateRefreshTs, setLionsGateRefreshTs] = useState(Date.now());
+  const [seabusFreqHovered, setSeabusFreqHovered] = useState(false);
 
   // 預載溫哥華市區 22 個 Local Area 邊界幾何，用於滑鼠即時社區判定
   useEffect(() => {
@@ -1186,6 +1212,15 @@ export default function AppMap() {
     }
   }, []);
 
+  const copyNameToClipboard = useCallback((name: string) => {
+    if (!name) return;
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(name);
+      setCopiedFacilityToast(true);
+      setTimeout(() => setCopiedFacilityToast(false), 2200);
+    }
+  }, []);
+
   const handleCopyCoordinates = useCallback(() => {
     if (!cursorCoords) return;
     const text = `${cursorCoords.lat.toFixed(5)}, ${cursorCoords.lng.toFixed(5)}`;
@@ -1196,12 +1231,19 @@ export default function AppMap() {
     }
   }, [cursorCoords]);
 
+  const mouseMoveRafRef = useRef<number | null>(null);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMapMouseMove = React.useCallback((e: any) => {
     if (e.lngLat) {
-      setCursorCoords({ lng: e.lngLat.lng, lat: e.lngLat.lat });
-      const nName = getNeighbourhood(e.lngLat.lng, e.lngLat.lat);
-      setCursorNeighbourhood(nName);
+      const lng = e.lngLat.lng;
+      const lat = e.lngLat.lat;
+      if (mouseMoveRafRef.current) cancelAnimationFrame(mouseMoveRafRef.current);
+      mouseMoveRafRef.current = requestAnimationFrame(() => {
+        setCursorCoords({ lng, lat });
+        const nName = getNeighbourhood(lng, lat);
+        setCursorNeighbourhood(nName);
+      });
     }
   }, [getNeighbourhood]);
 
@@ -1399,6 +1441,26 @@ export default function AppMap() {
   const [airports, setAirports] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedAirport, setSelectedAirport] = useState<any | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedAirportParking, setSelectedAirportParking] = useState<any | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [parkadeCapacity, setParkadeCapacity] = useState<any | null>(null);
+  const [loadingParkadeCapacity, setLoadingParkadeCapacity] = useState<boolean>(false);
+
+  const fetchParkadeCapacity = useCallback(async () => {
+    setLoadingParkadeCapacity(true);
+    try {
+      const res = await fetch('/api/airports/parkade-capacity');
+      if (res.ok) {
+        const json = await res.json();
+        setParkadeCapacity(json);
+      }
+    } catch (err) {
+      console.warn('Failed to fetch parkade capacity:', err);
+    } finally {
+      setLoadingParkadeCapacity(false);
+    }
+  }, []);
   
   // States for Popup
   const [selectedStop, setSelectedStop] = useState<StopInfo | null>(null);
@@ -1958,14 +2020,14 @@ export default function AppMap() {
   // Periodic polling for TomTom traffic corridors and alerts (every 180s / 3 mins)
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-    if (layers.trafficAlerts || (isExploreOpen && exploreTab === 'traffic')) {
+    if (layers.trafficAlerts || layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic')) {
       const pollTomTomData = async () => {
         const map = mapRef.current?.getMap();
         if (!map) return;
         const apiUrl = getApiUrl();
         const t = Date.now();
 
-        if (isExploreOpen && exploreTab === 'traffic') {
+        if (layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic')) {
           try {
             const res = await fetch(`${apiUrl}/api/traffic/jams?t=${t}`);
             if (res.ok) {
@@ -2016,7 +2078,7 @@ export default function AppMap() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [layers.trafficAlerts, isExploreOpen, exploreTab]);
+  }, [layers.trafficAlerts, layers.trafficConditions, isExploreOpen, exploreTab]);
 
   // 當離開探索 - 路況分頁時，若開啟著獅門大橋 popup 則自動關閉
   useEffect(() => {
@@ -2378,6 +2440,12 @@ export default function AppMap() {
     title: string;
     direction: string;
   } | null>(null);
+  const [cameraImageScale, setCameraImageScale] = useState<number>(1);
+
+  // Reset scale when image lightbox changes
+  useEffect(() => {
+    setCameraImageScale(1);
+  }, [enlargedCameraImage]);
 
   // Close camera lightbox on Escape key
   useEffect(() => {
@@ -2537,19 +2605,20 @@ export default function AppMap() {
   }, [selectedFacility, userLocation, distanceUnit]);
   // Google Earth 風格固定長度比例尺之動態數值推算 (Fixed-width Google Earth Style Scale Calculation)
   const [scaleText, setScaleText] = useState<string>('500 米');
+  const scaleTextRef = useRef<string>('500 米');
 
   const updateScale = useCallback(() => {
     const map = mapRef.current?.getMap();
     if (!map) return;
 
-    try {
-      const z = map.getZoom();
-      if (typeof z === 'number' && !isNaN(z)) {
-        setCurrentZoom(z);
-      }
-    } catch (_) {}
-
     const scaleWidthPx = 120; // 固定物理長度 120px
+
+    const setScaleSafe = (val: string) => {
+      if (val !== scaleTextRef.current) {
+        scaleTextRef.current = val;
+        setScaleText(val);
+      }
+    };
 
     try {
       const container = map.getContainer();
@@ -2568,22 +2637,22 @@ export default function AppMap() {
       if (distanceUnit === 'imperial') {
         const feet = distMeters * 3.28084;
         if (feet < 5280) {
-          setScaleText(`${Math.round(feet).toLocaleString()} 英呎`);
+          setScaleSafe(`${Math.round(feet).toLocaleString()} 英呎`);
         } else {
           const miles = feet / 5280;
-          setScaleText(`${miles < 10 ? miles.toFixed(2) : miles.toFixed(1)} 英里`);
+          setScaleSafe(`${miles < 10 ? miles.toFixed(2) : miles.toFixed(1)} 英里`);
         }
       } else {
         if (distMeters < 1000) {
-          setScaleText(`${Math.round(distMeters)} 米`);
+          setScaleSafe(`${Math.round(distMeters)} 米`);
         } else {
           const km = distMeters / 1000;
           if (km < 10) {
-            setScaleText(`${km.toFixed(2)} 公里`);
+            setScaleSafe(`${km.toFixed(2)} 公里`);
           } else if (km < 100) {
-            setScaleText(`${km.toFixed(1)} 公里`);
+            setScaleSafe(`${km.toFixed(1)} 公里`);
           } else {
-            setScaleText(`${Math.round(km).toLocaleString()} 公里`);
+            setScaleSafe(`${Math.round(km).toLocaleString()} 公里`);
           }
         }
       }
@@ -2594,10 +2663,10 @@ export default function AppMap() {
       const metersPerPx = (40075016.686 * Math.cos(rad)) / Math.pow(2, zoom + 8);
       const distMeters = scaleWidthPx * metersPerPx;
       if (distMeters < 1000) {
-        setScaleText(`${Math.round(distMeters)} 米`);
+        setScaleSafe(`${Math.round(distMeters)} 米`);
       } else {
         const km = distMeters / 1000;
-        setScaleText(`${km < 10 ? km.toFixed(2) : km.toFixed(1)} 公里`);
+        setScaleSafe(`${km < 10 ? km.toFixed(2) : km.toFixed(1)} 公里`);
       }
     }
   }, [distanceUnit]);
@@ -2608,7 +2677,10 @@ export default function AppMap() {
     const handleZoomOrMove = () => {
       updateScale();
       const z = map.getZoom();
-      setCurrentZoom(z);
+      if (typeof z === 'number' && !isNaN(z) && Math.abs(z - currentZoomRef.current) > 0.15) {
+        currentZoomRef.current = z;
+        setCurrentZoom(z);
+      }
       setZoomNotification(prev => {
         if (prev?.show && z >= (prev.targetZoom ? prev.targetZoom - 0.5 : 13.5)) {
           return { ...prev, show: false };
@@ -2617,11 +2689,11 @@ export default function AppMap() {
       });
     };
     updateScale();
-    map.on('move', handleZoomOrMove);
-    map.on('zoom', handleZoomOrMove);
+    map.on('moveend', handleZoomOrMove);
+    map.on('zoomend', handleZoomOrMove);
     return () => {
-      map.off('move', handleZoomOrMove);
-      map.off('zoom', handleZoomOrMove);
+      map.off('moveend', handleZoomOrMove);
+      map.off('zoomend', handleZoomOrMove);
     };
   }, [updateScale]);
 
@@ -2783,7 +2855,7 @@ export default function AppMap() {
       }
       return changed ? next : curr;
     });
-  }, [layers, currentZoom]);
+  }, [layers]);
 
   // 等高線切換獨立載入提示 (支援間距切換 10m/2m/1m 及圖層開關)
   const prevContourStateRef = useRef<{ enabled: boolean; interval: string }>({
@@ -2807,7 +2879,9 @@ export default function AppMap() {
       setLoadingHeavyLayers(curr => ({ ...curr, contours: label }));
 
       // 對於 1m / 2m 精細等高線，若當前視野較遠，提醒用家放大檢視
-      if ((contourInterval === '1m' || contourInterval === '2m') && currentZoom < 14) {
+      const map = mapRef.current?.getMap();
+      const z = map ? map.getZoom() : currentZoomRef.current;
+      if ((contourInterval === '1m' || contourInterval === '2m') && z < 14) {
         setZoomNotification({
           show: true,
           title: `已開啟${label}`,
@@ -2839,7 +2913,7 @@ export default function AppMap() {
     } else {
       prevContourStateRef.current = { enabled: layers.contours, interval: contourInterval };
     }
-  }, [layers.contours, contourInterval, currentZoom]);
+  }, [layers.contours, contourInterval]);
 
   // MapLibre 資料載入完成事件監聽：當大數據圖層來源已就緒時自動隱藏載入提示
   const handleMapSourceData = useCallback((e: any) => {
@@ -3175,14 +3249,62 @@ export default function AppMap() {
       setSelectedStop(null);
       setSelectedFacility(null);
       setSelectedFlight(null);
-      setSelectedAirport({
-        geometry: { coordinates: [searchTarget.lon, searchTarget.lat] },
-        properties: { name: searchTarget.title, ...(searchTarget.meta || {}) }
-      });
+      const isParkingTarget = searchTarget.meta?.facility_type === 'airport_parking' || searchTarget.meta?.sub_type === 'airport_parking' || String(searchTarget.id).startsWith('airport_parking_');
+      if (isParkingTarget) {
+        setSelectedAirport(null);
+        const parkingFeat = airports.find(ap => ap.properties?.id === searchTarget.id) || {
+          geometry: { coordinates: [searchTarget.lon, searchTarget.lat] },
+          properties: { name: searchTarget.title, ...(searchTarget.meta || {}) }
+        };
+        setSelectedAirportParking(parkingFeat);
+        if (parkingFeat.properties?.has_live_capacity) {
+          fetchParkadeCapacity();
+        }
+      } else {
+        setSelectedAirportParking(null);
+        setSelectedAirport({
+          geometry: { coordinates: [searchTarget.lon, searchTarget.lat] },
+          properties: { name: searchTarget.title, ...(searchTarget.meta || {}) }
+        });
+      }
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [searchTarget.lon, searchTarget.lat],
+          zoom: isParkingTarget ? 16 : 14,
+          duration: 1200
+        });
+      }
     } else if (searchTarget.category === 'domestic_flight' || searchTarget.category === 'intl_flight' || searchTarget.category === 'flight_schedule') {
       setSelectedTerminal(null);
       setSelectedStop(null);
       setSelectedFacility(null);
+      setSelectedMaritimeVessel(null);
+      setSelectedBus(null);
+      setSelectedTrain(null);
+      setSelectedFerry(null);
+      setSelectedAirport(null);
+      setSelectedAirportParking(null);
+      if (searchTarget.meta) {
+        setSelectedFlight(searchTarget.meta);
+        if (mapRef.current && searchTarget.meta.origin_coord && searchTarget.meta.dest_coord) {
+          const [oLon, oLat] = searchTarget.meta.origin_coord;
+          const [dLon, dLat] = searchTarget.meta.dest_coord;
+          const minLon = Math.min(oLon, dLon);
+          const maxLon = Math.max(oLon, dLon);
+          const minLat = Math.min(oLat, dLat);
+          const maxLat = Math.max(oLat, dLat);
+          mapRef.current.fitBounds(
+            [[minLon, minLat], [maxLon, maxLat]],
+            { padding: { top: 90, bottom: 90, left: 90, right: 90 }, duration: 1200 }
+          );
+        } else if (mapRef.current) {
+          mapRef.current.flyTo({
+            center: [searchTarget.lon, searchTarget.lat],
+            zoom: searchTarget.zoom || 5,
+            duration: 1200
+          });
+        }
+      }
     } else if (searchTarget.category === 'maritime_vessel') {
       setSelectedTerminal(null);
       setSelectedStop(null);
@@ -3695,7 +3817,7 @@ export default function AppMap() {
         type: 'line',
         source: 'seabus-tracks',
         paint: {
-          'line-color': ['coalesce', ['get', 'color'], '#00a4e4'],
+          'line-color': '#00a4e4',
           'line-width': 4,
           'line-opacity': 0.95
         }
@@ -3707,31 +3829,53 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#ffffff',
-          'circle-stroke-width': 1.5,
-          'circle-stroke-color': '#8b786d'
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#00a4e4'
+        }
+      });
+    }
+
+    // SkyTrain Fare Zones (天車 3 大收費區域)
+    if (layers.skytrainFareZones) {
+      style.sources['translink-fare-zones'] = {
+        type: 'geojson',
+        data: '/translink_fare_zones.geojson'
+      };
+      style.layers.push({
+        id: 'translink-fare-zones-fill',
+        type: 'fill',
+        source: 'translink-fare-zones',
+        paint: {
+          'fill-color': ['get', 'color'],
+          'fill-opacity': 0.16
         }
       });
       style.layers.push({
-        id: 'seabus-stops-label-layer',
+        id: 'translink-fare-zones-line',
+        type: 'line',
+        source: 'translink-fare-zones',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 2.5,
+          'line-dasharray': [3, 2],
+          'line-opacity': 0.85
+        }
+      });
+      style.layers.push({
+        id: 'translink-fare-zones-symbol',
         type: 'symbol',
-        source: 'seabus-stops',
-        minzoom: 11,
+        source: 'translink-fare-zones',
+        minzoom: 10,
         layout: {
-          'text-field': ['get', 'name'],
-          'text-size': [
-            'interpolate', ['linear'], ['zoom'],
-            11, 10,
-            14, 12
-          ],
-          'text-offset': [0, 1.3],
-          'text-anchor': 'top',
-          'text-optional': true
+          'text-field': ['get', 'name_zh'],
+          'text-size': 12,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-anchor': 'center'
         },
         paint: {
           'text-color': '#ffffff',
           'text-halo-color': '#0c1017',
-          'text-halo-width': 2,
-          'text-halo-blur': 0.5
+          'text-halo-width': 2
         }
       });
     }
@@ -3941,15 +4085,15 @@ export default function AppMap() {
       });
     }
 
-    // Explore Traffic Tab: Major Highways & Bridges Only (探索 - 路況分頁：僅顯示 7 大主要公路與跨海橋隧之綠/黃/紅暢通度)
-    const isExploreTrafficCorridorsVisible = isExploreOpen && exploreTab === 'traffic';
+    // Explore Traffic Tab: Major Highways & Bridges Only & Layer Traffic Conditions
+    const isExploreTrafficCorridorsVisible = (isExploreOpen && exploreTab === 'traffic') || Boolean(layers.trafficConditions);
     if (isExploreTrafficCorridorsVisible) {
       style.sources['traffic_conditions'] = { 
         type: 'geojson', 
         data: `${apiUrl}/api/traffic/jams` 
       };
 
-      const trafficLayerFilter = [
+      const trafficLayerFilter = layers.trafficConditions ? undefined : [
         'any',
         ['==', ['get', 'is_key_corridor'], true],
         ['in', ['get', 'corridor_group'], ['literal', ['hwy1', 'massey', 'lions_gate', 'knight', 'ironworkers', 'oak']]],
@@ -3961,7 +4105,7 @@ export default function AppMap() {
         id: 'traffic-conditions-casing-layer',
         type: 'line',
         source: 'traffic_conditions',
-        filter: trafficLayerFilter,
+        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
@@ -3981,7 +4125,7 @@ export default function AppMap() {
         id: 'traffic-conditions-layer',
         type: 'line',
         source: 'traffic_conditions',
-        filter: trafficLayerFilter,
+        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
@@ -4002,7 +4146,7 @@ export default function AppMap() {
         type: 'symbol',
         source: 'traffic_conditions',
         minzoom: 11.5,
-        filter: trafficLayerFilter,
+        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
         layout: {
           'text-field': [
             'case',
@@ -4471,7 +4615,12 @@ export default function AppMap() {
         source: 'shared-bikes',
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
-          'circle-color': '#00A3AD',
+          'circle-color': [
+            'case',
+            ['any', ['==', ['get', 'isClosed'], true], ['==', ['get', 'is_closed'], true]],
+            '#6b7280',
+            '#00A3AD'
+          ],
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
@@ -5291,30 +5440,6 @@ export default function AppMap() {
         },
         paint: {
           'text-color': '#ffffff'
-        }
-      });
-      style.layers.push({
-        id: 'hospitals-label-layer',
-        type: 'symbol',
-        source: 'hospitals',
-        minzoom: 11.5,
-        layout: {
-          'text-field': ['coalesce', ['get', 'short_name'], ['get', 'chinese_name'], ['get', 'name']],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 11.5, 10, 16, 12],
-          'text-offset': [0, 1.3],
-          'text-anchor': 'top',
-          'text-allow-overlap': true,
-          'text-ignore-placement': false
-        },
-        paint: {
-          'text-color': [
-            'case',
-            ['==', ['get', 'medical_type'], 'upcc'], '#38bdf8',
-            ['==', ['get', 'medical_type'], 'rehab'], '#2dd4bf',
-            '#34d399'
-          ],
-          'text-halo-color': '#0f172a',
-          'text-halo-width': 2
         }
       });
     }
@@ -6718,6 +6843,17 @@ export default function AppMap() {
       });
     }
 
+    if (style && Array.isArray(style.layers)) {
+      style.layers = style.layers.filter(Boolean).map((layer: any) => {
+        if ('filter' in layer) {
+          if (!Array.isArray(layer.filter) || layer.filter.length === 0) {
+            delete layer.filter;
+          }
+        }
+        return layer;
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -6821,6 +6957,8 @@ export default function AppMap() {
     layers.railways,
     layers.trafficSignals,
     layers.turnRestrictions,
+    layers.skytrainFareZones,
+    layerCustomColors,
     contourInterval,
     mapStyleType,
     isExploreOpen,
@@ -6859,15 +6997,18 @@ export default function AppMap() {
         mapStyle={mapStyle}
         style={{ width: '100%', height: '100%' }}
         onMove={(e: any) => {
-          updateScale();
-          if (e.viewState?.zoom !== undefined) setCurrentZoom(e.viewState.zoom);
           if (e.viewState?.latitude !== undefined && e.viewState?.longitude !== undefined) {
             (window as any).__godsEyeMapCenter = { lat: e.viewState.latitude, lon: e.viewState.longitude };
           }
         }}
-        onZoom={(e: any) => {
+        onMoveEnd={() => {
           updateScale();
-          if (e.viewState?.zoom !== undefined) setCurrentZoom(e.viewState.zoom);
+        }}
+        onZoomEnd={(e: any) => {
+          updateScale();
+          if (e.viewState?.zoom !== undefined) {
+            setCurrentZoom(e.viewState.zoom);
+          }
         }}
         onLoad={(e: any) => {
           updateScale();
@@ -6917,7 +7058,6 @@ export default function AppMap() {
           'community-centres-symbol-layer',
           'hospitals-layer',
           'hospitals-symbol-layer',
-          'hospitals-label-layer',
           'parks-layer',
           'parks-symbol-layer',
           'parks-facilities-layer',
@@ -8053,18 +8193,25 @@ export default function AppMap() {
                   setSelectedMaritimeVessel(ship);
                 }}
               >
-                <div 
-                  className="w-full h-full flex items-center justify-center transition-transform duration-300"
-                  style={{ transform: `rotate(${headingDeg}deg)` }}
-                >
-                  {isMoving ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="white" strokeWidth="1" className="text-white drop-shadow-sm">
-                      <polygon points="12,2 19,21 12,17 5,21" />
+                <ShipCargo className="w-3.5 h-3.5 text-white stroke-[2]" />
+                {headingDeg !== undefined && headingDeg > 0 && headingDeg < 360 && (
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-500 ease-out"
+                    style={{ 
+                      transform: `rotate(${headingDeg}deg)`,
+                      transformOrigin: 'center center'
+                    }}
+                  >
+                    <svg 
+                      className="w-3.5 h-3.5 text-cyan-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" 
+                      style={{ transform: 'translateY(-17px)' }}
+                      viewBox="0 0 24 24" 
+                      fill="currentColor"
+                    >
+                      <polygon points="12,2 22,22 12,17 2,22"/>
                     </svg>
-                  ) : (
-                    <div className="w-2.5 h-2.5 rounded-full bg-white/90 shadow-sm" />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </Marker>
           );
@@ -8174,9 +8321,9 @@ export default function AppMap() {
                     </div>
                     <div className="flex items-center gap-1 shrink-0 -mt-0.5 -mr-0.5">
                       <button
-                        onClick={() => copyCoordinatesToClipboard(selectedStop.lat, selectedStop.lon)}
+                        onClick={() => copyNameToClipboard(cleanStopName)}
                         className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
-                        title="複製坐標"
+                        title="複製名稱"
                       >
                         <Copy className="w-3.5 h-3.5" />
                       </button>
@@ -8529,11 +8676,13 @@ export default function AppMap() {
                 }}
               >
                 <div 
-                  className={`w-3.5 h-3.5 rounded-full bg-white border-[2.5px] border-emerald-600 shadow-md group-hover:scale-125 transition-transform ${
-                    isSelected ? 'ring-4 ring-emerald-400 bg-emerald-500 scale-125' : ''
+                  className={`w-5 h-5 rounded-full bg-emerald-600 border border-white shadow-md flex items-center justify-center group-hover:scale-125 transition-transform ${
+                    isSelected ? 'ring-4 ring-emerald-400 scale-125' : ''
                   }`}
                   title={exc.name_en || exc.name}
-                />
+                >
+                  <Repeat className="w-2.5 h-2.5 text-white stroke-[2.5]" />
+                </div>
               </div>
             </Marker>
           );
@@ -8716,21 +8865,13 @@ export default function AppMap() {
           >
             <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
-                <div className="flex items-center gap-2.5">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0 ${
-                    selectedMaritimeVessel.type_group === 'tanker' ? 'bg-[#ea580c]' :
-                    selectedMaritimeVessel.type_group === 'tug' ? 'bg-[#0891b2]' :
-                    selectedMaritimeVessel.type_group === 'passenger' ? 'bg-[#059669]' :
-                    selectedMaritimeVessel.type_group === 'other' ? 'bg-[#475569]' : 'bg-[#1d4ed8]'
-                  }`}>
-                    <ShipCargo className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 text-sm leading-tight flex items-center gap-1.5">
-                      <span>{selectedMaritimeVessel.name}</span>
-                      {selectedMaritimeVessel.flag && (
-                        <span className="text-[10px] text-gray-500 font-normal">({selectedMaritimeVessel.flag})</span>
-                      )}
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-100 text-cyan-800 border border-cyan-300 shrink-0">
+                    船運
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-gray-900 text-sm leading-tight truncate">
+                      {selectedMaritimeVessel.name}
                     </h3>
                     <div className="text-[10px] text-sky-700 font-semibold flex items-center gap-1 mt-0.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -8738,20 +8879,38 @@ export default function AppMap() {
                     </div>
                   </div>
                 </div>
-                <button 
-                  onClick={() => {
-                    setSelectedMaritimeVessel(null);
-                    setSearchTarget(null);
-                  }} 
-                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
-                >
-                  &times;
-                </button>
+                <div className="flex items-center gap-1 shrink-0 -mt-0.5">
+                  <button
+                    onClick={() => copyNameToClipboard(selectedMaritimeVessel.name)}
+                    className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
+                    title="複製名稱"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setSelectedMaritimeVessel(null);
+                      setSearchTarget(null);
+                    }} 
+                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none"
+                    title="關閉"
+                  >
+                    &times;
+                  </button>
+                </div>
               </div>
 
               {/* Vessel specs */}
               <div className="flex flex-col gap-1.5 mb-2.5 bg-gray-50/80 p-2.5 rounded-lg border border-gray-100 text-[11px]">
-                <div className="flex justify-between items-center text-gray-600">
+                {selectedMaritimeVessel.flag && (
+                  <div className="flex justify-between items-center text-gray-600">
+                    <span>國籍 / 註冊國家</span>
+                    <span className="text-gray-900 font-medium text-right">
+                      {selectedMaritimeVessel.flag}
+                    </span>
+                  </div>
+                )}
+                <div className={`flex justify-between items-center text-gray-600 ${selectedMaritimeVessel.flag ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                   <span>船舶類型</span>
                   <span className="text-gray-900 font-medium text-right">
                     {selectedMaritimeVessel.ship_type?.replace(/\s*\([^)]*\)/g, '').trim()}
@@ -8805,14 +8964,6 @@ export default function AppMap() {
                 </div>
               </div>
 
-              {/* Route status banner */}
-              {vesselRouteGeoJSON && (
-                <div className="flex items-center gap-1.5 text-[10.5px] text-cyan-800 bg-cyan-50 px-2 py-1.5 rounded-lg border border-cyan-200/80 mb-2 font-medium">
-                  <Navigation className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
-                  <span>已在地圖繪製深水航線與航行軌跡</span>
-                </div>
-              )}
-
               {/* Data source attribution */}
               <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-gray-100">
                 <span>{selectedMaritimeVessel.source || 'Aisstream.io (即時 AIS 串流)'}</span>
@@ -8822,20 +8973,23 @@ export default function AppMap() {
           </Popup>
         )}
 
-        {/* 機場與水上飛機場標記 (Airports & Seaplane Bases) */}
+        {/* 機場與水上飛機場標記 (Airports, Seaplane Bases & Airport Parking) */}
         {(layers.airports !== false) && airports.map((ap, i) => {
           const coords = ap.geometry?.coordinates;
           if (!coords || coords.length < 2) return null;
           const props = ap.properties || {};
+          const isParking = props.facility_type === 'airport_parking' || props.sub_type === 'airport_parking';
           const isMain = props.sub_type === 'international_airport';
           const isSeaplane = props.sub_type === 'seaplane_base' || props.sub_type === 'south_terminal';
 
           return (
             <Marker key={props.id || `ap-${i}`} longitude={coords[0]} latitude={coords[1]} anchor="center">
               <div
-                className={`relative flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer backdrop-blur-md transition-all hover:scale-125 z-35 select-none ${
-                  isMain 
-                    ? 'bg-sky-600 text-white ring-2 ring-sky-400/50' 
+                className={`relative flex items-center justify-center w-6 h-6 rounded-full border border-white shadow-md cursor-pointer backdrop-blur-md transition-all hover:scale-125 z-35 select-none ${
+                  isParking
+                    ? 'bg-blue-700 text-white'
+                    : isMain 
+                    ? 'bg-sky-600 text-white ring-1 ring-sky-400/50' 
                     : isSeaplane 
                     ? 'bg-teal-600 text-white' 
                     : 'bg-emerald-600 text-white'
@@ -8848,14 +9002,216 @@ export default function AppMap() {
                   setSelectedFacility(null);
                   setSelectedTerminal(null);
                   setSelectedFerry(null);
-                  setSelectedAirport(ap);
+                  if (isParking) {
+                    setSelectedAirport(null);
+                    setSelectedAirportParking(ap);
+                    if (props.has_live_capacity) {
+                      fetchParkadeCapacity();
+                    }
+                  } else {
+                    setSelectedAirportParking(null);
+                    setSelectedAirport(ap);
+                  }
                 }}
               >
-                <Plane className="w-3.5 h-3.5 text-white" />
+                {isParking ? (
+                  <SquareParking className="w-3.5 h-3.5 text-white" />
+                ) : (
+                  <Plane className="w-3 h-3 text-white" />
+                )}
               </div>
             </Marker>
           );
         })}
+
+        {/* Airport Parking Detail Popup */}
+        {selectedAirportParking && (
+          <Popup
+            longitude={selectedAirportParking.geometry.coordinates[0]}
+            latitude={selectedAirportParking.geometry.coordinates[1]}
+            anchor="bottom"
+            onClose={() => {
+              setSelectedAirportParking(null);
+              if (searchTarget?.category === 'airports' || searchTarget?.category === 'airport_parking') {
+                setSearchTarget(null);
+              }
+            }}
+            closeOnClick={false}
+            closeButton={false}
+            className="z-50"
+            offset={[0, -12]}
+            maxWidth="none"
+          >
+            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
+              <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
+                <div className="flex items-start gap-2 min-w-0 pr-2">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-blue-700 text-white shrink-0 mt-0.5 shadow-xs whitespace-nowrap">
+                    機場停車場
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
+                      {selectedAirportParking.properties?.name_en || selectedAirportParking.properties?.name}
+                    </h3>
+                    {selectedAirportParking.properties?.address && (
+                      <span className="text-[11px] text-gray-400 block leading-snug break-words mt-0.5">
+                        {selectedAirportParking.properties.address}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 -mt-1 -mr-1">
+                  <button
+                    onClick={() =>
+                      copyFacilityDetailsToClipboard({
+                        id: selectedAirportParking.properties?.id || 'parking',
+                        facility_type: 'airport_parking',
+                        name: selectedAirportParking.properties?.name_en || selectedAirportParking.properties?.name || '機場停車場',
+                        local_area: selectedAirportParking.properties?.address || '',
+                        lon: selectedAirportParking.geometry.coordinates[0],
+                        lat: selectedAirportParking.geometry.coordinates[1],
+                        properties: selectedAirportParking.properties || {}
+                      })
+                    }
+                    className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
+                    title="複製名稱"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </button>
+                  <a
+                    href={getGoogleNavUrl(selectedAirportParking.geometry.coordinates[1], selectedAirportParking.geometry.coordinates[0])}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
+                    title="Google Map 導航至此"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-sky-600" />
+                  </a>
+                  <button
+                    onClick={() => {
+                      setSelectedAirportParking(null);
+                      if (searchTarget?.category === 'airports' || searchTarget?.category === 'airport_parking') {
+                        setSearchTarget(null);
+                      }
+                    }}
+                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
+                    title="關閉"
+                  >
+                    &times;
+                  </button>
+                </div>
+              </div>
+
+              {/* 灰色區塊 (N/A 不顯示) */}
+              <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                {selectedAirportParking.properties?.half_hour_hourly && selectedAirportParking.properties.half_hour_hourly !== 'N/A' && (
+                  <div className="flex justify-between items-start text-gray-600">
+                    <span className="shrink-0 font-medium">半小時/1小時</span>
+                    <span className="text-gray-900 font-semibold text-right leading-snug">{selectedAirportParking.properties.half_hour_hourly}</span>
+                  </div>
+                )}
+
+                {selectedAirportParking.properties?.daily && selectedAirportParking.properties.daily !== 'N/A' && (
+                  <div className="flex justify-between items-start text-gray-600 pt-1.5 border-t border-gray-100">
+                    <span className="shrink-0 font-medium">每日</span>
+                    <span className="text-gray-900 font-semibold text-right leading-snug">{selectedAirportParking.properties.daily}</span>
+                  </div>
+                )}
+
+                {selectedAirportParking.properties?.weekly && selectedAirportParking.properties.weekly !== 'N/A' && !selectedAirportParking.properties.weekly.startsWith('N/A') && (
+                  <div className="flex justify-between items-start text-gray-600 pt-1.5 border-t border-gray-100">
+                    <span className="shrink-0 font-medium">每星期</span>
+                    <span className="text-gray-900 font-semibold text-right leading-snug">{selectedAirportParking.properties.weekly}</span>
+                  </div>
+                )}
+
+                {selectedAirportParking.properties?.distance && selectedAirportParking.properties.distance !== 'N/A' && (
+                  <div className="flex justify-between items-start text-gray-600 pt-1.5 border-t border-gray-100">
+                    <span className="shrink-0 font-medium">距離</span>
+                    <span className="text-gray-800 text-right leading-snug">{selectedAirportParking.properties.distance}</span>
+                  </div>
+                )}
+
+                {selectedAirportParking.properties?.information && (
+                  <>
+                    <div className="w-full h-px bg-gray-200/80 my-1" />
+                    <div className="flex flex-col gap-1 text-gray-600">
+                      <span className="font-medium text-gray-700">詳細資料</span>
+                      <p className="text-gray-700 leading-relaxed text-[11px] whitespace-pre-line">
+                        {selectedAirportParking.properties.information}
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                {/* Terminal Parkade 即時車位現況 */}
+                {selectedAirportParking.properties?.has_live_capacity && (
+                  <div className="mt-1.5 pt-2 border-t border-gray-200/80 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="font-semibold text-gray-800 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        即時空位現況 (Parkade Capacity)
+                      </span>
+                      {loadingParkadeCapacity ? (
+                        <span className="text-gray-400 text-[10px]">查詢中...</span>
+                      ) : (
+                        <button
+                          onClick={fetchParkadeCapacity}
+                          className="text-[10px] text-blue-600 hover:text-blue-800 underline font-medium"
+                        >
+                          重新整理
+                        </button>
+                      )}
+                    </div>
+                    {parkadeCapacity?.zones && (
+                      <div className="grid grid-cols-3 gap-1.5">
+                        <div className="bg-white p-1.5 rounded border border-gray-200 text-center shadow-2xs">
+                          <div className="text-[10px] text-gray-500">P1 (短停)</div>
+                          <div className="text-sm font-bold text-emerald-600">{parkadeCapacity.zones.P1 ?? '--'} <span className="text-[9px] font-normal text-gray-400">位</span></div>
+                        </div>
+                        <div className="bg-white p-1.5 rounded border border-gray-200 text-center shadow-2xs">
+                          <div className="text-[10px] text-gray-500">P2 (長停)</div>
+                          <div className="text-sm font-bold text-emerald-600">{parkadeCapacity.zones.P2 ?? '--'} <span className="text-[9px] font-normal text-gray-400">位</span></div>
+                        </div>
+                        <div className="bg-white p-1.5 rounded border border-gray-200 text-center shadow-2xs">
+                          <div className="text-[10px] text-gray-500">P3 (長停)</div>
+                          <div className="text-sm font-bold text-emerald-600">{parkadeCapacity.zones.P3 ?? '--'} <span className="text-[9px] font-normal text-gray-400">位</span></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* 底部預訂連結按鈕 */}
+              <div className="mt-2.5">
+                <a
+                  href="https://parking.yvr.ca/vancouverbooking/?fresh_start=Y&shop=p"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <span>前往 YVR 泊車預訂停車位</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+
+              {/* 設施通用坐標與複製按鈕 */}
+              <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2 mt-2 border-t border-gray-100 font-mono">
+                <span className="flex items-center gap-1 text-gray-600">
+                  <span>📍</span>
+                  <span>{selectedAirportParking.geometry.coordinates[1].toFixed(6)}, {selectedAirportParking.geometry.coordinates[0].toFixed(6)}</span>
+                </span>
+                <button
+                  onClick={() => copyCoordinatesToClipboard(selectedAirportParking.geometry.coordinates[1], selectedAirportParking.geometry.coordinates[0])}
+                  className="p-1 rounded bg-gray-100 hover:bg-cyan-50 hover:text-cyan-600 text-gray-700 transition-colors border border-gray-200/60 shadow-xs flex items-center justify-center"
+                  title="複製坐標"
+                >
+                  <Copy className="w-3.5 h-3.5 text-cyan-600" />
+                </button>
+              </div>
+            </div>
+          </Popup>
+        )}
 
         {/* Airport Detail Popup */}
         {selectedAirport && (
@@ -8906,7 +9262,7 @@ export default function AppMap() {
                       })
                     }
                     className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
-                    title="複製名稱及地址"
+                    title="複製名稱"
                   >
                     <Copy className="w-3.5 h-3.5" />
                   </button>
@@ -8993,11 +9349,10 @@ export default function AppMap() {
                 </span>
                 <button
                   onClick={() => copyCoordinatesToClipboard(selectedAirport.geometry.coordinates[1], selectedAirport.geometry.coordinates[0])}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 hover:bg-cyan-50 hover:text-cyan-600 text-gray-700 transition-colors text-[10.5px] font-sans font-medium border border-gray-200/60 shadow-xs"
+                  className="p-1 rounded bg-gray-100 hover:bg-cyan-50 hover:text-cyan-600 text-gray-700 transition-colors border border-gray-200/60 shadow-xs flex items-center justify-center"
                   title="複製坐標"
                 >
-                  <Copy className="w-3 h-3 text-cyan-600" />
-                  <span>複製坐標</span>
+                  <Copy className="w-3.5 h-3.5 text-cyan-600" />
                 </button>
               </div>
             </div>
@@ -9183,18 +9538,6 @@ export default function AppMap() {
                 }`}>
                   <Fence className="w-4 h-4" />
                 </div>
-
-                {/* 底部名牌 */}
-                <div className={`mt-1 px-2 py-0.5 rounded-md text-[11px] font-bold shadow-lg border backdrop-blur-md whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 ${
-                  isSelected
-                    ? 'bg-emerald-950/95 text-emerald-200 border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.4)]'
-                    : 'bg-[#141720]/95 text-gray-200 border-[#2f384d] group-hover:border-emerald-400 group-hover:text-white'
-                }`}>
-                  <span>{crossing.name?.split('(')[0]?.trim() || crossing.name}</span>
-                  <span className="text-[9.5px] px-1 py-0.2 rounded font-normal text-cyan-300 bg-cyan-950/80">
-                    {crossing.highway?.split('↔')[0]?.trim()}
-                  </span>
-                </div>
               </div>
             </Marker>
           );
@@ -9233,11 +9576,8 @@ export default function AppMap() {
               }}
               className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
             >
-              <div className="relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 bg-[#121927]/95 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]">
-                <Waypoints className="w-4 h-4 text-emerald-400" />
-              </div>
-              <div className="mt-1 px-2 py-0.5 rounded-md text-[11px] font-bold shadow-lg border backdrop-blur-md whitespace-nowrap bg-[#141720]/95 text-emerald-200 border-emerald-400">
-                <span>獅門大橋</span>
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 bg-[#121927]/95 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]">
+                <BridgeIcon className="w-4 h-4 text-emerald-400" />
               </div>
             </div>
           </Marker>
@@ -9589,7 +9929,7 @@ export default function AppMap() {
                 : 'max-h-[74vh] sm:max-h-[80vh]'
             } overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800`}>
               {(() => {
-                const headerBadge = (() => {
+                const baseHeaderBadge = (() => {
                   const t = selectedFacility.facility_type;
                   if (t === 'parking_meters') return { label: '停車收費錶', bg: 'bg-[#1D4ED8] text-white' };
                   if (t === 'motorcycle_parking') return { label: '摩托車停車位', bg: 'bg-[#1D4ED8] text-white' };
@@ -9636,7 +9976,7 @@ export default function AppMap() {
                   if (t === 'food_vendors') return { label: '食品攤販', bg: 'bg-orange-500 text-white' };
                   if (t === 'food_banks') return { label: '食物援助', bg: 'bg-emerald-600 text-white' };
                   if (t === 'homeless_shelters') return { label: '無家者庇護所', bg: 'bg-rose-600 text-white' };
-                  if (t === 'aed') return { label: 'AED 去顫器', bg: 'bg-red-600 text-white' };
+                  if (t === 'aed') return { label: 'AED', bg: 'bg-red-600 text-white' };
                   if (t === 'community_centres') return { label: '社區中心', bg: 'bg-violet-600 text-white' };
                   if (t === 'canada_post') return { label: '郵寄', bg: 'bg-[#E31837] text-white' };
                   if (t === 'fedex') return { label: '郵寄', bg: 'bg-[#4D148C] text-white' };
@@ -9694,6 +10034,40 @@ export default function AppMap() {
                   return null;
                 })();
 
+                const headerBadge = (() => {
+                  if (!baseHeaderBadge) return null;
+                  const t = selectedFacility.facility_type;
+                  const typeToKeyMap: Record<string, string> = {
+                    parks: 'parks', libraries: 'libraries', community_centres: 'communityCentres',
+                    schools: 'schools', police: 'police', fire_halls: 'fireHalls', hospitals: 'hospitals',
+                    disaster_hubs: 'disasterHubs', food_banks: 'foodBanks', food_vendors: 'foodVendors',
+                    fuel: 'fuel', ev_charging: 'evCharging', tesla: 'tesla', parking_meters: 'parkingMeters',
+                    motorcycle_parking: 'motorcycleParking', accessible_parking: 'accessibleParking',
+                    car_sharing: 'carSharing', shared_bikes: 'sharedBikes', escooter: 'escooter',
+                    bikeways: 'bikeways', bike_racks: 'bikeRacks', traffic_cameras: 'trafficCameras',
+                    safety_cameras: 'safetyCameras', traffic_conditions: 'trafficConditions',
+                    traffic_corridor: 'trafficConditions', traffic_alerts: 'trafficAlerts',
+                    traffic_incident: 'trafficAlerts', road_closures: 'roadClosures',
+                    road_construction: 'roadConstruction', public_washrooms: 'publicWashrooms',
+                    drinking_fountains: 'drinkingFountains', beach_water_quality: 'beachWaterQuality',
+                    border_crossing: 'borderCrossing', ski_resort: 'skiResorts', tide_stations: 'tideStations',
+                    marine_terminals: 'marineTerminals', water_distribution_mains: 'waterDistributionMains',
+                    sewer_mains: 'sewerMains', street_lighting: 'streetLighting', street_lighting_conduits: 'streetLightingConduits',
+                    litter_containers: 'litterContainers', public_trees: 'publicTrees', museums: 'museums',
+                    recycling: 'recycling', fire_hydrants: 'fireHydrants', aed: 'aed'
+                  };
+                  const key = t ? typeToKeyMap[t] : undefined;
+                  const custom = key ? layerCustomColors?.[key] : undefined;
+                  if (custom) {
+                    return {
+                      ...baseHeaderBadge,
+                      bg: 'text-white shadow-xs',
+                      style: { backgroundColor: custom }
+                    };
+                  }
+                  return baseHeaderBadge;
+                })();
+
                 const formatStreetAttrLocal = (val?: any) => {
                   if (!val) return '';
                   const s = String(val).trim();
@@ -9709,6 +10083,9 @@ export default function AppMap() {
 
                 const popupTitle = (() => {
                   let title = (() => {
+                    if (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋')) {
+                      return 'Lions Gate Bridge';
+                    }
                     if (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') {
                       return selectedFacility.properties?.type_label || selectedFacility.properties?.subtype_zh || selectedFacility.properties?.type_zh || selectedFacility.properties?.category_zh || (selectedFacility.name || '').replace(/^[^\w\u4e00-\u9fa5]+/, '').trim() || '即時通報';
                     }
@@ -9901,7 +10278,33 @@ export default function AppMap() {
                           {headerBadge.label}
                         </span>
                       ) : (
-                        <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                        <span 
+                          style={(() => {
+                            const t = selectedFacility.facility_type;
+                            const typeToKeyMap: Record<string, string> = {
+                              parks: 'parks', libraries: 'libraries', community_centres: 'communityCentres',
+                              schools: 'schools', police: 'police', fire_halls: 'fireHalls', hospitals: 'hospitals',
+                              disaster_hubs: 'disasterHubs', food_banks: 'foodBanks', food_vendors: 'foodVendors',
+                              fuel: 'fuel', ev_charging: 'evCharging', tesla: 'tesla', parking_meters: 'parkingMeters',
+                              motorcycle_parking: 'motorcycleParking', accessible_parking: 'accessibleParking',
+                              car_sharing: 'carSharing', shared_bikes: 'sharedBikes', escooter: 'escooter',
+                              bikeways: 'bikeways', bike_racks: 'bikeRacks', traffic_cameras: 'trafficCameras',
+                              safety_cameras: 'safetyCameras', traffic_conditions: 'trafficConditions',
+                              traffic_corridor: 'trafficConditions', traffic_alerts: 'trafficAlerts',
+                              traffic_incident: 'trafficAlerts', road_closures: 'roadClosures',
+                              road_construction: 'roadConstruction', public_washrooms: 'publicWashrooms',
+                              drinking_fountains: 'drinkingFountains', beach_water_quality: 'beachWaterQuality',
+                              border_crossing: 'borderCrossing', ski_resort: 'skiResorts', tide_stations: 'tideStations',
+                              marine_terminals: 'marineTerminals', water_distribution_mains: 'waterDistributionMains',
+                              sewer_mains: 'sewerMains', street_lighting: 'streetLighting', street_lighting_conduits: 'streetLightingConduits',
+                              litter_containers: 'litterContainers', public_trees: 'publicTrees', museums: 'museums',
+                              recycling: 'recycling', fire_hydrants: 'fireHydrants', aed: 'aed'
+                            };
+                            const k = t ? typeToKeyMap[t] : undefined;
+                            const col = k ? layerCustomColors?.[k] : undefined;
+                            return col ? { backgroundColor: col, boxShadow: `0 0 6px ${col}80` } : undefined;
+                          })()}
+                          className={`w-3 h-3 rounded-full flex-shrink-0 ${
                           selectedFacility.facility_type === 'public_trees' ? 'bg-emerald-600' :
                           selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                           (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'bg-orange-500 shadow-[0_0_6px_rgba(234,88,12,0.5)]' :
@@ -9967,10 +10370,13 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                        {(selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
+                              if (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋')) {
+                                return 'Lions Gate Bridge Road';
+                              }
                               if (selectedFacility.facility_type === 'marine_terminals') {
                                 return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               }
@@ -10044,7 +10450,22 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'garbage_collection') return selectedFacility.properties?.zone_code || selectedFacility.local_area || '';
                               if (selectedFacility.facility_type === 'traffic_signals') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'turn_restrictions') return 'Vancouver, BC';
-                              if (selectedFacility.facility_type === 'truck_routes_restriction') return selectedFacility.properties?.subtitle || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'truck_routes_restriction') {
+                                if (selectedFacility.name?.toLowerCase().includes('granville') || selectedFacility.properties?.bridge?.toLowerCase().includes('granville') || selectedFacility.properties?.subtitle?.toLowerCase().includes('granville')) {
+                                  return 'Granville Bridge, Vancouver, BC V5Y 1V4';
+                                }
+                                return selectedFacility.properties?.subtitle || 'Vancouver, BC';
+                              }
+                              if (selectedFacility.facility_type === 'shared_bikes') {
+                                const addr = selectedFacility.properties?.address;
+                                if (Array.isArray(addr) && addr.length > 0 && addr[0]) {
+                                  return addr[0];
+                                }
+                                if (typeof addr === 'string' && addr.trim()) {
+                                  return addr.trim();
+                                }
+                                return 'Vancouver, BC';
+                              }
                               if (selectedFacility.facility_type === 'public_trees') return selectedFacility.properties?.address || `${selectedFacility.properties?.civic_number || ''} ${selectedFacility.properties?.std_street || ''}`.trim() || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'aed') return selectedFacility.properties?.ADDRESS || selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'public_art') return selectedFacility.properties?.siteaddress || selectedFacility.local_area || 'Vancouver, BC';
@@ -10197,10 +10618,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2.5 text-xs text-gray-700">
                     {/* 5.1 標題下方加入色塊 */}
-                    <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-start gap-2 text-[11px] text-red-700 font-medium leading-relaxed">
-                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center shrink-0 mt-0.5 text-[#d9261c] font-bold text-[10px]">
-                        P
-                      </div>
+                    <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center text-[11px] text-red-700 font-medium leading-relaxed">
                       <span>北美規模最大的私營停車場管理公司之一，擁有超過 3,000 個停車場，涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
                     </div>
 
@@ -12294,6 +12712,7 @@ export default function AppMap() {
                   const fax = typeof props.fax === 'string' && props.fax.trim() !== '' && props.fax.trim() !== 'null' ? props.fax.trim() : null;
                   const ccName = props.name || selectedFacility.name || '社區中心';
                   const urllink = props.urllink || props.website || 'https://vancouver.ca/parks-recreation-culture/community-and-cultural-centres.aspx';
+                  const detailedInfo = props.detailed_info;
 
                   return (
                     <div className="flex flex-col gap-2 text-xs">
@@ -12303,7 +12722,7 @@ export default function AppMap() {
                       </div>
 
                       {/* 灰色區塊 (如果數值是null, 不用顯示) */}
-                      {(hours || phone || email || fax) && (
+                      {(hours || phone || email || fax || detailedInfo) && (
                         <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                           {/* 開放時間 (摺疊式顯示，跟隨統一的時間格式 hh:mm 或 hh:mm AM/PM) */}
                           {hours && (
@@ -12313,6 +12732,62 @@ export default function AppMap() {
                               timeFormat={timeFormat}
                               theme="violet"
                             />
+                          )}
+
+                          {/* 詳細資料 (14.1 & 14.2) */}
+                          {Array.isArray(detailedInfo) && detailedInfo.length > 0 && (
+                            <>
+                              <div className="w-full h-px bg-gray-200/80 my-0.5" />
+                              <div className="flex flex-col gap-1.5 pt-0.5">
+                                <span className="font-bold text-gray-700 text-[11px]">詳細資料</span>
+                                <div className="flex flex-col gap-1.5">
+                                  {detailedInfo.map((sec: any, idx: number) => (
+                                    <div key={idx} className="bg-white/95 p-2 rounded border border-gray-200/70 flex flex-col gap-1 text-[10.5px]">
+                                      {sec.title && (
+                                        <div className="font-semibold text-violet-900 border-b border-gray-100 pb-0.5 mb-0.5">
+                                          {sec.title}
+                                        </div>
+                                      )}
+                                      {sec.items && Array.isArray(sec.items) && (
+                                        <div className="flex flex-col gap-0.5 text-gray-700">
+                                          {sec.items.map((it: string, itIdx: number) => (
+                                            <div key={itIdx} className="leading-snug">
+                                              {formatOpeningHours(it, timeFormat)}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+                                      {sec.table && (
+                                        <div className="mt-1 overflow-hidden rounded border border-gray-200">
+                                          <table className="w-full text-center border-collapse text-[10px]">
+                                            <thead>
+                                              <tr className="bg-gray-100 text-gray-700 font-semibold border-b border-gray-200">
+                                                {sec.table.headers.map((h: string, hIdx: number) => (
+                                                  <th key={hIdx} className={`py-1 px-1.5 ${hIdx < sec.table.headers.length - 1 ? 'border-r border-gray-200' : ''}`}>
+                                                    {h}
+                                                  </th>
+                                                ))}
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {sec.table.rows.map((row: string[], rIdx: number) => (
+                                                <tr key={rIdx} className={rIdx % 2 === 1 ? 'bg-gray-50' : 'bg-white'}>
+                                                  {row.map((cell: string, cIdx: number) => (
+                                                    <td key={cIdx} className={`py-1 px-1.5 ${cIdx < row.length - 1 ? 'border-r border-gray-200' : ''} text-gray-800`}>
+                                                      {sec.table.headers?.[cIdx]?.includes('時間') ? formatOpeningHours(cell, timeFormat) : cell}
+                                                    </td>
+                                                  ))}
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </>
                           )}
 
                           {/* (分隔線) */}
@@ -12454,8 +12929,7 @@ export default function AppMap() {
 
                       {/* 備註 */}
                       {notes && (
-                        <div className="mt-1 p-2 bg-amber-50 rounded border border-amber-200/60 text-[10.5px] text-amber-900 leading-snug flex items-start gap-1">
-                          <span className="shrink-0">💡</span>
+                        <div className="mt-1 p-2 bg-amber-50 rounded border border-amber-200/60 text-[10.5px] text-amber-900 leading-snug">
                           <span>{notes}</span>
                         </div>
                       )}
@@ -14486,7 +14960,7 @@ export default function AppMap() {
                       若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，依照語音指引施救。
                     </div>
 
-                    {/* 紅區塊下方顯示設備編號 */}
+                    {/* 紅區塊下方顯示設備編號與詳細位置合併區塊 */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       <div className="flex justify-between items-center text-gray-600">
                         <span>設備編號</span>
@@ -14494,17 +14968,18 @@ export default function AppMap() {
                           {objId != null ? `#${objId}` : 'BC PAD'}
                         </span>
                       </div>
+                      {locDesc && (
+                        <>
+                          <div className="border-t border-gray-200/80 my-0.5" />
+                          <div className="flex flex-col gap-1">
+                            <span className="font-semibold text-gray-700">詳細位置</span>
+                            <span className="text-gray-800 leading-relaxed break-words">
+                              {locDesc}
+                            </span>
+                          </div>
+                        </>
+                      )}
                     </div>
-
-                    {/* 詳細位置 (灰色區塊無 emoji) */}
-                    {locDesc && (
-                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 text-[11px] flex flex-col gap-1">
-                        <span className="font-semibold text-gray-700">詳細位置</span>
-                        <span className="text-gray-800 leading-relaxed break-words">
-                          {locDesc}
-                        </span>
-                      </div>
-                    )}
 
                     {/* 最底部連結按鈕：紅底白字風格 */}
                     <div className="flex flex-col gap-1.5 pt-1 border-t border-gray-100">
@@ -14642,8 +15117,8 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'fuel' && (() => {
                 const openingHoursText = (() => {
                   const rawHours = selectedFacility.properties.opening_hours;
-                  if (!rawHours || rawHours === '24/7' || rawHours.toLowerCase() === '24 hours') {
-                    return '營業中 (24/7)';
+                  if (!rawHours || rawHours === '24/7' || rawHours.toLowerCase() === '24 hours' || rawHours === '全日') {
+                    return '營業中 (24小時)';
                   }
                   const formatted = formatTimePreference(rawHours, timeFormat);
                   let isOpen = true;
@@ -14665,7 +15140,7 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 2.1 刪除「道路設施」列；2.2 改為「設定個人位置」，右方貼邊顯示營業狀態 */}
+                    {/* 2.1 刪除「道路設施」列；2.2 改為「設定個人位置」 */}
                     <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between text-[11px]">
                       <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
                         <span className="text-gray-600 shrink-0">離個人位置:</span>
@@ -14682,10 +15157,19 @@ export default function AppMap() {
                           </button>
                         )}
                       </div>
-                      <span className="text-[10px] font-medium text-amber-950 shrink-0 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30">
-                        {openingHoursText}
-                      </span>
                     </div>
+
+                    {/* 5. 營業時間 (摺疊式顯示風格，避免阻擋個人位置) */}
+                    {selectedFacility.properties.opening_hours && (
+                      <div className="bg-gray-50 p-2 rounded border border-gray-100">
+                        <FacilityWeeklyHoursSchedule
+                          label="營業時間"
+                          hours={selectedFacility.properties.opening_hours}
+                          timeFormat={timeFormat}
+                          theme="amber"
+                        />
+                      </div>
+                    )}
 
                     {/* Gas Prices Grid */}
                     <div className="flex flex-col gap-1.5">
@@ -15206,15 +15690,6 @@ export default function AppMap() {
                     </div>
 
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {ownerDisplay && (
-                        <>
-                          <div className="flex justify-between items-center text-gray-600">
-                            <span>營運單位</span>
-                            <span className="text-gray-900 font-medium text-right">{ownerDisplay}</span>
-                          </div>
-                          <div className="border-t border-gray-200/80 my-0.5" />
-                        </>
-                      )}
                       {props.skytrain_station_name && (
                         <div className="flex justify-between items-center text-gray-600">
                           <span>天車車站</span>
@@ -15495,13 +15970,21 @@ export default function AppMap() {
                 if (isLionsGateATIS) {
                   return (
                     <div className="flex flex-col gap-2 text-xs">
-                      <div className="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/30 flex items-center justify-between gap-2">
-                        <span className="text-[11px] text-emerald-900 font-medium">
-                          DriveBC & ATIS 即時交通延誤、排隊車龍與南向現場監視
+                      <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/30 flex items-start justify-between gap-2">
+                        <span className="text-[11px] text-orange-950 dark:text-orange-200 font-medium leading-relaxed">
+                          獅門大橋是加拿大英屬哥倫比亞省內一條懸索吊橋，橫越布勒內灣的第一海峽，連接溫哥華市中心及北岸市鎮。
                         </span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
-                          每 1 小時更新
-                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLionsGateRefreshTs(Date.now());
+                          }}
+                          className="p-1 rounded-md text-orange-700 hover:text-orange-950 hover:bg-orange-500/20 transition-colors shrink-0 -mt-0.5"
+                          title="重新整理影像"
+                        >
+                          <RotateCw className="w-3.5 h-3.5" />
+                        </button>
                       </div>
 
                       {/* 2-Column Compact Grid */}
@@ -15509,15 +15992,15 @@ export default function AppMap() {
                         {/* Left Column (Row span 2): queue_map.gif 車流排隊圖 */}
                         <div className="row-span-2 bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner justify-between">
                           <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
-                            <span>🗺️ 車流排隊圖</span>
-                            <span className="text-[9px] text-emerald-400 font-mono">Queue</span>
+                            <span>車流排隊圖</span>
+                            <span className="text-[9px] text-orange-400 font-mono">Queue</span>
                           </div>
                           <div 
                             onClick={() => setEnlargedCameraImage({
-                              src: "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif",
+                              src: `https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif?t=${lionsGateRefreshTs}`,
                               directSrc: "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif",
                               alt: "車流排隊圖 (Queue Map)",
-                              title: "獅門大橋 (Lions Gate Bridge)",
+                              title: "Lions Gate Bridge",
                               direction: "即時車流排隊圖"
                             })}
                             className="w-full flex-1 overflow-hidden rounded bg-black flex items-center justify-center min-h-[170px] max-h-[210px] cursor-zoom-in group/img hover:opacity-95 transition-opacity relative"
@@ -15525,7 +16008,7 @@ export default function AppMap() {
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img 
-                              src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif" 
+                              src={`https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif?t=${lionsGateRefreshTs}`} 
                               alt="Lions Gate Bridge Queue Map" 
                               className="w-full h-full object-contain"
                             />
@@ -15539,15 +16022,15 @@ export default function AppMap() {
                         {/* Right Column Row 1: atis_delay.gif 預計延誤 */}
                         <div className="bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
                           <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
-                            <span>⏱️ 預計延誤時間</span>
-                            <span className="text-[9px] text-emerald-400 font-mono">LIVE</span>
+                            <span>預計延誤時間</span>
+                            <span className="text-[9px] text-orange-400 font-mono">LIVE</span>
                           </div>
                           <div 
                             onClick={() => setEnlargedCameraImage({
-                              src: "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif",
+                              src: `https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif?t=${lionsGateRefreshTs}`,
                               directSrc: "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif",
                               alt: "預計延誤時間 (Delay Estimates)",
-                              title: "獅門大橋 (Lions Gate Bridge)",
+                              title: "Lions Gate Bridge",
                               direction: "即時預計延誤時間"
                             })}
                             className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[42px] max-h-[55px] cursor-zoom-in group/img hover:opacity-95 transition-opacity relative"
@@ -15555,7 +16038,7 @@ export default function AppMap() {
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img 
-                              src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif" 
+                              src={`https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif?t=${lionsGateRefreshTs}`} 
                               alt="Lions Gate Bridge ATIS 預計延誤" 
                               className="w-full object-contain"
                               onError={(e) => {
@@ -15571,15 +16054,15 @@ export default function AppMap() {
                         {/* Right Column Row 2: Camera 18 南向即時監視 */}
                         <div className="bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
                           <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
-                            <span>📷 南向即時監視</span>
+                            <span>南向即時監視</span>
                             <span className="text-[9px] text-cyan-400">#18</span>
                           </div>
                           <div 
                             onClick={() => setEnlargedCameraImage({
-                              src: "https://www.drivebc.ca/images/18.jpg",
+                              src: `https://www.drivebc.ca/images/18.jpg?t=${lionsGateRefreshTs}`,
                               directSrc: "https://www.drivebc.ca/images/18.jpg",
                               alt: "DriveBC 獅門大橋南向即時監視 (Camera 18)",
-                              title: "獅門大橋 (Lions Gate Bridge)",
+                              title: "Lions Gate Bridge",
                               direction: "南向即時監視 (Camera 18)"
                             })}
                             className="w-full overflow-hidden rounded bg-black flex items-center justify-center h-[85px] cursor-zoom-in group/img hover:opacity-95 transition-opacity relative"
@@ -15587,7 +16070,7 @@ export default function AppMap() {
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img 
-                              src="https://www.drivebc.ca/images/18.jpg" 
+                              src={`https://www.drivebc.ca/images/18.jpg?t=${lionsGateRefreshTs}`} 
                               alt="DriveBC Lions Gate Bridge Camera 18" 
                               className="w-full h-full object-cover rounded"
                             />
@@ -15603,7 +16086,7 @@ export default function AppMap() {
                           href="https://www.th.gov.bc.ca/atis/lgcws/index.html" 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                          className="w-full py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                         >
                           <Activity className="w-3.5 h-3.5" />
                           <span>前往 ATIS 獅門大橋路況官網</span>
@@ -15702,7 +16185,6 @@ export default function AppMap() {
                 const props = selectedFacility.properties || {};
                 const delayMin = props.delay_min ?? props.delay_minutes ?? (props.delay_sec ? Math.round(props.delay_sec / 60) : 5);
                 const reportTime = props.report_time_str || props.time_display || 'TomTom 即時偵測';
-                const confidenceVal = props.confidence_pct ?? (props.confidence != null ? (props.confidence <= 5 ? props.confidence * 20 : props.confidence) : 96);
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
@@ -15719,11 +16201,6 @@ export default function AppMap() {
                         <span className="font-bold text-xs text-gray-800 mt-1">
                           {reportTime}
                         </span>
-                        {confidenceVal != null && (
-                          <span className="text-[9.5px] text-emerald-600 mt-0.5 font-medium">
-                            ✓ 資料可信度 {confidenceVal}%
-                          </span>
-                        )}
                       </div>
                     </div>
 
@@ -16646,11 +17123,10 @@ export default function AppMap() {
                 </span>
                 <button
                   onClick={() => copyCoordinatesToClipboard(selectedFacility.lat, selectedFacility.lon)}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 hover:bg-cyan-50 hover:text-cyan-600 text-gray-700 transition-colors text-[10.5px] font-sans font-medium border border-gray-200/60 shadow-xs"
+                  className="p-1 rounded bg-gray-100 hover:bg-cyan-50 hover:text-cyan-600 text-gray-700 transition-colors border border-gray-200/60 shadow-xs flex items-center justify-center"
                   title="複製坐標"
                 >
-                  <Copy className="w-3 h-3 text-cyan-600" />
-                  <span>複製坐標</span>
+                  <Copy className="w-3.5 h-3.5 text-cyan-600" />
                 </button>
               </div>
             </div>
@@ -17742,7 +18218,7 @@ export default function AppMap() {
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-amber-500/20 text-amber-400">
-                <Fuel className="w-3.5 h-3.5" />
+                <SlidersHorizontal className="w-3.5 h-3.5" />
               </span>
               <span className="font-bold text-xs text-white">油站品牌篩選</span>
             </div>
@@ -17843,7 +18319,7 @@ export default function AppMap() {
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-emerald-500/20 text-emerald-400">
-                <Zap className="w-3.5 h-3.5" />
+                <SlidersHorizontal className="w-3.5 h-3.5" />
               </span>
               <span className="font-bold text-xs text-white">電動車充電規格篩選</span>
             </div>
@@ -17954,11 +18430,10 @@ export default function AppMap() {
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-cyan-500/20 text-cyan-400">
-                <Car className="w-3.5 h-3.5" />
+                <SlidersHorizontal className="w-3.5 h-3.5" />
               </span>
               <div className="flex flex-col">
                 <span className="font-bold text-xs text-white">共享汽車篩選</span>
-                <span className="text-[9.5px] text-gray-400">點擊項目可開關圖層</span>
               </div>
             </div>
             <button
@@ -18078,11 +18553,10 @@ export default function AppMap() {
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-emerald-500/20 text-emerald-400">
-                <Bike className="w-3.5 h-3.5" />
+                <SlidersHorizontal className="w-3.5 h-3.5" />
               </span>
               <div className="flex flex-col">
                 <span className="font-bold text-xs text-white">單車徑路網篩選</span>
-                <span className="text-[9.5px] text-gray-400">點擊項目可開關車道</span>
               </div>
             </div>
             <button
@@ -18255,11 +18729,10 @@ export default function AppMap() {
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-rose-500/20 text-rose-400 flex items-center justify-center">
-                <Siren className="w-3.5 h-3.5 text-rose-500" />
+                <SlidersHorizontal className="w-3.5 h-3.5 text-rose-500" />
               </span>
               <div className="flex flex-col">
                 <span className="font-bold text-xs text-white">安全相機篩選</span>
-                <span className="text-[9.5px] text-gray-400">點擊項目可開關篩選</span>
               </div>
             </div>
             <button
@@ -18557,7 +19030,6 @@ export default function AppMap() {
               </span>
               <div className="flex flex-col">
                 <span className="font-bold text-xs text-white">郵寄物流篩選</span>
-                <span className="text-[9.5px] text-gray-400">包裹投遞 · 站點取件</span>
               </div>
             </div>
             <button
@@ -18926,11 +19398,11 @@ export default function AppMap() {
             </div>
             
             <div className="flex items-center gap-1 shrink-0">
-              {/* 複製車站坐標按鈕 */}
+              {/* 複製車站名稱按鈕 */}
               <button
-                onClick={() => copyCoordinatesToClipboard(selectedSkytrainStation.lat, selectedSkytrainStation.lon)}
+                onClick={() => copyNameToClipboard(selectedSkytrainStation.name_en || selectedSkytrainStation.name)}
                 className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors"
-                title="複製車站坐標"
+                title="複製名稱"
               >
                 <Copy className="w-4 h-4 text-cyan-400" />
               </button>
@@ -19085,7 +19557,7 @@ export default function AppMap() {
                 {(() => {
                   const formatSkytrainDest = (raw?: string) => {
                     if (!raw) return '';
-                    return raw
+                    let str = raw
                       .replace(/往\s*YVR\s*機場/gi, 'to YVR-Airport')
                       .replace(/往\s*列治文/gi, 'to Richmond-Brighouse')
                       .replace(/往\s*Waterfront/gi, 'to Waterfront')
@@ -19096,6 +19568,9 @@ export default function AppMap() {
                       .replace(/往\s*高貴林/gi, 'to Lafarge Lake-Douglas')
                       .replace(/往\s*VCC-Clark/gi, 'to VCC-Clark')
                       .replace(/往\s*Lafarge Lake/gi, 'to Lafarge Lake-Douglas');
+                    return str.replace(/\b(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[ap]\.?m\.?)?)\b/gi, (tm) => {
+                      return formatTimePreference(tm, timeFormat);
+                    });
                   };
 
                   if (selectedSkytrainStation.first_last?.lines && selectedSkytrainStation.first_last.lines.length > 1) {
@@ -19234,27 +19709,6 @@ export default function AppMap() {
           {/* Tab 3: 車票 (收費分區與各類票價) */}
           {skytrainDetailTab === 'fares' && (
             <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-              {/* 收費分區地圖縮圖 */}
-              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2 flex flex-col gap-1.5 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-white text-xs flex items-center gap-1.5">
-                    <MapIcon className="w-3.5 h-3.5 text-blue-400" /> 收費分區地圖
-                  </span>
-                </div>
-                
-                <div 
-                  onClick={() => setIsFareZoneMapModalOpen(true)}
-                  className="relative cursor-pointer overflow-hidden rounded-md border border-[#2a3040] bg-black/40 aspect-[16/9] flex items-center justify-center hover:border-blue-500/50 transition-colors"
-                >
-                  <img
-                    src="/ct_fare_zone_map.png"
-                    alt="收費分區地圖"
-                    className="w-full h-full object-contain"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-
               {/* 單程票價表 */}
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2 shadow-sm">
                 <div className="flex items-center justify-between">
@@ -19481,9 +19935,9 @@ export default function AppMap() {
               <div className="flex flex-col items-end gap-1.5 shrink-0">
                 <div className="flex items-center gap-1">
                   <button
-                    onClick={() => copyCoordinatesToClipboard(selectedStop.lat, selectedStop.lon)}
+                    onClick={() => copyNameToClipboard(terminalTitle)}
                     className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors cursor-pointer"
-                    title="複製碼頭坐標"
+                    title="複製名稱"
                   >
                     <Copy className="w-4 h-4 text-cyan-400" />
                   </button>
@@ -19593,9 +20047,29 @@ export default function AppMap() {
                     <Clock className="w-3.5 h-3.5 text-cyan-400" />
                     <span>首班與尾班船</span>
                   </span>
-                  <span className="text-[10px] text-cyan-300 font-medium">
-                    {isWaterfront ? 'Waterfront 開出' : 'Lonsdale Quay 開出'}
-                  </span>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setSeabusFreqHovered(v => !v)}
+                      onMouseEnter={() => setSeabusFreqHovered(true)}
+                      onMouseLeave={() => setSeabusFreqHovered(false)}
+                      className="p-1 rounded text-cyan-300 hover:text-cyan-200 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-800/60 flex items-center justify-center cursor-pointer transition-colors shadow-xs"
+                      title="班距頻率說明"
+                    >
+                      <Info className="w-3.5 h-3.5 text-cyan-400" />
+                    </button>
+                    {seabusFreqHovered && (
+                      <div className="absolute right-0 top-full mt-1.5 w-[210px] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-cyan-800/60 text-xs select-none">
+                        <div className="flex items-center gap-1 font-bold text-cyan-300 text-[11px] pb-1 border-b border-gray-700/60 mb-1.5">
+                          <Clock className="w-3 h-3 text-cyan-400" />
+                          <span>班距頻率說明</span>
+                        </div>
+                        <div className="text-[10.5px] text-gray-300 leading-relaxed">
+                          日間每 15 分鐘 / 深夜及清晨每 30 分鐘一班
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="overflow-hidden rounded-lg border border-[#292f3f] bg-[#141822]">
@@ -19612,45 +20086,41 @@ export default function AppMap() {
                         <>
                           <tr>
                             <td className="py-2 px-2.5 font-medium text-gray-200">平日</td>
-                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">6:01 a.m.</td>
-                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">1:22 a.m.</td>
+                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">{formatTimePreference('6:01 a.m.', timeFormat)}</td>
+                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">{formatTimePreference('1:22 a.m.', timeFormat)}</td>
                           </tr>
                           <tr>
                             <td className="py-2 px-2.5 font-medium text-gray-200">週六</td>
-                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">6:16 a.m.</td>
-                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">1:22 a.m.</td>
+                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">{formatTimePreference('6:16 a.m.', timeFormat)}</td>
+                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">{formatTimePreference('1:22 a.m.', timeFormat)}</td>
                           </tr>
                           <tr>
                             <td className="py-2 px-2.5 font-medium text-gray-200">週日及公眾假期</td>
-                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">8:16 a.m.</td>
-                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">11:22 p.m.</td>
+                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">{formatTimePreference('8:16 a.m.', timeFormat)}</td>
+                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">{formatTimePreference('11:22 p.m.', timeFormat)}</td>
                           </tr>
                         </>
                       ) : (
                         <>
                           <tr>
                             <td className="py-2 px-2.5 font-medium text-gray-200">平日</td>
-                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">5:47 a.m.</td>
-                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">1:00 a.m.</td>
+                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">{formatTimePreference('5:47 a.m.', timeFormat)}</td>
+                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">{formatTimePreference('1:00 a.m.', timeFormat)}</td>
                           </tr>
                           <tr>
                             <td className="py-2 px-2.5 font-medium text-gray-200">週六</td>
-                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">6:02 a.m.</td>
-                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">1:00 a.m.</td>
+                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">{formatTimePreference('6:02 a.m.', timeFormat)}</td>
+                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">{formatTimePreference('1:00 a.m.', timeFormat)}</td>
                           </tr>
                           <tr>
                             <td className="py-2 px-2.5 font-medium text-gray-200">週日及公眾假期</td>
-                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">8:02 a.m.</td>
-                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">11:00 p.m.</td>
+                            <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">{formatTimePreference('8:02 a.m.', timeFormat)}</td>
+                            <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">{formatTimePreference('11:00 p.m.', timeFormat)}</td>
                           </tr>
                         </>
                       )}
                     </tbody>
                   </table>
-                </div>
-
-                <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2 flex items-center justify-between text-[10.5px] text-gray-400">
-                  <span>發車班距頻率：日間每 15 分鐘 / 深夜及清晨每 30 分鐘</span>
                 </div>
               </div>
             </div>
@@ -19686,9 +20156,9 @@ export default function AppMap() {
             <div className="flex flex-col items-end gap-1.5 shrink-0">
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => copyCoordinatesToClipboard(selectedTerminal.geometry.coordinates[1], selectedTerminal.geometry.coordinates[0])}
+                  onClick={() => copyNameToClipboard(FERRY_TERMINAL_SHORT_NAMES_EN[selectedTerminal.properties.code] ? `${FERRY_TERMINAL_SHORT_NAMES_EN[selectedTerminal.properties.code]} Terminal` : (selectedTerminal.properties.name || selectedTerminal.properties.code))}
                   className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors cursor-pointer"
-                  title="複製碼頭坐標"
+                  title="複製名稱"
                 >
                   <Copy className="w-4 h-4 text-cyan-400" />
                 </button>
@@ -20020,11 +20490,11 @@ export default function AppMap() {
             <div className="flex flex-col items-end gap-1.5 shrink-0">
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => copyCoordinatesToClipboard(selectedBusExchange.lat, selectedBusExchange.lon)}
+                  onClick={() => copyNameToClipboard(selectedBusExchange.name_en || selectedBusExchange.name)}
                   className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors"
-                  title="複製轉車站坐標"
+                  title="複製名稱"
                 >
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-4 h-4 text-cyan-400" />
                 </button>
                 <a
                   href={getGoogleNavUrl(selectedBusExchange.lat, selectedBusExchange.lon)}
@@ -20492,12 +20962,28 @@ export default function AppMap() {
                   </h4>
                   <div className="flex items-center gap-2 text-[11px] text-gray-400">
                     <span className="text-cyan-300 font-semibold">{enlargedCameraImage.direction}</span>
-                    <span>·</span>
-                    <span>即時路況影像</span>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setCameraImageScale(s => Math.max(0.5, Number((s - 0.25).toFixed(2))))}
+                  disabled={cameraImageScale <= 0.5}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-cyan-300 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors flex items-center justify-center text-xs"
+                  title="縮小"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCameraImageScale(s => Math.min(3, Number((s + 0.25).toFixed(2))))}
+                  disabled={cameraImageScale >= 3}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-cyan-300 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors flex items-center justify-center text-xs"
+                  title="放大"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
                 <a
                   href={enlargedCameraImage.directSrc}
                   target="_blank"
@@ -20518,13 +21004,14 @@ export default function AppMap() {
             </div>
 
             {/* Modal Body / Image */}
-            <div className="p-3 sm:p-4 flex items-center justify-center bg-black/95 overflow-hidden flex-1 min-h-0">
+            <div className="p-3 sm:p-4 flex items-center justify-center bg-black/95 overflow-auto flex-1 min-h-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={enlargedCameraImage.src}
                 alt={enlargedCameraImage.alt}
                 referrerPolicy="no-referrer"
-                className="max-w-full max-h-[58vh] sm:max-h-[60vh] object-contain rounded-lg shadow-2xl border border-white/10"
+                style={{ transform: `scale(${cameraImageScale})`, transition: 'transform 0.15s ease-out' }}
+                className="max-w-full max-h-[58vh] sm:max-h-[60vh] object-contain rounded-lg shadow-2xl border border-white/10 origin-center"
                 onError={(e) => {
                   const target = e.currentTarget;
                   if (target.src !== enlargedCameraImage.directSrc) {
@@ -20532,11 +21019,6 @@ export default function AppMap() {
                   }
                 }}
               />
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
-              <span>點擊背景或右上角 ✕ 關閉</span>
             </div>
           </div>
         </div>,

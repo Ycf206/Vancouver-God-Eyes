@@ -14,7 +14,7 @@ import {
   BusFront, Repeat, TrainFront, ShipCargo, Plane, Road, ParkingMeter, Motorbike, Milestone,
   EvCharger, TrainTrack, TrafficCone, LineSquiggle, HouseHeart, UserRoundGroup, Package,
   CircleDollarSign, Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet,
-  UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol
+  UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, FunnelX
 } from 'lucide-react';
 
 // 自定義倒 U 型單車架 SVG 元件 (LetterU)
@@ -97,6 +97,7 @@ const SEARCHABLE_LAYERS: Array<{
   { id: 'busRoutes', name: '巴士路線', category: '交通', keywords: ['bus', 'route', '路線', '巴士路線'], icon: Route },
   { id: 'skytrainTrains', name: '天車列車 (推算)', category: '交通', keywords: ['skytrain', 'train', '天車', '捷運', '列車'], icon: TrainFront },
   { id: 'skytrainRoutes', name: '天車路線', category: '交通', keywords: ['skytrain', 'route', '天車路線', '世博線', '千禧線', '加拿大線'], icon: Route },
+  { id: 'skytrainFareZones', name: '天車區域 (Zone 1/2/3)', category: '交通', keywords: ['skytrain', 'zone', '天車區域', '收費分區', 'zone 1', 'zone 2', 'zone 3'], icon: Map },
   { id: 'seabusVehicles', name: '海上巴士車輛', category: '交通', keywords: ['seabus', '渡輪', '船', '海上巴士'], icon: Ship },
   { id: 'seabusRoutes', name: '海上巴士路線', category: '交通', keywords: ['seabus', '航線', '海上巴士路線'], icon: Route },
   { id: 'bcferriesVehicles', name: '卑詩渡輪車輛', category: '交通', keywords: ['bc ferries', 'ferry', '渡輪', '卑詩渡輪'], icon: Ship },
@@ -190,7 +191,8 @@ export default function LayerPanel() {
     mapStyleType, setMapStyleType, layers, toggleLayer, resetAllLayers,
     isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule, isFlightScheduleOpen,
     toggleFerrySchedule, isFerryScheduleOpen, toggleMaritimeSchedule, isMaritimeScheduleOpen,
-    contourInterval, setContourInterval, hiddenLayersInPanel
+    contourInterval, setContourInterval, hiddenLayersInPanel,
+    layerCustomColors
   } = useUIStore();
 
   const [layerSearchQuery, setLayerSearchQuery] = React.useState('');
@@ -332,9 +334,18 @@ export default function LayerPanel() {
       return null;
     }
     const isActive = layers[layerKey];
+    const customColor = layerCustomColors?.[layerKey];
+    const customStyle = (isActive && customColor) ? {
+      borderColor: customColor,
+      color: customColor,
+      backgroundColor: `${customColor}22`,
+      boxShadow: `0 0 10px ${customColor}44`
+    } : undefined;
+
     return (
       <button
         onClick={() => toggleLayer(layerKey)}
+        style={customStyle}
         className={`flex items-center gap-1.5 px-2 h-7 rounded border text-[10.5px] transition-all duration-150 justify-center truncate ${className} ${
           isActive 
             ? `${activeBg} ${activeBorder} ${colorClass} ${activeShadow} font-semibold` 
@@ -342,7 +353,10 @@ export default function LayerPanel() {
         }`}
         title={title || label}
       >
-        <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? '' : 'text-gray-500'}`} />
+        <Icon 
+          className={`w-3.5 h-3.5 shrink-0 ${isActive ? '' : 'text-gray-500'}`} 
+          style={isActive && customColor ? { color: customColor } : undefined}
+        />
         {!iconOnly && <span className="truncate">{label}</span>}
       </button>
     );
@@ -433,7 +447,7 @@ export default function LayerPanel() {
             }`}
             title="一鍵全部關閉已開啟的圖層"
           >
-            <RotateCcw className="w-2.5 h-2.5 shrink-0" />
+            <FunnelX className="w-2.5 h-2.5 shrink-0" />
             <span>全關 ({activeLayerCount})</span>
           </button>
           <button 
@@ -559,17 +573,18 @@ export default function LayerPanel() {
               </div>
 
               {/* 天車 */}
-              <div className="grid grid-cols-[48px_1fr_1fr] gap-1 items-center">
+              <div className="grid grid-cols-[48px_1fr_1fr_1fr] gap-1 items-center">
                 <span className="text-[11px] font-medium text-blue-400 pl-0.5">天車</span>
                 <LayerButton layerKey="skytrainTrains" label="列車 (推算)" title="天車列車 (推算)" icon={TrainFront} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
-                <LayerButton layerKey="skytrainRoutes" label="路線" title="天車路線" icon={Route} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
+                <LayerButton layerKey="skytrainRoutes" label="車站" title="天車站點與路線" icon={Route} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
+                <LayerButton layerKey="skytrainFareZones" label="天車區域" title="天車收費區域 (Zone 1/2/3)" icon={Map} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
               </div>
 
               {/* 海上巴士 */}
               <div className="grid grid-cols-[48px_1fr_1fr] gap-1 items-center">
-                <span className="text-[11px] font-medium text-[#d8baaa] pl-0.5">海上巴士</span>
-                <LayerButton layerKey="seabusVehicles" label="船隻" title="海上巴士船隻" icon={Ship} iconOnly colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" activeShadow="shadow-[0_0_6px_rgba(139,120,109,0.2)]" />
-                <LayerButton layerKey="seabusRoutes" label="路線" title="海上巴士路線" icon={Route} iconOnly colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
+                <span className="text-[11px] font-medium text-[#00a4e4] pl-0.5">海上巴士</span>
+                <LayerButton layerKey="seabusVehicles" label="船隻" title="海上巴士船隻" icon={Ship} iconOnly colorClass="text-[#00a4e4]" activeBg="bg-[#0e2738]" activeBorder="border-[#00a4e4]/50" activeShadow="shadow-[0_0_6px_rgba(0,164,228,0.2)]" />
+                <LayerButton layerKey="seabusRoutes" label="路線" title="海上巴士路線" icon={Route} iconOnly colorClass="text-[#00a4e4]" activeBg="bg-[#0e2738]" activeBorder="border-[#00a4e4]/50" />
               </div>
 
               {/* 卑詩渡輪 */}

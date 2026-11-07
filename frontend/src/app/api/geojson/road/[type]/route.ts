@@ -16,9 +16,11 @@ function getVancouverHour(): number {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { type: string } }
+  props: { params?: Promise<{ type: string }> | { type: string } }
 ) {
-  const facilityType = params.type;
+  const resolvedParams = props?.params ? await Promise.resolve(props.params) : null;
+  const pathParts = request.nextUrl.pathname.split('?')[0].split('/').filter(Boolean);
+  const facilityType = resolvedParams?.type || pathParts[pathParts.length - 1];
 
   // 僅處理 road 下的 parking_meters 和 motorcycle_parking (其他可直接靜態讀取)
   const allowed = ['parking_meters', 'motorcycle_parking', 'accessible_parking'];
@@ -26,13 +28,34 @@ export async function GET(
     return NextResponse.json({ type: 'FeatureCollection', features: [] });
   }
 
-  const filePath = path.join(process.cwd(), 'public', `vancouver_${facilityType}.geojson`);
-  if (!fs.existsSync(filePath)) {
+  const candidates = [
+    path.join(process.cwd(), 'public', `vancouver_${facilityType}.geojson`),
+    path.join(process.cwd(), 'frontend', 'public', `vancouver_${facilityType}.geojson`),
+    path.join(process.cwd(), 'backend', 'data', `vancouver_${facilityType}.geojson`),
+    path.join(process.cwd(), '..', 'public', `vancouver_${facilityType}.geojson`),
+    path.join(process.cwd(), '..', 'frontend', 'public', `vancouver_${facilityType}.geojson`),
+    path.join(process.cwd(), '..', 'backend', 'data', `vancouver_${facilityType}.geojson`),
+  ];
+  let filePath = candidates.find(p => fs.existsSync(p));
+  let rawData = '';
+  if (filePath) {
+    rawData = fs.readFileSync(filePath, 'utf-8');
+  } else {
+    // Fallback to fetch from static server
+    try {
+      const origin = request.nextUrl.origin || 'http://localhost:3000';
+      const staticRes = await fetch(`${origin}/vancouver_${facilityType}.geojson`);
+      if (staticRes.ok) {
+        rawData = await staticRes.text();
+      }
+    } catch {}
+  }
+
+  if (!rawData) {
     return NextResponse.json({ type: 'FeatureCollection', features: [] });
   }
 
   try {
-    const rawData = fs.readFileSync(filePath, 'utf-8');
     const geojson = JSON.parse(rawData);
     const features = geojson.features || [];
 
@@ -87,8 +110,8 @@ export async function GET(
       props.rate_numeric = rateNum;
       props.effective_rate = activePeriod === 'free' ? '免費' : (rateNum !== null ? `$${rateNum.toFixed(2)}` : '未提供');
 
-      // 篩選 max_rate
-      if (maxRateParam !== null && maxRateParam >= 0) {
+      // 篩選 max_rate (當 maxRateParam 在 1~19 範圍時進行過濾，20 或以上代表不限費率)
+      if (maxRateParam !== null && maxRateParam > 0 && maxRateParam < 20) {
         if (rateNum !== null && rateNum > maxRateParam) {
           continue;
         }

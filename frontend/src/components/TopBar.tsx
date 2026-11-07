@@ -98,16 +98,16 @@ function HighlightMatch({ text, query, subtle = false }: { text: string; query: 
 }
 
 const QUICK_SEARCH_SHORTCUTS = [
-  { label: '銀行', query: '銀行', icon: CircleDollarSign },
-  { label: '洗手間', query: '公共洗手間', icon: Toilet },
-  { label: '油站', query: '油站', icon: Fuel },
-  { label: '充電站', query: '充電站', icon: EvCharger },
-  { label: '醫院', query: '醫院', icon: Hospital },
-  { label: '天車站', query: '天車站', icon: TrainFront },
-  { label: '停車場', query: '停車場', icon: ParkingMeter },
-  { label: '郵寄快遞', query: '郵寄', icon: Package },
-  { label: '潮汐站', query: '潮汐', icon: Waves },
-  { label: '邊境關卡', query: '邊境', icon: Fence },
+  { label: '銀行', query: '銀行', icon: CircleDollarSign, color: 'text-amber-400' },
+  { label: '洗手間', query: '公共洗手間', icon: Toilet, color: 'text-cyan-400' },
+  { label: '油站', query: '油站', icon: Fuel, color: 'text-amber-400' },
+  { label: '充電站', query: '充電站', icon: EvCharger, color: 'text-emerald-400' },
+  { label: '醫院', query: '醫院', icon: Hospital, color: 'text-emerald-400' },
+  { label: '天車站', query: '天車站', icon: TrainFront, color: 'text-blue-400' },
+  { label: '停車場', query: '停車場', icon: ParkingMeter, color: 'text-[#3b82f6]' },
+  { label: '郵寄快遞', query: '郵寄', icon: Package, color: 'text-red-400' },
+  { label: '潮汐站', query: '潮汐', icon: Waves, color: 'text-sky-400' },
+  { label: '邊境關卡', query: '邊境', icon: Fence, color: 'text-emerald-400' },
 ];
 
 type QuickGroupTab = 'all' | 'poi' | 'transit' | 'road' | 'area';
@@ -128,142 +128,81 @@ function inferUiGroup(item: SearchTarget): Exclude<QuickGroupTab, 'all'> {
 }
 
 function renderSearchItemIcon(item: SearchTarget) {
-  const c = item.category;
-  const cls = "w-4 h-4";
-  switch (c) {
-    case 'bus':
-    case 'bus_vehicle':
-      return <BusFront className={`${cls} text-emerald-400`} />;
-    case 'bus_route':
-      return <Route className={`${cls} text-emerald-400`} />;
-    case 'bus_stop':
-      return <GitCommitHorizontal className={`${cls} text-emerald-400`} />;
-    case 'bus_exchange':
-      return <Repeat className={`${cls} text-emerald-400`} />;
-    case 'skytrain':
-    case 'skytrain_station':
-    case 'skytrain_train':
-      return <TrainFront className={`${cls} text-sky-400`} />;
-    case 'seabus':
-    case 'ferry_vehicle':
-      return <Ship className={`${cls} text-sky-400`} />;
-    case 'ferry_terminal':
-    case 'marine_terminals':
-      return <Anchor className={`${cls} text-sky-400`} />;
-    case 'maritime_vessel':
-      return <ShipCargo className={`${cls} text-cyan-400`} />;
-    case 'airports':
-      return <Plane className={`${cls} text-indigo-400`} />;
-    case 'parking_meters':
-      return <ParkingMeter className={`${cls} text-blue-400`} />;
-    case 'motorcycle_parking':
-      return <Motorbike className={`${cls} text-blue-400`} />;
-    case 'accessible_parking':
-      return <Accessibility className={`${cls} text-sky-400`} />;
-    case 'one_way_streets':
-      return <Milestone className={`${cls} text-slate-300`} />;
-    case 'traffic_speed_limits':
-      return <Gauge className={`${cls} text-amber-400`} />;
-    case 'traffic_crosswalks':
-      return <Footprints className={`${cls} text-amber-200`} />;
-    case 'car_sharing':
-      return <Car className={`${cls} text-sky-400`} />;
-    case 'bikeways':
-      return <Route className={`${cls} text-teal-400`} />;
-    case 'shared_bikes':
-      return <Bike className={`${cls} text-teal-400`} />;
-    case 'escooter':
-      return <Scooter className={`${cls} text-lime-400`} />;
-    case 'ev_charging':
-    case 'tesla':
-      return <EvCharger className={`${cls} text-emerald-400`} />;
-    case 'truck_routes':
-    case 'truck_routes_restriction':
-      return <Truck className={`${cls} text-sky-400`} />;
-    case 'railways':
-      return <TrainTrack className={`${cls} text-indigo-400`} />;
-    case 'road_closures':
-      return <Ban className={`${cls} text-rose-400`} />;
-    case 'road_construction':
-      return <TrafficCone className={`${cls} text-orange-400`} />;
-    case 'traffic_cameras':
-      return <Camera className={`${cls} text-sky-400`} />;
-    case 'safety_cameras':
-      return <Siren className={`${cls} text-rose-500`} />;
-    case 'traffic_conditions':
-      return <LineSquiggle className={`${cls} text-emerald-400`} />;
-    case 'traffic_alerts':
-      return <Megaphone className={`${cls} text-amber-400`} />;
-    case 'fuel':
-      return <Fuel className={`${cls} text-amber-400`} />;
-    case 'community_centres':
-      return <UserRoundGroup className={`${cls} text-violet-400`} />;
-    case 'libraries':
-      return <BookOpen className={`${cls} text-amber-400`} />;
-    case 'schools':
-      return <GraduationCap className={`${cls} text-blue-400`} />;
-    case 'canada_post':
-    case 'fedex':
-    case 'purolator':
-      return <Package className={`${cls} text-rose-400`} />;
-    case 'banks':
-    case 'atm':
-      return <CircleDollarSign className={`${cls} text-amber-400`} />;
-    case 'public_art':
-      return <Palette className={`${cls} text-fuchsia-400`} />;
-    case 'museums':
-      return <Landmark className={`${cls} text-slate-300`} />;
-    case 'food_vendors':
-      return <Soup className={`${cls} text-orange-400`} />;
-    case 'food_banks':
-      return <HeartHandshake className={`${cls} text-emerald-400`} />;
-    case 'recycling':
-      return <Recycle className={`${cls} text-teal-400`} />;
-    case 'garbage_collection':
-      return <Truck className={`${cls} text-orange-400`} />;
-    case 'litter_containers':
-      return <Trash2 className={`${cls} text-amber-400`} />;
-    case 'homeless_shelters':
-      return <Bed className={`${cls} text-rose-400`} />;
-    case 'parks':
-      return <Trees className={`${cls} text-emerald-400`} />;
-    case 'parks_facilities':
-      return <Park className={`${cls} text-teal-400`} />;
-    case 'public_trees':
-    case 'street_trees':
-    case 'heritage_trees':
-      return <TreePine className={`${cls} text-emerald-400`} />;
-    case 'drinking_fountains':
-      return <Droplets className={`${cls} text-sky-400`} />;
-    case 'public_washrooms':
-      return <Toilet className={`${cls} text-cyan-400`} />;
-    case 'police':
-      return <UserShield className={`${cls} text-blue-400`} />;
-    case 'fire_halls':
-      return <FireExtinguisher className={`${cls} text-rose-400`} />;
-    case 'hospitals':
-      return <Hospital className={`${cls} text-emerald-400`} />;
-    case 'disaster_hubs':
-      return <LifeBuoy className={`${cls} text-amber-400`} />;
-    case 'van_wifi':
-      return <Wifi className={`${cls} text-cyan-400`} />;
-    case 'water_distribution_mains':
-      return <Faucet className={`${cls} text-sky-400`} />;
-    case 'street_lighting_conduits':
-      return <UtilityPole className={`${cls} text-amber-300`} />;
-    case 'local_area_boundary':
-      return <Grid3x2 className={`${cls} text-teal-400`} />;
-    case 'beach_water_quality':
-      return <Parasol className={`${cls} text-teal-300`} />;
-    case 'border_crossing':
-      return <Fence className={`${cls} text-cyan-400`} />;
-    case 'ski_resort':
-      return <CableCar className={`${cls} text-sky-400`} />;
-    case 'tide_stations':
-      return <Waves className={`${cls} text-teal-400`} />;
-    default:
-      return <MapPin className={`${cls} text-emerald-400`} />;
-  }
+  const c: string = item.category ? String(item.category) : '';
+  const lk: string = item.layer_key ? String(item.layer_key) : '';
+  const cls = "w-4 h-4 shrink-0";
+  
+  if (c === 'bus' || c === 'bus_vehicle' || lk === 'bus') return <BusFront className={`${cls} text-emerald-400`} />;
+  if (c === 'bus_route') return <Route className={`${cls} text-emerald-400`} />;
+  if (c === 'bus_stop' || lk === 'busStops') return <GitCommitHorizontal className={`${cls} text-emerald-400`} />;
+  if (c === 'bus_exchange' || lk === 'busExchanges') return <Repeat className={`${cls} text-emerald-400`} />;
+  if (c === 'skytrain' || c === 'skytrain_station' || c === 'skytrain_train' || lk === 'skytrain' || lk === 'skytrainStations') return <TrainFront className={`${cls} text-sky-400`} />;
+  if (c === 'seabus' || lk === 'seabus' || c === 'ferry_vehicle' || lk === 'bcferriesVehicles') return <Ship className={`${cls} text-sky-400`} />;
+  if (c === 'ferry_terminal' || lk === 'bcferriesRoutes') return <Anchor className={`${cls} text-sky-400`} />;
+  if (c === 'maritime_vessel' || lk === 'maritimeShipping') return <ShipCargo className={`${cls} text-cyan-400`} />;
+  if (c === 'marine_terminals' || lk === 'marineTerminals') return <Anchor className={`${cls} text-cyan-500`} />;
+  if (c === 'airports' || lk === 'airports') return <Plane className={`${cls} text-indigo-400`} />;
+  if (c === 'parking_meters' || lk === 'parkingMeters') return <ParkingMeter className={`${cls} text-blue-400`} />;
+  if (c === 'impark' || lk === 'impark') return <ParkingMeter className={`${cls} text-blue-500`} />;
+  if (c === 'motorcycle_parking' || lk === 'motorcycleParking') return <Motorbike className={`${cls} text-blue-400`} />;
+  if (c === 'accessible_parking' || lk === 'accessibleParking') return <Accessibility className={`${cls} text-sky-400`} />;
+  if (c === 'one_way_streets' || lk === 'oneWayStreets') return <Milestone className={`${cls} text-slate-300`} />;
+  if (c === 'traffic_speed_limits' || lk === 'trafficSpeedLimits') return <Gauge className={`${cls} text-amber-400`} />;
+  if (c === 'traffic_crosswalks' || lk === 'trafficCrosswalks') return <Footprints className={`${cls} text-amber-200`} />;
+  if (c === 'car_sharing' || lk === 'carSharing') return <Car className={`${cls} text-sky-400`} />;
+  if (c === 'bikeways' || lk === 'bikeways') return <Route className={`${cls} text-teal-400`} />;
+  if (c === 'shared_bikes' || lk === 'sharedBikes' || c === 'bike_racks' || lk === 'bikeRacks') return <Bike className={`${cls} text-teal-400`} />;
+  if (c === 'escooter' || lk === 'escooter') return <Scooter className={`${cls} text-lime-400`} />;
+  if (c === 'ev_charging' || lk === 'evCharging' || c === 'tesla' || lk === 'tesla') return <EvCharger className={`${cls} text-emerald-400`} />;
+  if (c === 'truck_routes' || c === 'truck_routes_restriction' || lk === 'truckRoutes') return <Truck className={`${cls} text-sky-400`} />;
+  if (c === 'railways' || lk === 'railways') return <TrainTrack className={`${cls} text-indigo-400`} />;
+  if (c === 'road_closures' || lk === 'roadClosures') return <Ban className={`${cls} text-rose-400`} />;
+  if (c === 'road_construction' || lk === 'roadConstruction') return <TrafficCone className={`${cls} text-orange-400`} />;
+  if (c === 'traffic_cameras' || lk === 'trafficCameras') return <Camera className={`${cls} text-sky-400`} />;
+  if (c === 'safety_cameras' || lk === 'safetyCameras') return <Siren className={`${cls} text-rose-500`} />;
+  if (c === 'traffic_conditions' || lk === 'trafficConditions') return <LineSquiggle className={`${cls} text-emerald-400`} />;
+  if (c === 'traffic_alerts' || lk === 'trafficAlerts') return <Megaphone className={`${cls} text-amber-400`} />;
+  if (c === 'fuel' || lk === 'fuel') return <Fuel className={`${cls} text-amber-400`} />;
+  if (c === 'community_centres' || lk === 'communityCentres') return <UserRoundGroup className={`${cls} text-violet-400`} />;
+  if (c === 'libraries' || lk === 'libraries') return <BookOpen className={`${cls} text-amber-400`} />;
+  if (c === 'schools' || lk === 'schools') return <GraduationCap className={`${cls} text-blue-400`} />;
+  if (c === 'canada_post' || c === 'fedex' || c === 'purolator' || lk === 'canadaPost') return <Package className={`${cls} text-rose-400`} />;
+  if (c === 'banks' || c === 'atm' || lk === 'banks') return <CircleDollarSign className={`${cls} text-amber-400`} />;
+  if (c === 'public_art' || lk === 'publicArt') return <Palette className={`${cls} text-fuchsia-400`} />;
+  if (c === 'museums' || lk === 'museums') return <Landmark className={`${cls} text-slate-300`} />;
+  if (c === 'food_vendors' || lk === 'foodVendors') return <Soup className={`${cls} text-orange-400`} />;
+  if (c === 'food_banks' || lk === 'foodBanks') return <HeartHandshake className={`${cls} text-emerald-400`} />;
+  if (c === 'recycling' || lk === 'recycling') return <Recycle className={`${cls} text-teal-400`} />;
+  if (c === 'garbage_collection' || lk === 'garbageCollection') return <Truck className={`${cls} text-orange-400`} />;
+  if (c === 'litter_containers' || lk === 'litterContainers') return <Trash2 className={`${cls} text-amber-400`} />;
+  if (c === 'homeless_shelters' || lk === 'homelessShelters') return <Bed className={`${cls} text-rose-400`} />;
+  if (c === 'parks' || lk === 'parks') return <Trees className={`${cls} text-emerald-400`} />;
+  if (c === 'parks_facilities' || lk === 'parksFacilities') return <Park className={`${cls} text-teal-400`} />;
+  if (c === 'public_trees' || c === 'street_trees' || c === 'heritage_trees' || lk === 'publicTrees') return <TreePine className={`${cls} text-emerald-400`} />;
+  if (c === 'drinking_fountains' || lk === 'drinkingFountains') return <Droplets className={`${cls} text-sky-400`} />;
+  if (c === 'public_washrooms' || lk === 'publicWashrooms') return <Toilet className={`${cls} text-cyan-400`} />;
+  if (c === 'police' || lk === 'police') return <UserShield className={`${cls} text-blue-400`} />;
+  if (c === 'fire_halls' || lk === 'fireHalls') return <FireExtinguisher className={`${cls} text-rose-400`} />;
+  if (c === 'hospitals' || lk === 'hospitals') return <Hospital className={`${cls} text-emerald-400`} />;
+  if (c === 'disaster_hubs' || lk === 'disasterHubs') return <LifeBuoy className={`${cls} text-amber-400`} />;
+  if (c === 'van_wifi' || lk === 'vanWifi') return <Wifi className={`${cls} text-cyan-400`} />;
+  if (c === 'water_distribution_mains' || lk === 'waterDistributionMains') return <Faucet className={`${cls} text-sky-400`} />;
+  if (c === 'street_lighting_conduits' || lk === 'streetLightingConduits' || lk === 'streetLighting') return <UtilityPole className={`${cls} text-amber-300`} />;
+  if (c === 'local_area_boundary' || lk === 'localAreaBoundary') return <Grid3x2 className={`${cls} text-teal-400`} />;
+  if (c === 'beach_water_quality' || lk === 'beachWaterQuality') return <Parasol className={`${cls} text-teal-300`} />;
+  if (c === 'border_crossing' || lk === 'borderCrossing') return <Fence className={`${cls} text-cyan-400`} />;
+  if (c === 'ski_resort' || lk === 'skiResorts') return <CableCar className={`${cls} text-sky-400`} />;
+  if (c === 'tide_stations' || lk === 'tideStations') return <Waves className={`${cls} text-teal-400`} />;
+  if (c === 'aed' || lk === 'aed') return <HeartPulse className={`${cls} text-rose-400`} />;
+  if (c === 'community_gardens' || lk === 'communityGardens') return <Flower2 className={`${cls} text-lime-400`} />;
+  if (c === 'fire_hydrants' || lk === 'fireHydrants') return <FireExtinguisher className={`${cls} text-rose-500`} />;
+  if (c === 'snow_removal_routes' || lk === 'snowRemovalRoutes') return <LineSquiggle className={`${cls} text-sky-400`} />;
+  if (c === 'turn_restrictions' || lk === 'turnRestrictions') return <Ban className={`${cls} text-rose-500`} />;
+  if (c === 'traffic_signals' || lk === 'trafficSignals') return <TrafficCone className={`${cls} text-amber-400`} />;
+  if (c === 'crime_areas' || lk === 'crimeAreas') return <UserShield className={`${cls} text-rose-400`} />;
+  if (c === 'zoning_districts' || lk === 'zoningDistricts') return <Grid3x2 className={`${cls} text-purple-400`} />;
+  if (c === 'postal_code_fsa' || lk === 'postalCodeFSA') return <Milestone className={`${cls} text-indigo-400`} />;
+  return <MapPin className={`${cls} text-emerald-400`} />;
 }
 
 export default function TopBar() {
@@ -1023,7 +962,7 @@ export default function TopBar() {
                       onClick={() => handleSelect(item)}
                       className="group flex items-center gap-1.5 bg-[#252830] hover:bg-[#2e323d] border border-gray-700/60 hover:border-emerald-500/50 rounded-lg px-2.5 py-1 text-gray-200 transition-all cursor-pointer shadow-sm"
                     >
-                      <span className="text-xs">{item.icon}</span>
+                      <span className="shrink-0">{renderSearchItemIcon(item)}</span>
                       <span className="text-xs font-medium max-w-[140px] truncate">{item.title}</span>
                       <button
                         type="button"
@@ -1057,7 +996,7 @@ export default function TopBar() {
                       }}
                       className="flex items-center gap-1.5 bg-[#23262e] hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-[#343740] rounded-lg px-2 py-1.5 text-gray-300 hover:text-emerald-300 transition-all text-left text-xs"
                     >
-                      <Icon className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
+                      <Icon className={`w-3.5 h-3.5 shrink-0 ${sc.color || 'text-emerald-400'}`} />
                       <span className="truncate font-medium">{sc.label}</span>
                     </button>
                   );

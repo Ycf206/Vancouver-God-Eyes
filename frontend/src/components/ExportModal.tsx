@@ -6,7 +6,8 @@ import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { 
   X, Download, Image as ImageIcon, FileCode2, FileSpreadsheet, 
-  Globe, Share2, Check, AlertCircle, RefreshCw, Eye
+  Globe, Share2, Check, AlertCircle, RefreshCw, Eye,
+  Map, Earth, PencilRuler, TriangleAlert, Layers, FileText, Users
 } from 'lucide-react';
 
 // 圖層中文名稱與後端 API 端點對照表 (所屬類別嚴格對齊圖層面板 7 大類別)
@@ -868,27 +869,33 @@ ${placemarksKML}
         {/* Export Formats Tab Selector */}
         <div className="grid grid-cols-5 p-2 bg-[#10131a] border-b border-[#262b38] text-xs gap-1">
           {[
-            { id: 'image', label: '📸 純淨影像', desc: 'PNG / JPEG' },
-            { id: 'geojson', label: '🗺️ 向量圖資', desc: 'GeoJSON' },
-            { id: 'csv', label: '📊 設施試算表', desc: 'Excel CSV' },
-            { id: 'kml', label: '🌍 Google Earth', desc: 'KML 標記' },
-            { id: 'config', label: '🔗 工作區設定', desc: 'JSON / 連結' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all ${
-                activeTab === tab.id
-                  ? 'bg-cyan-500 text-gray-950 font-bold shadow-md'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a1f2c]'
-              }`}
-            >
-              <span className="text-[11.5px] leading-tight">{tab.label}</span>
-              <span className={`text-[9.5px] mt-0.5 ${activeTab === tab.id ? 'text-cyan-950 font-semibold' : 'text-gray-400'}`}>
-                {tab.desc}
-              </span>
-            </button>
-          ))}
+            { id: 'image', label: '圖片', icon: ImageIcon, desc: 'PNG / JPEG' },
+            { id: 'geojson', label: '向量圖資', icon: Map, desc: 'GeoJSON' },
+            { id: 'csv', label: '設施試算表', icon: FileSpreadsheet, desc: 'Excel CSV' },
+            { id: 'kml', label: 'Google Earth', icon: Earth, desc: 'KML 標記' },
+            { id: 'config', label: '工作區設定', icon: PencilRuler, desc: 'JSON / 連結' },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-cyan-500 text-gray-950 font-bold shadow-md'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a1f2c]'
+                }`}
+              >
+                <div className="flex items-center gap-1">
+                  <Icon className="w-3.5 h-3.5" />
+                  <span className="text-[11.5px] leading-tight">{tab.label}</span>
+                </div>
+                <span className={`text-[9.5px] mt-0.5 ${activeTab === tab.id ? 'text-cyan-950 font-semibold' : 'text-gray-400'}`}>
+                  {tab.desc}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Tab Content Body */}
@@ -1028,8 +1035,9 @@ ${placemarksKML}
                       </span>
                     ))
                   ) : (
-                    <span className="text-gray-400 text-[11px] py-2">
-                      ⚠️ 目前尚未開啟任何圖層，請先在左側開啟需要匯出的圖層。
+                    <span className="text-gray-400 text-[11px] py-2 flex items-center gap-1.5">
+                      <TriangleAlert className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>目前尚未開啟任何圖層，請先在左側開啟需要匯出的圖層。</span>
                     </span>
                   )}
                 </div>
@@ -1043,7 +1051,7 @@ ${placemarksKML}
                   onChange={(e) => setSelectedGeojsonScope(e.target.value)}
                   className="w-full bg-[#10131a] border border-[#262b38] rounded-xl px-3 py-2 text-gray-200 outline-none focus:border-cyan-500"
                 >
-                  <option value="all_active">🌟 打包全部已開啟圖層</option>
+                  <option value="all_active">打包全部已開啟圖層</option>
                   {activeLayerKeys.map((k) => (
                     <option key={k} value={k}>
                       僅匯出此圖層：{LAYER_METADATA[k]?.label || k}
@@ -1052,8 +1060,11 @@ ${placemarksKML}
                 </select>
               </div>
 
-              <div className="p-3 rounded-xl bg-gray-900/60 border border-gray-800 text-[11px] text-gray-400 leading-relaxed">
-                💡 <strong>標準 GIS 格式說明</strong>：匯出的檔案為標準 RFC 7946 GeoJSON 格式，每個點位或線段皆保留完整屬性（如地址、電話、設施類型），可直接拖入 <strong>QGIS、ArcGIS、Kepler.gl、Mapbox Studio</strong> 或以 Python GeoPandas 進行分析。
+              <div className="p-3 rounded-xl bg-gray-900/60 border border-gray-800 text-[11px] text-gray-400 leading-relaxed flex items-start gap-2">
+                <FileText className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong>標準 GIS 格式說明</strong>：匯出的檔案為標準 RFC 7946 GeoJSON 格式，每個點位或線段皆保留完整屬性（如地址、電話、設施類型），可直接拖入 <strong>QGIS、ArcGIS、Kepler.gl、Mapbox Studio</strong> 或以 Python GeoPandas 進行分析。
+                </div>
               </div>
 
               <button
@@ -1093,11 +1104,6 @@ ${placemarksKML}
                 </div>
               </div>
 
-              <div className="text-[11px] text-gray-400 bg-amber-500/10 border border-amber-500/25 p-2.5 rounded-lg flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>試算表適合非營利組織、市政報告、數據分析師或列印名冊使用。</span>
-              </div>
-
               <button
                 onClick={handleExportCSV}
                 disabled={isExporting || activeLayerKeys.length === 0}
@@ -1124,7 +1130,8 @@ ${placemarksKML}
 
               <div className="p-3 rounded-xl bg-sky-950/20 border border-sky-500/30 text-[11px] text-sky-200 flex flex-col gap-1.5">
                 <span className="font-bold flex items-center gap-1.5 text-sky-300">
-                  <span>🚀</span> 如何使用 KML 檔案：
+                  <Globe className="w-3.5 h-3.5 text-sky-400" />
+                  <span>如何使用 KML 檔案：</span>
                 </span>
                 <ol className="list-decimal pl-4 space-y-1 text-gray-300 text-[10.5px]">
                   <li>下載後，直接以電腦版 <strong>Google Earth Pro</strong> 雙擊打開。</li>
@@ -1149,7 +1156,7 @@ ${placemarksKML}
             <div className="flex flex-col gap-4">
               <div className="p-3 rounded-xl bg-[#10131a] border border-[#262b38] flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-white font-bold text-xs">
-                  <Share2 className="w-4 h-4 text-purple-400" />
+                  <Users className="w-4 h-4 text-purple-400" />
                   <span>地圖工作區設定檔與分享連結</span>
                 </div>
                 <p className="text-[11px] text-gray-400 leading-relaxed">

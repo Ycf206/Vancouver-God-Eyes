@@ -30,7 +30,7 @@ HEADERS = {
 }
 
 def fetch_station_detail(station_id, fallback_bikes=0, fallback_slots=0):
-    """Fetch real-time updated available bikes and slots for an individual Mobi station from detail endpoint."""
+    """Fetch real-time updated available bikes, slots, isClosed and address for an individual Mobi station from detail endpoint."""
     url = MOBIBIKES_STATION_DETAIL_URL.format(station_id=station_id)
     try:
         resp = requests.get(url, headers=HEADERS, timeout=7)
@@ -41,11 +41,13 @@ def fetch_station_detail(station_id, fallback_bikes=0, fallback_slots=0):
                 return (
                     station_id,
                     st_data.get("availableBikes", fallback_bikes),
-                    st_data.get("availableSlots", fallback_slots)
+                    st_data.get("availableSlots", fallback_slots),
+                    bool(st_data.get("isClosed", False)),
+                    st_data.get("address") or []
                 )
     except Exception:
         pass
-    return (station_id, fallback_bikes, fallback_slots)
+    return (station_id, fallback_bikes, fallback_slots, False, [])
 
 def update_mobi_stations():
     """Monthly workflow: update station geometry, names, and real-time availability."""
@@ -75,8 +77,8 @@ def update_mobi_stations():
         }
         for future in as_completed(futures):
             try:
-                st_id, bikes, slots = future.result()
-                realtime_map[st_id] = (bikes, slots)
+                st_id, bikes, slots, is_closed, address = future.result()
+                realtime_map[st_id] = (bikes, slots, is_closed, address)
             except Exception:
                 pass
 
@@ -92,7 +94,15 @@ def update_mobi_stations():
         label = st.get("label") or "Mobi 共享單車站"
 
         # 取 /entities/stations/{id} 精確數值 (絕不使用 /entities 的 slots，因其不準確)
-        bikes, slots = realtime_map.get(st_id, (st.get("availableBikes", 0), 0))
+        detail = realtime_map.get(st_id)
+        if detail:
+            bikes, slots, is_closed, address = detail
+        else:
+            bikes = st.get("availableBikes", 0)
+            slots = 0
+            is_closed = bool(st.get("isClosed", False))
+            address = []
+
         total_cap = (bikes or 0) + (slots or 0)
         clean_id = st_id
 
@@ -111,7 +121,9 @@ def update_mobi_stations():
                 "available_bikes": bikes,
                 "available_slots": slots,
                 "capacity": total_cap if total_cap > 0 else 10,
-                "is_closed": bool(st.get("isClosed", False)),
+                "is_closed": is_closed,
+                "isClosed": is_closed,
+                "address": address,
                 "operator": "Mobi by Rogers",
                 "facility_type": "shared_bikes"
             }
@@ -124,7 +136,7 @@ def update_mobi_stations():
 
 def update_mobi_status():
     """Hourly workflow: quickly update real-time bikes and slots for existing stations."""
-    print("🚲 [Mobi 每小時即時車況更新] 正在讀取現有站點並透過 /entities/stations/{id} 同步最新可用車位...")
+    print("🚲 [Mobi 每小時即時車況更新] 正在讀取現有站點並透過 /entities/stations/{id} 同步最新可用車位與運作狀態...")
     source_file = os.path.join(BACKEND_DATA_DIR, "vancouver_shared_bikes.geojson")
     if not os.path.exists(source_file):
         source_file = os.path.join(FRONTEND_DATA_DIR, "vancouver_shared_bikes.geojson")
@@ -155,8 +167,8 @@ def update_mobi_status():
         }
         for future in as_completed(futures):
             try:
-                st_id, bikes, slots = future.result()
-                realtime_map[st_id] = (bikes, slots)
+                st_id, bikes, slots, is_closed, address = future.result()
+                realtime_map[st_id] = (bikes, slots, is_closed, address)
             except Exception:
                 pass
 
@@ -165,9 +177,13 @@ def update_mobi_status():
         props = f.get("properties") or {}
         st_id = props.get("full_id") or props.get("id") or f.get("id")
         if st_id in realtime_map:
-            bikes, slots = realtime_map[st_id]
+            bikes, slots, is_closed, address = realtime_map[st_id]
             props["available_bikes"] = bikes
             props["available_slots"] = slots
+            props["is_closed"] = is_closed
+            props["isClosed"] = is_closed
+            if address:
+                props["address"] = address
             cap = bikes + slots
             if cap > 0:
                 props["capacity"] = cap

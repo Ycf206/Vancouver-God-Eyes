@@ -1315,6 +1315,11 @@ async def startup_event():
     asyncio.create_task(broadcast_skytrain_simulation())
     asyncio.create_task(shipping_service.run_aisstream_listener())
     asyncio.create_task(broadcast_maritime_vessels())
+    try:
+        import yvr_flights_service
+        asyncio.create_task(yvr_flights_service.run_yvr_flights_background_service())
+    except Exception as e:
+        print(f"Failed to start yvr_flights_service task: {e}")
     # 背景預熱全圖層記憶體倒排索引，避免首次搜尋冷啟動延遲
     threading.Thread(
         target=lambda: search_engine.ensure_ready(get_gtfs_metadata, database.SessionLocal),
@@ -1350,6 +1355,15 @@ def get_flight_schedules():
         _oci_runtime_ts["flight_schedules"] = time.time()
     return cached_flight_schedules or schedules or {"arrivals": [], "departures": []}
 
+@app.get("/api/airports/flights")
+def get_yvr_airport_flights():
+    try:
+        import yvr_flights_service
+        return yvr_flights_service.get_flights_data()
+    except Exception as e:
+        print(f"Error serving yvr_flights: {e}")
+        return {"success": False, "arrivals": [], "departures": []}
+
 @app.get("/api/tides/live")
 def get_live_tides():
     import tides_service
@@ -1362,13 +1376,25 @@ def get_tides_geojson():
 
 @app.get("/api/ski/resorts")
 def get_ski_resorts():
-    import ski_service
-    return ski_service.get_live_ski_data()
+    try:
+        import ski_service
+        return ski_service.get_live_ski_data()
+    except Exception as e:
+        logger.error(f"Error in get_ski_resorts: {e}")
+        cache_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_ski_resorts_cache.json")
+        if os.path.exists(cache_path):
+            with open(cache_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        return {"count": 0, "resorts": [], "error": str(e)}
 
 @app.get("/api/ski/geojson")
 def get_ski_geojson():
-    import ski_service
-    return ski_service.get_ski_geojson()
+    try:
+        import ski_service
+        return ski_service.get_ski_geojson()
+    except Exception as e:
+        logger.error(f"Error in get_ski_geojson: {e}")
+        return {"type": "FeatureCollection", "features": []}
 
 @app.get("/api/aurora/live")
 def get_live_aurora(force: bool = False):
@@ -2629,7 +2655,7 @@ def get_road_facilities_geojson(
                     props['rate_numeric'] = rate_num
                     props['effective_rate'] = f"${rate_num:.2f}" if rate_num is not None and active_period != "free" else "免費" if active_period == "free" else "未提供"
 
-                    if max_rate is not None and max_rate >= 0:
+                    if max_rate is not None and 0 < max_rate < 20:
                         if rate_num is not None and rate_num > max_rate:
                             continue
                     if credit_card_only:
@@ -2804,7 +2830,7 @@ def get_road_facilities_geojson(
             props['rate_numeric'] = rate_num
             props['effective_rate'] = f"${rate_num:.2f}" if rate_num is not None and active_period != "free" else "免費" if active_period == "free" else "未提供"
 
-            if max_rate is not None and max_rate > 0:
+            if max_rate is not None and 0 < max_rate < 20:
                 if rate_num is not None and rate_num > max_rate:
                     continue
             if credit_card_only:
@@ -2823,7 +2849,7 @@ def get_road_facilities_geojson(
     return {"type": "FeatureCollection", "features": features}
 
 @app.get("/api/explore/311")
-def get_311_service_requests():
+def get_311_service_requests(force: bool = False):
     """取得最新溫哥華 3-1-1 市政服務請求資料 (禁用快取保證即時性)"""
     cache_headers = {
         "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -2831,19 +2857,14 @@ def get_311_service_requests():
         "Expires": "0"
     }
     data_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'vancouver_311.json')
-    if os.path.exists(data_file):
+    if not force and os.path.exists(data_file):
         try:
-            with open(data_file, 'r', encoding='utf-8') as f:
-                return JSONResponse(content=json.load(f), headers=cache_headers)
+            mtime = os.path.getmtime(data_file)
+            if time.time() - mtime < 21600:  # 6 hours
+                with open(data_file, 'r', encoding='utf-8') as f:
+                    return JSONResponse(content=json.load(f), headers=cache_headers)
         except Exception as e:
             logger.error(f"Error reading 311 data: {e}")
-    fe_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'public', 'vancouver_311.json')
-    if os.path.exists(fe_file):
-        try:
-            with open(fe_file, 'r', encoding='utf-8') as f:
-                return JSONResponse(content=json.load(f), headers=cache_headers)
-        except Exception:
-            pass
     try:
         from scripts.layers.update_311 import update_311
         data = update_311()
@@ -2851,6 +2872,21 @@ def get_311_service_requests():
             return JSONResponse(content=data, headers=cache_headers)
     except Exception as e:
         logger.error(f"Failed to fetch 311 data on demand: {e}")
+
+    if os.path.exists(data_file):
+        try:
+            with open(data_file, 'r', encoding='utf-8') as f:
+                return JSONResponse(content=json.load(f), headers=cache_headers)
+        except Exception:
+            pass
+
+    fe_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'public', 'vancouver_311.json')
+    if os.path.exists(fe_file):
+        try:
+            with open(fe_file, 'r', encoding='utf-8') as f:
+                return JSONResponse(content=json.load(f), headers=cache_headers)
+        except Exception:
+            pass
     return JSONResponse(content={"results": []}, headers=cache_headers)
 
 @app.get("/api/explore/nearby")
@@ -3349,8 +3385,6 @@ def get_tracks_geojson(group: str, db: Session = Depends(database.get_db)):
                     "type": "LineString",
                     "coordinates": [
                         [-123.1118, 49.2861],
-                        [-123.1095, 49.2925],
-                        [-123.1005, 49.3015],
                         [-123.0829, 49.3103]
                     ]
                 },

@@ -17,9 +17,22 @@ API_URL = "https://www.tntsupermarket.com/rest/V3/xmapi/get-store-eflyers?postco
 
 def update_tnt_eflyers():
     print("🛒 正在更新大統華 T&T 超市每週特價海報 (T&T Store E-flyers)...")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9,zh-TW;q=0.8",
+        "Referer": "https://www.tntsupermarket.com/flyer",
+        "Origin": "https://www.tntsupermarket.com",
+        "Sec-Ch-Ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"Windows"',
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin"
+    }
     req = urllib.request.Request(
         API_URL,
-        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        headers=headers
     )
     
     try:

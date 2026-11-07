@@ -116,16 +116,9 @@ export default function MaritimeScheduleModal() {
               <Anchor className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-bold text-white text-base leading-snug flex items-center gap-2">
-                <span>船運班次</span>
-                <span className="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-md border border-cyan-500/20">
-                  Maritime Shipping
-                </span>
+              <h3 className="font-bold text-white text-base leading-snug">
+                船運班次
               </h3>
-              <p className="text-[11px] text-gray-400">
-                大溫水域港口商船、貨櫃輪、油輪與拖船即時動態 · AIS 航行情報
-                {lastUpdated && ` · ${lastUpdated.toLocaleTimeString()}`}
-              </p>
             </div>
           </div>
 
@@ -133,11 +126,10 @@ export default function MaritimeScheduleModal() {
             <button
               onClick={fetchVessels}
               disabled={loading}
-              className="p-1.5 px-2.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 transition-colors flex items-center gap-1.5 text-xs cursor-pointer font-medium disabled:opacity-50"
+              className="p-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 transition-colors flex items-center justify-center cursor-pointer font-medium disabled:opacity-50"
               title="重新整理船舶資料"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-              <span className="hidden sm:inline">重新整理</span>
             </button>
             <button
               onClick={() => setMaritimeScheduleOpen(false)}
@@ -196,7 +188,7 @@ export default function MaritimeScheduleModal() {
               目前無相符的船舶動態資料。
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-2.5">
               {filteredVessels.map((v) => {
                 const isUnderway = (v.sog && v.sog > 0.5);
                 const badgeColor = 
@@ -222,6 +214,18 @@ export default function MaritimeScheduleModal() {
                           zoom: 13,
                           meta: v
                         });
+                        if (typeof window !== 'undefined') {
+                          const map = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+                          if (map) {
+                            map.flyTo({
+                              center: [v.lon, v.lat],
+                              zoom: 13,
+                              duration: 1200,
+                              essential: true
+                            });
+                          }
+                          (window as any).__godsEyeSelectMaritimeVessel?.(v);
+                        }
                         setMaritimeScheduleOpen(false);
                       }
                     }}
@@ -272,19 +276,6 @@ export default function MaritimeScheduleModal() {
               })}
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="px-5 py-2.5 bg-[#111620] border-t border-gray-800 flex items-center justify-between text-xs shrink-0">
-          <span className="text-gray-400 text-[11px]">
-            點擊任一商船卡片可於主地圖直接定位檢視 · AIS Live Stream
-          </span>
-          <button
-            onClick={() => setMaritimeScheduleOpen(false)}
-            className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors cursor-pointer text-xs"
-          >
-            關閉
-          </button>
         </div>
       </div>
     </div>

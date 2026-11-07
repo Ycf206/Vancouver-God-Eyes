@@ -11,7 +11,8 @@ import { Landmark,
   Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain, CreditCard,
   Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign,
   PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle,
-  Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence
+  Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
+  Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -3268,6 +3269,31 @@ function ExploreContent() {
     );
   };
 
+  const formatCorridorDisplayName = (name: string): string => {
+    if (!name) return '';
+    const match = name.match(/^([^\(]+)\s*\((.+)\)$/);
+    if (match) {
+      const part1 = match[1].trim();
+      const part2 = match[2].trim();
+      if (/[\u4e00-\u9fa5]/.test(part1) && /[a-zA-Z]/.test(part2)) {
+        return `${part2} (${part1})`;
+      }
+    }
+    return name;
+  };
+
+  const formatTrafficStatusZh = (status: string): string => {
+    if (!status) return '暢通無阻';
+    const s = status.trim();
+    if (/free flow/i.test(s) || s === '暢通無阻' || s === '暢通') return '暢通無阻';
+    if (/light/i.test(s) || s === '順暢微緩' || s === '順暢') return '順暢微緩';
+    if (/moderate/i.test(s) || s === '車多微緩' || s === '車多緩行') return '車多緩行';
+    if (/heavy/i.test(s) || s === '嚴重壅塞' || s === '壅塞') return '嚴重壅塞';
+    if (/standstill/i.test(s) || /severe/i.test(s) || s === '停滯回堵') return '停滯回堵';
+    if (/closed/i.test(s) || s === '路段封閉') return '路段封閉';
+    return s.replace(/\s*\([^)]*\)/g, '').trim() || s;
+  };
+
   // Sorting helper for traffic corridors & major roads
   const sortTrafficList = <T extends { delay_min?: number; current_speed_kmh?: number; name?: string; english_name?: string }>(list: T[]): T[] => {
     if (trafficSortBy === 'default') return list;
@@ -3707,8 +3733,6 @@ function ExploreContent() {
                         </div>
                         <div className="text-sm font-medium text-gray-200 mt-1.5 flex items-center gap-1.5">
                           <span>{weather.condition || '多雲'}</span>
-                          <span>·</span>
-                          <span>體感 {formatTemp(weather.apparent_temperature)}</span>
                         </div>
                         <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
                           <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0" />
@@ -3788,7 +3812,8 @@ function ExploreContent() {
                             <span className="text-xs font-bold text-gray-100">{formatTemp(h.temp)}</span>
                             {h.pop > 0 ? (
                               <span className="text-[9.5px] text-cyan-400 font-mono mt-0.5 flex items-center gap-0.5">
-                                💧{h.pop}%
+                                <Umbrella className="w-2.5 h-2.5 text-cyan-400 shrink-0" />
+                                <span>{h.pop}%</span>
                               </span>
                             ) : (
                               <span className="text-[9.5px] text-gray-500 font-mono mt-0.5">--</span>
@@ -3817,8 +3842,9 @@ function ExploreContent() {
                                 {fc.day}
                               </span>
                               {fc.pop != null && fc.pop > 20 && (
-                                <span className="text-[10px] text-cyan-400 font-mono">
-                                  💧{fc.pop}%
+                                <span className="text-[10px] text-cyan-400 font-mono flex items-center gap-0.5">
+                                  <Umbrella className="w-2.5 h-2.5 text-cyan-400 shrink-0" />
+                                  <span>{fc.pop}%</span>
                                 </span>
                               )}
                             </div>
@@ -4192,7 +4218,7 @@ function ExploreContent() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-                          <Zap className="w-3.5 h-3.5" />
+                          <CloudLightning className="w-3.5 h-3.5" />
                         </div>
                         <h4 className="text-xs font-bold text-white tracking-wide">加拿大防雷網絡閃電密度</h4>
                       </div>
@@ -4367,7 +4393,7 @@ function ExploreContent() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
-                          <Droplets className="w-3.5 h-3.5" />
+                          <CloudLightning className="w-3.5 h-3.5" />
                         </div>
                         <h4 className="text-xs font-bold text-white tracking-wide">降雨累積與風場模擬</h4>
                       </div>
@@ -4544,7 +4570,7 @@ function ExploreContent() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
-                          <Activity className="w-3.5 h-3.5" />
+                          <Dam className="w-3.5 h-3.5" />
                         </div>
                         <h4 className="text-xs font-bold text-white tracking-wide">海浪與風暴潮數值模式</h4>
                       </div>
@@ -4579,7 +4605,7 @@ function ExploreContent() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400">
-                          <Anchor className="w-3.5 h-3.5" />
+                          <Lighthouse className="w-3.5 h-3.5" />
                         </div>
                         <h4 className="text-xs font-bold text-white tracking-wide">加拿大國家水文站監察</h4>
                       </div>
@@ -4660,7 +4686,7 @@ function ExploreContent() {
         <div className="flex flex-col flex-1 min-h-0">
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-semibold flex items-center gap-1.5">
-              <MountainSnow className="w-4 h-4 text-cyan-400" />
+              <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0 inline-block" />
               <span>滑雪場即時雪況</span>
             </span>
             <div className="flex items-center gap-1.5">
@@ -4711,9 +4737,7 @@ function ExploreContent() {
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-cyan-950/60 border border-cyan-800/50 flex items-center justify-center text-cyan-300 shrink-0 text-lg shadow-sm">
-                          ⛷️
-                        </div>
+                        <div className="w-2.5 h-2.5 rounded-full bg-sky-400 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(56,189,248,0.6)]" />
                         <div className="flex flex-col min-w-0">
                           <h4 className="text-sm font-bold text-white tracking-wide truncate group-hover:text-cyan-300 transition-colors">
                             {resort.english_name}
@@ -4858,7 +4882,7 @@ function ExploreContent() {
           {/* Header Bar */}
           <div className="flex items-center justify-between shrink-0">
             <span className="text-xs text-gray-300 font-semibold flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 inline-block" />
               <span>極光指數與觀測預報</span>
             </span>
             <div className="flex items-center gap-1.5">
@@ -5112,7 +5136,7 @@ function ExploreContent() {
               <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm shrink-0">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
-                    <Navigation className="w-3.5 h-3.5 text-emerald-400" />
+                    <Telescope className="w-3.5 h-3.5 text-emerald-400" />
                     <span>極光觀察地點</span>
                   </span>
                   
@@ -6371,10 +6395,13 @@ function ExploreContent() {
         <div className="flex flex-col flex-1 min-h-0">
           {/* Subheader: Range & Location info */}
           <div className="flex items-center justify-between mb-2 shrink-0">
-            <span className="text-xs text-gray-300 font-medium">
-              {userLocation?.confirmed
-                ? '距離個人位置 10 公里範圍內的油站'
-                : '溫哥華 10 公里範圍內的油站'}
+            <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0 inline-block" />
+              <span>
+                {userLocation?.confirmed
+                  ? '距離個人位置 10 公里範圍內的油站'
+                  : '10 公里範圍內的油站'}
+              </span>
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-amber-400 bg-amber-950/70 border border-amber-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -6386,10 +6413,10 @@ function ExploreContent() {
                     setExploreOpen(false);
                     setSettingsModalOpen(true);
                   }}
-                  className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
+                  className="p-1 hover:bg-[#252a38] text-emerald-400 hover:text-emerald-300 rounded transition-colors"
+                  title="設定個人位置"
                 >
-                  <MapPin className="w-2.5 h-2.5" />
-                  <span>設定個人位置</span>
+                  <MapPin className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
@@ -6508,13 +6535,21 @@ function ExploreContent() {
                         </span>
                       </div>
                       <div className="text-[11px] text-gray-400 truncate mt-0.5">
-                        {st.address} · {st.city}
+                        {(() => {
+                          const addr = (st.address || '').replace(/,\s*Vancouver/i, '').replace(/·\s*Vancouver/i, '').trim();
+                          const city = (st.city || '').trim();
+                          if (city && city.toLowerCase() !== 'vancouver') {
+                            return `${addr} · ${city}`;
+                          }
+                          return addr;
+                        })()}
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0">
-                      <div className="text-sm font-bold font-mono text-amber-400 tracking-tight">
-                        {(Number(st.price_current) || 0).toFixed(1)}¢
+                    <div className="text-right shrink-0 pl-1">
+                      <div className="text-sm font-bold font-mono text-amber-400 whitespace-nowrap">
+                        <span>{(Number(st.price_current) || 0).toFixed(1)}</span>
+                        <span className="ml-0.5 text-xs">¢</span>
                       </div>
                       <div className="text-[10.5px] font-mono text-gray-400 mt-0.5">
                         {distDisplay}
@@ -6533,10 +6568,13 @@ function ExploreContent() {
         <div className="flex flex-col flex-1 min-h-0">
           {/* Subheader: Range & Location info */}
           <div className="flex items-center justify-between mb-2 shrink-0">
-            <span className="text-xs text-gray-300 font-medium">
-              {userLocation?.confirmed
-                ? '距離個人位置 15 公里範圍內的充電站'
-                : '溫哥華 15 公里範圍內的充電站'}
+            <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 inline-block" />
+              <span>
+                {userLocation?.confirmed
+                  ? '距離個人位置 15 公里範圍內的充電站'
+                  : '15 公里範圍內的充電站'}
+              </span>
             </span>
             {!userLocation?.confirmed && (
               <button
@@ -6544,10 +6582,10 @@ function ExploreContent() {
                   setExploreOpen(false);
                   setSettingsModalOpen(true);
                 }}
-                className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
+                className="p-1 hover:bg-[#252a38] text-emerald-400 hover:text-emerald-300 rounded transition-colors"
+                title="設定個人位置"
               >
-                <MapPin className="w-2.5 h-2.5" />
-                <span>設定個人位置</span>
+                <MapPin className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
@@ -6778,10 +6816,20 @@ function ExploreContent() {
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
           {/* Header Controls: Title, Monthly update indicator & manual refresh button */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
-            <span className="text-xs font-bold text-white flex items-center gap-1.5">
-              <Droplets className="w-4 h-4 text-teal-400" />
-              <span>海灘水質</span>
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-white">海灘水質</span>
+              <button
+                onClick={handleToggleBeachLayer}
+                className={`p-1 rounded text-[10px] font-semibold flex items-center justify-center transition-all cursor-pointer ${
+                  layers?.beachWaterQuality
+                    ? 'bg-teal-600 hover:bg-teal-500 text-white border border-teal-400/50'
+                    : 'bg-[#1a2332] hover:bg-[#232f44] text-teal-300 border border-teal-600/40'
+                }`}
+                title={layers?.beachWaterQuality ? '海灘水質圖層 (已開啟)' : '開啟海灘水質圖層'}
+              >
+                <Layers className="w-3.5 h-3.5" />
+              </button>
+            </div>
 
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-teal-400 bg-teal-950/70 border border-teal-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -6805,35 +6853,6 @@ function ExploreContent() {
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingBeach ? 'animate-spin text-teal-400' : ''}`} />
               </button>
             </div>
-          </div>
-
-          {/* 開啟海灘水質圖層按鈕 (Highlight Layer Switch) */}
-          <div className="p-2.5 rounded-xl bg-gradient-to-r from-teal-950/40 via-[#102422]/60 to-[#121c24] border border-teal-500/30 flex items-center justify-between gap-2 shrink-0">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-300 shrink-0">
-                <Eye className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <span>海灘水質地圖圖層</span>
-                  <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-medium ${layers?.beachWaterQuality ? 'bg-teal-500/30 text-teal-200 border border-teal-500/40' : 'bg-gray-800 text-gray-400'}`}>
-                    {layers?.beachWaterQuality ? '顯示中' : '已隱藏'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={handleToggleBeachLayer}
-              className={`p-2 rounded-lg text-xs font-semibold shrink-0 transition-all shadow-sm flex items-center justify-center cursor-pointer ${
-                layers?.beachWaterQuality
-                  ? 'bg-teal-600 hover:bg-teal-500 text-white border border-teal-400/50'
-                  : 'bg-[#1a2332] hover:bg-[#232f44] text-teal-300 border border-teal-600/40'
-              }`}
-              title={layers?.beachWaterQuality ? '圖層已開啟 (點擊隱藏)' : '開啟海灘水質圖層'}
-            >
-              <Layers className="w-4 h-4" />
-            </button>
           </div>
 
           {/* 水質標準評級參考與 3 色快速篩選按鈕 (點擊切換篩選，再次點擊恢復全部) */}
@@ -7043,11 +7062,8 @@ function ExploreContent() {
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                <ShieldAlert className="w-4 h-4 text-rose-400" />
+                <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0 inline-block" />
                 <span>TransLink 交通警報</span>
-              </span>
-              <span className="text-[10px] text-rose-400 bg-rose-950/60 border border-rose-800/50 px-1.5 py-0.5 rounded font-mono font-bold">
-                {transitAlertsData?.total ?? 0} 則
               </span>
             </div>
 
@@ -7079,8 +7095,8 @@ function ExploreContent() {
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 shrink-0">
             {[
               { id: 'all', label: '全部', icon: LayoutGrid, count: alertsCounts.all, color: 'text-rose-400' },
-              { id: 'skytrain', label: '天車', icon: Train, count: alertsCounts.skytrain, color: 'text-blue-400' },
-              { id: 'bus', label: '巴士', icon: Bus, count: alertsCounts.bus, color: 'text-emerald-400' },
+              { id: 'skytrain', label: '天車', icon: TrainFront, count: alertsCounts.skytrain, color: 'text-blue-400' },
+              { id: 'bus', label: '巴士', icon: BusFront, count: alertsCounts.bus, color: 'text-emerald-400' },
               { id: 'seabus', label: '水上巴士', icon: Ship, count: alertsCounts.seabus, color: 'text-cyan-400' },
               { id: 'wce', label: '西岸快車', icon: TrainTrack, count: alertsCounts.wce, color: 'text-purple-400' },
             ].map((sub) => {
@@ -7200,7 +7216,7 @@ function ExploreContent() {
                         </span>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500 text-white font-mono shrink-0">
-                        EMERGENCY
+                        緊急
                       </span>
                     </div>
 
@@ -7255,9 +7271,10 @@ function ExploreContent() {
                       <div className="flex items-start justify-between gap-1.5 flex-wrap">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span className={`text-[10.5px] px-2 py-0.5 rounded-md font-semibold border ${modeBg} flex items-center gap-1`}>
-                            {item.mode === 'skytrain' && <Train className="w-3 h-3" />}
-                            {item.mode === 'bus' && <Bus className="w-3 h-3" />}
+                            {item.mode === 'skytrain' && <TrainFront className="w-3 h-3" />}
+                            {item.mode === 'bus' && <BusFront className="w-3 h-3" />}
                             {item.mode === 'seabus' && <Ship className="w-3 h-3" />}
+                            {item.mode === 'wce' && <TrainTrack className="w-3 h-3" />}
                             <span>{item.mode_name}</span>
                           </span>
 
@@ -7316,7 +7333,7 @@ function ExploreContent() {
                         </div>
                       )}
 
-                      {/* Footer: Date and External Link */}
+                      {/* Footer: Date */}
                       <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-[#1a1f2c]">
                         <span className="font-mono">
                           {item.lastModified
@@ -7325,17 +7342,6 @@ function ExploreContent() {
                             ? `生效：${formatDateTime(item.startTime, timeFormat, timeZone)}`
                             : '即時更新'}
                         </span>
-                        {item.url && (
-                          <a
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1 rounded text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors flex items-center justify-center"
-                            title="官方警報詳情"
-                          >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
-                        )}
                       </div>
                     </div>
                   );
@@ -7701,9 +7707,9 @@ function ExploreContent() {
           {/* Header Bar */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
             <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-xs font-bold text-white flex items-center gap-1.5 shrink-0">
-                <Activity className="w-4 h-4 text-orange-400" />
-                <span>路況</span>
+              <span className="w-2 h-2 rounded-full bg-orange-400 shrink-0 inline-block" />
+              <span className="text-xs font-bold text-white truncate">
+                城市路況：{(trafficSummary?.overall_status || '全線暢通').replace(/大溫/g, '').replace(/\(Free Flow\)/g, '').replace(/\(Light Traffic\)/g, '').replace(/\(Moderate Traffic\)/g, '').replace(/\(Heavy Congestion\)/g, '').trim()}
               </span>
             </div>
 
@@ -7735,10 +7741,6 @@ function ExploreContent() {
           <div className="bg-[#121622] rounded-lg px-2.5 py-1.5 border border-[#222838] flex flex-col gap-1 shrink-0 shadow-sm">
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="text-xs">🚦</span>
-                <span className="font-semibold text-white truncate text-[11px]">
-                  城市路況：{(trafficSummary?.overall_status || '全線暢通').replace(/大溫/g, '').replace(/\(Free Flow\)/g, '').replace(/\(Light Traffic\)/g, '').replace(/\(Moderate Traffic\)/g, '').replace(/\(Heavy Congestion\)/g, '').trim()}
-                </span>
                 {(() => {
                   const corridors = (trafficSummary?.corridors || []).filter(c => !isTrafficExcluded(c));
                   const majorRoads = (trafficSummary?.major_roads || []).filter(c => !isTrafficExcluded(c));
@@ -7761,15 +7763,10 @@ function ExploreContent() {
                           : 'text-orange-400 bg-orange-500/10 border-orange-500/30'
                       }`}
                     >
-                      {freeflowCount}/{totalCount}
+                      暢通道路 {freeflowCount}/{totalCount}
                     </span>
                   );
                 })()}
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono shrink-0">
-                <span>主要動脈 <strong className="text-emerald-400">{(trafficSummary?.corridors || []).filter(c => !isTrafficExcluded(c)).length || 6}</strong></span>
-                <span>·</span>
-                <span>即時通報 <strong className="text-amber-400">{trafficSummary?.total_incidents ?? 0}</strong></span>
               </div>
             </div>
 
@@ -7794,7 +7791,7 @@ function ExploreContent() {
                 { key: 'all', label: '主要幹道' },
                 { key: 'major_roads', label: '主要道路' },
                 { key: 'severe', label: '嚴重壅塞' },
-                { key: 'incidents', label: '即時通報' },
+                { key: 'incidents', label: `即時通報 (${trafficSummary?.total_incidents ?? filteredTrafficAlerts.length})` },
               ].map((pill) => (
                 <button
                   key={pill.key}
@@ -7885,12 +7882,6 @@ function ExploreContent() {
                         {alert.description || alert.report_description}
                       </div>
                     )}
-
-                    <div className="flex items-center justify-between pt-0.5 text-[10px]">
-                      <span className="text-emerald-400 font-medium">
-                        ✓ 資料可信度 {alert.confidence_pct ?? (alert.confidence ? (alert.confidence <= 5 ? alert.confidence * 20 : alert.confidence) : 95)}%
-                      </span>
-                    </div>
                   </div>
                 ))
               )
@@ -7940,7 +7931,7 @@ function ExploreContent() {
                                 corridor.delay_min >= 8 ? 'text-orange-400' :
                                 corridor.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400';
 
-                              const displayName = corridor.name;
+                              const displayName = formatCorridorDisplayName(corridor.name);
 
                               return (
                                 <tr
@@ -7963,7 +7954,7 @@ function ExploreContent() {
                                   </td>
                                   <td className="py-2 px-2 text-center whitespace-nowrap">
                                     <span className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded border inline-block ${statusBg}`}>
-                                      {corridor.status}
+                                      {formatTrafficStatusZh(corridor.status)}
                                     </span>
                                   </td>
                                   <td className="py-2 px-2 text-right whitespace-nowrap">
@@ -8003,7 +7994,7 @@ function ExploreContent() {
                     corridor.delay_min >= 8 ? 'text-orange-400' :
                     corridor.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400';
 
-                  const displayName = corridor.name;
+                  const displayName = formatCorridorDisplayName(corridor.name);
 
                   return (
                     <div
@@ -8031,7 +8022,7 @@ function ExploreContent() {
                         </div>
 
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${statusBg}`}>
-                          {corridor.status}
+                          {formatTrafficStatusZh(corridor.status)}
                         </span>
                       </div>
 
@@ -8088,7 +8079,7 @@ function ExploreContent() {
           {/* Header Bar */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 inline-block" />
               <span>美加邊境關口即時等候</span>
             </span>
 
