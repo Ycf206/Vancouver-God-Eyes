@@ -46,6 +46,113 @@ const AIRPORT_COORDS: Record<string, [number, number]> = {
   YQQ: [-124.88, 49.71]
 };
 
+// IANA Timezones for Origin/Destination Airports
+const AIRPORT_TIMEZONES: Record<string, string> = {
+  YVR: 'America/Vancouver',
+  YYJ: 'America/Vancouver',
+  YLW: 'America/Vancouver',
+  YKA: 'America/Vancouver',
+  YXS: 'America/Vancouver',
+  YQQ: 'America/Vancouver',
+  YYF: 'America/Vancouver',
+  YWL: 'America/Vancouver',
+  YPR: 'America/Vancouver',
+  YXT: 'America/Vancouver',
+  YYC: 'America/Edmonton',
+  YEG: 'America/Edmonton',
+  YQR: 'America/Regina',
+  YXE: 'America/Regina',
+  YWG: 'America/Winnipeg',
+  YYZ: 'America/Toronto',
+  YUL: 'America/Toronto',
+  YOW: 'America/Toronto',
+  YHZ: 'America/Halifax',
+  YXY: 'America/Whitehorse',
+  YZF: 'America/Yellowknife',
+  SEA: 'America/Los_Angeles',
+  PDX: 'America/Los_Angeles',
+  SFO: 'America/Los_Angeles',
+  OAK: 'America/Los_Angeles',
+  SJC: 'America/Los_Angeles',
+  LAX: 'America/Los_Angeles',
+  SAN: 'America/Los_Angeles',
+  LAS: 'America/Los_Angeles',
+  PHX: 'America/Phoenix',
+  SLC: 'America/Denver',
+  DEN: 'America/Denver',
+  DFW: 'America/Chicago',
+  IAH: 'America/Chicago',
+  ORD: 'America/Chicago',
+  MSP: 'America/Chicago',
+  ATL: 'America/New_York',
+  JFK: 'America/New_York',
+  EWR: 'America/New_York',
+  BOS: 'America/New_York',
+  IAD: 'America/New_York',
+  MCO: 'America/New_York',
+  MIA: 'America/New_York',
+  HNL: 'Pacific/Honolulu',
+  OGG: 'Pacific/Honolulu',
+  LHR: 'Europe/London',
+  LGW: 'Europe/London',
+  CDG: 'Europe/Paris',
+  FRA: 'Europe/Berlin',
+  AMS: 'Europe/Amsterdam',
+  DUB: 'Europe/Dublin',
+  ZRH: 'Europe/Zurich',
+  KEF: 'Atlantic/Reykjavik',
+  NRT: 'Asia/Tokyo',
+  HND: 'Asia/Tokyo',
+  ICN: 'Asia/Seoul',
+  TPE: 'Asia/Taipei',
+  HKG: 'Asia/Hong_Kong',
+  PVG: 'Asia/Shanghai',
+  PEK: 'Asia/Shanghai',
+  CAN: 'Asia/Shanghai',
+  SIN: 'Asia/Singapore',
+  BKK: 'Asia/Bangkok',
+  MNL: 'Asia/Manila',
+  SYD: 'Australia/Sydney',
+  AKL: 'Pacific/Auckland',
+  MEX: 'America/Mexico_City',
+  CUN: 'America/Cancun',
+  PVR: 'America/Mexico_City',
+  SJD: 'America/Hermosillo'
+};
+
+function formatInAirportTimezone(
+  timeStr: string | undefined, 
+  timeZone: string, 
+  timeFormat: '12h' | '24h'
+): string {
+  if (!timeStr) return '--';
+  try {
+    let d: Date;
+    if (timeStr.includes('T')) {
+      if (timeStr.endsWith('Z') || timeStr.match(/[+-]\d\d:\d\d$/)) {
+        d = new Date(timeStr);
+      } else {
+        d = new Date(`${timeStr}-07:00`);
+      }
+    } else {
+      return formatTimePreference(timeStr, timeFormat);
+    }
+    if (isNaN(d.getTime())) {
+      const parts = timeStr.split('T')[1]?.substring(0, 5) || timeStr;
+      return formatTimePreference(parts, timeFormat);
+    }
+    return d.toLocaleTimeString('en-US', {
+      timeZone: timeZone || 'America/Vancouver',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: timeFormat === '12h'
+    });
+  } catch {
+    const parts = timeStr.includes('T') ? (timeStr.split('T')[1]?.substring(0, 5) || timeStr) : timeStr;
+    return formatTimePreference(parts, timeFormat);
+  }
+}
+
 interface MergedFlight {
   id: string;
   flight_number: string;
@@ -98,6 +205,14 @@ export default function FlightScheduleModal() {
       }
     } catch (err) {
       console.warn('Failed to fetch flights:', err);
+      try {
+        const cacheRes = await fetch('/vancouver_yvr_flights.json');
+        if (cacheRes.ok) {
+          const json = await cacheRes.json();
+          if (json.arrivals) setArrivals(json.arrivals);
+          if (json.departures) setDepartures(json.departures);
+        }
+      } catch {}
     } finally {
       setLoading(false);
     }
@@ -231,6 +346,11 @@ export default function FlightScheduleModal() {
         dest_coord: destCoords,
         departure_time: isArr ? f.origin_departure_time : f.estimated_time || f.scheduled_time,
         arrival_time: isArr ? f.estimated_time || f.scheduled_time : f.dest_arrival_time,
+        dep_dt_iso: isArr ? (f.origin_departure_time || f.scheduled_time) : (f.estimated_time || f.scheduled_time),
+        arr_dt_iso: isArr ? (f.estimated_time || f.scheduled_time) : (f.dest_arrival_time || f.scheduled_time),
+        target_dt_iso: f.estimated_time || f.scheduled_time,
+        range: f.range,
+        gate: f.gate,
         status: f.status
       }
     });
@@ -247,15 +367,34 @@ export default function FlightScheduleModal() {
       ? formatTimePreference(flight.scheduled_time.split('T')[1]?.substring(0, 5) || flight.scheduled_time, timeFormat)
       : '--';
 
+    const originCode = (isArr ? flight.airport_code : 'YVR').toUpperCase();
+    const destCode = (isArr ? 'YVR' : flight.airport_code).toUpperCase();
+    const originTz = AIRPORT_TIMEZONES[originCode] || 'America/Vancouver';
+    const destTz = AIRPORT_TIMEZONES[destCode] || 'America/Vancouver';
+
+    // 起飛時間:
+    // 如果是抵達航班, 從Flightaware出得資料, 沒有資料可以只顯示抵達時間 (以出發地時區顯示)
+    // 如果是出發航班, 用FlightEstimatedTime (以溫哥華時區顯示)
     const depDisplay = isArr 
-      ? (flight.origin_departure_time ? formatTimePreference(flight.origin_departure_time.split('T')[1]?.substring(0, 5) || flight.origin_departure_time, timeFormat) : '--')
-      : (flight.estimated_time ? formatTimePreference(flight.estimated_time.split('T')[1]?.substring(0, 5) || flight.estimated_time, timeFormat) : timeDisplay);
+      ? (flight.origin_departure_time 
+          ? formatInAirportTimezone(flight.origin_departure_time, originTz, timeFormat) 
+          : '--')
+      : (flight.estimated_time 
+          ? formatTimePreference(flight.estimated_time.split('T')[1]?.substring(0, 5) || flight.estimated_time, timeFormat) 
+          : timeDisplay);
 
+    // 抵達時間:
+    // 如果是抵達航班, 用FlightEstimatedTime (以溫哥華時區顯示)
+    // 如果是出發航班, 從Flightaware出得資料, 沒有資料可以只顯示出發時間 (以目的地時區顯示)
     const arrDisplay = isArr
-      ? (flight.estimated_time ? formatTimePreference(flight.estimated_time.split('T')[1]?.substring(0, 5) || flight.estimated_time, timeFormat) : timeDisplay)
-      : (flight.dest_arrival_time ? formatTimePreference(flight.dest_arrival_time.split('T')[1]?.substring(0, 5) || flight.dest_arrival_time, timeFormat) : '--');
+      ? (flight.estimated_time 
+          ? formatTimePreference(flight.estimated_time.split('T')[1]?.substring(0, 5) || flight.estimated_time, timeFormat) 
+          : timeDisplay)
+      : (flight.dest_arrival_time 
+          ? formatInAirportTimezone(flight.dest_arrival_time, destTz, timeFormat) 
+          : '--');
 
-    const rangeLabel = flight.range === 'D' ? '國內' : flight.range === 'T' ? '美國' : '國際';
+    const rangeLabel = flight.range === 'D' ? '國內' : flight.range === 'T' ? '美加' : '國際';
     const rangeColor = flight.range === 'D' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : flight.range === 'T' ? 'bg-sky-500/20 text-sky-300 border-sky-500/40' : 'bg-amber-500/20 text-amber-300 border-amber-500/40';
 
     return (
@@ -282,7 +421,7 @@ export default function FlightScheduleModal() {
             </div>
           </div>
 
-          {/* 3. 航線 (Code -> Code & City -> City) (調窄) */}
+          {/* 3. 航線 (Code -> Code & City -> City) */}
           <div className="col-span-2 min-w-0">
             <div className="flex items-center gap-1 text-[11px] font-mono font-bold text-gray-200">
               <span>{isArr ? flight.airport_code : 'YVR'}</span>
@@ -290,7 +429,7 @@ export default function FlightScheduleModal() {
               <span>{isArr ? 'YVR' : flight.airport_code}</span>
             </div>
             <div className="text-[10px] text-gray-400 truncate mt-0.5">
-              {isArr ? `${flight.city} → 溫哥華` : `溫哥華 → ${flight.city}`}
+              {isArr ? `${flight.city} → Vancouver` : `Vancouver → ${flight.city}`}
             </div>
           </div>
 
@@ -321,14 +460,14 @@ export default function FlightScheduleModal() {
           {/* 7. 櫃檯 (出發) / 閘口 / 行李 (抵達) */}
           <div className="col-span-1 text-center font-mono text-[10.5px] text-gray-300">
             {isArr ? (
-              <span title="行李提取轉盤">{flight.carousel ? `轉盤 ${flight.carousel}` : '--'}</span>
+              <span title="行李提取轉盤">{flight.carousel || '--'}</span>
             ) : (
               <span title="離境櫃檯">{flight.desk_from && flight.desk_to ? `${flight.desk_from}-${flight.desk_to}` : (flight.desk_from || '--')}</span>
             )}
           </div>
 
           <div className="col-span-1 text-center font-mono text-[11px] text-gray-200">
-            {flight.gate ? `Gate ${flight.gate}` : '--'}
+            {flight.gate || '--'}
           </div>
 
           {/* 8. 狀態 + 繪製航線按鈕 */}
@@ -365,7 +504,6 @@ export default function FlightScheduleModal() {
             </div>
             <div>
               <h3 className="text-base font-bold text-white tracking-wide">YVR 溫哥華國際機場航班資訊板</h3>
-              <p className="text-[11px] text-gray-400 font-mono">官方 YVR API 即時排程時刻 · 每 1 分鐘更新</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

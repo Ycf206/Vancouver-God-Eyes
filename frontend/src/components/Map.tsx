@@ -1232,14 +1232,20 @@ export default function AppMap() {
   }, [cursorCoords]);
 
   const mouseMoveRafRef = useRef<number | null>(null);
+  const lastCursorCoordRef = useRef<{ lng: number; lat: number } | null>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMapMouseMove = React.useCallback((e: any) => {
     if (e.lngLat) {
       const lng = e.lngLat.lng;
       const lat = e.lngLat.lat;
+      const last = lastCursorCoordRef.current;
+      if (last && Math.abs(last.lng - lng) < 0.00015 && Math.abs(last.lat - lat) < 0.00015) {
+        return;
+      }
       if (mouseMoveRafRef.current) cancelAnimationFrame(mouseMoveRafRef.current);
       mouseMoveRafRef.current = requestAnimationFrame(() => {
+        lastCursorCoordRef.current = { lng, lat };
         setCursorCoords({ lng, lat });
         const nName = getNeighbourhood(lng, lat);
         setCursorNeighbourhood(nName);
@@ -7006,14 +7012,19 @@ export default function AppMap() {
         }}
         onZoomEnd={(e: any) => {
           updateScale();
-          if (e.viewState?.zoom !== undefined) {
-            setCurrentZoom(e.viewState.zoom);
+          const z = e.viewState?.zoom;
+          if (typeof z === 'number' && !isNaN(z) && Math.abs(z - currentZoomRef.current) > 0.15) {
+            currentZoomRef.current = z;
+            setCurrentZoom(z);
           }
         }}
         onLoad={(e: any) => {
           updateScale();
           const z = e.target?.getZoom ? e.target.getZoom() : e.viewState?.zoom;
-          if (z !== undefined) setCurrentZoom(z);
+          if (typeof z === 'number' && !isNaN(z) && Math.abs(z - currentZoomRef.current) > 0.15) {
+            currentZoomRef.current = z;
+            setCurrentZoom(z);
+          }
           const c = e.target?.getCenter ? e.target.getCenter() : null;
           if (c) {
             (window as any).__godsEyeMapCenter = { lat: c.lat, lon: c.lng };
@@ -8985,7 +8996,7 @@ export default function AppMap() {
           return (
             <Marker key={props.id || `ap-${i}`} longitude={coords[0]} latitude={coords[1]} anchor="center">
               <div
-                className={`relative flex items-center justify-center w-6 h-6 rounded-full border border-white shadow-md cursor-pointer backdrop-blur-md transition-all hover:scale-125 z-35 select-none ${
+                className={`relative flex items-center justify-center w-5 h-5 rounded-full border border-white shadow-md cursor-pointer backdrop-blur-md transition-all hover:scale-125 z-35 select-none ${
                   isParking
                     ? 'bg-blue-700 text-white'
                     : isMain 
@@ -9015,9 +9026,9 @@ export default function AppMap() {
                 }}
               >
                 {isParking ? (
-                  <SquareParking className="w-3.5 h-3.5 text-white" />
+                  <SquareParking className="w-3 h-3 text-white" />
                 ) : (
-                  <Plane className="w-3 h-3 text-white" />
+                  <Plane className="w-2.5 h-2.5 text-white" />
                 )}
               </div>
             </Marker>
@@ -9198,7 +9209,7 @@ export default function AppMap() {
               {/* 設施通用坐標與複製按鈕 */}
               <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2 mt-2 border-t border-gray-100 font-mono">
                 <span className="flex items-center gap-1 text-gray-600">
-                  <span>📍</span>
+                  <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                   <span>{selectedAirportParking.geometry.coordinates[1].toFixed(6)}, {selectedAirportParking.geometry.coordinates[0].toFixed(6)}</span>
                 </span>
                 <button
@@ -9703,13 +9714,6 @@ export default function AppMap() {
                   <div>
                     <div className="flex items-center gap-1.5">
                       <h3 className="font-bold text-gray-900 text-base font-mono">{selectedFlight.flight_no}</h3>
-                      <span className={`px-1.5 py-0.2 rounded text-[9px] font-semibold ${
-                        selectedFlight.is_domestic 
-                          ? 'bg-sky-100 text-sky-800 border border-sky-200' 
-                          : 'bg-amber-100 text-amber-800 border border-amber-200'
-                      }`}>
-                        {selectedFlight.is_domestic ? '國內航班' : '國際航班'}
-                      </span>
                     </div>
                     <p className="text-xs text-gray-600 font-medium truncate max-w-[140px] sm:max-w-[165px]">
                       {selectedFlight.airline}
@@ -9776,35 +9780,30 @@ export default function AppMap() {
                 </div>
               </div>
 
-              {/* Terminal & Gate & Status */}
-              <div className="mb-2.5 flex items-center justify-between bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100 text-xs">
-                <div className="flex items-center gap-1.5 truncate max-w-[65%]">
-                  <span className="text-gray-500 text-[11px] shrink-0">航廈/閘口:</span>
-                  <span className="font-semibold text-gray-800 text-[11.5px] truncate">
-                    {selectedFlight.terminal?.includes('航廈') ? selectedFlight.terminal.split(' ')[0] : selectedFlight.terminal || '主航廈'}
-                    {selectedFlight.gate && selectedFlight.gate !== '--'
-                      ? ` · ${
-                          selectedFlight.gate.startsWith('Gate') ||
-                          selectedFlight.gate.includes('登機門') ||
-                          selectedFlight.gate.includes('轉盤') ||
-                          selectedFlight.gate.includes('出發') ||
-                          selectedFlight.gate.includes('抵達')
-                            ? selectedFlight.gate
-                            : `閘口 ${selectedFlight.gate}`
-                        }`
-                      : ''}
+              {/* 航班類別與當前狀態灰色區塊 (刪除航廈，第一行是航班類別，第二行是當前狀態) */}
+              <div className="mb-2.5 flex flex-col gap-1 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100 text-xs">
+                <div className="flex items-center justify-between text-gray-700">
+                  <span className="font-semibold text-[11.5px]">
+                    {selectedFlight.range === 'D' ? '國內航班' : selectedFlight.range === 'T' ? '美加航班' : '國際航班'}
+                    {selectedFlight.gate && selectedFlight.gate !== '--' ? ` · 閘口 ${selectedFlight.gate}` : ''}
                   </span>
                 </div>
-                <span className="text-[11px] font-bold text-sky-700 flex items-center gap-1 shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-ping"></span>
-                  {selectedFlight.status || '依時刻表排程'}
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-sky-700 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-ping"></span>
+                    {selectedFlight.status || '依時刻表排程'}
+                  </span>
+                </div>
               </div>
 
               {/* Remaining Time & Live Flight Progress Bar */}
               {(() => {
                 const nowMs = Date.now();
+                const stLower = (selectedFlight.status || '').toLowerCase();
+                const isLandedOrArrived = stLower.includes('arrived') || stLower.includes('landed') || stLower.includes('已抵達') || stLower.includes('已降落');
+
                 const liveRemaining = (() => {
+                  if (isLandedOrArrived) return isDep ? '已起飛' : '已降落';
                   if (selectedFlight.target_dt_iso) {
                     const targetMs = new Date(selectedFlight.target_dt_iso).getTime();
                     if (!isNaN(targetMs)) {
@@ -9824,8 +9823,18 @@ export default function AppMap() {
                 let depMs = selectedFlight.dep_dt_iso ? new Date(selectedFlight.dep_dt_iso).getTime() : NaN;
                 let arrMs = selectedFlight.arr_dt_iso ? new Date(selectedFlight.arr_dt_iso).getTime() : NaN;
                 const targetMs = selectedFlight.target_dt_iso ? new Date(selectedFlight.target_dt_iso).getTime() : NaN;
+
+                if (isNaN(depMs) && selectedFlight.departure_time) {
+                  const dParsed = new Date(selectedFlight.departure_time).getTime();
+                  if (!isNaN(dParsed)) depMs = dParsed;
+                }
+                if (isNaN(arrMs) && selectedFlight.arrival_time) {
+                  const aParsed = new Date(selectedFlight.arrival_time).getTime();
+                  if (!isNaN(aParsed)) arrMs = aParsed;
+                }
+
                 if (!isNaN(targetMs)) {
-                  const defaultDurMs = (isDom ? 2.5 : 8.5) * 3600000;
+                  const defaultDurMs = (isDom ? 2.0 : selectedFlight.range === 'T' ? 3.0 : 8.5) * 3600000;
                   if (isDep) {
                     if (isNaN(depMs)) depMs = targetMs;
                     if (isNaN(arrMs)) arrMs = depMs + defaultDurMs;
@@ -9837,15 +9846,26 @@ export default function AppMap() {
 
                 let pct = typeof selectedFlight.progress_percent === 'number' ? selectedFlight.progress_percent : 0;
                 let phaseLabel = '尚未起飛';
-                if (!isNaN(depMs) && !isNaN(arrMs) && arrMs > depMs) {
+                if (isLandedOrArrived) {
+                  pct = 100;
+                  phaseLabel = '已降落';
+                } else if (!isNaN(depMs) && !isNaN(arrMs) && arrMs > depMs) {
                   if (nowMs <= depMs) {
                     pct = 0;
                     phaseLabel = '尚未起飛';
                   } else if (nowMs >= arrMs) {
                     pct = 100;
-                    phaseLabel = '已抵達目的地';
+                    phaseLabel = isDep ? '已抵達目的地' : '已降落';
                   } else {
                     pct = Math.max(1, Math.min(99, Math.round(((nowMs - depMs) / (arrMs - depMs)) * 100)));
+                    phaseLabel = '空中飛行中';
+                  }
+                } else if (!isNaN(targetMs)) {
+                  if (nowMs >= targetMs) {
+                    pct = 100;
+                    phaseLabel = isDep ? '已抵達目的地' : '已降落';
+                  } else {
+                    pct = 65;
                     phaseLabel = '空中飛行中';
                   }
                 }
@@ -9890,12 +9910,6 @@ export default function AppMap() {
                   </div>
                 );
               })()}
-
-              {/* Footer */}
-              <div className="pt-2 border-t border-gray-100 text-[10px] text-gray-400 flex items-center justify-between font-mono">
-                <span>航班: {selectedFlight.flight_no}</span>
-                <span>航線排程: FlightAware AeroAPI</span>
-              </div>
             </div>
           </Popup>
           );
