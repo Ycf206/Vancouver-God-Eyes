@@ -269,3 +269,22 @@ def get_aurora_data(force: bool = False) -> dict:
     _aurora_cache["timestamp"] = now
     _aurora_cache["data"] = data
     return data
+
+
+async def run_aurora_background_loop():
+    """OCI 後台 24/7 自動排程預熱快取 (每 30 分鐘自動抓取 NOAA 最新真實地磁 K 指數)"""
+    import asyncio
+    print("🌌 [AuroraService] 溫哥華極光預報與地磁指數背景定時快取服務啟動 (30 分鐘週期)...")
+    loop = asyncio.get_event_loop()
+    try:
+        await loop.run_in_executor(None, get_aurora_data, True)
+    except Exception as e:
+        print(f"⚠️ [AuroraService] 啟動預熱失敗: {e}")
+
+    while True:
+        try:
+            await asyncio.sleep(1800)  # 30 分鐘
+            await loop.run_in_executor(None, get_aurora_data, True)
+        except Exception as e:
+            print(f"⚠️ [AuroraService] 背景極光預報更新失敗: {e}")
+

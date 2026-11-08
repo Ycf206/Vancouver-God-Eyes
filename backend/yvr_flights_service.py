@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import json
 import time
@@ -6,8 +7,9 @@ import re
 import urllib.parse
 import subprocess
 import asyncio
+import requests
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.abspath(os.path.join(BACKEND_DIR, "..", "frontend"))
@@ -127,17 +129,35 @@ def fetch_yvr_endpoint(f_type: str, today_str: str, tomorrow_str: str) -> List[D
     encoded_filter = urllib.parse.quote(filter_expr)
     url = f"https://www.yvr.ca/en/_api/Flights?%24filter={encoded_filter}&%24orderby=FlightScheduledTime%20asc"
 
+    req_headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+        "Referer": referer,
+        "Accept": "application/json, text/plain, */*"
+    }
+
     curl_bin = "curl.exe" if os.name == "nt" else "curl"
-    headers = [
-        "-H", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+    curl_args = [
+        "-H", f"User-Agent: {req_headers['User-Agent']}",
         "-H", f"Referer: {referer}",
-        "-H", "Accept: application/json, text/plain, */*"
+        "-H", f"Accept: {req_headers['Accept']}"
     ]
     
     for attempt in range(1, 4):
+        # 1. 優先使用 Python 原生 requests
+        try:
+            resp = requests.get(url, headers=req_headers, timeout=20)
+            if resp.status_code == 200:
+                data = resp.json()
+                val = data.get("value", [])
+                if val and len(val) > 0:
+                    return val
+        except Exception as re_err:
+            pass
+
+        # 2. 次選使用系統 curl 指令防護
         try:
             res = subprocess.run(
-                [curl_bin, "-s", url] + headers,
+                [curl_bin, "-s", url] + curl_args,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 timeout=25,

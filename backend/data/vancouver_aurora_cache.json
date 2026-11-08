@@ -3,31 +3,23 @@
   "source_url": "https://www.swpc.noaa.gov/",
   "api_endpoint": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
   "update_frequency": "每天 2 次 (12 小時快取)",
-  "last_updated": "2026-11-08T02:27:24.338344Z",
+  "last_updated": "2026-11-08T03:34:11.790914Z",
   "latest": {
-    "time_tag": "2026-11-07T21:00:00",
-    "kp": 4.0,
-    "kp_int": 4,
-    "g_scale": "活躍",
-    "g_desc": "活躍擾動",
-    "g_color": "#10b981",
+    "time_tag": "2026-11-08T00:00:00",
+    "kp": 5.0,
+    "kp_int": 5,
+    "g_scale": "G1",
+    "g_desc": "弱磁暴",
+    "g_color": "#eab308",
     "visibility": {
-      "level": "微弱！需長曝光相機 (Low)",
-      "description": "極光帶在卑詩省中北部活躍。溫哥華朝北開闊水面長曝光 8~15 秒有微弱機率捕捉地平線泛綠夜空，肉眼通常不可見。",
-      "chance_pct": 20,
+      "level": "有機會！相機與深山可見 (Moderate)",
+      "description": "G1 級輕度磁暴。前往海天公路波特灣或高山無光害處，相機長曝光 3~5 秒可拍到鮮明綠光，肉眼隱約可辨識灰白極光弧。",
+      "chance_pct": 45,
       "naked_eye": false,
-      "badge_color": "bg-teal-600 text-white"
+      "badge_color": "bg-yellow-500 text-gray-900"
     }
   },
   "history": [
-    {
-      "time_tag": "2026-11-06T00:00:00",
-      "kp": 2.33,
-      "a_running": 9,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
     {
       "time_tag": "2026-11-06T03:00:00",
       "kp": 0.67,
@@ -147,6 +139,14 @@
       "g_scale": "活躍",
       "g_desc": "活躍擾動",
       "g_color": "#10b981"
+    },
+    {
+      "time_tag": "2026-11-08T00:00:00",
+      "kp": 5.0,
+      "a_running": 48,
+      "g_scale": "G1",
+      "g_desc": "弱磁暴",
+      "g_color": "#eab308"
     }
   ],
   "spots": [

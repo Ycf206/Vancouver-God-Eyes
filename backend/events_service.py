@@ -474,6 +474,23 @@ class EventsService:
     def get_destination_vancouver_fallback_events(self) -> List[Dict[str, Any]]:
         return []
 
+    async def run_events_background_loop(self):
+        """OCI 後台 24/7 自動排程預熱快取 (每 15 分鐘自動抓取最新真實活動資訊)"""
+        import asyncio
+        loop = asyncio.get_event_loop()
+        print("🎭 [EventsService] 大溫即時文娛活動背景定時快取服務啟動 (15 分鐘週期)...")
+        try:
+            await loop.run_in_executor(None, self.get_latest_events, True)
+        except Exception as e:
+            print(f"⚠️ [EventsService] 啟動預熱失敗: {e}")
+
+        while True:
+            try:
+                await asyncio.sleep(900)  # 15 分鐘
+                await loop.run_in_executor(None, self.get_latest_events, True)
+            except Exception as e:
+                print(f"⚠️ [EventsService] 背景活動資訊更新失敗: {e}")
+
 events_service = EventsService()
 
 def get_latest_events(force_refresh: bool = False) -> Dict[str, Any]:

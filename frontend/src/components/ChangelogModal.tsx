@@ -77,9 +77,6 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
             <div>
               <h2 className="text-base font-bold text-white tracking-wide flex items-center gap-2">
                 <span>系統更新日誌</span>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 font-semibold">
-                  CHANGELOG
-                </span>
               </h2>
             </div>
           </div>

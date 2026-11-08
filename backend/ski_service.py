@@ -271,3 +271,22 @@ def get_ski_geojson():
         "updated_at": data.get("updated_at"),
         "features": features
     }
+
+
+async def run_ski_background_loop():
+    """OCI 後台 24/7 自動排程預熱快取 (每 10 分鐘自動抓取三大滑雪場最新真實降雪與纜車狀況)"""
+    import asyncio
+    print("⛷️ [SkiService] 大溫滑雪場即時雪況與纜車背景定時快取服務啟動 (10 分鐘週期)...")
+    loop = asyncio.get_event_loop()
+    try:
+        await loop.run_in_executor(None, get_live_ski_data, True)
+    except Exception as e:
+        print(f"⚠️ [SkiService] 啟動預熱失敗: {e}")
+
+    while True:
+        try:
+            await asyncio.sleep(600)  # 10 分鐘
+            await loop.run_in_executor(None, get_live_ski_data, True)
+        except Exception as e:
+            print(f"⚠️ [SkiService] 背景滑雪場資訊更新失敗: {e}")
+

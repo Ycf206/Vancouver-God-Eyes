@@ -1320,6 +1320,51 @@ async def startup_event():
         asyncio.create_task(yvr_flights_service.run_yvr_flights_background_service())
     except Exception as e:
         print(f"Failed to start yvr_flights_service task: {e}")
+
+    try:
+        import yvr_airport_service
+        asyncio.create_task(yvr_airport_service.run_yvr_airport_background_loop())
+    except Exception as e:
+        print(f"Failed to start yvr_airport_service task: {e}")
+
+    try:
+        asyncio.create_task(news_service.run_news_background_loop())
+    except Exception as e:
+        print(f"Failed to start news_service task: {e}")
+
+    try:
+        asyncio.create_task(border_service.run_border_background_loop())
+    except Exception as e:
+        print(f"Failed to start border_service task: {e}")
+
+    try:
+        import ski_service
+        asyncio.create_task(ski_service.run_ski_background_loop())
+    except Exception as e:
+        print(f"Failed to start ski_service task: {e}")
+
+    try:
+        import aurora_service
+        asyncio.create_task(aurora_service.run_aurora_background_loop())
+    except Exception as e:
+        print(f"Failed to start aurora_service task: {e}")
+
+    try:
+        asyncio.create_task(events_service.run_events_background_loop())
+    except Exception as e:
+        print(f"Failed to start events_service task: {e}")
+
+    try:
+        import tides_service
+        asyncio.create_task(tides_service.run_tides_background_loop())
+    except Exception as e:
+        print(f"Failed to start tides_service task: {e}")
+
+    try:
+        import fuel_service
+        asyncio.create_task(fuel_service.run_fuel_background_loop())
+    except Exception as e:
+        print(f"Failed to start fuel_service task: {e}")
     # 背景預熱全圖層記憶體倒排索引，避免首次搜尋冷啟動延遲
     threading.Thread(
         target=lambda: search_engine.ensure_ready(get_gtfs_metadata, database.SessionLocal),

@@ -263,3 +263,20 @@ def get_live_fuel_prices(force: bool = True) -> List[Dict[str, Any]]:
     }
     return enriched
 
+
+async def run_fuel_background_loop():
+    """OCI 後台 24/7 自動排程預熱快取 (每 5 分鐘自動抓取真實即時油價)"""
+    print("⛽ [FuelService] 大溫各大油站即時油價背景定時快取服務啟動 (5 分鐘週期)...")
+    try:
+        await get_fuel_stations_data()
+    except Exception as e:
+        logger.warning(f"⚠️ [FuelService] 啟動預熱失敗: {e}")
+
+    while True:
+        try:
+            await asyncio.sleep(300)  # 5 分鐘
+            await get_fuel_stations_data()
+        except Exception as e:
+            logger.warning(f"⚠️ [FuelService] 背景油價更新失敗: {e}")
+
+

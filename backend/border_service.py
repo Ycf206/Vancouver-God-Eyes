@@ -366,4 +366,22 @@ class BorderService:
         self.last_fetch_time = now
         return self.cached_data
 
+    async def run_border_background_loop(self):
+        """OCI 後台 24/7 自動排程預熱快取 (每 90 秒自動抓取真實 CBSA & CBP 等候時間)"""
+        import asyncio
+        loop = asyncio.get_event_loop()
+        print("🚗 [BorderService] 美加邊境即時等候時間背景定時快取服務啟動 (90 秒週期)...")
+        # 啟動時先執行一次
+        try:
+            await loop.run_in_executor(None, self.get_border_wait_times, True)
+        except Exception as e:
+            print(f"⚠️ [BorderService] 啟動預熱失敗: {e}")
+
+        while True:
+            try:
+                await asyncio.sleep(90)  # 90 秒
+                await loop.run_in_executor(None, self.get_border_wait_times, True)
+            except Exception as e:
+                print(f"⚠️ [BorderService] 背景邊境等候時間更新失敗: {e}")
+
 border_service = BorderService()

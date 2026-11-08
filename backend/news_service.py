@@ -214,4 +214,22 @@ class NewsService:
                 "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
             }
 
+    async def run_news_background_loop(self):
+        """OCI 後台 24/7 自動排程預熱快取 (每 3 分鐘自動抓取真實最新 RSS)，讓前端 0ms 即時讀取"""
+        import asyncio
+        loop = asyncio.get_event_loop()
+        print("📰 [NewsService] 溫哥華主流即時新聞背景定時快取服務啟動 (3 分鐘週期)...")
+        # 啟動時先執行一次
+        try:
+            await loop.run_in_executor(None, self.get_latest_news, True)
+        except Exception as e:
+            print(f"⚠️ [NewsService] 啟動預熱失敗: {e}")
+
+        while True:
+            try:
+                await asyncio.sleep(180)  # 3 分鐘
+                await loop.run_in_executor(None, self.get_latest_news, True)
+            except Exception as e:
+                print(f"⚠️ [NewsService] 背景新聞更新失敗: {e}")
+
 news_service = NewsService()

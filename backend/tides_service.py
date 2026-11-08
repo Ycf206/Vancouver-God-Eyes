@@ -221,3 +221,22 @@ def get_tides_geojson():
         "name": "Vancouver_Coastal_Tide_Stations",
         "features": features
     }
+
+
+async def run_tides_background_loop():
+    """OCI 後台 24/7 自動排程預熱快取 (每 3 分鐘自動抓取真實潮汐水溫數據)"""
+    import asyncio
+    print("🌊 [TidesService] 溫哥華沿海潮汐與水文觀測背景定時快取服務啟動 (3 分鐘週期)...")
+    loop = asyncio.get_event_loop()
+    try:
+        await loop.run_in_executor(None, get_live_tides_data, True)
+    except Exception as e:
+        print(f"⚠️ [TidesService] 啟動預熱失敗: {e}")
+
+    while True:
+        try:
+            await asyncio.sleep(180)  # 3 分鐘
+            await loop.run_in_executor(None, get_live_tides_data, True)
+        except Exception as e:
+            print(f"⚠️ [TidesService] 背景潮汐資料更新失敗: {e}")
+

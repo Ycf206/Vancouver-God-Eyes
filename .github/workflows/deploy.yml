@@ -164,4 +164,7 @@ jobs:
           # 重新建置並平滑升級前端與後端容器，杜絕多實例名稱衝突
           docker compose build frontend backend
           docker compose down --remove-orphans || true
-          docker compose up -d frontend backend nginx
+          docker compose up -d db redis frontend backend nginx
+          sleep 5
+          docker compose ps
+          docker compose logs --tail=20 backend

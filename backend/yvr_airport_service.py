@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import json
 import time
@@ -8,6 +9,7 @@ import email.utils
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional
+import requests
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_DIR = os.path.join(BACKEND_DIR, "data")
@@ -84,11 +86,35 @@ def fetch_weathercams_summary(airport_id: str = "CYVR") -> Dict[str, Any]:
             pass
 
     url = f"https://weathercams.faa.gov/api/summary?airportId={airport_id}"
+    req_headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+        "Referer": "https://weathercams.faa.gov/",
+        "Accept": "application/json, text/plain, */*"
+    }
+
+    # 1. 優先使用 Python 原生 requests
+    try:
+        resp = requests.get(url, headers=req_headers, timeout=15)
+        if resp.status_code == 200:
+            data = resp.json()
+            norm_data = _normalize_summary_data(data, airport_id)
+            _summary_cache["data"] = norm_data
+            _summary_cache["timestamp"] = now
+            try:
+                os.makedirs(CACHE_DIR, exist_ok=True)
+                with open(SUMMARY_CACHE_FILE, "w", encoding="utf-8") as f:
+                    json.dump(norm_data, f, ensure_ascii=False, indent=2)
+            except Exception:
+                pass
+            return norm_data
+    except Exception as re_err:
+        pass
+
     curl_bin = "curl.exe" if os.name == "nt" else "curl"
     headers = [
-        "-H", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
-        "-H", "Referer: https://weathercams.faa.gov/",
-        "-H", "Accept: application/json, text/plain, */*"
+        "-H", f"User-Agent: {req_headers['User-Agent']}",
+        "-H", f"Referer: {req_headers['Referer']}",
+        "-H", f"Accept: {req_headers['Accept']}"
     ]
 
     try:
@@ -181,24 +207,43 @@ def fetch_yvr_news_rss(force_refresh: bool = False) -> List[Dict[str, Any]]:
 
     items_dict: Dict[str, Dict[str, Any]] = {}
     curl_bin = "curl.exe" if os.name == "nt" else "curl"
+    req_headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+        "Accept": "application/rss+xml, application/xml, text/xml, */*"
+    }
 
     for feed_info in YVR_NEWS_RSS_FEEDS:
         feed_url = feed_info["url"]
         category_name = feed_info["category"]
+        stdout_str = ""
+        # 1. 優先使用 requests
         try:
-            headers = [
-                "-H", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
-                "-H", "Accept: application/rss+xml, application/xml, text/xml, */*"
-            ]
-            res = subprocess.run(
-                [curl_bin, "-s", feed_url] + headers,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=15,
-                check=False
-            )
-            stdout_str = (res.stdout or b"").decode("utf-8", errors="replace")
-            if res.returncode == 0 and stdout_str and ("<rss" in stdout_str or "<feed" in stdout_str):
+            r = requests.get(feed_url, headers=req_headers, timeout=15)
+            if r.status_code == 200 and r.text:
+                stdout_str = r.text
+        except Exception:
+            pass
+
+        # 2. 次選 curl
+        if not stdout_str:
+            try:
+                headers = [
+                    "-H", f"User-Agent: {req_headers['User-Agent']}",
+                    "-H", f"Accept: {req_headers['Accept']}"
+                ]
+                res = subprocess.run(
+                    [curl_bin, "-s", feed_url] + headers,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    timeout=15,
+                    check=False
+                )
+                stdout_str = (res.stdout or b"").decode("utf-8", errors="replace")
+            except Exception:
+                pass
+
+        try:
+            if stdout_str and ("<rss" in stdout_str or "<feed" in stdout_str):
                 root = ET.fromstring(stdout_str)
                 channel = root.find("channel")
                 channel_items = channel.findall("item") if channel is not None else root.findall(".//item")
@@ -297,3 +342,31 @@ def fetch_yvr_news_rss(force_refresh: bool = False) -> List[Dict[str, Any]]:
 
     # Strictly authentic: return empty list if offline and no cache
     return []
+
+
+async def run_yvr_airport_background_loop():
+    """
+    OCI 後台 24/7 自動排程預熱快取 (每 3 分鐘自動抓取真實 FAA 氣象攝影機與 METAR，每 2 小時抓取真實 YVR RSS 新聞)
+    """
+    import asyncio
+    print("🛫 [YVR Airport Service] 機場氣象攝影機與官方資訊背景定時快取服務啟動 (3 分鐘週期)...")
+    loop = asyncio.get_event_loop()
+    # 啟動時先進行一次預熱
+    try:
+        await loop.run_in_executor(None, fetch_weathercams_summary, "CYVR")
+        await loop.run_in_executor(None, fetch_yvr_news_rss, True)
+    except Exception as e:
+        print(f"⚠️ [YVR Airport Service] 啟動預熱失敗: {e}")
+
+    counter = 0
+    while True:
+        try:
+            await asyncio.sleep(180)  # 3 分鐘
+            counter += 1
+            await loop.run_in_executor(None, fetch_weathercams_summary, "CYVR")
+            if counter >= 40:  # ~2 小時
+                counter = 0
+                await loop.run_in_executor(None, fetch_yvr_news_rss, True)
+        except Exception as e:
+            print(f"⚠️ [YVR Airport Service] 背景機場資料更新失敗: {e}")
+
