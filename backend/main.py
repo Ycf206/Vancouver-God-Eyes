@@ -1384,6 +1384,12 @@ async def startup_event():
         asyncio.create_task(sports_service.run_sports_background_loop())
     except Exception as e:
         print(f"Failed to start sports_service task: {e}")
+
+    try:
+        import lottery_service
+        asyncio.create_task(lottery_service.run_lottery_background_loop())
+    except Exception as e:
+        print(f"Failed to start lottery_service task: {e}")
     # 背景預熱全圖層記憶體倒排索引，避免首次搜尋冷啟動延遲
     threading.Thread(
         target=lambda: search_engine.ensure_ready(get_gtfs_metadata, database.SessionLocal),
@@ -1502,6 +1508,25 @@ def get_sports_available_seasons():
     except Exception as e:
         print(f"Error serving available seasons: {e}")
         return {"currentSeason": "20262027", "seasons": []}
+
+@app.get("/api/lottery/latest")
+def get_lottery_latest(refresh: bool = False, force: bool = False):
+    """
+    取得 PlayNow 官方最新樂透彩票開彩數字與下次開彩日期 (每 12 小時更新一次)。
+    """
+    try:
+        import lottery_service
+        data = lottery_service.fetch_lottery_latest(force=(refresh or force))
+        return JSONResponse(
+            content=data,
+            headers={"Cache-Control": "public, max-age=300, stale-while-revalidate=600"}
+        )
+    except Exception as e:
+        print(f"Error serving lottery latest: {e}")
+        return JSONResponse(
+            content={"success": False, "draws": {}, "error": str(e)},
+            status_code=500
+        )
 
 # In-memory cache for live parkade capacity (retained for up to 60 seconds to prevent rate limits)
 _LATEST_PARKADE_CAPACITY = None
@@ -4768,6 +4793,12 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["sports_canucks"] = time.time()
         cnt = data.get("totalGames") or len(data.get("games", []))
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 NHL 官方 Vancouver Canucks {cur_s} 賽季賽程，共 {cnt} 場賽事。")
+    if sid in ("lottery_latest", "lottery"):
+        import lottery_service
+        data = lottery_service.fetch_lottery_latest(force=True)
+        _oci_runtime_ts["lottery_latest"] = time.time()
+        cnt = len(data.get("draws", {}))
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 PlayNow 官方最新彩票開彩結果，共 {cnt} 種彩票。")
     if sid == "yvr_weathercams":
         import yvr_airport_service
         data = yvr_airport_service.fetch_weathercams_summary("CYVR")

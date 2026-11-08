@@ -3,63 +3,23 @@
   "source_url": "https://www.swpc.noaa.gov/",
   "api_endpoint": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
   "update_frequency": "每天 2 次 (12 小時快取)",
-  "last_updated": "2026-11-08T05:25:04.916219Z",
+  "last_updated": "2026-11-08T19:01:07.362146Z",
   "latest": {
-    "time_tag": "2026-11-08T00:00:00",
-    "kp": 5.0,
-    "kp_int": 5,
-    "g_scale": "G1",
-    "g_desc": "弱磁暴",
-    "g_color": "#eab308",
+    "time_tag": "2026-11-08T15:00:00",
+    "kp": 3.33,
+    "kp_int": 3,
+    "g_scale": "微擾",
+    "g_desc": "輕微擾動",
+    "g_color": "#06b6d4",
     "visibility": {
-      "level": "有機會！相機與深山可見 (Moderate)",
-      "description": "G1 級輕度磁暴。前往海天公路波特灣或高山無光害處，相機長曝光 3~5 秒可拍到鮮明綠光，肉眼隱約可辨識灰白極光弧。",
-      "chance_pct": 45,
+      "level": "不可見",
+      "description": "地磁場處於平靜狀態。極光主要侷限於阿拉斯加、黃刀鎮等高緯度極圈附近，溫哥華目前無法觀測到極光。",
+      "chance_pct": 5,
       "naked_eye": false,
-      "badge_color": "bg-yellow-500 text-gray-900"
+      "badge_color": "bg-slate-600 text-gray-200"
     }
   },
   "history": [
-    {
-      "time_tag": "2026-11-06T03:00:00",
-      "kp": 0.67,
-      "a_running": 3,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
-    {
-      "time_tag": "2026-11-06T06:00:00",
-      "kp": 2.67,
-      "a_running": 12,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
-    {
-      "time_tag": "2026-11-06T09:00:00",
-      "kp": 2.33,
-      "a_running": 9,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
-    {
-      "time_tag": "2026-11-06T12:00:00",
-      "kp": 2.0,
-      "a_running": 7,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
-    {
-      "time_tag": "2026-11-06T15:00:00",
-      "kp": 2.0,
-      "a_running": 7,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
     {
       "time_tag": "2026-11-06T18:00:00",
       "kp": 2.33,
@@ -147,6 +107,46 @@
       "g_scale": "G1",
       "g_desc": "弱磁暴",
       "g_color": "#eab308"
+    },
+    {
+      "time_tag": "2026-11-08T03:00:00",
+      "kp": 3.33,
+      "a_running": 18,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-11-08T06:00:00",
+      "kp": 3.0,
+      "a_running": 15,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-11-08T09:00:00",
+      "kp": 3.33,
+      "a_running": 18,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-11-08T12:00:00",
+      "kp": 2.67,
+      "a_running": 12,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-11-08T15:00:00",
+      "kp": 3.33,
+      "a_running": 18,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
     }
   ],
   "spots": [

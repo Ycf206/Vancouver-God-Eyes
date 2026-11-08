@@ -284,6 +284,32 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "source_url": "https://api-web.nhle.com/v1/club-schedule-season/VAN/20262027"
   },
   {
+    "id": "lottery_latest",
+    "name": "PlayNow 彩票開彩結果",
+    "type": "api",
+    "cron_expr": "0 */12 * * *",
+    "schedule_interval": "每 12 小時",
+    "record_count": 4,
+    "unit": "種官方彩票開彩與獎金資訊",
+    "last_updated": "2026-11-08T00:00:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "PlayNow 官方彩票 API (draw/latest) -> 定時同步 649、BC49、Lotto Max、Daily Grand 最新開彩號碼、特別號碼、金球/白球統計與下次開彩日期 -> 寫入原子快取 -> 提供探索彩票分頁 0ms 即時檢視",
+    "runner": "oci",
+    "category": "生活",
+    "workflow_file": null,
+    "source_links": [
+      {
+        "label": "PlayNow 官方最新開彩 API",
+        "url": "https://www.playnow.com/services2/lotto/draw/latest/"
+      },
+      {
+        "label": "PlayNow 官方彩票首頁",
+        "url": "https://www.playnow.com/lottery/buy-tickets/"
+      }
+    ],
+    "source_url": "https://www.playnow.com/services2/lotto/draw/latest/"
+  },
+  {
     "id": "flight_schedules",
     "name": "航班",
     "type": "api",

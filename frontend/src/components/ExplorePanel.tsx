@@ -12,8 +12,9 @@ import { Landmark,
   Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign,
   PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle,
   Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
-  Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy
+  Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy, Ticket
 } from 'lucide-react';
+import { SportShoeIcon } from './SportShoeIcon';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 
 export function HockeyStickIcon({ className = "w-4 h-4", ...props }: React.SVGProps<SVGSVGElement>) {
@@ -67,6 +68,88 @@ export interface NHLGameItem {
   ticketsLink?: string;
   gameCenterLink?: string;
 }
+
+export interface LotteryItemData {
+  drawNbr: number;
+  drawDate: string;
+  drawNbrs: number[];
+  bonusNbr: number;
+  extraNbrs?: number[];
+  nextDrawDate?: string;
+  bonusDraws?: number[][];
+  gpNumbers?: Array<{
+    prizeDesc?: string;
+    whiteBallPrizeAmount?: number;
+    goldBallPrizeAmount?: number;
+    whiteBallsDrawn?: number;
+    goldBallsDrawn?: number;
+    nthBallDrawn?: number;
+    startingBallTotal?: number;
+    drawNbrs?: number[];
+  }>;
+}
+
+export interface LotteryRuleInfo {
+  id: 'SIX49' | 'BC49' | 'LMAX' | 'DGRD';
+  name: string;
+  pricePerPlay: string;
+  selectionRule: string;
+  drawDays: string;
+  extraRule: string;
+  addonRule?: string;
+  mechanism: string;
+  topPrize: string;
+  winningNumbersUrl: string;
+}
+
+export const LOTTERY_RULES: Record<string, LotteryRuleInfo> = {
+  SIX49: {
+    id: 'SIX49',
+    name: '649',
+    pricePerPlay: '$3.00',
+    selectionRule: '從 1 到 49 的數字中自行選出 6 個號碼，或使用電腦隨機選號',
+    drawDays: '週三及六晚上',
+    extraRule: '每加 $1 可多加一注 4 個數字的額外抽獎，最高可贏取 50 萬元',
+    addonRule: '每加 $1 可多加一注 10 位數的額外抽獎，最高可贏取 100 萬元',
+    mechanism: '1. 經典開彩：從 1 至 49 中抽出 6 個正選號碼及 1 個特別號碼\n2. 金球開彩：每買一注彩票，系統都會自動附送一組 10 位數的專屬號碼。每次開彩會抽出一個 10 位數號碼，並從球池中開出一個球',
+    topPrize: '1. 經典開彩：若買中 6 個號碼，可獨得或平分固定的 500 萬元經典頭獎\n2. 金球開彩：白球: 大獎得主可獲得 100 萬元獎金；金球: 若抽中金球，得主可把滾動累積的金球頭獎抱走 (從 1000 萬元起跳)',
+    winningNumbersUrl: 'https://www.playnow.com/lottery/lotto-649-winning-numbers/',
+  },
+  BC49: {
+    id: 'BC49',
+    name: 'BC49',
+    pricePerPlay: '$1.00',
+    selectionRule: '從 1 到 49 的數字中自行選出 6 個號碼，或使用電腦隨機選號',
+    drawDays: '週三及六晚上',
+    extraRule: '每加 $1 可多加一注 4 個數字的額外抽獎，最高可贏取 50 萬元',
+    mechanism: '從 1 至 49 中抽出 6 個正選號碼及 1 個特別號碼',
+    topPrize: '頭獎 (6 個主號碼) 200 萬元 (若多人中獎則平分)',
+    winningNumbersUrl: 'https://www.playnow.com/lottery/bc-49-winning-numbers/',
+  },
+  LMAX: {
+    id: 'LMAX',
+    name: 'Lotto Max',
+    pricePerPlay: '$6.00',
+    selectionRule: '從 1 到 52 的數字中自行選出 7 個號碼，或使用電腦隨機選號',
+    drawDays: '週二及五晚上',
+    extraRule: '每加 $1 可多加一注 4 個數字的額外抽獎，最高可贏取 50 萬元',
+    addonRule: '每加 $1 可多加一注 7 個數字的額外抽獎，最高可贏取 100 萬元',
+    mechanism: '從 1 至 52 中抽出 7 個正選號碼及 1 個特別號碼',
+    topPrize: '1. 頭獎封頂：設有頭獎封頂制 (目前最高可達 9,000 萬加元左右)\n2. MAXMILLIONS：當頭獎累積達到 5,000 萬加元或以上時，若獎池繼續溢出，就會觸發 MAXMILLIONS 附加抽獎——(額外抽出多個 100 萬加元的大獎)',
+    winningNumbersUrl: 'https://www.playnow.com/lottery/lotto-max-winning-numbers/',
+  },
+  DGRD: {
+    id: 'DGRD',
+    name: 'Daily Grand',
+    pricePerPlay: '$3.00',
+    selectionRule: '從 1 至 49 之中選擇 5 個主號碼。從 1 至 7 之中選擇 1 個大獎號碼，或使用電腦隨機選號',
+    drawDays: '週一及四晚上',
+    extraRule: '每加 $1 可多加一注 4 個數字的額外抽獎，最高可贏取 50 萬元',
+    mechanism: '從 1 至 49 中抽出 5 個正選號碼及 1 個特別號碼',
+    topPrize: '1. 頭獎 (5 個主號碼 + 1 個大獎號碼)：終身每天領取 $1,000 元，或選擇一次性領取 $7,000,000 元現金\n2. 二獎 (5 個主號碼 + 0 個大獎號碼)：終身每年領取 $25,000 元，或選擇一次性領取 $500,000 元現金',
+    winningNumbersUrl: 'https://www.playnow.com/lottery/daily-grand-winning-numbers/',
+  },
+};
 import { getApiUrl } from '@/utils/api';
 import { formatShipEta, formatTimePreference, formatTimeRange, formatDateTime, formatDateOnly, formatTimeOnly } from '@/utils/time';
 import skytrainStationsData from '@/data/skytrainStations.json';
@@ -1144,6 +1227,13 @@ function ExploreContent() {
   const [nhlStatusFilter, setNhlStatusFilter] = useState<'all' | 'future' | 'final' | 'live'>('all');
   const [showPastGamesAccordion, setShowPastGamesAccordion] = useState<boolean>(false);
   const [nhlLastUpdated, setNhlLastUpdated] = useState<string>('');
+
+  // --- 彩票 / PlayNow Lottery States ---
+  const [lotterySubTab, setLotterySubTab] = useState<'SIX49' | 'BC49' | 'LMAX' | 'DGRD'>('SIX49');
+  const [lotteryData, setLotteryData] = useState<Record<string, LotteryItemData> | null>(null);
+  const [loadingLottery, setLoadingLottery] = useState<boolean>(false);
+  const [lotteryLastUpdated, setLotteryLastUpdated] = useState<string>('');
+  const [showMaxmillions, setShowMaxmillions] = useState<boolean>(false);
 
   // --- Weather tab states ---
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -2728,6 +2818,41 @@ function ExploreContent() {
     fetchCanucksSchedule(canucksSeason, false);
   }, [isExploreOpen, activeTab, canucksSeason, fetchCanucksSchedule]);
 
+  // 6.2 Fetch PlayNow Lottery Data (每 12 小時更新一次)
+  const fetchLotteryData = React.useCallback(async (force = false) => {
+    setLoadingLottery(true);
+    try {
+      const apiUrl = getApiUrl();
+      const endpoints = [
+        `/api/lottery/latest${force ? '?refresh=true' : ''}`,
+        `${apiUrl}/api/lottery/latest${force ? '?refresh=true' : ''}`,
+        `/vancouver_lottery_cache.json`
+      ];
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.draws && Object.keys(data.draws).length > 0) {
+              setLotteryData(data.draws);
+              if (data.updated_at) setLotteryLastUpdated(data.updated_at);
+              break;
+            }
+          }
+        } catch {}
+      }
+    } catch (err) {
+      console.error('Error fetching lottery data:', err);
+    } finally {
+      setLoadingLottery(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'lottery') return;
+    fetchLotteryData(false);
+  }, [isExploreOpen, activeTab, fetchLotteryData]);
+
   // Separate games into Upcoming/Live games vs Past Completed games, with filter & search
   const { upcomingNhlGames, pastNhlGames, totalFilteredNhlGames } = useMemo(() => {
     let list = nhlGames || [];
@@ -3625,13 +3750,14 @@ function ExploreContent() {
     weather: { label: '天氣資訊', icon: CloudSun, color: 'text-sky-400' },
     news: { label: '新聞快訊', icon: Newspaper, color: 'text-amber-400' },
     events: { label: '活動情報', icon: CalendarDays, color: 'text-purple-400' },
-    sports: { label: '體育賽事', icon: Trophy, color: 'text-blue-400' },
+    sports: { label: '體育賽事', icon: SportShoeIcon, color: 'text-blue-400' },
     beach: { label: '海灘水質', icon: Parasol, color: 'text-teal-300' },
     ski: { label: '滑雪場現況', icon: CableCar, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
     jobs: { label: '工作職位', icon: Briefcase, color: 'text-indigo-400' },
     '311': { label: '3-1-1 市政服務', icon: PhoneCall, color: 'text-emerald-400' },
     shopping: { label: '購物優惠', icon: ShoppingBag, color: 'text-rose-400' },
+    lottery: { label: '樂透彩票', icon: Trophy, color: 'text-amber-400' },
     banks: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     atm: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     fuel: { label: '油站', icon: Fuel, color: 'text-amber-500' },
@@ -3658,6 +3784,7 @@ function ExploreContent() {
     jobs: '工作',
     '311': '3-1-1',
     shopping: '購物',
+    lottery: '彩票',
     banks: '銀行',
     atm: '銀行',
     fuel: '油站',
@@ -6385,8 +6512,8 @@ function ExploreContent() {
         <div className="flex flex-col flex-1 min-h-0">
           {/* 子分頁列與右上角資訊 */}
           <div className="flex items-start justify-between pb-2 mb-2 border-b border-[#262b38] shrink-0">
-            {/* 子分頁切換按鈕 */}
-            <div className="flex items-center gap-1.5">
+            {/* 子分頁切換按鈕與下方效期 */}
+            <div className="flex flex-col items-start gap-1">
               <button
                 type="button"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600/30 text-rose-300 border border-rose-500/50 text-xs font-semibold shadow-xs"
@@ -6395,14 +6522,14 @@ function ExploreContent() {
                 <span>大統華 (T&T)</span>
               </button>
               {tntFlyers.length > 0 && tntFlyers[0].validity && (
-                <span className="text-[10px] text-gray-400 font-mono hidden sm:inline ml-2">
+                <span className="text-[10px] text-gray-400 font-mono pl-0.5">
                   效期：{tntFlyers[0].validity}
                 </span>
               )}
             </div>
 
-            {/* 右上角：每週五更新 1 次，下方放置大統華官網圖示按鈕 */}
-            <div className="flex flex-col items-end gap-1 shrink-0">
+            {/* 右上角：每週五更新 1 次放在大統華官方網頁連結圖示按鈕左方 */}
+            <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
               <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono">
                 {adminSourceIntervals['tnt_flyers'] || '每週五更新 1 次'}
               </span>
@@ -6469,6 +6596,357 @@ function ExploreContent() {
           </div>
         </div>
       )}
+
+      {/* ==================== 探索 - 彩票分頁 (PlayNow Lottery) ==================== */}
+      {activeTab === 'lottery' && (() => {
+        const currentDraw = lotteryData ? lotteryData[lotterySubTab] : null;
+        const currentRule = LOTTERY_RULES[lotterySubTab];
+        const gp = currentDraw?.gpNumbers?.[0];
+        const goldBallCode = gp?.drawNbrs ? `${gp.drawNbrs.slice(0, 8).join('')}-${gp.drawNbrs.slice(8).join('')}` : '';
+
+        return (
+          <div className="flex-1 flex flex-col min-h-0 space-y-3 overflow-hidden">
+            {/* 子分頁列與頂部操作按鈕 */}
+            <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+              {/* 4 個子分頁按鈕 (649, BC49, Lotto Max, Daily Grand) */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(['SIX49', 'BC49', 'LMAX', 'DGRD'] as const).map((tabKey) => {
+                  const rule = LOTTERY_RULES[tabKey];
+                  const isActive = lotterySubTab === tabKey;
+                  return (
+                    <button
+                      key={tabKey}
+                      type="button"
+                      onClick={() => setLotterySubTab(tabKey)}
+                      className={`px-3 py-1.5 text-xs rounded-lg font-semibold transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                          : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838]'
+                      }`}
+                    >
+                      {rule.name}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 右上角操作按鈕 */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* 1. PlayNow 購買彩票 (Lucide: ticket) */}
+                <a
+                  href="https://www.playnow.com/lottery/buy-tickets/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 text-amber-400 hover:text-amber-200 border border-amber-500/30 transition-colors flex items-center justify-center cursor-pointer"
+                  title="前往 PlayNow 購買彩票"
+                >
+                  <Ticket className="w-3.5 h-3.5" />
+                </a>
+
+                {/* 2. 各彩票官方開彩詳情與獎金分派 */}
+                <a
+                  href={currentRule.winningNumbersUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-1.5 rounded-lg bg-[#151922] hover:bg-[#202738] text-gray-400 hover:text-white border border-[#232838] transition-colors flex items-center justify-center cursor-pointer"
+                  title={`${currentRule.name} 官方開彩詳情與獎金分派`}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                {/* 3. 重新整理資料 */}
+                <button
+                  type="button"
+                  onClick={() => fetchLotteryData(true)}
+                  disabled={loadingLottery}
+                  className="p-1.5 rounded-lg bg-[#151922] hover:bg-[#202738] text-gray-400 hover:text-white border border-[#232838] transition-colors flex items-center justify-center cursor-pointer"
+                  title="即時同步官方開彩資料"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingLottery ? 'animate-spin text-amber-400' : ''}`} />
+                </button>
+              </div>
+            </div>
+
+            {/* 可滾動內容區域 */}
+            <div className="flex-1 overflow-y-auto space-y-3 pr-0.5 custom-scrollbar">
+              {loadingLottery && !lotteryData ? (
+                <div className="flex flex-col items-center justify-center py-16 text-gray-400 gap-2">
+                  <RefreshCw className="w-6 h-6 animate-spin text-amber-400" />
+                  <span className="text-xs">正在載入 PlayNow 最新開彩資料...</span>
+                </div>
+              ) : (
+                <>
+                  {/* ================= 上半部：最新開彩結果數字 ================= */}
+                  <div className="bg-[#121622] border border-[#242c3d] rounded-xl p-3.5 shadow-md flex flex-col gap-3">
+                    {/* 開彩期數與開彩日期 / 下次開彩日期 */}
+                    <div className="flex items-center justify-between border-b border-[#202738] pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-xs font-bold text-white">{currentRule.name} 最新開彩結果</span>
+                          {currentDraw?.drawNbr && (
+                            <span className="text-[10px] text-gray-400 font-mono">
+                              第 {currentDraw.drawNbr} 期
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 開彩日期 */}
+                      {currentDraw?.drawDate && (
+                        <div className="flex items-center gap-1.5 text-[11px] text-amber-300/90 font-mono">
+                          <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{currentDraw.drawDate}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 下次開彩日期提示 */}
+                    <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs">
+                      <span className="text-gray-300 font-medium">下次開彩日期</span>
+                      <span className="font-bold text-amber-300 font-mono">
+                        {currentDraw?.nextDrawDate || currentRule.drawDays}
+                      </span>
+                    </div>
+
+                    {/* 開彩正選號碼 & 特別號碼 */}
+                    <div className="flex flex-col gap-1.5 pt-0.5">
+                      <div className="flex items-center justify-between text-[11px] text-gray-400 font-medium px-0.5">
+                        <span>正選號碼</span>
+                        <span>特別號碼</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-2 overflow-x-auto py-1">
+                        {/* 正選號碼球 */}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {currentDraw?.drawNbrs && currentDraw.drawNbrs.length > 0 ? (
+                            currentDraw.drawNbrs.map((num, idx) => (
+                              <div
+                                key={idx}
+                                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm font-mono text-white bg-gradient-to-b from-amber-500 to-amber-700 border border-amber-300/50 shadow-md shadow-amber-950/50"
+                              >
+                                {num}
+                              </div>
+                            ))
+                          ) : (
+                            <span className="text-xs text-gray-500">暫無號碼資料</span>
+                          )}
+                        </div>
+
+                        {/* 特別號碼球 */}
+                        {currentDraw?.bonusNbr !== undefined && currentDraw?.bonusNbr !== null && (
+                          <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-gray-700/60">
+                            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm font-mono text-white bg-gradient-to-b from-rose-500 to-red-700 border border-rose-300/60 shadow-md shadow-rose-950/50 ring-2 ring-rose-500/30">
+                              {currentDraw.bonusNbr}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 額外抽獎 (Extra 4 碼) - 若有資料 */}
+                    {currentDraw?.extraNbrs && currentDraw.extraNbrs.length > 0 && (
+                      <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#0e121a] border border-[#1f2637] text-xs">
+                        <span className="text-gray-400 font-medium">額外抽獎 (Extra)</span>
+                        <div className="flex items-center gap-1.5 font-mono font-bold text-sky-300">
+                          {currentDraw.extraNbrs.map((ex, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-0.5 rounded bg-sky-950/60 border border-sky-800/60 text-sky-200"
+                            >
+                              {ex < 10 ? `0${ex}` : ex}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* === 649 專屬：白球/金球獎金及抽球數量統計 === */}
+                    {lotterySubTab === 'SIX49' && gp && (
+                      <>
+                        <div className="border-t border-[#202738] my-0.5"></div>
+
+                        {/* 金球專屬號碼 */}
+                        {goldBallCode && (
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border border-amber-500/35">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
+                              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                              <span>金球開彩專屬號碼</span>
+                            </div>
+                            <span className="font-mono font-black text-sm tracking-widest text-amber-200">
+                              {goldBallCode}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* 白球 & 金球次數及獎金 */}
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          {/* 白球 */}
+                          <div className="p-2.5 rounded-xl bg-[#0e121a] border border-[#1f2637] flex flex-col gap-1">
+                            <span className="text-gray-400 font-medium">白球開彩次數</span>
+                            <span className="text-base font-black text-white font-mono">
+                              {gp.whiteBallsDrawn ?? '--'} <span className="text-xs font-normal text-gray-400">次</span>
+                            </span>
+                            <div className="flex items-center justify-between pt-1 border-t border-gray-800 text-[11px]">
+                              <span className="text-gray-400">白球獎金</span>
+                              <span className="font-mono font-bold text-emerald-400">
+                                ${gp.whiteBallPrizeAmount ? gp.whiteBallPrizeAmount.toLocaleString() : '1,000,000'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* 金球 */}
+                          <div className="p-2.5 rounded-xl bg-[#0e121a] border border-[#1f2637] flex flex-col gap-1">
+                            <span className="text-amber-300 font-medium">金球開彩次數</span>
+                            <span className="text-base font-black text-amber-300 font-mono">
+                              {gp.goldBallsDrawn ?? '--'} <span className="text-xs font-normal text-gray-400">次</span>
+                            </span>
+                            <div className="flex items-center justify-between pt-1 border-t border-gray-800 text-[11px]">
+                              <span className="text-gray-400">金球獎金</span>
+                              <span className="font-mono font-bold text-amber-400">
+                                ${gp.goldBallPrizeAmount ? gp.goldBallPrizeAmount.toLocaleString() : '36,000,000'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="border-t border-[#202738] my-0.5"></div>
+
+                        {/* 球池統計 (開始球、已抽球、剩餘球) */}
+                        <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                          <div className="p-2 rounded-lg bg-[#0e121a] border border-[#1f2637]">
+                            <div className="text-[10px] text-gray-400">開始球數量</div>
+                            <div className="text-sm font-bold text-white font-mono mt-0.5">
+                              {gp.startingBallTotal ?? 30}
+                            </div>
+                          </div>
+                          <div className="p-2 rounded-lg bg-[#0e121a] border border-[#1f2637]">
+                            <div className="text-[10px] text-gray-400">已抽球數量</div>
+                            <div className="text-sm font-bold text-amber-300 font-mono mt-0.5">
+                              {gp.nthBallDrawn ?? 0}
+                            </div>
+                          </div>
+                          <div className="p-2 rounded-lg bg-[#0e121a] border border-[#1f2637]">
+                            <div className="text-[10px] text-gray-400">剩餘球數量</div>
+                            <div className="text-sm font-bold text-emerald-400 font-mono mt-0.5">
+                              {(gp.startingBallTotal ?? 30) - (gp.nthBallDrawn ?? 0)}
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {/* === Lotto Max 專屬：MAXMILLIONS 附加抽獎 === */}
+                    {lotterySubTab === 'LMAX' && currentDraw?.bonusDraws && currentDraw.bonusDraws.length > 0 && (
+                      <div className="border-t border-[#202738] pt-2.5">
+                        <button
+                          type="button"
+                          onClick={() => setShowMaxmillions(!showMaxmillions)}
+                          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-[#0e121a] hover:bg-[#151b27] border border-[#1f2637] text-xs text-gray-300 hover:text-white transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center gap-1.5 font-bold text-amber-300">
+                            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                            <span>MAXMILLIONS 附加抽獎 (共 {currentDraw.bonusDraws.length} 組)</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-gray-400">
+                            <span className="text-[10.5px]">{showMaxmillions ? '收起' : '展開檢視'}</span>
+                            {showMaxmillions ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                          </div>
+                        </button>
+
+                        {showMaxmillions && (
+                          <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                            {currentDraw.bonusDraws.map((set, sIdx) => (
+                              <div
+                                key={sIdx}
+                                className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#090c12] border border-[#1a2130] text-xs"
+                              >
+                                <span className="text-[10px] text-gray-500 font-mono">#{sIdx + 1}</span>
+                                <div className="flex items-center gap-1.5 font-mono font-bold">
+                                  {set.map((n, nIdx) => (
+                                    <span
+                                      key={nIdx}
+                                      className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                    >
+                                      {n}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ================= 下半部：各彩票基本資料與玩法規則 ================= */}
+                  <div className="bg-[#121622] border border-[#242c3d] rounded-xl p-3.5 shadow-md flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between pb-1.5 border-b border-[#202738]">
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                        {currentRule.name} 基本資料與玩法規則
+                      </span>
+                      <span className="text-[10px] text-gray-400">BCLC 官方規則</span>
+                    </div>
+
+                    <div className="divide-y divide-[#1e2535] text-xs">
+                      {/* 1. 每注金額 */}
+                      <div className="py-2 flex items-start justify-between gap-4">
+                        <span className="text-gray-400 shrink-0 font-medium w-20">每注金額</span>
+                        <span className="text-white font-mono font-bold text-right">{currentRule.pricePerPlay}</span>
+                      </div>
+
+                      {/* 2. 號碼選擇 */}
+                      <div className="py-2 flex items-start justify-between gap-4">
+                        <span className="text-gray-400 shrink-0 font-medium w-20">號碼選擇</span>
+                        <span className="text-gray-200 text-right leading-relaxed">{currentRule.selectionRule}</span>
+                      </div>
+
+                      {/* 3. 開彩日子 */}
+                      <div className="py-2 flex items-start justify-between gap-4">
+                        <span className="text-gray-400 shrink-0 font-medium w-20">開彩日子</span>
+                        <span className="text-amber-300 font-medium text-right">{currentRule.drawDays}</span>
+                      </div>
+
+                      {/* 4. 額外抽獎 */}
+                      {currentRule.extraRule && (
+                        <div className="py-2 flex items-start justify-between gap-4">
+                          <span className="text-gray-400 shrink-0 font-medium w-20">額外抽獎</span>
+                          <span className="text-gray-200 text-right leading-relaxed">{currentRule.extraRule}</span>
+                        </div>
+                      )}
+
+                      {/* 5. 附加玩法 (如果是沒有資料可以不用顯示) */}
+                      {currentRule.addonRule && (
+                        <div className="py-2 flex items-start justify-between gap-4">
+                          <span className="text-gray-400 shrink-0 font-medium w-20">附加玩法</span>
+                          <span className="text-gray-200 text-right leading-relaxed">{currentRule.addonRule}</span>
+                        </div>
+                      )}
+
+                      {/* 6. 開彩機制 */}
+                      <div className="py-2 flex flex-col gap-1">
+                        <span className="text-gray-400 font-medium">開彩機制</span>
+                        <div className="text-gray-200 leading-relaxed whitespace-pre-line text-[11px] bg-[#0d1017] p-2.5 rounded-lg border border-[#1b2230]">
+                          {currentRule.mechanism}
+                        </div>
+                      </div>
+
+                      {/* 7. 頭獎獎金 */}
+                      <div className="py-2 flex flex-col gap-1">
+                        <span className="text-gray-400 font-medium">頭獎獎金</span>
+                        <div className="text-gray-200 leading-relaxed whitespace-pre-line text-[11px] bg-[#0d1017] p-2.5 rounded-lg border border-[#1b2230]">
+                          {currentRule.topPrize}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ==================== 1.7 車禍意外分頁 (Crashes) ==================== */}
       {activeTab === 'crashes' && (
@@ -7035,10 +7513,9 @@ function ExploreContent() {
       {/* ==================== 體育分頁 (Vancouver Sports - NHL Canucks) ==================== */}
       {activeTab === 'sports' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
-          {/* Header Controls: Subtabs (冰球) & Right Tools (賽季選單、官方賽程連結、重新整理) */}
+          {/* Header Controls: 子分頁列 (預留空間放其他子分頁) */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
-            {/* 子分頁導航列 */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-1 min-w-0">
               <button
                 type="button"
                 onClick={() => setSportsSubTab('hockey')}
@@ -7047,15 +7524,38 @@ function ExploreContent() {
                     ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-sm'
                     : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838]'
                 }`}
-                title="NHL 溫哥華加人隊冰球賽程"
+                title="冰球賽程"
               >
                 <HockeyStickIcon className="w-3.5 h-3.5 text-sky-400" />
-                <span>冰球 (Canucks)</span>
+                <span>冰球</span>
               </button>
             </div>
+          </div>
 
-            {/* 右上角工具列：賽季下拉選單 + 官方日程連結 + 手動更新 */}
+          {/* 搜尋欄與控制項 (搜尋列修短，右方依序放置：賽季下拉選單、前往賽程圖示按鈕、重新整理按鈕) */}
+          <div className="flex flex-col gap-1.5 shrink-0">
             <div className="flex items-center gap-1.5">
+              {/* 修短的搜尋框 */}
+              <div className="relative flex-1 min-w-[120px] max-w-[200px]">
+                <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={nhlSearchQuery}
+                  onChange={(e) => setNhlSearchQuery(e.target.value)}
+                  placeholder="搜尋球隊、城市、場地..."
+                  className="w-full pl-7 pr-10 py-1 bg-[#0f1219] border border-[#242b3b] rounded-lg text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500/50"
+                />
+                {nhlSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setNhlSearchQuery('')}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-[10px] px-1"
+                  >
+                    清除
+                  </button>
+                )}
+              </div>
+
               {/* 賽季下拉選單 (選項由近至遠，2026 - 2027 在最上方) */}
               <div className="relative">
                 <select
@@ -7065,8 +7565,8 @@ function ExploreContent() {
                     setCanucksSeason(nextSeason);
                     fetchCanucksSchedule(nextSeason, false);
                   }}
-                  className="appearance-none bg-[#151922] text-gray-200 border border-[#283042] hover:border-sky-500/50 rounded-lg pl-2.5 pr-7 py-1 text-xs font-mono font-medium focus:outline-none focus:ring-1 focus:ring-sky-500/50 cursor-pointer"
-                  title="選擇 NHL 賽季"
+                  className="appearance-none bg-[#151922] text-gray-200 border border-[#283042] hover:border-sky-500/50 rounded-lg pl-2 pr-6 py-1 text-xs font-mono font-medium focus:outline-none focus:ring-1 focus:ring-sky-500/50 cursor-pointer"
+                  title="選擇賽季"
                 >
                   {availableSeasons.map((s) => (
                     <option key={s.code} value={s.code} className="bg-[#121620] text-gray-200">
@@ -7074,16 +7574,16 @@ function ExploreContent() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="w-3 h-3 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
 
-              {/* 官方日程連結圖示按鈕 */}
+              {/* 官方日程連結圖示按鈕 (刪除英文 Canucks, nhl...) */}
               <a
                 href="https://www.nhl.com/canucks/schedule"
                 target="_blank"
                 rel="noreferrer"
                 className="p-1.5 rounded-lg bg-[#151922] hover:bg-sky-500/20 text-gray-400 hover:text-sky-300 border border-[#232838] hover:border-sky-500/40 transition-colors flex items-center justify-center cursor-pointer"
-                title="開啟 Canucks 官方賽程表 (nhl.com/canucks/schedule)"
+                title="開啟官方賽程表"
               >
                 <Calendar className="w-3.5 h-3.5" />
               </a>
@@ -7099,39 +7599,14 @@ function ExploreContent() {
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingNhl ? 'animate-spin text-sky-400' : ''}`} />
               </button>
             </div>
-          </div>
 
-          {/* 搜尋欄與篩選器列 */}
-          <div className="flex flex-col gap-1.5 shrink-0">
-            {/* 搜尋框 */}
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={nhlSearchQuery}
-                onChange={(e) => setNhlSearchQuery(e.target.value)}
-                placeholder="搜尋對手球隊名、城市、場地或日期 (如 2026-10)..."
-                className="w-full pl-8 pr-16 py-1.5 bg-[#0f1219] border border-[#242b3b] rounded-lg text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500/50"
-              />
-              {nhlSearchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setNhlSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-[11px] px-1"
-                >
-                  清除
-                </button>
-              )}
-            </div>
-
-            {/* 主客場與比賽狀態篩選 */}
+            {/* 主客場與比賽狀態篩選 (刪除「場地:」與「主場/客場」左方圖示，刪除「狀態:」冒號) */}
             <div className="flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar pb-0.5">
               <div className="flex items-center gap-1 shrink-0">
-                <span className="text-[10px] text-gray-400 mr-0.5">場地:</span>
                 {[
                   { id: 'all', label: '全部' },
-                  { id: 'home', label: '🏠 主場' },
-                  { id: 'away', label: '✈️ 客場' },
+                  { id: 'home', label: '主場' },
+                  { id: 'away', label: '客場' },
                 ].map((f) => (
                   <button
                     key={f.id}
@@ -7149,7 +7624,7 @@ function ExploreContent() {
               </div>
 
               <div className="flex items-center gap-1 shrink-0">
-                <span className="text-[10px] text-gray-400 mr-0.5">狀態:</span>
+                <span className="text-[10px] text-gray-400 mr-0.5">狀態</span>
                 {[
                   { id: 'all', label: '全部' },
                   { id: 'future', label: '即將進行' },
@@ -7172,13 +7647,13 @@ function ExploreContent() {
             </div>
           </div>
 
-          {/* 表頭欄位標籤 (依圖 1 規格設計) */}
-          <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0">
-            <div className="col-span-3 text-left">比賽日期 / 比賽場地</div>
-            <div className="col-span-3 text-right">主隊 (名稱·城市·比分)</div>
-            <div className="col-span-1 text-center font-bold text-gray-500">-</div>
-            <div className="col-span-3 text-left">客隊 (名稱·城市·比分)</div>
-            <div className="col-span-2 text-right">比賽狀態</div>
+          {/* 表頭欄位標籤 (比賽日期/場地, 主隊, -, 客隊, 狀態) */}
+          <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0 pr-7">
+            <div className="col-span-3 text-left">比賽日期/場地</div>
+            <div className="col-span-3 text-left">主隊</div>
+            <div className="col-span-2 text-center font-bold text-gray-500">-</div>
+            <div className="col-span-3 text-right">客隊</div>
+            <div className="col-span-1 text-center">狀態</div>
           </div>
 
           {/* 賽事列表 (清單方式顯示) */}
@@ -7212,10 +7687,9 @@ function ExploreContent() {
                       const isAwayVan = game.awayTeam?.abbrev === 'VAN';
                       const hasHomeScore = game.homeTeam?.score !== undefined && game.homeTeam?.score !== null;
                       const hasAwayScore = game.awayTeam?.score !== undefined && game.awayTeam?.score !== null;
-                      const hasScores = hasHomeScore || hasAwayScore;
                       const isLive = game.gameState === 'LIVE' || game.gameState === 'CRIT';
 
-                      // 狀態文字與顏色
+                      // 狀態文字與顏色 (無冒號)
                       let statusText = '未開始';
                       let statusClass = 'bg-sky-500/10 text-sky-300 border-sky-500/30';
                       if (isLive) {
@@ -7245,20 +7719,33 @@ function ExploreContent() {
                       return (
                         <div
                           key={game.id}
-                          className={`px-3 py-2.5 rounded-xl border transition-all ${
+                          className={`relative px-3 py-2.5 rounded-xl border transition-all ${
                             isHomeVan
                               ? 'bg-[#131926]/90 hover:bg-[#182030] border-[#222d42]'
                               : 'bg-[#11141c]/80 hover:bg-[#161a24] border-[#1e2433]'
                           } text-xs flex flex-col gap-1`}
                         >
-                          <div className="grid grid-cols-12 gap-1 items-center">
-                            {/* 1. 比賽日期 gameDate & 比賽場地 venue.default */}
-                            <div className="col-span-3 min-w-0 pr-1 text-left">
+                          {/* 右上角購票圖示按鈕 */}
+                          {game.ticketsLink && (
+                            <a
+                              href={game.ticketsLink}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="absolute top-2 right-2 p-1 rounded-md text-sky-400 hover:text-white hover:bg-sky-500/20 transition-colors cursor-pointer"
+                              title="前往購票"
+                            >
+                              <Ticket className="w-3.5 h-3.5" />
+                            </a>
+                          )}
+
+                          <div className="grid grid-cols-12 gap-1 items-center pr-6">
+                            {/* 1. 比賽日期/場地 (第 1 欄) */}
+                            <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
                               <div className="font-mono font-bold text-white text-[11px]">
                                 {game.gameDate}
                               </div>
                               {timeDisplay && (
-                                <div className="text-[10px] text-sky-400 font-mono">
+                                <div className="text-[10px] text-sky-400 font-mono mt-0.5">
                                   {timeDisplay}
                                 </div>
                               )}
@@ -7269,85 +7756,66 @@ function ExploreContent() {
                               )}
                             </div>
 
-                            {/* 2. 主隊 homeTeam */}
-                            <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
-                              <div className="min-w-0">
-                                <div className="flex items-center justify-end gap-1">
-                                  <span className={`text-[11px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
-                                    {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
-                                  </span>
-                                  {game.homeTeam?.placeName?.default && (
-                                    <span className="text-[9.5px] text-gray-400 hidden sm:inline truncate">
-                                      ({game.homeTeam.placeName.default})
-                                    </span>
-                                  )}
-                                </div>
-                                {hasHomeScore && (
-                                  <div className="text-sm font-black font-mono text-white leading-none mt-0.5">
-                                    {game.homeTeam.score}
-                                  </div>
-                                )}
-                              </div>
+                            {/* 2. 主隊：Logo(橫跨2列) + 隊名 / (城市) */}
+                            <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0">
                               {game.homeTeam?.logo && (
                                 <img
                                   src={game.homeTeam.logo}
                                   alt={game.homeTeam.commonName?.default || 'Home'}
-                                  className="w-5 h-5 object-contain shrink-0"
+                                  className="w-7 h-7 object-contain shrink-0"
                                   loading="lazy"
                                 />
                               )}
-                            </div>
-
-                            {/* 3. 分隔符 - */}
-                            <div className="col-span-1 text-center font-bold text-gray-500 text-xs">
-                              -
-                            </div>
-
-                            {/* 4. 客隊 awayTeam */}
-                            <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0 text-left">
-                              {game.awayTeam?.logo && (
-                                <img
-                                  src={game.awayTeam.logo}
-                                  alt={game.awayTeam.commonName?.default || 'Away'}
-                                  className="w-5 h-5 object-contain shrink-0"
-                                  loading="lazy"
-                                />
-                              )}
-                              <div className="min-w-0">
-                                <div className="flex items-center justify-start gap-1">
-                                  <span className={`text-[11px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
-                                    {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
+                              <div className="flex flex-col min-w-0 leading-tight">
+                                <span className={`text-[11.5px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                  {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
+                                </span>
+                                {game.homeTeam?.placeName?.default && (
+                                  <span className="text-[9.5px] text-gray-400 truncate">
+                                    ({game.homeTeam.placeName.default})
                                   </span>
-                                  {game.awayTeam?.placeName?.default && (
-                                    <span className="text-[9.5px] text-gray-400 hidden sm:inline truncate">
-                                      ({game.awayTeam.placeName.default})
-                                    </span>
-                                  )}
-                                </div>
-                                {hasAwayScore && (
-                                  <div className="text-sm font-black font-mono text-white leading-none mt-0.5">
-                                    {game.awayTeam.score}
-                                  </div>
                                 )}
                               </div>
                             </div>
 
-                            {/* 5. 比賽狀態 gameState */}
-                            <div className="col-span-2 flex flex-col items-end justify-center gap-0.5 text-right">
-                              <span className={`text-[9.5px] px-1.5 py-0.5 rounded border font-medium whitespace-nowrap ${statusClass}`}>
+                            {/* 3. 比分與分隔符：比分 - 比分 */}
+                            <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                              <span className="font-black text-sm text-white w-5 text-right">
+                                {hasHomeScore ? game.homeTeam.score : '--'}
+                              </span>
+                              <span className="font-bold text-gray-500 text-xs">-</span>
+                              <span className="font-black text-sm text-white w-5 text-left">
+                                {hasAwayScore ? game.awayTeam.score : '--'}
+                              </span>
+                            </div>
+
+                            {/* 4. 客隊：隊名 / (城市) + Logo(橫跨2列) */}
+                            <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                              <div className="flex flex-col items-end min-w-0 leading-tight">
+                                <span className={`text-[11.5px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                  {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
+                                </span>
+                                {game.awayTeam?.placeName?.default && (
+                                  <span className="text-[9.5px] text-gray-400 truncate">
+                                    ({game.awayTeam.placeName.default})
+                                  </span>
+                                )}
+                              </div>
+                              {game.awayTeam?.logo && (
+                                <img
+                                  src={game.awayTeam.logo}
+                                  alt={game.awayTeam.commonName?.default || 'Away'}
+                                  className="w-7 h-7 object-contain shrink-0"
+                                  loading="lazy"
+                                />
+                              )}
+                            </div>
+
+                            {/* 5. 狀態：放在客隊 logo 右方 */}
+                            <div className="col-span-1 flex items-center justify-center">
+                              <span className={`text-[9px] px-1 py-0.5 rounded border font-medium whitespace-nowrap ${statusClass}`}>
                                 {statusText}
                               </span>
-                              {game.ticketsLink && (
-                                <a
-                                  href={game.ticketsLink}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="text-[9px] text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-0.5 mt-0.5"
-                                  title="前往購票"
-                                >
-                                  購票 <ExternalLink className="w-2.5 h-2.5" />
-                                </a>
-                              )}
                             </div>
                           </div>
                         </div>
@@ -7356,7 +7824,7 @@ function ExploreContent() {
                   </div>
                 )}
 
-                {/* 2. 過去已結束的比賽：清單底部的摺疊清單 (依時間由近至遠排序) */}
+                {/* 2. 過去已結束的比賽：清單底部的摺疊清單 (依時間由近至遠排序，只保留箭頭圖示) */}
                 {pastNhlGames.length > 0 && (
                   <div className="pt-1">
                     <button
@@ -7372,9 +7840,8 @@ function ExploreContent() {
                           {pastNhlGames.length} 場
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 text-[11px] text-sky-400 font-medium">
-                        <span>{showPastGamesAccordion ? '收合清單' : '展開檢視'}</span>
-                        {showPastGamesAccordion ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      <div className="flex items-center text-sky-400">
+                        {showPastGamesAccordion ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                       </div>
                     </button>
 
@@ -7389,15 +7856,28 @@ function ExploreContent() {
                           return (
                             <div
                               key={game.id}
-                              className={`px-3 py-2 rounded-xl border transition-all ${
+                              className={`relative px-3 py-2 rounded-xl border transition-all ${
                                 isHomeVan
                                   ? 'bg-[#111622]/80 hover:bg-[#161c2a] border-[#1e2638]'
                                   : 'bg-[#0f121a]/70 hover:bg-[#141822] border-[#1a202e]'
                               } text-xs flex flex-col gap-1`}
                             >
-                              <div className="grid grid-cols-12 gap-1 items-center">
-                                {/* 1. 比賽日期 gameDate & 比賽場地 venue.default */}
-                                <div className="col-span-3 min-w-0 pr-1 text-left">
+                              {/* 右上角官方戰報連結 */}
+                              {game.gameCenterLink && (
+                                <a
+                                  href={`https://www.nhl.com${game.gameCenterLink}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="absolute top-2 right-2 p-1 rounded-md text-gray-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors cursor-pointer"
+                                  title="查看官方比賽戰報"
+                                >
+                                  <ExternalLink className="w-3.5 h-3.5" />
+                                </a>
+                              )}
+
+                              <div className="grid grid-cols-12 gap-1 items-center pr-6">
+                                {/* 1. 比賽日期/場地 */}
+                                <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
                                   <div className="font-mono font-medium text-gray-300 text-[11px]">
                                     {game.gameDate}
                                   </div>
@@ -7408,85 +7888,66 @@ function ExploreContent() {
                                   )}
                                 </div>
 
-                                {/* 2. 主隊 homeTeam */}
-                                <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
-                                  <div className="min-w-0">
-                                    <div className="flex items-center justify-end gap-1">
-                                      <span className={`text-[11px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
-                                        {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
-                                      </span>
-                                      {game.homeTeam?.placeName?.default && (
-                                        <span className="text-[9.5px] text-gray-500 hidden sm:inline truncate">
-                                          ({game.homeTeam.placeName.default})
-                                        </span>
-                                      )}
-                                    </div>
-                                    {hasHomeScore && (
-                                      <div className="text-sm font-black font-mono text-white leading-none mt-0.5">
-                                        {game.homeTeam.score}
-                                      </div>
-                                    )}
-                                  </div>
+                                {/* 2. 主隊：Logo + 隊名 / (城市) */}
+                                <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0">
                                   {game.homeTeam?.logo && (
                                     <img
                                       src={game.homeTeam.logo}
                                       alt={game.homeTeam.commonName?.default || 'Home'}
-                                      className="w-5 h-5 object-contain shrink-0"
+                                      className="w-7 h-7 object-contain shrink-0"
                                       loading="lazy"
                                     />
                                   )}
-                                </div>
-
-                                {/* 3. 分隔符 - */}
-                                <div className="col-span-1 text-center font-bold text-gray-600 text-xs">
-                                  -
-                                </div>
-
-                                {/* 4. 客隊 awayTeam */}
-                                <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0 text-left">
-                                  {game.awayTeam?.logo && (
-                                    <img
-                                      src={game.awayTeam.logo}
-                                      alt={game.awayTeam.commonName?.default || 'Away'}
-                                      className="w-5 h-5 object-contain shrink-0"
-                                      loading="lazy"
-                                    />
-                                  )}
-                                  <div className="min-w-0">
-                                    <div className="flex items-center justify-start gap-1">
-                                      <span className={`text-[11px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
-                                        {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
+                                  <div className="flex flex-col min-w-0 leading-tight">
+                                    <span className={`text-[11px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                      {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
+                                    </span>
+                                    {game.homeTeam?.placeName?.default && (
+                                      <span className="text-[9.5px] text-gray-500 truncate">
+                                        ({game.homeTeam.placeName.default})
                                       </span>
-                                      {game.awayTeam?.placeName?.default && (
-                                        <span className="text-[9.5px] text-gray-500 hidden sm:inline truncate">
-                                          ({game.awayTeam.placeName.default})
-                                        </span>
-                                      )}
-                                    </div>
-                                    {hasAwayScore && (
-                                      <div className="text-sm font-black font-mono text-white leading-none mt-0.5">
-                                        {game.awayTeam.score}
-                                      </div>
                                     )}
                                   </div>
                                 </div>
 
-                                {/* 5. 比賽狀態 gameState */}
-                                <div className="col-span-2 flex flex-col items-end justify-center gap-0.5 text-right">
-                                  <span className="text-[9.5px] px-1.5 py-0.5 rounded border font-medium bg-gray-800/60 text-gray-400 border-gray-700/50 whitespace-nowrap">
+                                {/* 3. 比分與分隔符：比分 - 比分 */}
+                                <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                  <span className="font-black text-sm text-white w-5 text-right">
+                                    {hasHomeScore ? game.homeTeam.score : '--'}
+                                  </span>
+                                  <span className="font-bold text-gray-600 text-xs">-</span>
+                                  <span className="font-black text-sm text-white w-5 text-left">
+                                    {hasAwayScore ? game.awayTeam.score : '--'}
+                                  </span>
+                                </div>
+
+                                {/* 4. 客隊：隊名 / (城市) + Logo */}
+                                <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                                  <div className="flex flex-col items-end min-w-0 leading-tight">
+                                    <span className={`text-[11px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                      {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
+                                    </span>
+                                    {game.awayTeam?.placeName?.default && (
+                                      <span className="text-[9.5px] text-gray-500 truncate">
+                                        ({game.awayTeam.placeName.default})
+                                      </span>
+                                    )}
+                                  </div>
+                                  {game.awayTeam?.logo && (
+                                    <img
+                                      src={game.awayTeam.logo}
+                                      alt={game.awayTeam.commonName?.default || 'Away'}
+                                      className="w-7 h-7 object-contain shrink-0"
+                                      loading="lazy"
+                                    />
+                                  )}
+                                </div>
+
+                                {/* 5. 狀態：放在客隊 logo 右方 */}
+                                <div className="col-span-1 flex items-center justify-center">
+                                  <span className="text-[9px] px-1 py-0.5 rounded border font-medium bg-gray-800/60 text-gray-400 border-gray-700/50 whitespace-nowrap">
                                     已完賽
                                   </span>
-                                  {game.gameCenterLink && (
-                                    <a
-                                      href={`https://www.nhl.com${game.gameCenterLink}`}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      className="text-[9px] text-gray-400 hover:text-sky-300 hover:underline flex items-center gap-0.5 mt-0.5"
-                                      title="查看官方比賽戰報"
-                                    >
-                                      戰報 <ExternalLink className="w-2.5 h-2.5" />
-                                    </a>
-                                  )}
                                 </div>
                               </div>
                             </div>
@@ -8996,7 +9457,7 @@ function ExploreContent() {
           {activeTab === 'sports' && (
             <>
               <span>共有 {nhlGames.length} 場 Canucks 賽事 (符合條件 {totalFilteredNhlGames} 場)</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：NHL 官方 API (Vancouver Canucks)</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：National Hockey League</span>
             </>
           )}
           {activeTab === 'beach' && (
@@ -9023,6 +9484,9 @@ function ExploreContent() {
           )}
           {activeTab === 'shopping' && (
             <span className="text-[9.5px] text-gray-500">資料來源：T&T Supermarket</span>
+          )}
+          {activeTab === 'lottery' && (
+            <span className="text-[9.5px] text-gray-500">資料來源：PlayNow (BC Lottery Corporation - BCLC) • 每 12 小時自動更新</span>
           )}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>
