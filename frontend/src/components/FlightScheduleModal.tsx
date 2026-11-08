@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useUIStore } from '@/store/useUIStore';
+import { getApiUrl } from '@/utils/api';
 import { formatTimePreference } from '@/utils/time';
 import { 
   X, Plane, PlaneTakeoff, PlaneLanding, Search, RefreshCw, 
@@ -46,18 +47,18 @@ const AIRPORT_COORDS: Record<string, [number, number]> = {
   YQQ: [-124.88, 49.71]
 };
 
-// IANA Timezones for Origin/Destination Airports
+// IANA Timezones for Origin/Destination Airports (BC uses permanent PCT = UTC-7 year-round)
 const AIRPORT_TIMEZONES: Record<string, string> = {
-  YVR: 'America/Vancouver',
-  YYJ: 'America/Vancouver',
-  YLW: 'America/Vancouver',
-  YKA: 'America/Vancouver',
-  YXS: 'America/Vancouver',
-  YQQ: 'America/Vancouver',
-  YYF: 'America/Vancouver',
-  YWL: 'America/Vancouver',
-  YPR: 'America/Vancouver',
-  YXT: 'America/Vancouver',
+  YVR: 'Etc/GMT+7',
+  YYJ: 'Etc/GMT+7',
+  YLW: 'Etc/GMT+7',
+  YKA: 'Etc/GMT+7',
+  YXS: 'Etc/GMT+7',
+  YQQ: 'Etc/GMT+7',
+  YYF: 'Etc/GMT+7',
+  YWL: 'Etc/GMT+7',
+  YPR: 'Etc/GMT+7',
+  YXT: 'Etc/GMT+7',
   YYC: 'America/Edmonton',
   YEG: 'America/Edmonton',
   YQR: 'America/Regina',
@@ -120,6 +121,14 @@ const AIRPORT_TIMEZONES: Record<string, string> = {
   SJD: 'America/Hermosillo'
 };
 
+function getVancouverTodayStr(): string {
+  const pctNow = new Date(Date.now() - 7 * 3600 * 1000);
+  const yyyy = pctNow.getUTCFullYear();
+  const mm = String(pctNow.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(pctNow.getUTCDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 function formatInAirportTimezone(
   timeStr: string | undefined, 
   timeZone: string, 
@@ -141,8 +150,9 @@ function formatInAirportTimezone(
       const parts = timeStr.split('T')[1]?.substring(0, 5) || timeStr;
       return formatTimePreference(parts, timeFormat);
     }
+    const effectiveTz = (!timeZone || timeZone === 'America/Vancouver') ? 'Etc/GMT+7' : timeZone;
     return d.toLocaleTimeString('en-US', {
-      timeZone: timeZone || 'America/Vancouver',
+      timeZone: effectiveTz,
       hour: '2-digit',
       minute: '2-digit',
       hour12: timeFormat === '12h'
@@ -156,7 +166,8 @@ function formatInAirportTimezone(
 function parseFlightTimeToMs(timeStr?: string): number | null {
   if (!timeStr) return null;
   try {
-    let s = timeStr.trim();
+    const s = timeStr.trim();
+    if (!s) return null;
     if (s.endsWith('Z') || s.match(/[+-]\d\d:\d\d$/)) {
       const t = new Date(s).getTime();
       return isNaN(t) ? null : t;
@@ -169,7 +180,7 @@ function parseFlightTimeToMs(timeStr?: string): number | null {
     } else if (s.includes(' ')) {
       [datePart, timePart] = s.split(' ');
     } else if (s.includes(':')) {
-      datePart = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Vancouver' }).format(new Date());
+      datePart = getVancouverTodayStr();
       timePart = s;
     }
 
@@ -179,20 +190,10 @@ function parseFlightTimeToMs(timeStr?: string): number | null {
     const h = tParts[0] || 0;
     const min = tParts[1] || 0;
     const sec = tParts[2] || 0;
+    if (!y || !m || !d) return null;
 
-    // Convert local Vancouver time to epoch milliseconds with exact timezone offset
-    const utcGuess = Date.UTC(y, m - 1, d, h, min, sec);
-    const dtf = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/Vancouver',
-      year: 'numeric', month: 'numeric', day: 'numeric',
-      hour: 'numeric', minute: 'numeric', second: 'numeric',
-      hour12: false
-    });
-    const parts = dtf.formatToParts(new Date(utcGuess));
-    const p = (type: string) => Number(parts.find(x => x.type === type)?.value || 0);
-    const guessInVancUtc = Date.UTC(p('year'), p('month') - 1, p('day'), p('hour') % 24, p('minute'), p('second'));
-    const offset = guessInVancUtc - utcGuess;
-    const exactMs = utcGuess - offset;
+    // Vancouver operates on permanent Pacific Time (PCT = UTC-7 year-round)
+    const exactMs = Date.UTC(y, m - 1, d, h + 7, min, sec);
     return isNaN(exactMs) ? null : exactMs;
   } catch {}
   return null;
@@ -229,41 +230,50 @@ export default function FlightScheduleModal() {
   const [arrivals, setArrivals] = useState<MergedFlight[]>([]);
   const [departures, setDepartures] = useState<MergedFlight[]>([]);
   const [loading, setLoading] = useState(false);
+  const [nowTick, setNowTick] = useState<number>(() => Date.now());
   const [showCompletedAccordion, setShowCompletedAccordion] = useState(false);
   const [showCancelledAccordion, setShowCancelledAccordion] = useState(false);
 
+  const filterTodayFlights = (list: MergedFlight[] | undefined, todayStr: string): MergedFlight[] => {
+    if (!Array.isArray(list)) return [];
+    return list.filter((f) => {
+      const schedD = String(f.scheduled_time || '').slice(0, 10);
+      const estD = String(f.estimated_time || '').slice(0, 10);
+      return (schedD.length === 10 && schedD >= todayStr) || (estD.length === 10 && estD >= todayStr);
+    });
+  };
+
   const fetchFlights = async () => {
     setLoading(true);
-    let loadedArr = false;
-    let loadedDep = false;
-    try {
-      const res = await fetch(`/api/airports/flights?refresh=true&_t=${Date.now()}`, { cache: 'no-store' });
-      if (res.ok) {
-        const json = await res.json();
-        if (json.arrivals && json.arrivals.length > 0) {
-          setArrivals(json.arrivals);
-          loadedArr = true;
-        }
-        if (json.departures && json.departures.length > 0) {
-          setDepartures(json.departures);
-          loadedDep = true;
-        }
-        console.log(`✅ [YVR Flights Service] 航班排程同步成功: 抵達 ${json.arrivals?.length || 0} 班, 出發 ${json.departures?.length || 0} 班`);
-      }
-    } catch (err) {
-      console.warn('Failed to fetch flights from API, trying cache fallback:', err);
-    }
+    const todayStr = getVancouverTodayStr();
+    const ts = Date.now();
+    const endpoints = Array.from(
+      new Set([
+        `/api/airports/flights?refresh=true&_t=${ts}`,
+        `${getApiUrl()}/api/airports/flights?refresh=true&_t=${ts}`,
+      ])
+    );
 
-    if (!loadedArr || !loadedDep) {
+    for (const ep of endpoints) {
       try {
-        const cacheRes = await fetch(`/vancouver_yvr_flights.json?_t=${Date.now()}`, { cache: 'no-store' });
-        if (cacheRes.ok) {
-          const json = await cacheRes.json();
-          if (!loadedArr && json.arrivals && json.arrivals.length > 0) setArrivals(json.arrivals);
-          if (!loadedDep && json.departures && json.departures.length > 0) setDepartures(json.departures);
+        const res = await fetch(ep, {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache', Pragma: 'no-cache' },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          const validArr = filterTodayFlights(json?.arrivals, todayStr);
+          const validDep = filterTodayFlights(json?.departures, todayStr);
+          if (validArr.length > 0 || validDep.length > 0) {
+            if (validArr.length > 0) setArrivals(validArr);
+            if (validDep.length > 0) setDepartures(validDep);
+            setNowTick(Date.now());
+            console.log(`✅ [YVR Flights Service] (${todayStr}) 航班排程同步成功: 抵達 ${validArr.length} 班, 出發 ${validDep.length} 班`);
+            break;
+          }
         }
       } catch (err) {
-        console.warn('Failed to fetch static flight cache:', err);
+        console.warn('Failed to fetch flights from API endpoint:', ep, err);
       }
     }
     setLoading(false);
@@ -271,9 +281,14 @@ export default function FlightScheduleModal() {
 
   useEffect(() => {
     if (isFlightScheduleOpen) {
+      setNowTick(Date.now());
       fetchFlights();
-      const timer = setInterval(fetchFlights, 60000); // 1 min auto-refresh
-      return () => clearInterval(timer);
+      const refreshTimer = setInterval(fetchFlights, 60000); // 1 min live API refresh
+      const clockTimer = setInterval(() => setNowTick(Date.now()), 30000); // 30s status cutoff tick
+      return () => {
+        clearInterval(refreshTimer);
+        clearInterval(clockTimer);
+      };
     }
   }, [isFlightScheduleOpen]);
 
@@ -295,7 +310,7 @@ export default function FlightScheduleModal() {
   };
 
   // Determine if a flight is completed (arrived or departed, or landing/takeoff time has passed)
-  const isFlightCompleted = (f: MergedFlight) => {
+  const isFlightCompleted = (f: MergedFlight, refNowMs: number = nowTick) => {
     const s = (f.status || '').toLowerCase();
     if (f.type === 'A') {
       if (
@@ -311,11 +326,13 @@ export default function FlightScheduleModal() {
         s.includes('departed') || 
         s.includes('已起飛') || 
         s.includes('airborne') || 
+        s.includes('in flight') ||
+        s.includes('en route') ||
         s.includes('left')
       ) return true;
     }
     const targetMs = parseFlightTimeToMs(f.estimated_time || f.scheduled_time || (f.type === 'A' ? f.dest_arrival_time : f.origin_departure_time));
-    if (targetMs && Date.now() >= targetMs) {
+    if (targetMs !== null && refNowMs >= targetMs) {
       return true;
     }
     return false;
@@ -330,11 +347,11 @@ export default function FlightScheduleModal() {
       return { hasProgress: false, percent: 50, durationText: '--' };
     }
 
-    const tDep = new Date(depTimeStr).getTime();
-    const tArr = new Date(arrTimeStr).getTime();
-    const now = Date.now();
+    const tDep = parseFlightTimeToMs(depTimeStr);
+    const tArr = parseFlightTimeToMs(arrTimeStr);
+    const now = nowTick;
 
-    if (isNaN(tDep) || isNaN(tArr) || tArr <= tDep) {
+    if (tDep === null || tArr === null || isNaN(tDep) || isNaN(tArr) || tArr <= tDep) {
       return { hasProgress: false, percent: 50, durationText: '--' };
     }
 
@@ -376,12 +393,12 @@ export default function FlightScheduleModal() {
 
   // Count of upcoming/active flights only (excluding past/completed flights)
   const upcomingArrivalsCount = useMemo(() => {
-    return arrivals.filter(f => !isFlightCompleted(f)).length;
-  }, [arrivals]);
+    return arrivals.filter(f => !isFlightCompleted(f, nowTick)).length;
+  }, [arrivals, nowTick]);
 
   const upcomingDeparturesCount = useMemo(() => {
-    return departures.filter(f => !isFlightCompleted(f)).length;
-  }, [departures]);
+    return departures.filter(f => !isFlightCompleted(f, nowTick)).length;
+  }, [departures, nowTick]);
 
   // Separate into: 1. Upcoming Flights, 2. Completed Flights (Arrived/Departed), 3. Cancelled Past Flights
   const { upcomingFlights, completedFlights, cancelledPastFlights } = useMemo(() => {
@@ -389,47 +406,50 @@ export default function FlightScheduleModal() {
     const completed: MergedFlight[] = [];
     const cancelledPast: MergedFlight[] = [];
 
-    const now = Date.now();
+    const now = nowTick;
 
     for (const f of filteredList) {
       const st = (f.status || '').toLowerCase();
       const isCanc = st.includes('cancel') || st.includes('取消');
 
       const targetMs = parseFlightTimeToMs(f.estimated_time || f.scheduled_time);
-      const isPast = targetMs ? now > targetMs : false;
+      const isPast = targetMs !== null ? now >= targetMs : false;
 
       if (isCanc && isPast) {
         cancelledPast.push(f);
-      } else if (isFlightCompleted(f)) {
+      } else if (isFlightCompleted(f, now)) {
         completed.push(f);
       } else {
         upcoming.push(f);
       }
     }
 
-    // Upcoming flights: sort ascending (soonest flight first)
+    // Sort strictly by Column 1 (`時間` = scheduled_time) from nearest to current time to farthest
+    const getCol1Ms = (f: MergedFlight) => parseFlightTimeToMs(f.scheduled_time || f.estimated_time) ?? 0;
+
+    // Upcoming flights: ascending by Column 1 time (soonest / nearest upcoming first -> farthest later tonight)
     upcoming.sort((a, b) => {
-      const ta = parseFlightTimeToMs(a.estimated_time || a.scheduled_time) || 0;
-      const tb = parseFlightTimeToMs(b.estimated_time || b.scheduled_time) || 0;
-      return ta - tb;
+      const diff = getCol1Ms(a) - getCol1Ms(b);
+      if (diff !== 0) return diff;
+      return (a.flight_number || '').localeCompare(b.flight_number || '');
     });
 
-    // Completed flights: sort descending (most recently completed first)
+    // Completed flights: descending by Column 1 time (most recent / nearest to now first -> earliest morning last)
     completed.sort((a, b) => {
-      const ta = parseFlightTimeToMs(a.estimated_time || a.scheduled_time) || 0;
-      const tb = parseFlightTimeToMs(b.estimated_time || b.scheduled_time) || 0;
-      return tb - ta;
+      const diff = getCol1Ms(b) - getCol1Ms(a);
+      if (diff !== 0) return diff;
+      return (a.flight_number || '').localeCompare(b.flight_number || '');
     });
 
-    // Cancelled past flights: sort descending
+    // Cancelled past flights: descending by Column 1 time (nearest to now first -> farthest last)
     cancelledPast.sort((a, b) => {
-      const ta = parseFlightTimeToMs(a.estimated_time || a.scheduled_time) || 0;
-      const tb = parseFlightTimeToMs(b.estimated_time || b.scheduled_time) || 0;
-      return tb - ta;
+      const diff = getCol1Ms(b) - getCol1Ms(a);
+      if (diff !== 0) return diff;
+      return (a.flight_number || '').localeCompare(b.flight_number || '');
     });
 
     return { upcomingFlights: upcoming, completedFlights: completed, cancelledPastFlights: cancelledPast };
-  }, [filteredList]);
+  }, [filteredList, nowTick]);
 
   // Draw Flight Route on Map
   const handleDrawRoute = (f: MergedFlight, e: React.MouseEvent) => {
@@ -495,8 +515,8 @@ export default function FlightScheduleModal() {
 
     const originCode = (isArr ? flight.airport_code : 'YVR').toUpperCase();
     const destCode = (isArr ? 'YVR' : flight.airport_code).toUpperCase();
-    const originTz = AIRPORT_TIMEZONES[originCode] || 'America/Vancouver';
-    const destTz = AIRPORT_TIMEZONES[destCode] || 'America/Vancouver';
+    const originTz = AIRPORT_TIMEZONES[originCode] || 'Etc/GMT+7';
+    const destTz = AIRPORT_TIMEZONES[destCode] || 'Etc/GMT+7';
 
     // 起飛時間:
     // 抵達航班: 依表訂/預估抵達時間與航程計算出發地起飛時間 (以出發地時區顯示)

@@ -49,7 +49,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
         "url": "https://www.yvr.ca/_api/ParkadeCapacity"
       }
     ],
-    "source_url": "https://www.yvr.ca/en/passengers/flights"
+    "source_url": "https://www.yvr.ca/en/_api/Flights"
   },
   {
     "id": "traffic_conditions",
@@ -239,8 +239,8 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "id": "flight_schedules",
     "name": "航班",
     "type": "api",
-    "cron_expr": "*/2 * * * *",
-    "schedule_interval": "每 2 分鐘",
+    "cron_expr": "* * * * *",
+    "schedule_interval": "每 1 分鐘",
     "record_count": 180,
     "unit": "架起降航班動態",
     "last_updated": "2026-10-24T18:16:00Z",
@@ -251,11 +251,15 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "workflow_file": null,
     "source_links": [
       {
+        "label": "YVR 官方航班 OData API",
+        "url": "https://www.yvr.ca/en/_api/Flights"
+      },
+      {
         "label": "YVR 官方航班時刻表",
         "url": "https://www.yvr.ca/en/passengers/flights"
       }
     ],
-    "source_url": "https://www.yvr.ca/en/passengers/flights"
+    "source_url": "https://www.yvr.ca/en/_api/Flights"
   },
   {
     "id": "maritime_shipping",

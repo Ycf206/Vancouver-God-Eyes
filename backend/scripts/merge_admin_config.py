@@ -118,6 +118,16 @@ def merge_admin_config():
                             s["cron_expr"] = bs["cron_expr"]
                         if bs.get("schedule_interval"):
                             s["schedule_interval"] = bs["schedule_interval"]
+                    if bs.get("source_url"):
+                        s["source_url"] = bs["source_url"]
+
+                # YVR 航班即時同步強制維持每 1 分鐘，且修正舊版誤填 HTML 網頁連結為官方 OData API
+                if sid in ("flight_schedules", "yvr_flights"):
+                    s["cron_expr"] = "* * * * *"
+                    s["schedule_interval"] = "每 1 分鐘"
+                    cur_u = str(s.get("source_url") or "").strip()
+                    if not cur_u or "/passengers/flights" in cur_u.lower() or ("yvr.ca" in cur_u.lower() and "/_api/" not in cur_u.lower()):
+                        s["source_url"] = "https://www.yvr.ca/en/_api/Flights"
 
                 # GitHub Actions 管線強制與實際 .github/workflows/*.yml 的 cron 同步
                 if s.get("runner") == "github_actions" and s.get("workflow_file"):

@@ -4,6 +4,8 @@ import json
 import time
 import math
 import re
+import random
+import tempfile
 import urllib.parse
 import subprocess
 import asyncio
@@ -85,18 +87,11 @@ AIRPORT_COORDINATES = {
     "SJD": [-109.7214, 23.1518]
 }
 
-def get_vancouver_dates():
-    try:
-        import zoneinfo
-        tz = zoneinfo.ZoneInfo("America/Vancouver")
-        now = datetime.now(tz)
-    except Exception:
-        # Vancouver UTC-7 (PDT) / UTC-8 (PST) manual check
-        utc_now = datetime.now(timezone.utc)
-        m = utc_now.month
-        is_dst = (3 < m < 11) or (m == 3 and utc_now.day >= 8) or (m == 11 and utc_now.day < 7)
-        now = utc_now.astimezone(timezone(timedelta(hours=-7 if is_dst else -8)))
-    
+# BC Permanent Pacific Time (PCT = UTC-7 year-round, effective Nov 2026)
+PCT_TZ = timezone(timedelta(hours=-7))
+
+def get_vancouver_dates() -> Tuple[str, str, datetime]:
+    now = datetime.now(PCT_TZ)
     today_str = now.strftime("%Y-%m-%d")
     tomorrow_str = (now + timedelta(days=1)).strftime("%Y-%m-%d")
     return today_str, tomorrow_str, now
@@ -124,6 +119,7 @@ def estimate_flight_duration(code: str) -> float:
     return 2.5
 
 def get_custom_yvr_base_url() -> str:
+    default_api = "https://www.yvr.ca/en/_api/Flights"
     try:
         cfg_paths = [
             os.path.join(BACKEND_DIR, "data", "admin_sources_config.json"),
@@ -135,34 +131,51 @@ def get_custom_yvr_base_url() -> str:
                 with open(p, "r", encoding="utf-8") as f:
                     cfg = json.load(f)
                 for s in cfg.get("sources", []):
-                    if s.get("id") == "flight_schedules":
+                    if s.get("id") in ("flight_schedules", "yvr_flights"):
                         u = s.get("source_url") or s.get("url")
                         if u and str(u).strip():
-                            return str(u).strip().split("?")[0]
+                            clean_u = str(u).strip().split("?")[0].rstrip("/")
+                            low_u = clean_u.lower()
+                            # Prevent human HTML webpage URLs from poisoning the OData JSON endpoint
+                            if "/passengers/flights" in low_u or ("yvr.ca" in low_u and "/_api/" not in low_u):
+                                return default_api
+                            return clean_u
     except Exception:
         pass
-    return "https://www.yvr.ca/en/_api/Flights"
+    return default_api
 
 def fetch_yvr_endpoint(f_type: str, today_str: str, tomorrow_str: str) -> List[Dict[str, Any]]:
-    referer = "https://www.yvr.ca/en/passengers/flights/arriving-flights" if f_type == "A" else "https://www.yvr.ca/en/passengers/flights/departing-flights"
-    filter_expr = f"((FlightScheduledTime gt DateTime'{today_str}T00:00:00' and FlightScheduledTime lt DateTime'{tomorrow_str}T00:00:00' and FlightType eq '{f_type}') or (FlightEstimatedTime gt DateTime'{today_str}T00:00:00' and FlightEstimatedTime lt DateTime'{tomorrow_str}T00:00:00' and FlightType eq '{f_type}'))"
-    encoded_filter = urllib.parse.quote(filter_expr)
+    referer = (
+        "https://www.yvr.ca/en/passengers/flights/arriving-flights"
+        if f_type == "A"
+        else "https://www.yvr.ca/en/passengers/flights/departing-flights"
+    )
+    filter_expr = (
+        f"((FlightScheduledTime gt DateTime'{today_str}T00:00:00' and FlightScheduledTime lt DateTime'{tomorrow_str}T00:00:00' and FlightType eq '{f_type}') "
+        f"or (FlightEstimatedTime gt DateTime'{today_str}T00:00:00' and FlightEstimatedTime lt DateTime'{tomorrow_str}T00:00:00' and FlightType eq '{f_type}'))"
+    )
+    encoded_filter = urllib.parse.quote(filter_expr, safe="()")
     base_api = get_custom_yvr_base_url()
     url = f"{base_api}?%24filter={encoded_filter}&%24orderby=FlightScheduledTime%20asc"
 
     req_headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
         "Referer": referer,
-        "Accept": "application/json, text/plain, */*"
+        "Origin": "https://www.yvr.ca",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-CA,en-US;q=0.9,en;q=0.8",
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
     }
 
     curl_bin = "curl.exe" if os.name == "nt" else "curl"
-    curl_args = [
-        "-H", f"User-Agent: {req_headers['User-Agent']}",
-        "-H", f"Referer: {referer}",
-        "-H", f"Accept: {req_headers['Accept']}"
-    ]
-    
+    curl_args = []
+    for hk, hv in req_headers.items():
+        curl_args.extend(["-H", f"{hk}: {hv}"])
+
     for attempt in range(1, 4):
         # 1. 優先使用 Python 原生 requests
         try:
@@ -170,15 +183,15 @@ def fetch_yvr_endpoint(f_type: str, today_str: str, tomorrow_str: str) -> List[D
             if resp.status_code == 200:
                 data = resp.json()
                 val = data.get("value", [])
-                if val and len(val) > 0:
+                if isinstance(val, list) and len(val) > 0:
                     return val
-        except Exception as re_err:
+        except Exception:
             pass
 
         # 2. 次選使用系統 curl 指令防護
         try:
             res = subprocess.run(
-                [curl_bin, "-s", url] + curl_args,
+                [curl_bin, "-L", "-s", url] + curl_args,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 timeout=25,
@@ -189,12 +202,12 @@ def fetch_yvr_endpoint(f_type: str, today_str: str, tomorrow_str: str) -> List[D
                 if stdout_clean.startswith("{") and stdout_clean.endswith("}"):
                     data = json.loads(stdout_clean)
                     val = data.get("value", [])
-                    if val and len(val) > 0:
+                    if isinstance(val, list) and len(val) > 0:
                         return val
-            time.sleep(1.2 * attempt)
+            time.sleep(1.0 * attempt)
         except Exception as e:
             print(f"⚠️ [YVR Flights] attempt {attempt} error fetching {f_type}: {e}")
-            time.sleep(1.2 * attempt)
+            time.sleep(1.0 * attempt)
     return []
 
 def compute_supplementary_times(item: Dict[str, Any], f_type: str) -> Tuple[str, str]:
@@ -271,46 +284,119 @@ def process_yvr_flight_item(item: Dict[str, Any], f_type: str) -> Dict[str, Any]
         "remote_coords": remote_coord
     }
 
-def update_yvr_flights() -> Dict[str, Any]:
+def _is_flight_for_today(f: Dict[str, Any], today_str: str) -> bool:
+    if not isinstance(f, dict):
+        return False
+    sched_d = str(f.get("scheduled_time") or "")[:10]
+    est_d = str(f.get("estimated_time") or "")[:10]
+    return (len(sched_d) == 10 and sched_d >= today_str) or (len(est_d) == 10 and est_d >= today_str)
+
+def _dedup_and_sort_flights(flights: List[Dict[str, Any]], today_str: str) -> List[Dict[str, Any]]:
+    dedup: Dict[str, Dict[str, Any]] = {}
+    for f in flights or []:
+        if not _is_flight_for_today(f, today_str):
+            continue
+        key = str(f.get("id") or f"{f.get('flight_number', '')}_{f.get('scheduled_time', '')}")
+        dedup[key] = f
+    items = list(dedup.values())
+    items.sort(key=lambda x: (str(x.get("scheduled_time") or x.get("estimated_time") or ""), str(x.get("flight_number") or "")))
+    return items
+
+def _parse_updated_age(data: Dict[str, Any]) -> float:
+    ts_str = str((data or {}).get("updated_at") or "").strip()
+    if not ts_str:
+        return 1e9
+    try:
+        dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=PCT_TZ)
+        return max(0.0, time.time() - dt.timestamp())
+    except Exception:
+        return 1e9
+
+def _atomic_write_json(target_path: str, payload: Dict[str, Any]) -> None:
+    parent_dir = os.path.dirname(os.path.abspath(target_path))
+    os.makedirs(parent_dir, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(prefix=".yvr_flights_", suffix=".tmp", dir=parent_dir)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, target_path)
+    except Exception:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+
+def _load_valid_disk_cache(today_str: str) -> Tuple[Optional[Dict[str, Any]], float]:
+    if not os.path.exists(OUTPUT_BACKEND_FILE):
+        return None, 1e9
+    try:
+        with open(OUTPUT_BACKEND_FILE, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+        if not isinstance(raw, dict):
+            return None, 1e9
+        arr = _dedup_and_sort_flights(raw.get("arrivals", []), today_str)
+        dep = _dedup_and_sort_flights(raw.get("departures", []), today_str)
+        if not arr and not dep:
+            return None, 1e9
+        age = _parse_updated_age(raw)
+        cleaned = {
+            "success": True,
+            "query_date": today_str,
+            "updated_at": raw.get("updated_at") or "",
+            "counts": {
+                "arrivals": len(arr),
+                "departures": len(dep),
+            },
+            "arrivals": arr,
+            "departures": dep,
+        }
+        return cleaned, age
+    except Exception:
+        return None, 1e9
+
+def update_yvr_flights(force: bool = False) -> Dict[str, Any]:
     """
     Executes one update cycle: fetches YVR Arrivals & Departures directly from
-    official YVR API, parses times and statuses, and writes to disk.
-    Protects against partial API failure by merging with existing valid cache.
+    official YVR API, validates against today's PCT date, sorts by scheduled_time,
+    and writes atomically to disk. Coordinates across Gunicorn workers via disk age.
     """
+    global _yvr_flights_cache
     today_str, tomorrow_str, now_dt = get_vancouver_dates()
 
-    # Read existing cache to prevent accidental wipe-out
-    existing_arr = []
-    existing_dep = []
-    if os.path.exists(OUTPUT_BACKEND_FILE):
-        try:
-            with open(OUTPUT_BACKEND_FILE, "r", encoding="utf-8") as f:
-                old_data = json.load(f)
-                existing_arr = old_data.get("arrivals", [])
-                existing_dep = old_data.get("departures", [])
-        except Exception:
-            pass
+    # Coordinate across Gunicorn workers: avoid redundant upstream hits if another worker just updated
+    disk_data, disk_age = _load_valid_disk_cache(today_str)
+    fresh_threshold = 15.0 if force else 45.0
+    if disk_data and disk_age < fresh_threshold:
+        _yvr_flights_cache["timestamp"] = time.time() - disk_age
+        _yvr_flights_cache["data"] = disk_data
+        return disk_data
 
     # 1. Fetch Arrivals
     arr_raw = fetch_yvr_endpoint("A", today_str, tomorrow_str)
-    # Wait 1.5s between calls to prevent rate limiting
-    time.sleep(1.5)
+    # Wait 1.2s between calls to prevent rate limiting
+    time.sleep(1.2)
     # 2. Fetch Departures
     dep_raw = fetch_yvr_endpoint("D", today_str, tomorrow_str)
 
-    # 3. Transform YVR official records
-    new_arrivals = [process_yvr_flight_item(it, "A") for it in arr_raw]
-    new_departures = [process_yvr_flight_item(it, "D") for it in dep_raw]
+    # 3. Transform, strictly filter for today_str, deduplicate, and sort ascending by scheduled_time
+    new_arrivals = _dedup_and_sort_flights([process_yvr_flight_item(it, "A") for it in arr_raw], today_str)
+    new_departures = _dedup_and_sort_flights([process_yvr_flight_item(it, "D") for it in dep_raw], today_str)
 
-    # Robust retention: If new fetch returned empty (due to momentary rate limit / glitch),
-    # keep the previous valid flights rather than overwriting with 0!
-    arrivals = new_arrivals if len(new_arrivals) > 0 else existing_arr
-    departures = new_departures if len(new_departures) > 0 else existing_dep
+    # Only fall back on transient single-leg API glitch if existing cache is strictly from today_str and recent (<15m)
+    same_day_recent = disk_data if (disk_data and disk_age < 900.0) else None
+    arrivals = new_arrivals if len(new_arrivals) > 0 else (same_day_recent.get("arrivals", []) if same_day_recent else [])
+    departures = new_departures if len(new_departures) > 0 else (same_day_recent.get("departures", []) if same_day_recent else [])
 
-    # If YVR API returned valid flights, build new cache object
-    if arrivals or departures:
+    # Only update timestamp & write cache if at least one live leg succeeded right now
+    if len(new_arrivals) > 0 or len(new_departures) > 0:
         consolidated = {
             "success": True,
+            "query_date": today_str,
             "updated_at": now_dt.isoformat(),
             "counts": {
                 "arrivals": len(arrivals),
@@ -320,78 +406,72 @@ def update_yvr_flights() -> Dict[str, Any]:
             "departures": departures
         }
 
-        # Update in-memory cache
-        global _yvr_flights_cache
         _yvr_flights_cache["timestamp"] = time.time()
         _yvr_flights_cache["data"] = consolidated
 
-        # Write to disk
         try:
-            os.makedirs(os.path.dirname(OUTPUT_BACKEND_FILE), exist_ok=True)
-            with open(OUTPUT_BACKEND_FILE, "w", encoding="utf-8") as f:
-                json.dump(consolidated, f, ensure_ascii=False, indent=2)
+            _atomic_write_json(OUTPUT_BACKEND_FILE, consolidated)
         except Exception as e:
             print(f"⚠️ Error saving {OUTPUT_BACKEND_FILE}: {e}")
 
-        try:
-            os.makedirs(os.path.dirname(OUTPUT_FRONTEND_FILE), exist_ok=True)
-            with open(OUTPUT_FRONTEND_FILE, "w", encoding="utf-8") as f:
-                json.dump(consolidated, f, ensure_ascii=False, indent=2)
-        except Exception as e:
-            print(f"⚠️ Error saving {OUTPUT_FRONTEND_FILE}: {e}")
+        frontend_pub_dir = os.path.dirname(OUTPUT_FRONTEND_FILE)
+        if os.path.isdir(frontend_pub_dir) and os.access(frontend_pub_dir, os.W_OK):
+            try:
+                _atomic_write_json(OUTPUT_FRONTEND_FILE, consolidated)
+            except Exception as e:
+                print(f"⚠️ Error saving {OUTPUT_FRONTEND_FILE}: {e}")
 
-        print(f"✅ [YVR Flights Service] 航班排程同步成功: 抵達 {len(arrivals)} 班, 出發 {len(departures)} 班")
+        print(f"✅ [YVR Flights Service] ({today_str}) 航班排程同步成功: 抵達 {len(arrivals)} 班, 出發 {len(departures)} 班")
         return consolidated
 
-    # Fallback to existing disk cache
-    if os.path.exists(OUTPUT_BACKEND_FILE):
-        try:
-            with open(OUTPUT_BACKEND_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass
+    if disk_data:
+        _yvr_flights_cache["timestamp"] = time.time() - disk_age
+        _yvr_flights_cache["data"] = disk_data
+        return disk_data
 
-    return {"success": False, "arrivals": [], "departures": []}
+    return {
+        "success": False,
+        "query_date": today_str,
+        "updated_at": now_dt.isoformat(),
+        "counts": {"arrivals": 0, "departures": 0},
+        "arrivals": [],
+        "departures": []
+    }
 
 def get_flights_data(force: bool = False) -> Dict[str, Any]:
     global _yvr_flights_cache
+    today_str, _, _ = get_vancouver_dates()
     now = time.time()
-    if not force:
-        # Cache valid for 50 seconds
-        if _yvr_flights_cache["data"] and (now - _yvr_flights_cache["timestamp"] < 50):
-            return _yvr_flights_cache["data"]
+    max_age = 15.0 if force else 55.0
 
-        # Try disk cache
-        if os.path.exists(OUTPUT_BACKEND_FILE):
-            try:
-                with open(OUTPUT_BACKEND_FILE, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    _yvr_flights_cache["data"] = data
-                    _yvr_flights_cache["timestamp"] = now
-                    return data
-            except Exception:
-                pass
+    mem_data = _yvr_flights_cache.get("data")
+    if isinstance(mem_data, dict) and mem_data.get("query_date") == today_str:
+        mem_age = now - float(_yvr_flights_cache.get("timestamp") or 0)
+        if 0 <= mem_age < max_age and (mem_data.get("arrivals") or mem_data.get("departures")):
+            return mem_data
 
-    # Trigger update
-    return update_yvr_flights()
+    disk_data, disk_age = _load_valid_disk_cache(today_str)
+    if disk_data and disk_age < max_age:
+        _yvr_flights_cache["data"] = disk_data
+        _yvr_flights_cache["timestamp"] = now - disk_age
+        return disk_data
+
+    return update_yvr_flights(force=force)
 
 async def run_yvr_flights_background_service():
     """
     OCI Server 24/7 background task running every 60 seconds (1 minute).
     """
+    await asyncio.sleep(random.uniform(0.3, 3.5))
     print("🛫 [YVR Flights Service] 溫哥華機場即時航班排程服務啟動 (1 分鐘週期)...")
     while True:
         try:
-            loop = asyncio.get_event_loop()
-            res = await loop.run_in_executor(None, update_yvr_flights)
-            arr_cnt = len(res.get("arrivals", []))
-            dep_cnt = len(res.get("departures", []))
-            print(f"✅ [YVR Flights Service] 航班排程同步成功: 抵達 {arr_cnt} 班, 出發 {dep_cnt} 班")
+            loop = asyncio.get_running_loop()
+            await loop.run_in_executor(None, update_yvr_flights, False)
         except Exception as e:
             print(f"⚠️ [YVR Flights Service] 同步錯誤: {e}")
-        # Wait 60 seconds (1 minute)
         await asyncio.sleep(60)
 
 if __name__ == "__main__":
-    result = update_yvr_flights()
+    result = update_yvr_flights(force=True)
     print(f"Manual run result: Arrivals={len(result.get('arrivals', []))}, Departures={len(result.get('departures', []))}")

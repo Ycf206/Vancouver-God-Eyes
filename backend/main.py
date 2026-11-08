@@ -27,13 +27,8 @@ from search_engine import search_engine
 
 logger = logging.getLogger(__name__)
 
-try:
-    from zoneinfo import ZoneInfo
-    _tz_candidate = ZoneInfo("America/Vancouver")
-    datetime.now(_tz_candidate)
-    VANCOUVER_TZ = _tz_candidate
-except Exception:
-    VANCOUVER_TZ = timezone(timedelta(hours=-7))
+# 卑詩省自 2026 年 11 月起實施永久太平洋時間 (PCT = 常年固定 UTC-7)
+VANCOUVER_TZ = timezone(timedelta(hours=-7))
 
 def get_vancouver_now() -> datetime:
     return datetime.now(VANCOUVER_TZ)
@@ -1409,22 +1404,40 @@ def get_live_flights():
         "flights": []
     }
 
+_NO_CACHE_FLIGHTS_HEADERS = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0",
+}
+
 @app.get("/api/flights/schedules")
 def get_flight_schedules(refresh: bool = False, force: bool = False):
     import yvr_flights_service
     schedules = yvr_flights_service.get_flights_data(force=(refresh or force))
-    if schedules:
+    if schedules and (schedules.get("arrivals") or schedules.get("departures")):
         _oci_runtime_ts["flight_schedules"] = time.time()
-    return schedules or {"arrivals": [], "departures": []}
+    return JSONResponse(
+        content=schedules or {"success": False, "arrivals": [], "departures": []},
+        headers=_NO_CACHE_FLIGHTS_HEADERS,
+    )
 
 @app.get("/api/airports/flights")
 def get_yvr_airport_flights(refresh: bool = False, force: bool = False):
     try:
         import yvr_flights_service
-        return yvr_flights_service.get_flights_data(force=(refresh or force))
+        schedules = yvr_flights_service.get_flights_data(force=(refresh or force))
+        if schedules and (schedules.get("arrivals") or schedules.get("departures")):
+            _oci_runtime_ts["flight_schedules"] = time.time()
+        return JSONResponse(
+            content=schedules or {"success": False, "arrivals": [], "departures": []},
+            headers=_NO_CACHE_FLIGHTS_HEADERS,
+        )
     except Exception as e:
         print(f"Error serving yvr_flights: {e}")
-        return {"success": False, "arrivals": [], "departures": []}
+        return JSONResponse(
+            content={"success": False, "arrivals": [], "departures": []},
+            headers=_NO_CACHE_FLIGHTS_HEADERS,
+        )
 
 @app.get("/api/airports/weathercams/{airport_id}")
 @app.get("/api/airports/summary")
@@ -4445,7 +4458,8 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
     import yvr_flights_service
     fl_data = yvr_flights_service.get_flights_data()
     fl_cnt = (len(fl_data.get("arrivals", [])) + len(fl_data.get("departures", []))) if isinstance(fl_data, dict) else 0
-    oci_live_updates["flight_schedules"] = (_unix_to_iso(_oci_runtime_ts.get("flight_schedules", time.time())), fl_cnt if fl_cnt > 0 else None)
+    fl_ts_iso = (fl_data.get("updated_at") if isinstance(fl_data, dict) else None) or _unix_to_iso(_oci_runtime_ts.get("flight_schedules", 0))
+    oci_live_updates["flight_schedules"] = (fl_ts_iso, fl_cnt if fl_cnt > 0 else None)
 
     oci_live_updates["border_wait_times"] = (
         _unix_to_iso(getattr(border_service, "last_fetch_time", 0.0)),
