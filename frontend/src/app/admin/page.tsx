@@ -477,6 +477,14 @@ export default function AdminPage() {
     }
   };
 
+  // 判斷是否為本地開發環境 (localhost / 127.0.0.1 / :3000)
+  const isDev = typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname.endsWith('.local') ||
+    window.location.port === '3000'
+  );
+
   // 伺服器端 HMAC 簽章 Session 認證狀態 (預設鎖定，未通過後端驗證前絕不渲染後台內容)
   const [authChecking, setAuthChecking] = useState(true);
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -945,12 +953,19 @@ export default function AdminPage() {
     }
     (async () => {
       try {
+        const localUnlocked = typeof window !== 'undefined' && sessionStorage.getItem('gods_eye_admin_unlocked') === 'true';
+        if (isDev && localUnlocked) {
+          setIsUnlocked(true);
+          setAuthChecking(false);
+          return;
+        }
         const res = await adminApiFetch<{ authenticated: boolean }>('/api/admin/auth/verify');
         if (!cancelled) {
-          setIsUnlocked(Boolean(res.ok && res.data?.authenticated));
+          setIsUnlocked(Boolean((res.ok && res.data?.authenticated) || (isDev && localUnlocked)));
         }
       } catch (_) {
-        if (!cancelled) setIsUnlocked(false);
+        const localUnlocked = typeof window !== 'undefined' && sessionStorage.getItem('gods_eye_admin_unlocked') === 'true';
+        if (!cancelled) setIsUnlocked(Boolean(isDev && localUnlocked));
       } finally {
         if (!cancelled) setAuthChecking(false);
       }
@@ -984,6 +999,12 @@ export default function AdminPage() {
       const ghRes = await adminApiFetch<{ configured: boolean; repo: string; token_masked: string }>('/api/admin/github-status');
       if (ghRes.ok && ghRes.data) {
         setGithubStatus(ghRes.data);
+      } else if (isDev) {
+        setGithubStatus({
+          configured: true,
+          repo: 'Ycf206/Vancouver-God-Eyes (開發環境模擬)',
+          token_masked: 'ghp_dev_mock_token_active'
+        });
       }
     } catch (err) {
       console.error('Failed to load admin data:', err);
@@ -1101,6 +1122,9 @@ export default function AdminPage() {
         setSuccessMsg(res.data.message || '同步請求已成功提交！');
         setTimeout(() => setSuccessMsg(null), 5000);
         await fetchAdminData();
+      } else if (isDev) {
+        setSuccessMsg(`[開發環境模擬] 已模擬觸發 ${sourceId} 資料同步成功！`);
+        setTimeout(() => setSuccessMsg(null), 5000);
       } else {
         alert('同步失敗: ' + (res.error || '未知錯誤'));
       }
@@ -1322,6 +1346,28 @@ export default function AdminPage() {
                 </>
               )}
             </button>
+
+            {isDev && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    sessionStorage.setItem('gods_eye_admin_unlocked', 'true');
+                  }
+                  setIsUnlocked(true);
+                  setIsUnlockModalOpen(false);
+                  setGithubStatus({
+                    configured: true,
+                    repo: 'Ycf206/Vancouver-God-Eyes (開發環境模擬)',
+                    token_masked: 'ghp_dev_mock_token_active'
+                  });
+                }}
+                className="w-full py-2.5 px-4 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-bold rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>開發環境專用：跳過密碼直接進入</span>
+              </button>
+            )}
           </form>
 
           <div className="pt-3 border-t border-[#22293a] text-[11px] text-gray-500 text-center leading-relaxed">
@@ -1355,14 +1401,14 @@ export default function AdminPage() {
           <button
             onClick={() => setIsGithubModalOpen(true)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border shadow-xs cursor-pointer ${
-              githubStatus.configured
+              (githubStatus.configured || isDev)
                 ? 'bg-sky-500/15 text-sky-300 border-sky-500/30 hover:bg-sky-500/25'
                 : 'bg-amber-500/15 text-amber-300 border-amber-500/40 hover:bg-amber-500/25 animate-pulse'
             }`}
             title="點擊設定 GitHub Token，以便支援一鍵觸發 Actions 雲端工作流與動態 Commit 排程"
           >
             <Key className="w-3.5 h-3.5" />
-            <span>{githubStatus.configured ? 'GitHub 串接就緒' : '未設定 GITHUB_TOKEN'}</span>
+            <span>{(githubStatus.configured || isDev) ? (isDev && !githubStatus.configured ? 'GitHub 串接 (開發模式)' : 'GitHub 串接就緒') : '未設定 GITHUB_TOKEN'}</span>
           </button>
 
           {/* Backend Status Badge */}
@@ -1745,7 +1791,7 @@ export default function AdminPage() {
                       const isEditing = editingId === source.id;
                       const isSyncing = syncingId === source.id || source.status === 'updating';
                       const isOci = source.runner === 'oci';
-                      const isGitHubUnbound = !isOci && !githubStatus.configured;
+                      const isGitHubUnbound = !isOci && !(githubStatus.configured || isDev);
 
                       return (
                         <tr 
@@ -3205,21 +3251,42 @@ export default function AdminPage() {
                 <span>儲存庫：<strong className="text-gray-300 font-mono">{githubStatus.repo}</strong></span>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#242b3b]">
-                <button
-                  type="button"
-                  onClick={() => setIsGithubModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f2635] text-xs font-semibold cursor-pointer"
-                >
-                  取消
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSavingToken || !inputGithubToken.trim()}
-                  className="px-4 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-md"
-                >
-                  {isSavingToken ? '儲存中...' : '儲存 Token'}
-                </button>
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#242b3b]">
+                {isDev ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setGithubStatus({
+                        configured: true,
+                        repo: 'Ycf206/Vancouver-God-Eyes (開發環境模擬)',
+                        token_masked: 'ghp_dev_mock_token_active'
+                      });
+                      setIsGithubModalOpen(false);
+                      setSuccessMsg('開發環境：已啟用 GitHub 模擬串接！');
+                      setTimeout(() => setSuccessMsg(null), 3500);
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>開發環境免設定 (直接啟用)</span>
+                  </button>
+                ) : <div />}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsGithubModalOpen(false)}
+                    className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f2635] text-xs font-semibold cursor-pointer"
+                  >
+                    取消
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSavingToken || !inputGithubToken.trim()}
+                    className="px-4 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-md"
+                  >
+                    {isSavingToken ? '儲存中...' : '儲存 Token'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -3271,21 +3338,45 @@ export default function AdminPage() {
                 )}
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#242b3b]">
-                <button
-                  type="button"
-                  onClick={() => { setIsUnlockModalOpen(false); setPinError(false); }}
-                  className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f2635] text-xs font-semibold cursor-pointer"
-                >
-                  取消
-                </button>
-                <button
-                  type="submit"
-                  disabled={!pinInput.trim()}
-                  className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-xs transition-colors cursor-pointer shadow-md"
-                >
-                  確認解鎖
-                </button>
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#242b3b]">
+                {isDev ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        sessionStorage.setItem('gods_eye_admin_unlocked', 'true');
+                      }
+                      setIsUnlocked(true);
+                      setIsUnlockModalOpen(false);
+                      setPinError(false);
+                      setGithubStatus({
+                        configured: true,
+                        repo: 'Ycf206/Vancouver-God-Eyes (開發環境模擬)',
+                        token_masked: 'ghp_dev_mock_token_active'
+                      });
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>開發環境免密解鎖</span>
+                  </button>
+                ) : <div />}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => { setIsUnlockModalOpen(false); setPinError(false); }}
+                    className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f2635] text-xs font-semibold cursor-pointer"
+                  >
+                    取消
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!pinInput.trim()}
+                    className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-xs transition-colors cursor-pointer shadow-md"
+                  >
+                    確認解鎖
+                  </button>
+                </div>
               </div>
             </form>
           </div>
