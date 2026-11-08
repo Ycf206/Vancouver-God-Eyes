@@ -246,6 +246,9 @@ export interface UIState {
   hiddenLayersInPanel: Record<string, boolean>;
   toggleLayerPanelHidden: (layerKey: string) => void;
   setHiddenLayersInPanel: (hidden: Record<string, boolean>) => void;
+  // 後台全域強制停用圖層底層資料 (使用者無法顯示該圖層)
+  disabledLayers: Record<string, boolean>;
+  setDisabledLayers: (disabled: Record<string, boolean>) => void;
   // 11.6 圖層控制顏色客製化
   layerCustomColors: Record<string, string>;
   setLayerCustomColor: (layerKey: string, color: string) => void;
@@ -490,6 +493,10 @@ export const useUIStore = create<UIState>()(
       toggleExportModal: () => set((state) => ({ isExportModalOpen: !state.isExportModalOpen })),
       toggleLayer: (layer) =>
         set((state) => {
+          if (state.disabledLayers && state.disabledLayers[layer]) {
+            // 被後台管理員全域關閉底層資料，禁止開啟
+            return state;
+          }
           const nextActive = !state.layers[layer];
           let nextSearchTarget = state.searchTarget;
           if (!nextActive && state.searchTarget) {
@@ -714,6 +721,17 @@ export const useUIStore = create<UIState>()(
           },
         })),
       setHiddenLayersInPanel: (hidden) => set({ hiddenLayersInPanel: hidden }),
+      disabledLayers: {},
+      setDisabledLayers: (disabled) =>
+        set((state) => {
+          const nextLayers = { ...state.layers };
+          for (const [k, v] of Object.entries(disabled)) {
+            if (v && k in nextLayers) {
+              (nextLayers as any)[k] = false;
+            }
+          }
+          return { disabledLayers: disabled, layers: nextLayers };
+        }),
       layerCustomColors: {},
       setLayerCustomColor: (layerKey, color) =>
         set((state) => ({
@@ -724,7 +742,18 @@ export const useUIStore = create<UIState>()(
         })),
       setLayerCustomColors: (colors) => set({ layerCustomColors: colors }),
       resetLayerCustomColors: () => set({ layerCustomColors: {} }),
-      setLayers: (newLayers) => set((state) => ({ layers: { ...state.layers, ...newLayers } })),
+      setLayers: (newLayers) =>
+        set((state) => {
+          const next = { ...state.layers, ...newLayers };
+          if (state.disabledLayers) {
+            for (const [k, v] of Object.entries(state.disabledLayers)) {
+              if (v && k in next) {
+                (next as any)[k] = false;
+              }
+            }
+          }
+          return { layers: next };
+        }),
     }),
 
     {
@@ -743,11 +772,34 @@ export const useUIStore = create<UIState>()(
         userLocation: (state.userLocation && !state.userLocation.isRealtime && !state.userLocation.address?.includes('即時') && !state.userLocation.address?.includes('GPS')) ? state.userLocation : null,
         navigationAddress: state.navigationAddress,
         hiddenLayersInPanel: state.hiddenLayersInPanel,
+        disabledLayers: state.disabledLayers,
         layerCustomColors: state.layerCustomColors,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       merge: (persistedState: any, currentState: UIState) => {
         const contourInterval = persistedState?.contourInterval || (persistedState?.layers?.contours ? '10m' : 'off');
+        const disabled = persistedState?.disabledLayers || {};
+        const mergedLayers: any = {
+          ...currentState.layers,
+          ...(persistedState?.layers || {}),
+          contours: contourInterval !== 'off',
+          busExchanges: persistedState?.layers?.busExchanges ?? true,
+          skytrainFareZones: persistedState?.layers?.skytrainFareZones || false,
+          localAreaBoundary: persistedState?.layers?.localAreaBoundary || false,
+          fuel: persistedState?.layers?.fuel || false,
+          tesla: persistedState?.layers?.tesla || false,
+          oneWayStreets: persistedState?.layers?.oneWayStreets || false,
+          snowRemovalRoutes: persistedState?.layers?.snowRemovalRoutes || false,
+          marineTerminals: persistedState?.layers?.marineTerminals ?? true,
+          crimeAreas: persistedState?.layers?.crimeAreas || false,
+          waterDistributionMains: persistedState?.layers?.waterDistributionMains || false,
+          sewerMains: persistedState?.layers?.sewerMains || false,
+        };
+        for (const [k, v] of Object.entries(disabled)) {
+          if (v && k in mergedLayers) {
+            mergedLayers[k] = false;
+          }
+        }
         return {
           ...currentState,
           ...persistedState,
@@ -761,23 +813,9 @@ export const useUIStore = create<UIState>()(
           userLocation: (persistedState?.userLocation && !persistedState?.userLocation?.isRealtime && !persistedState?.userLocation?.address?.includes('即時') && !persistedState?.userLocation?.address?.includes('GPS')) ? persistedState.userLocation : null,
           navigationAddress: persistedState?.navigationAddress || '',
           hiddenLayersInPanel: persistedState?.hiddenLayersInPanel || {},
+          disabledLayers: disabled,
           layerCustomColors: persistedState?.layerCustomColors || {},
-          layers: {
-            ...currentState.layers,
-            ...(persistedState?.layers || {}),
-            contours: contourInterval !== 'off',
-            busExchanges: persistedState?.layers?.busExchanges ?? true,
-            skytrainFareZones: persistedState?.layers?.skytrainFareZones || false,
-            localAreaBoundary: persistedState?.layers?.localAreaBoundary || false,
-            fuel: persistedState?.layers?.fuel || false,
-            tesla: persistedState?.layers?.tesla || false,
-            oneWayStreets: persistedState?.layers?.oneWayStreets || false,
-            snowRemovalRoutes: persistedState?.layers?.snowRemovalRoutes || false,
-            marineTerminals: persistedState?.layers?.marineTerminals ?? true,
-            crimeAreas: persistedState?.layers?.crimeAreas || false,
-            waterDistributionMains: persistedState?.layers?.waterDistributionMains || false,
-            sewerMains: persistedState?.layers?.sewerMains || false,
-          },
+          layers: mergedLayers,
         };
       },
     }

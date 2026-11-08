@@ -157,13 +157,43 @@ function parseFlightTimeToMs(timeStr?: string): number | null {
   if (!timeStr) return null;
   try {
     let s = timeStr.trim();
-    if (s.includes('T')) {
-      if (!s.endsWith('Z') && !s.match(/[+-]\d\d:\d\d$/)) {
-        s = `${s}-08:00`;
-      }
+    if (s.endsWith('Z') || s.match(/[+-]\d\d:\d\d$/)) {
       const t = new Date(s).getTime();
       return isNaN(t) ? null : t;
     }
+
+    let datePart = '';
+    let timePart = '';
+    if (s.includes('T')) {
+      [datePart, timePart] = s.split('T');
+    } else if (s.includes(' ')) {
+      [datePart, timePart] = s.split(' ');
+    } else if (s.includes(':')) {
+      datePart = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Vancouver' }).format(new Date());
+      timePart = s;
+    }
+
+    if (!datePart || !timePart) return null;
+    const [y, m, d] = datePart.split('-').map(Number);
+    const tParts = timePart.split(':').map(Number);
+    const h = tParts[0] || 0;
+    const min = tParts[1] || 0;
+    const sec = tParts[2] || 0;
+
+    // Convert local Vancouver time to epoch milliseconds with exact timezone offset
+    const utcGuess = Date.UTC(y, m - 1, d, h, min, sec);
+    const dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Vancouver',
+      year: 'numeric', month: 'numeric', day: 'numeric',
+      hour: 'numeric', minute: 'numeric', second: 'numeric',
+      hour12: false
+    });
+    const parts = dtf.formatToParts(new Date(utcGuess));
+    const p = (type: string) => Number(parts.find(x => x.type === type)?.value || 0);
+    const guessInVancUtc = Date.UTC(p('year'), p('month') - 1, p('day'), p('hour') % 24, p('minute'), p('second'));
+    const offset = guessInVancUtc - utcGuess;
+    const exactMs = utcGuess - offset;
+    return isNaN(exactMs) ? null : exactMs;
   } catch {}
   return null;
 }
@@ -268,12 +298,24 @@ export default function FlightScheduleModal() {
   const isFlightCompleted = (f: MergedFlight) => {
     const s = (f.status || '').toLowerCase();
     if (f.type === 'A') {
-      if (s.includes('arrived') || s.includes('已抵達') || s.includes('已降落')) return true;
+      if (
+        s.includes('arrived') || 
+        s.includes('已抵達') || 
+        s.includes('已降落') || 
+        s.includes('landed') || 
+        s.includes('baggage') || 
+        s.includes('行李')
+      ) return true;
     } else {
-      if (s.includes('departed') || s.includes('已起飛')) return true;
+      if (
+        s.includes('departed') || 
+        s.includes('已起飛') || 
+        s.includes('airborne') || 
+        s.includes('left')
+      ) return true;
     }
-    const targetMs = parseFlightTimeToMs(f.estimated_time || f.scheduled_time);
-    if (targetMs && Date.now() > targetMs + 10 * 60 * 1000) {
+    const targetMs = parseFlightTimeToMs(f.estimated_time || f.scheduled_time || (f.type === 'A' ? f.dest_arrival_time : f.origin_departure_time));
+    if (targetMs && Date.now() >= targetMs) {
       return true;
     }
     return false;

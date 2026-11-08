@@ -415,6 +415,8 @@ export default function AdminPage() {
   const toggleLayer = useUIStore((state) => state.toggleLayer);
   const hiddenLayersInPanel = useUIStore((state) => state.hiddenLayersInPanel);
   const toggleLayerPanelHidden = useUIStore((state) => state.toggleLayerPanelHidden);
+  const disabledLayers = useUIStore((state) => state.disabledLayers);
+  const setDisabledLayers = useUIStore((state) => state.setDisabledLayers);
   const layerCustomColors = useUIStore((state) => state.layerCustomColors);
   const setLayerCustomColor = useUIStore((state) => state.setLayerCustomColor);
   const resetLayerCustomColors = useUIStore((state) => state.resetLayerCustomColors);
@@ -790,12 +792,17 @@ export default function AdminPage() {
 
   // 切換底圖圖層資料啟用狀態並全域持久化至後端
   const handleToggleLayerData = async (layerKey: string) => {
-    const currentState = !!(layers as any)[layerKey];
-    const nextState = !currentState;
-    toggleLayer(layerKey as any);
+    const isCurrentlyDisabled = !!disabledLayers[layerKey];
+    const nextDisabled = !isCurrentlyDisabled;
+    const nextDisabledLayers = {
+      ...disabledLayers,
+      [layerKey]: nextDisabled
+    };
+    setDisabledLayers(nextDisabledLayers);
+
     await adminApiFetch('/api/admin/layers/config', {
       method: 'POST',
-      body: JSON.stringify({ layer_states: { [layerKey]: nextState } })
+      body: JSON.stringify({ disabled_layers: { [layerKey]: nextDisabled } })
     });
   };
 
@@ -1156,11 +1163,14 @@ export default function AdminPage() {
 
       // 查詢並同步後端全域圖層控制配置 (面板隱藏、自訂主題色彩、底圖啟用狀態)
       try {
-        const layersRes = await adminApiFetch<{ hidden_layers?: Record<string, boolean>; custom_colors?: Record<string, string>; layer_states?: Record<string, boolean> }>('/api/layers/config');
+        const layersRes = await adminApiFetch<{ hidden_layers?: Record<string, boolean>; disabled_layers?: Record<string, boolean>; custom_colors?: Record<string, string>; layer_states?: Record<string, boolean> }>('/api/layers/config');
         if (layersRes.ok && layersRes.data) {
           if (layersRes.data.hidden_layers) {
             setHiddenLayersInPanelState(layersRes.data.hidden_layers);
             useUIStore.getState().setHiddenLayersInPanel(layersRes.data.hidden_layers);
+          }
+          if (layersRes.data.disabled_layers) {
+            useUIStore.getState().setDisabledLayers(layersRes.data.disabled_layers);
           }
           if (layersRes.data.custom_colors) {
             useUIStore.getState().setLayerCustomColors(layersRes.data.custom_colors);
@@ -2563,7 +2573,8 @@ export default function AdminPage() {
                       return true;
                     }).map((layerItem) => {
                       const isHiddenInPanel = !!hiddenLayersInPanel[layerItem.id] || !!hiddenLayersInPanelState[layerItem.id];
-                      const isDataActive = !!(layers as any)[layerItem.id];
+                      const isDataDisabled = !!disabledLayers[layerItem.id];
+                      const isDataActive = !isDataDisabled;
                       const currentColor = layerCustomColors[layerItem.id] || layerItem.defaultColor;
                       const isColorCustomized = !!layerCustomColors[layerItem.id] && layerCustomColors[layerItem.id] !== layerItem.defaultColor;
 
@@ -2611,11 +2622,11 @@ export default function AdminPage() {
                               className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer inline-flex items-center gap-1.5 ${
                                 isDataActive
                                   ? 'bg-sky-950/70 text-sky-300 border-sky-600/50 hover:bg-sky-900/80 shadow-sm'
-                                  : 'bg-gray-800/60 text-gray-400 border-gray-700 hover:text-gray-200 hover:bg-gray-700/60'
+                                  : 'bg-rose-950/50 text-rose-300 border-rose-700/50 hover:bg-rose-900/70'
                               }`}
-                              title={isDataActive ? '點擊關閉此圖層資料 (全域前台同步生效)' : '點擊在地圖上啟用此圖層資料 (全域前台同步生效)'}
+                              title={isDataActive ? '點擊關閉此圖層底層資料 (全域前台同步停用，使用者無法開啟)' : '點擊啟用此圖層底層資料 (全域前台恢復使用)'}
                             >
-                              <span className={`w-2 h-2 rounded-full ${isDataActive ? 'bg-sky-400 animate-pulse' : 'bg-gray-500'}`} />
+                              <span className={`w-2 h-2 rounded-full ${isDataActive ? 'bg-sky-400 animate-pulse' : 'bg-rose-400'}`} />
                               <span>{isDataActive ? '圖層啟用中' : '圖層已關閉'}</span>
                             </button>
                           </td>
@@ -2741,9 +2752,6 @@ export default function AdminPage() {
                   >
                     套用
                   </button>
-                  <span className="text-[10px] text-gray-500 ml-0.5 hidden sm:inline">
-                    ({scheduleRetentionDays === 0 ? '0 為永久保留' : `保留近 ${scheduleRetentionDays} 天`})
-                  </span>
                 </div>
 
                 <button
@@ -2873,9 +2881,6 @@ export default function AdminPage() {
                   >
                     套用
                   </button>
-                  <span className="text-[10px] text-gray-500 ml-0.5 hidden sm:inline">
-                    ({systemRetentionDays === 0 ? '0 為永久保留' : `保留近 ${systemRetentionDays} 天`})
-                  </span>
                 </div>
 
                 {/* 等級篩選 */}

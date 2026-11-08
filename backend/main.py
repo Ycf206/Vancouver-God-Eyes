@@ -1450,18 +1450,92 @@ def get_yvr_news():
         print(f"Error serving yvr news: {e}")
         return []
 
+# In-memory cache for live parkade capacity (retained for up to 60 seconds to prevent rate limits)
+_LATEST_PARKADE_CAPACITY = None
+_LATEST_PARKADE_CAPACITY_TIME = 0.0
+
 @app.get("/api/airports/parkade-capacity")
 def get_yvr_parkade_capacity():
+    global _LATEST_PARKADE_CAPACITY, _LATEST_PARKADE_CAPACITY_TIME
+    now_ts = time.time()
+    if _LATEST_PARKADE_CAPACITY and (now_ts - _LATEST_PARKADE_CAPACITY_TIME < 30):
+        return _LATEST_PARKADE_CAPACITY
+
     url = "https://www.yvr.ca/_api/ParkadeCapacity"
+    # 支援在後台來源管理動態設定的自訂 URL
+    try:
+        cfg_paths = [
+            os.path.join(DATA_DIR, "admin_sources_config.json"),
+            os.path.join(os.path.dirname(__file__), "data", "admin_sources_config.json"),
+        ]
+        for p in cfg_paths:
+            if os.path.exists(p):
+                with open(p, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+                for s in cfg.get("sources", []):
+                    if s.get("id") == "airport_parking":
+                        u = s.get("source_url") or s.get("url")
+                        if u and str(u).strip():
+                            url = str(u).strip()
+                            break
+    except Exception:
+        pass
+
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
         "Referer": "https://www.yvr.ca/en/passengers/parking-yvr",
-        "Accept": "application/json, text/plain, */*"
+        "Origin": "https://www.yvr.ca",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-CA,en-US;q=0.9,en;q=0.8",
+        "Sec-Ch-Ua": '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"Windows"',
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin"
     }
+
+    # 1. 優先使用 requests，增加逾時至 15 秒與重試
+    for attempt in range(2):
+        try:
+            resp = requests.get(url, headers=headers, timeout=15)
+            if resp.status_code == 200:
+                data = resp.json()
+                values = data.get("value", [])
+                zones = {}
+                timestamp = datetime.now(timezone.utc).isoformat()
+                for item in values:
+                    if item.get("zone"):
+                        try:
+                            zones[item["zone"]] = int(item.get("available") or 0)
+                        except Exception:
+                            pass
+                    if item.get("timestamp"):
+                        timestamp = item["timestamp"]
+                result = {"success": True, "timestamp": timestamp, "zones": zones, "raw": values}
+                _LATEST_PARKADE_CAPACITY = result
+                _LATEST_PARKADE_CAPACITY_TIME = now_ts
+                return result
+        except Exception as e:
+            logger.warning(f"ParkadeCapacity requests attempt {attempt+1} failed: {e}")
+            time.sleep(0.5)
+
+    # 2. 次選使用系統 curl 繞過指紋攔截
     try:
-        resp = requests.get(url, headers=headers, timeout=6)
-        if resp.status_code == 200:
-            data = resp.json()
+        curl_bin = "curl.exe" if os.name == "nt" else "curl"
+        curl_args = [
+            curl_bin, "-s", url,
+            "-H", f"User-Agent: {headers['User-Agent']}",
+            "-H", f"Referer: {headers['Referer']}",
+            "-H", f"Origin: {headers['Origin']}",
+            "-H", f"Accept: {headers['Accept']}",
+            "-H", f"Accept-Language: {headers['Accept-Language']}",
+            "-H", f"Sec-Fetch-Mode: cors",
+            "-H", f"Sec-Fetch-Site: same-origin"
+        ]
+        res = subprocess.run(curl_args, capture_output=True, text=True, timeout=15)
+        if res.returncode == 0 and res.stdout and res.stdout.strip().startswith("{"):
+            data = json.loads(res.stdout)
             values = data.get("value", [])
             zones = {}
             timestamp = datetime.now(timezone.utc).isoformat()
@@ -1473,9 +1547,17 @@ def get_yvr_parkade_capacity():
                         pass
                 if item.get("timestamp"):
                     timestamp = item["timestamp"]
-            return {"success": True, "timestamp": timestamp, "zones": zones, "raw": values}
+            result = {"success": True, "timestamp": timestamp, "zones": zones, "raw": values}
+            _LATEST_PARKADE_CAPACITY = result
+            _LATEST_PARKADE_CAPACITY_TIME = now_ts
+            return result
     except Exception as e:
-        pass
+        logger.warning(f"ParkadeCapacity curl fallback failed: {e}")
+
+    # 3. 若本次失敗但有過去 10 分鐘內的真實即時資料，返回快取維持前台穩定
+    if _LATEST_PARKADE_CAPACITY and (now_ts - _LATEST_PARKADE_CAPACITY_TIME < 600):
+        return _LATEST_PARKADE_CAPACITY
+
     return {"success": False, "timestamp": datetime.now(timezone.utc).isoformat(), "zones": {}, "error": "無法連接 YVR 官方車位 API"}
 
 @app.get("/api/tides/live")
@@ -3859,17 +3941,18 @@ def load_layers_config() -> dict:
                 if isinstance(data, dict):
                     return {
                         "hidden_layers": data.get("hidden_layers") or {},
+                        "disabled_layers": data.get("disabled_layers") or {},
                         "custom_colors": data.get("custom_colors") or {},
                         "layer_states": data.get("layer_states") or {},
                     }
         except Exception as e:
             logger.warning(f"Failed to read admin_layers_config.json: {e}")
-    return {"hidden_layers": {}, "custom_colors": {}, "layer_states": {}}
+    return {"hidden_layers": {}, "disabled_layers": {}, "custom_colors": {}, "layer_states": {}}
 
 
 @app.get("/api/layers/config")
 def get_layers_config():
-    """公開前台與後台圖層全域設定 (包含面板隱藏、自訂色彩與啟用狀態)"""
+    """公開前台與後台圖層全域設定 (包含面板隱藏、底圖強制停用、自訂色彩與啟用狀態)"""
     return load_layers_config()
 
 
@@ -3882,6 +3965,8 @@ def save_layers_config(payload: dict = Body(...)):
         curr = load_layers_config()
         if "hidden_layers" in payload and isinstance(payload["hidden_layers"], dict):
             curr["hidden_layers"].update(payload["hidden_layers"])
+        if "disabled_layers" in payload and isinstance(payload["disabled_layers"], dict):
+            curr["disabled_layers"].update(payload["disabled_layers"])
         if "custom_colors" in payload and isinstance(payload["custom_colors"], dict):
             curr["custom_colors"].update(payload["custom_colors"])
         if "layer_states" in payload and isinstance(payload["layer_states"], dict):

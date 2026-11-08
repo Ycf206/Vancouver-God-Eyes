@@ -22,7 +22,11 @@ export async function GET() {
   const headers = [
     '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
     '-H', 'Referer: https://www.yvr.ca/en/passengers/parking-yvr',
-    '-H', 'Accept: application/json, text/plain, */*'
+    '-H', 'Origin: https://www.yvr.ca',
+    '-H', 'Accept: application/json, text/plain, */*',
+    '-H', 'Accept-Language: en-CA,en-US;q=0.9,en;q=0.8',
+    '-H', 'Sec-Fetch-Mode: cors',
+    '-H', 'Sec-Fetch-Site: same-origin'
   ];
 
   try {
@@ -32,9 +36,13 @@ export async function GET() {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
           'Referer': 'https://www.yvr.ca/en/passengers/parking-yvr',
-          'Accept': 'application/json, text/plain, */*'
+          'Origin': 'https://www.yvr.ca',
+          'Accept': 'application/json, text/plain, */*',
+          'Accept-Language': 'en-CA,en-US;q=0.9,en;q=0.8',
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Site': 'same-origin'
         },
-        signal: AbortSignal.timeout(6000)
+        signal: AbortSignal.timeout(12000)
       });
       if (res.ok) {
         stdout = await res.text();
@@ -44,8 +52,26 @@ export async function GET() {
     }
 
     if (!stdout || !stdout.trim().startsWith('{')) {
-      const resExec = await execFileAsync(curlBin, ['-s', url, ...headers], { timeout: 7000 });
+      const resExec = await execFileAsync(curlBin, ['-s', url, ...headers], { timeout: 12000 });
       stdout = resExec.stdout;
+    }
+
+    if (!stdout || !stdout.trim().startsWith('{')) {
+      // 次選：嘗試呼叫內部 FastAPI 後端獲取
+      const backendUrl = process.env.BACKEND_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+      const bRes = await fetch(`${backendUrl}/api/airports/parkade-capacity`, {
+        signal: AbortSignal.timeout(8000)
+      });
+      if (bRes.ok) {
+        const bJson = await bRes.json();
+        if (bJson && bJson.success) {
+          cachedData = bJson;
+          lastFetchTime = now;
+          return NextResponse.json(cachedData, {
+            headers: { 'Cache-Control': 'public, max-age=15, stale-while-revalidate=30' }
+          });
+        }
+      }
     }
 
     const json = JSON.parse(stdout);

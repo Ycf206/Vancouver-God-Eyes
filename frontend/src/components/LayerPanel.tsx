@@ -192,6 +192,7 @@ export default function LayerPanel() {
     isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule, isFlightScheduleOpen,
     toggleFerrySchedule, isFerryScheduleOpen, toggleMaritimeSchedule, isMaritimeScheduleOpen,
     contourInterval, setContourInterval, hiddenLayersInPanel,
+    disabledLayers,
     layerCustomColors
   } = useUIStore();
 
@@ -333,9 +334,10 @@ export default function LayerPanel() {
     if (hiddenLayersInPanel && hiddenLayersInPanel[layerKey]) {
       return null;
     }
-    const isActive = layers[layerKey];
+    const isDisabled = !!(disabledLayers && disabledLayers[layerKey]);
+    const isActive = !isDisabled && layers[layerKey];
     const customColor = layerCustomColors?.[layerKey];
-    const customStyle = (isActive && customColor) ? {
+    const customStyle = (!isDisabled && isActive && customColor) ? {
       borderColor: customColor,
       color: customColor,
       backgroundColor: `${customColor}22`,
@@ -344,18 +346,24 @@ export default function LayerPanel() {
 
     return (
       <button
-        onClick={() => toggleLayer(layerKey)}
+        onClick={() => {
+          if (isDisabled) return;
+          toggleLayer(layerKey);
+        }}
+        disabled={isDisabled}
         style={customStyle}
         className={`flex items-center gap-1.5 px-2 h-7 rounded border text-[10.5px] transition-all duration-150 justify-center truncate ${className} ${
-          isActive 
-            ? `${activeBg} ${activeBorder} ${colorClass} ${activeShadow} font-semibold` 
-            : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-gray-200 font-normal'
+          isDisabled
+            ? 'bg-[#151619] border-[#222327] text-gray-600 opacity-40 cursor-not-allowed font-normal'
+            : isActive 
+              ? `${activeBg} ${activeBorder} ${colorClass} ${activeShadow} font-semibold` 
+              : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-gray-200 font-normal'
         }`}
-        title={title || label}
+        title={isDisabled ? `${label} (此圖層底層資料已被管理員關閉)` : (title || label)}
       >
         <Icon 
-          className={`w-3.5 h-3.5 shrink-0 ${isActive ? '' : 'text-gray-500'}`} 
-          style={isActive && customColor ? { color: customColor } : undefined}
+          className={`w-3.5 h-3.5 shrink-0 ${isDisabled ? 'text-gray-600' : isActive ? '' : 'text-gray-500'}`} 
+          style={!isDisabled && isActive && customColor ? { color: customColor } : undefined}
         />
         {!iconOnly && <span className="truncate">{label}</span>}
       </button>
@@ -516,15 +524,18 @@ export default function LayerPanel() {
               ) : (
                 matchedLayers.map(item => {
                   const Icon = item.icon;
-                  const isLayerActive = item.isSpecialAction 
+                  const isLayerDisabled = !item.isSpecialAction && !!(disabledLayers && disabledLayers[item.id]);
+                  const isLayerActive = !isLayerDisabled && (item.isSpecialAction 
                     ? (item.id === 'flightSchedule' ? isFlightScheduleOpen : item.id === 'ferrySchedule' ? isFerryScheduleOpen : isMaritimeScheduleOpen)
-                    : !!(layers as any)[item.id];
+                    : !!(layers as any)[item.id]);
 
                   return (
                     <button
                       key={item.id}
                       type="button"
+                      disabled={isLayerDisabled}
                       onClick={() => {
+                        if (isLayerDisabled) return;
                         if (item.isSpecialAction) {
                           if (item.id === 'flightSchedule') toggleFlightSchedule();
                           else if (item.id === 'ferrySchedule') toggleFerrySchedule();
@@ -533,10 +544,13 @@ export default function LayerPanel() {
                           toggleLayer(item.id as any);
                         }
                       }}
-                      className={`flex items-center justify-between px-2 py-1.5 rounded text-left transition-all cursor-pointer ${
-                        isLayerActive 
-                          ? 'bg-emerald-950/60 border border-emerald-600/40 text-emerald-200' 
-                          : 'hover:bg-[#1f2533] text-gray-300'
+                      title={isLayerDisabled ? `${item.name} (此圖層底層資料已被管理員關閉)` : undefined}
+                      className={`flex items-center justify-between px-2 py-1.5 rounded text-left transition-all ${
+                        isLayerDisabled
+                          ? 'opacity-40 cursor-not-allowed bg-black/20 text-gray-500'
+                          : isLayerActive 
+                            ? 'bg-emerald-950/60 border border-emerald-600/40 text-emerald-200 cursor-pointer' 
+                            : 'hover:bg-[#1f2533] text-gray-300 cursor-pointer'
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0 pr-2">

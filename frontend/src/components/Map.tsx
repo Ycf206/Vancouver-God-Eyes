@@ -1624,12 +1624,20 @@ export default function AppMap() {
     setLoadingParkadeCapacity(true);
     try {
       let res = await fetch('/api/airports/parkade-capacity');
-      if (!res.ok) {
+      let json = res.ok ? await res.json() : null;
+      if (!json || !json.success) {
         const apiUrl = getApiUrl();
-        res = await fetch(`${apiUrl}/api/airports/parkade-capacity`);
+        const fallbackRes = await fetch(`${apiUrl}/api/airports/parkade-capacity`);
+        if (fallbackRes.ok) {
+          const fallbackJson = await fallbackRes.json();
+          if (fallbackJson && fallbackJson.success) {
+            json = fallbackJson;
+          } else if (!json) {
+            json = fallbackJson;
+          }
+        }
       }
-      if (res.ok) {
-        const json = await res.json();
+      if (json) {
         setParkadeCapacity(json);
       }
     } catch (err) {
@@ -3659,6 +3667,9 @@ export default function AppMap() {
           const cfg = await res.json();
           if (cfg.hidden_layers && typeof cfg.hidden_layers === 'object') {
             useUIStore.getState().setHiddenLayersInPanel(cfg.hidden_layers);
+          }
+          if (cfg.disabled_layers && typeof cfg.disabled_layers === 'object') {
+            useUIStore.getState().setDisabledLayers(cfg.disabled_layers);
           }
           if (cfg.custom_colors && typeof cfg.custom_colors === 'object') {
             useUIStore.getState().setLayerCustomColors(cfg.custom_colors);

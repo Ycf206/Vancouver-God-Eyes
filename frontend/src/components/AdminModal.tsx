@@ -149,6 +149,8 @@ export default function AdminModal() {
     toggleLayer,
     hiddenLayersInPanel,
     toggleLayerPanelHidden,
+    disabledLayers,
+    setDisabledLayers,
     layerCustomColors,
     setLayerCustomColor,
     resetLayerCustomColors
@@ -990,7 +992,8 @@ export default function AdminModal() {
                             return true;
                           }).map((layerItem) => {
                             const isHiddenInPanel = !!hiddenLayersInPanel[layerItem.id];
-                            const isDataActive = !!(layers as any)[layerItem.id];
+                            const isDataDisabled = !!disabledLayers[layerItem.id];
+                            const isDataActive = !isDataDisabled;
                             const currentColor = layerCustomColors[layerItem.id] || layerItem.defaultColor;
 
                             return (
@@ -1046,14 +1049,31 @@ export default function AdminModal() {
                                 <td className="py-3 px-4 whitespace-nowrap text-center">
                                   <button
                                     type="button"
-                                    onClick={() => toggleLayer(layerItem.id as any)}
+                                    onClick={async () => {
+                                      const nextDisabled = !isDataDisabled;
+                                      setDisabledLayers({
+                                        ...disabledLayers,
+                                        [layerItem.id]: nextDisabled
+                                      });
+                                      try {
+                                        const apiUrl = getApiUrl();
+                                        await fetch(`${apiUrl}/api/admin/layers/config`, {
+                                          method: 'POST',
+                                          headers: getAdminHeaders(),
+                                          body: JSON.stringify({
+                                            disabled_layers: { [layerItem.id]: nextDisabled }
+                                          })
+                                        });
+                                      } catch {}
+                                    }}
                                     className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all cursor-pointer ${
                                       isDataActive
-                                        ? 'bg-indigo-950/80 text-indigo-300 border-indigo-600/50 hover:bg-indigo-900/90'
-                                        : 'bg-gray-800/80 text-gray-400 border-gray-700 hover:text-gray-200'
+                                        ? 'bg-sky-950/80 text-sky-300 border-sky-600/50 hover:bg-sky-900/90'
+                                        : 'bg-rose-950/60 text-rose-300 border-rose-700/60 hover:bg-rose-900/80'
                                     }`}
+                                    title={isDataActive ? '點擊關閉此圖層底層資料 (全域前台同步停用)' : '點擊啟用此圖層底層資料 (全域前台恢復使用)'}
                                   >
-                                    {isDataActive ? '啟用中' : '關閉'}
+                                    {isDataActive ? '圖層啟用中' : '圖層已關閉'}
                                   </button>
                                 </td>
 
