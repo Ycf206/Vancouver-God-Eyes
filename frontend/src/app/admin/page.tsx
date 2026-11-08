@@ -764,7 +764,7 @@ export default function AdminPage() {
     await fetchAdminData();
   };
 
-  // 11.3 獨立圖層開關：切換並同步至 localStorage、Zustand 與後端
+  // 11.3 獨立圖層開關：切換並同步至 localStorage、Zustand 與後端全域設定
   const handleToggleLayerVisibility = async (sourceId: string, layerKey: string) => {
     const currentHidden = !!hiddenLayersInPanelState[layerKey];
     const nextHidden = !currentHidden;
@@ -781,6 +781,39 @@ export default function AdminPage() {
     await adminApiFetch('/api/admin/sources/visibility', {
       method: 'POST',
       body: JSON.stringify({ source_id: sourceId, hidden: nextHidden })
+    });
+    await adminApiFetch('/api/admin/layers/config', {
+      method: 'POST',
+      body: JSON.stringify({ hidden_layers: { [layerKey]: nextHidden } })
+    });
+  };
+
+  // 切換底圖圖層資料啟用狀態並全域持久化至後端
+  const handleToggleLayerData = async (layerKey: string) => {
+    const currentState = !!(layers as any)[layerKey];
+    const nextState = !currentState;
+    toggleLayer(layerKey as any);
+    await adminApiFetch('/api/admin/layers/config', {
+      method: 'POST',
+      body: JSON.stringify({ layer_states: { [layerKey]: nextState } })
+    });
+  };
+
+  // 修改主題色彩並全域持久化至後端
+  const handleSetLayerColor = async (layerKey: string, color: string) => {
+    setLayerCustomColor(layerKey, color);
+    await adminApiFetch('/api/admin/layers/config', {
+      method: 'POST',
+      body: JSON.stringify({ custom_colors: { [layerKey]: color } })
+    });
+  };
+
+  // 還原所有預設色彩並全域持久化至後端
+  const handleResetAllLayerColors = async () => {
+    resetLayerCustomColors();
+    await adminApiFetch('/api/admin/layers/config', {
+      method: 'POST',
+      body: JSON.stringify({ reset_colors: true })
     });
   };
 
@@ -1120,6 +1153,23 @@ export default function AdminPage() {
           token_masked: 'ghp_dev_mock_token_active'
         });
       }
+
+      // 查詢並同步後端全域圖層控制配置 (面板隱藏、自訂主題色彩、底圖啟用狀態)
+      try {
+        const layersRes = await adminApiFetch<{ hidden_layers?: Record<string, boolean>; custom_colors?: Record<string, string>; layer_states?: Record<string, boolean> }>('/api/layers/config');
+        if (layersRes.ok && layersRes.data) {
+          if (layersRes.data.hidden_layers) {
+            setHiddenLayersInPanelState(layersRes.data.hidden_layers);
+            useUIStore.getState().setHiddenLayersInPanel(layersRes.data.hidden_layers);
+          }
+          if (layersRes.data.custom_colors) {
+            useUIStore.getState().setLayerCustomColors(layersRes.data.custom_colors);
+          }
+          if (layersRes.data.layer_states) {
+            useUIStore.getState().setLayers(layersRes.data.layer_states);
+          }
+        }
+      } catch (_) {}
     } catch (err) {
       console.error('Failed to load admin data:', err);
       setSources(DEFAULT_ADMIN_SOURCES as DataSource[]);
@@ -2452,7 +2502,7 @@ export default function AdminPage() {
               {Object.keys(layerCustomColors).length > 0 && (
                 <button
                   type="button"
-                  onClick={resetLayerCustomColors}
+                  onClick={handleResetAllLayerColors}
                   className="px-3 py-1.5 rounded-lg bg-[#232b3f] hover:bg-rose-950/60 hover:text-rose-300 border border-gray-700 text-gray-300 text-xs shrink-0 cursor-pointer transition-colors font-medium flex items-center gap-1.5"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -2557,13 +2607,13 @@ export default function AdminPage() {
                           <td className="py-3 px-4 whitespace-nowrap text-center">
                             <button
                               type="button"
-                              onClick={() => toggleLayer(layerItem.id as any)}
+                              onClick={() => handleToggleLayerData(layerItem.id)}
                               className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer inline-flex items-center gap-1.5 ${
                                 isDataActive
                                   ? 'bg-sky-950/70 text-sky-300 border-sky-600/50 hover:bg-sky-900/80 shadow-sm'
                                   : 'bg-gray-800/60 text-gray-400 border-gray-700 hover:text-gray-200 hover:bg-gray-700/60'
                               }`}
-                              title={isDataActive ? '點擊關閉此圖層資料' : '點擊在地圖上啟用此圖層資料'}
+                              title={isDataActive ? '點擊關閉此圖層資料 (全域前台同步生效)' : '點擊在地圖上啟用此圖層資料 (全域前台同步生效)'}
                             >
                               <span className={`w-2 h-2 rounded-full ${isDataActive ? 'bg-sky-400 animate-pulse' : 'bg-gray-500'}`} />
                               <span>{isDataActive ? '圖層啟用中' : '圖層已關閉'}</span>
@@ -2576,9 +2626,9 @@ export default function AdminPage() {
                                 <input
                                   type="color"
                                   value={currentColor}
-                                  onChange={(e) => setLayerCustomColor(layerItem.id, e.target.value)}
+                                  onChange={(e) => handleSetLayerColor(layerItem.id, e.target.value)}
                                   className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent p-0"
-                                  title="點擊選擇任意顏色"
+                                  title="點擊選擇任意顏色 (全域前台同步生效)"
                                 />
                                 <span className="font-mono text-[11px] text-gray-300 uppercase">
                                   {currentColor}
@@ -2591,14 +2641,14 @@ export default function AdminPage() {
                                   <button
                                     key={preset}
                                     type="button"
-                                    onClick={() => setLayerCustomColor(layerItem.id, preset)}
+                                    onClick={() => handleSetLayerColor(layerItem.id, preset)}
                                     className={`w-4 h-4 rounded-full border transition-transform hover:scale-125 cursor-pointer ${
                                       currentColor.toLowerCase() === preset.toLowerCase()
                                         ? 'border-white scale-110 shadow-sm'
                                         : 'border-transparent opacity-70 hover:opacity-100'
                                     }`}
                                     style={{ backgroundColor: preset }}
-                                    title={`套用 ${preset}`}
+                                    title={`套用 ${preset} (全域前台同步生效)`}
                                   />
                                 ))}
                               </div>
@@ -2606,9 +2656,9 @@ export default function AdminPage() {
                               {isColorCustomized && (
                                 <button
                                   type="button"
-                                  onClick={() => setLayerCustomColor(layerItem.id, layerItem.defaultColor)}
+                                  onClick={() => handleSetLayerColor(layerItem.id, layerItem.defaultColor)}
                                   className="text-[10.5px] px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/30 hover:bg-rose-500/20 cursor-pointer font-medium transition-colors"
-                                  title={`恢復預設色彩 (${layerItem.defaultColor})`}
+                                  title={`恢復預設色彩 (${layerItem.defaultColor}) (全域前台同步生效)`}
                                 >
                                   重設預設
                                 </button>

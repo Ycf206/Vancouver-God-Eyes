@@ -39,7 +39,7 @@
           "cameraName": "Camera 1",
           "cameraDirection": "NorthEast",
           "cameraBearing": 70,
-          "cameraLastSuccess": "2026-11-08T04:01:58.498Z",
+          "cameraLastSuccess": "2026-11-08T04:44:11.479Z",
           "cameraInMaintenance": false,
           "cameraOutOfOrder": false,
           "siteId": 426,
@@ -50,6 +50,30 @@
           "latitude": 49.195,
           "longitude": -123.17824,
           "currentImages": [
+            {
+              "cameraId": 11347,
+              "imageFilename": "11347-1794113029852.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11347-1794113029852.jpg",
+              "imageDatetime": "2026-11-08T04:44:11.479Z"
+            },
+            {
+              "cameraId": 11347,
+              "imageFilename": "11347-1794112277885.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11347-1794112277885.jpg",
+              "imageDatetime": "2026-11-08T04:31:32.080Z"
+            },
+            {
+              "cameraId": 11347,
+              "imageFilename": "11347-1794111782744.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11347-1794111782744.jpg",
+              "imageDatetime": "2026-11-08T04:23:14.615Z"
+            },
+            {
+              "cameraId": 11347,
+              "imageFilename": "11347-1794111280770.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11347-1794111280770.jpg",
+              "imageDatetime": "2026-11-08T04:14:56.824Z"
+            },
             {
               "cameraId": 11347,
               "imageFilename": "11347-1794110508053.jpg",
@@ -241,30 +265,6 @@
               "imageFilename": "11347-1794091925789.jpg",
               "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794091925789.jpg",
               "imageDatetime": "2026-11-07T22:52:15.685Z"
-            },
-            {
-              "cameraId": 11347,
-              "imageFilename": "11347-1794091383750.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794091383750.jpg",
-              "imageDatetime": "2026-11-07T22:43:13.721Z"
-            },
-            {
-              "cameraId": 11347,
-              "imageFilename": "11347-1794090848032.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794090848032.jpg",
-              "imageDatetime": "2026-11-07T22:34:31.866Z"
-            },
-            {
-              "cameraId": 11347,
-              "imageFilename": "11347-1794090332520.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794090332520.jpg",
-              "imageDatetime": "2026-11-07T22:25:46.181Z"
-            },
-            {
-              "cameraId": 11347,
-              "imageFilename": "11347-1794089741276.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794089741276.jpg",
-              "imageDatetime": "2026-11-07T22:16:09.209Z"
             }
           ],
           "clearDayImage": {
@@ -278,7 +278,7 @@
           "cameraName": "Camera 3",
           "cameraDirection": "SouthWest",
           "cameraBearing": 250,
-          "cameraLastSuccess": "2026-11-08T03:56:10.517Z",
+          "cameraLastSuccess": "2026-11-08T04:43:11.355Z",
           "cameraInMaintenance": false,
           "cameraOutOfOrder": false,
           "siteId": 426,
@@ -289,6 +289,36 @@
           "latitude": 49.195,
           "longitude": -123.17824,
           "currentImages": [
+            {
+              "cameraId": 11349,
+              "imageFilename": "11349-1794112975547.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794112975547.jpg",
+              "imageDatetime": "2026-11-08T04:43:11.355Z"
+            },
+            {
+              "cameraId": 11349,
+              "imageFilename": "11349-1794112448568.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794112448568.jpg",
+              "imageDatetime": "2026-11-08T04:34:28.487Z"
+            },
+            {
+              "cameraId": 11349,
+              "imageFilename": "11349-1794111717606.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794111717606.jpg",
+              "imageDatetime": "2026-11-08T04:22:09.581Z"
+            },
+            {
+              "cameraId": 11349,
+              "imageFilename": "11349-1794111185519.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794111185519.jpg",
+              "imageDatetime": "2026-11-08T04:13:20.531Z"
+            },
+            {
+              "cameraId": 11349,
+              "imageFilename": "11349-1794110657494.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794110657494.jpg",
+              "imageDatetime": "2026-11-08T04:04:24.477Z"
+            },
             {
               "cameraId": 11349,
               "imageFilename": "11349-1794110169515.jpg",
@@ -474,36 +504,6 @@
               "imageFilename": "11349-1794092043456.jpg",
               "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794092043456.jpg",
               "imageDatetime": "2026-11-07T22:54:14.756Z"
-            },
-            {
-              "cameraId": 11349,
-              "imageFilename": "11349-1794091506914.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794091506914.jpg",
-              "imageDatetime": "2026-11-07T22:45:22.508Z"
-            },
-            {
-              "cameraId": 11349,
-              "imageFilename": "11349-1794090763262.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794090763262.jpg",
-              "imageDatetime": "2026-11-07T22:32:56.228Z"
-            },
-            {
-              "cameraId": 11349,
-              "imageFilename": "11349-1794090268190.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794090268190.jpg",
-              "imageDatetime": "2026-11-07T22:24:38.066Z"
-            },
-            {
-              "cameraId": 11349,
-              "imageFilename": "11349-1794089749053.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794089749053.jpg",
-              "imageDatetime": "2026-11-07T22:16:11.901Z"
-            },
-            {
-              "cameraId": 11349,
-              "imageFilename": "11349-1794088933579.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794088933579.jpg",
-              "imageDatetime": "2026-11-07T22:02:31.589Z"
             }
           ],
           "clearDayImage": {
@@ -517,7 +517,7 @@
           "cameraName": "Camera 2",
           "cameraDirection": "SouthEast",
           "cameraBearing": 130,
-          "cameraLastSuccess": "2026-11-08T04:01:18.880Z",
+          "cameraLastSuccess": "2026-11-08T04:44:03.712Z",
           "cameraInMaintenance": false,
           "cameraOutOfOrder": false,
           "siteId": 426,
@@ -528,6 +528,30 @@
           "latitude": 49.195,
           "longitude": -123.17824,
           "currentImages": [
+            {
+              "cameraId": 11348,
+              "imageFilename": "11348-1794113028376.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11348-1794113028376.jpg",
+              "imageDatetime": "2026-11-08T04:44:03.706Z"
+            },
+            {
+              "cameraId": 11348,
+              "imageFilename": "11348-1794112251405.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11348-1794112251405.jpg",
+              "imageDatetime": "2026-11-08T04:30:57.987Z"
+            },
+            {
+              "cameraId": 11348,
+              "imageFilename": "11348-1794111722767.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11348-1794111722767.jpg",
+              "imageDatetime": "2026-11-08T04:22:18.336Z"
+            },
+            {
+              "cameraId": 11348,
+              "imageFilename": "11348-1794111207422.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11348-1794111207422.jpg",
+              "imageDatetime": "2026-11-08T04:13:49.306Z"
+            },
             {
               "cameraId": 11348,
               "imageFilename": "11348-1794110470923.jpg",
@@ -719,30 +743,6 @@
               "imageFilename": "11348-1794091993592.jpg",
               "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794091993592.jpg",
               "imageDatetime": "2026-11-07T22:53:23.820Z"
-            },
-            {
-              "cameraId": 11348,
-              "imageFilename": "11348-1794091494738.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794091494738.jpg",
-              "imageDatetime": "2026-11-07T22:44:59.372Z"
-            },
-            {
-              "cameraId": 11348,
-              "imageFilename": "11348-1794090808262.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794090808262.jpg",
-              "imageDatetime": "2026-11-07T22:33:40.541Z"
-            },
-            {
-              "cameraId": 11348,
-              "imageFilename": "11348-1794090302246.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794090302246.jpg",
-              "imageDatetime": "2026-11-07T22:25:22.016Z"
-            },
-            {
-              "cameraId": 11348,
-              "imageFilename": "11348-1794089780725.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794089780725.jpg",
-              "imageDatetime": "2026-11-07T22:16:31.716Z"
             }
           ],
           "clearDayImage": {
@@ -756,7 +756,7 @@
           "cameraName": "Camera 4",
           "cameraDirection": "NorthWest",
           "cameraBearing": 310,
-          "cameraLastSuccess": "2026-11-08T04:02:16.702Z",
+          "cameraLastSuccess": "2026-11-08T04:43:56.791Z",
           "cameraInMaintenance": false,
           "cameraOutOfOrder": false,
           "siteId": 426,
@@ -767,6 +767,30 @@
           "latitude": 49.195,
           "longitude": -123.17824,
           "currentImages": [
+            {
+              "cameraId": 11350,
+              "imageFilename": "11350-1794113021977.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11350-1794113021977.jpg",
+              "imageDatetime": "2026-11-08T04:43:56.791Z"
+            },
+            {
+              "cameraId": 11350,
+              "imageFilename": "11350-1794112247931.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11350-1794112247931.jpg",
+              "imageDatetime": "2026-11-08T04:30:58.049Z"
+            },
+            {
+              "cameraId": 11350,
+              "imageFilename": "11350-1794111752870.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11350-1794111752870.jpg",
+              "imageDatetime": "2026-11-08T04:22:39.859Z"
+            },
+            {
+              "cameraId": 11350,
+              "imageFilename": "11350-1794111255177.jpg",
+              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11350-1794111255177.jpg",
+              "imageDatetime": "2026-11-08T04:14:28.574Z"
+            },
             {
               "cameraId": 11350,
               "imageFilename": "11350-1794110522456.jpg",
@@ -958,30 +982,6 @@
               "imageFilename": "11350-1794092019376.jpg",
               "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794092019376.jpg",
               "imageDatetime": "2026-11-07T22:53:57.623Z"
-            },
-            {
-              "cameraId": 11350,
-              "imageFilename": "11350-1794091482048.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794091482048.jpg",
-              "imageDatetime": "2026-11-07T22:44:55.151Z"
-            },
-            {
-              "cameraId": 11350,
-              "imageFilename": "11350-1794090778363.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794090778363.jpg",
-              "imageDatetime": "2026-11-07T22:33:10.516Z"
-            },
-            {
-              "cameraId": 11350,
-              "imageFilename": "11350-1794090283175.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794090283175.jpg",
-              "imageDatetime": "2026-11-07T22:24:56.125Z"
-            },
-            {
-              "cameraId": 11350,
-              "imageFilename": "11350-1794089766870.jpg",
-              "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794089766870.jpg",
-              "imageDatetime": "2026-11-07T22:16:25.294Z"
             }
           ],
           "clearDayImage": {
@@ -1034,11 +1034,72 @@
       ],
       "facilityType": null,
       "statusId": null,
-      "updatedAt": "2026-11-08T04:01:53.736Z",
+      "updatedAt": "2026-11-08T04:46:55.918Z",
       "statusDescription": null,
       "messages": []
     },
     "metars": [
+      {
+        "metarId": "fcae9d66-b3b6-4056-8a01-9f8e6bf62d07",
+        "rawText": "METAR CYVR 080400Z 18020G26KT 14SM -RA OVC064 13/13 A2959 RMK SC8 SLP024",
+        "stationId": "CYVR",
+        "observationDateTime": "2026-11-08T04:00:00.000Z",
+        "latitude": 49.183,
+        "longitude": -123.168,
+        "tempC": 13,
+        "dewpointC": 13,
+        "windDirDegrees": "180",
+        "windSpeedKnots": 20,
+        "windGustKnots": 26,
+        "visibilityStatuteMiles": 14,
+        "altimInHg": 29.59,
+        "seaLevelPressureMb": 1002.4,
+        "qualityControlFlags": null,
+        "wxString": "-RA",
+        "skyCondition": [
+          {
+            "skyCover": "OVC",
+            "cloudTopFtMsl": "6400",
+            "cloudBaseFtAgl": 6400
+          }
+        ],
+        "flightCategory": "VFR",
+        "threeHrPressureTendencyMb": null,
+        "maxtC": null,
+        "mintC": null,
+        "maxt24hrC": null,
+        "mint24hrC": null,
+        "precipIn": null,
+        "pcp3hrIn": null,
+        "pcp6hrIn": null,
+        "pcp24hrIn": null,
+        "snowIn": null,
+        "vertVisFt": null,
+        "ceilingFtAgl": 6400,
+        "metarType": "METAR",
+        "elevationM": 2,
+        "fetchTime": "2026-11-08T04:10:55.000Z",
+        "parsed": {
+          "maxtC": null,
+          "mintC": null,
+          "tempC": 13,
+          "remarks": "SC8 SLP024",
+          "windDir": "S",
+          "wxString": "Light Rain",
+          "altimInHg": "29.59",
+          "dewpointC": 13,
+          "skyCondition": [
+            {
+              "skyCover": "Overcast",
+              "cloudTopFtMsl": "6400",
+              "cloudBaseFtAgl": 6400
+            }
+          ],
+          "windDirDegrees": "180",
+          "seaLevelPressureMb": 1002,
+          "visibilityStatuteMi": "14"
+        }
+      },
       {
         "metarId": "90e47212-88e4-40e2-8475-7f08b2025533",
         "rawText": "SPECI CYVR 080344Z 19019G29KT 160V230 12SM RA OVC013 13/13 A2960 RMK SC8 SLP027",
@@ -1772,20 +1833,6 @@
         "isHazard": true
       },
       {
-        "notamId": "64da7a87-3db5-446a-ad51-f1dfae527f2b",
-        "nmsId": "FNSE_1_1793853054048000",
-        "icao": "CYVR",
-        "effectiveStartDate": "2026-11-05T04:30:00.000Z",
-        "effectiveEndDate": "2026-11-08T04:30:00.000Z",
-        "cancellationDate": null,
-        "lastUpdatedDate": "2026-11-05T04:30:00.000Z",
-        "type": "C",
-        "group": "Aerodrome",
-        "text": "TWY JC, APN VI TAXILANE BTN GATE 45 AND GATE 58 OPN",
-        "selectionCode": "QMXAK",
-        "isHazard": true
-      },
-      {
         "notamId": "2310a6e5-5599-4963-8466-99a7c26c293f",
         "nmsId": "FNSE_1_1793821792358000",
         "icao": "CYVR",
@@ -1983,6 +2030,307 @@
       }
     ],
     "tafs": [
+      {
+        "tafId": "ef8bb7a1-1549-4e39-b2d2-b37b885c0f45",
+        "rawText": "TAF AMD CYVR 080406Z 0804/0906 18018G28KT P6SM SCT060 OVC140 TEMPO 0804/0808 4SM -RA BR FEW020 OVC060 PROB30 0804/0808 1SM +SHRA BR BKN006 OVC020 FM080800 17015G25KT P6SM BKN030 TEMPO 0808/0815 5SM -RA BR BKN020 FM081500 20015KT P6SM BKN040 TEMPO 0815/0820 P6SM -RA FM082000 18010KT P6SM BKN050 FM090400 09008KT P6SM FEW050 RMK NXT FCST BY 080600Z",
+        "stationId": "CYVR",
+        "stationName": "Vancouver Intl",
+        "issueTime": "2026-11-08T04:06:00.000Z",
+        "fetchTime": "2026-11-08T04:41:40.000Z",
+        "bulletinTime": "2026-11-08T02:00:00.000Z",
+        "validTimeFrom": "2026-11-08T04:00:00.000Z",
+        "validTimeTo": "2026-11-09T06:00:00.000Z",
+        "remarks": "RMK NXT FCST BY 080600Z",
+        "latitude": 49.183,
+        "longitude": -123.168,
+        "elevationM": 2,
+        "forecast": [
+          {
+            "wxString": "+SHRA BR",
+            "fcstTimeTo": "2026-11-08T08:00:00.000Z",
+            "probability": "30",
+            "ceilingFtAgl": 600,
+            "fcstTimeFrom": "2026-11-08T04:00:00.000Z",
+            "skyCondition": [
+              {
+                "skyCover": "BKN",
+                "cloudTopFtMsl": "600",
+                "cloudBaseFtAgl": 600
+              },
+              {
+                "skyCover": "OVC",
+                "cloudTopFtMsl": "2000",
+                "cloudBaseFtAgl": 2000
+              }
+            ],
+            "flightCategory": "IFR",
+            "changeIndicator": "PROB",
+            "visibilityStatuteMi": 1
+          },
+          {
+            "fcstTimeTo": "2026-11-08T08:00:00.000Z",
+            "windGustKt": 28,
+            "windSpeedKt": 18,
+            "ceilingFtAgl": 14000,
+            "fcstTimeFrom": "2026-11-08T04:00:00.000Z",
+            "skyCondition": [
+              {
+                "skyCover": "SCT",
+                "cloudTopFtMsl": "6000",
+                "cloudBaseFtAgl": 6000
+              },
+              {
+                "skyCover": "OVC",
+                "cloudTopFtMsl": "14000",
+                "cloudBaseFtAgl": 14000
+              }
+            ],
+            "flightCategory": "VFR",
+            "windDirDegrees": 180,
+            "visibilityStatuteMi": 6
+          },
+          {
+            "wxString": "-RA BR",
+            "fcstTimeTo": "2026-11-08T08:00:00.000Z",
+            "ceilingFtAgl": 6000,
+            "fcstTimeFrom": "2026-11-08T04:00:00.000Z",
+            "skyCondition": [
+              {
+                "skyCover": "FEW",
+                "cloudTopFtMsl": "2000",
+                "cloudBaseFtAgl": 2000
+              },
+              {
+                "skyCover": "OVC",
+                "cloudTopFtMsl": "6000",
+                "cloudBaseFtAgl": 6000
+              }
+            ],
+            "flightCategory": "MVFR",
+            "changeIndicator": "TEMPO",
+            "visibilityStatuteMi": 4
+          },
+          {
+            "fcstTimeTo": "2026-11-08T15:00:00.000Z",
+            "windGustKt": 25,
+            "windSpeedKt": 15,
+            "ceilingFtAgl": 3000,
+            "fcstTimeFrom": "2026-11-08T08:00:00.000Z",
+            "skyCondition": [
+              {
+                "skyCover": "BKN",
+                "cloudTopFtMsl": "3000",
+                "cloudBaseFtAgl": 3000
+              }
+            ],
+            "flightCategory": "VFR",
+            "windDirDegrees": 170,
+            "changeIndicator": "FM",
+            "visibilityStatuteMi": 6
+          },
+          {
+            "fcstTimeTo": "2026-11-09T04:00:00.000Z",
+            "windSpeedKt": 10,
+            "ceilingFtAgl": 5000,
+            "fcstTimeFrom": "2026-11-08T20:00:00.000Z",
+            "skyCondition": [
+              {
+                "skyCover": "BKN",
+                "cloudTopFtMsl": "5000",
+                "cloudBaseFtAgl": 5000
+              }
+            ],
+            "flightCategory": "VFR",
+            "windDirDegrees": 180,
+            "changeIndicator": "FM",
+            "visibilityStatuteMi": 6
+          },
+          {
+            "fcstTimeTo": "2026-11-08T20:00:00.000Z",
+            "windSpeedKt": 15,
+            "ceilingFtAgl": 4000,
+            "fcstTimeFrom": "2026-11-08T15:00:00.000Z",
+            "skyCondition": [
+              {
+                "skyCover": "BKN",
+                "cloudTopFtMsl": "4000",
+                "cloudBaseFtAgl": 4000
+              }
+            ],
+            "flightCategory": "VFR",
+            "windDirDegrees": 200,
+            "changeIndicator": "FM",
+            "visibilityStatuteMi": 6
+          },
+          {
+            "wxString": "-RA",
+            "fcstTimeTo": "2026-11-08T20:00:00.000Z",
+            "ceilingFtAgl": null,
+            "fcstTimeFrom": "2026-11-08T15:00:00.000Z",
+            "flightCategory": "VFR",
+            "changeIndicator": "TEMPO",
+            "visibilityStatuteMi": 6
+          },
+          {
+            "fcstTimeTo": "2026-11-09T06:00:00.000Z",
+            "windSpeedKt": 8,
+            "ceilingFtAgl": null,
+            "fcstTimeFrom": "2026-11-09T04:00:00.000Z",
+            "skyCondition": [
+              {
+                "skyCover": "FEW",
+                "cloudTopFtMsl": "5000",
+                "cloudBaseFtAgl": 5000
+              }
+            ],
+            "flightCategory": "VFR",
+            "windDirDegrees": 90,
+            "changeIndicator": "FM",
+            "visibilityStatuteMi": 6
+          },
+          {
+            "wxString": "-RA BR",
+            "fcstTimeTo": "2026-11-08T15:00:00.000Z",
+            "ceilingFtAgl": 2000,
+            "fcstTimeFrom": "2026-11-08T08:00:00.000Z",
+            "skyCondition": [
+              {
+                "skyCover": "BKN",
+                "cloudTopFtMsl": "2000",
+                "cloudBaseFtAgl": 2000
+              }
+            ],
+            "flightCategory": "MVFR",
+            "changeIndicator": "TEMPO",
+            "visibilityStatuteMi": 5
+          }
+        ],
+        "parsed": {
+          "remarks": "RMK NXT FCST BY 080600Z",
+          "forecast": [
+            {
+              "wxString": "Heavy Shower(S) Rain; Mist",
+              "skyCondition": [
+                {
+                  "skyCover": "Broken",
+                  "cloudTopFtMsl": "600",
+                  "cloudBaseFtAgl": 600
+                },
+                {
+                  "skyCover": "Overcast",
+                  "cloudTopFtMsl": "2000",
+                  "cloudBaseFtAgl": 2000
+                }
+              ],
+              "changeIndicator": "PROB",
+              "visibilityStatuteMi": "1"
+            },
+            {
+              "windDir": "S",
+              "skyCondition": [
+                {
+                  "skyCover": "Scattered",
+                  "cloudTopFtMsl": "6000",
+                  "cloudBaseFtAgl": 6000
+                },
+                {
+                  "skyCover": "Overcast",
+                  "cloudTopFtMsl": "14000",
+                  "cloudBaseFtAgl": 14000
+                }
+              ],
+              "windDirDegrees": "180",
+              "visibilityStatuteMi": "6+"
+            },
+            {
+              "wxString": "Light Rain; Mist",
+              "skyCondition": [
+                {
+                  "skyCover": "Few",
+                  "cloudTopFtMsl": "2000",
+                  "cloudBaseFtAgl": 2000
+                },
+                {
+                  "skyCover": "Overcast",
+                  "cloudTopFtMsl": "6000",
+                  "cloudBaseFtAgl": 6000
+                }
+              ],
+              "changeIndicator": "Tempo",
+              "visibilityStatuteMi": "4"
+            },
+            {
+              "windDir": "S",
+              "skyCondition": [
+                {
+                  "skyCover": "Broken",
+                  "cloudTopFtMsl": "3000",
+                  "cloudBaseFtAgl": 3000
+                }
+              ],
+              "windDirDegrees": "170",
+              "changeIndicator": "From",
+              "visibilityStatuteMi": "6+"
+            },
+            {
+              "windDir": "S",
+              "skyCondition": [
+                {
+                  "skyCover": "Broken",
+                  "cloudTopFtMsl": "5000",
+                  "cloudBaseFtAgl": 5000
+                }
+              ],
+              "windDirDegrees": "180",
+              "changeIndicator": "From",
+              "visibilityStatuteMi": "6+"
+            },
+            {
+              "windDir": "SSW",
+              "skyCondition": [
+                {
+                  "skyCover": "Broken",
+                  "cloudTopFtMsl": "4000",
+                  "cloudBaseFtAgl": 4000
+                }
+              ],
+              "windDirDegrees": "200",
+              "changeIndicator": "From",
+              "visibilityStatuteMi": "6+"
+            },
+            {
+              "wxString": "Light Rain",
+              "changeIndicator": "Tempo",
+              "visibilityStatuteMi": "6+"
+            },
+            {
+              "windDir": "E",
+              "skyCondition": [
+                {
+                  "skyCover": "Few",
+                  "cloudTopFtMsl": "5000",
+                  "cloudBaseFtAgl": 5000
+                }
+              ],
+              "windDirDegrees": "090",
+              "changeIndicator": "From",
+              "visibilityStatuteMi": "6+"
+            },
+            {
+              "wxString": "Light Rain; Mist",
+              "skyCondition": [
+                {
+                  "skyCover": "Broken",
+                  "cloudTopFtMsl": "2000",
+                  "cloudBaseFtAgl": 2000
+                }
+              ],
+              "changeIndicator": "Tempo",
+              "visibilityStatuteMi": "5"
+            }
+          ]
+        }
+      },
       {
         "tafId": "d3c6daa4-bccd-46eb-9bfc-dee10ad69a79",
         "rawText": "TAF CYVR 080240Z 0803/0906 11015G25KT P6SM SCT090 OVC140 TEMPO 0803/0808 4SM -RA BR FEW020 OVC090 PROB30 0803/0808 1SM +SHRA BR BKN006 OVC020 FM080800 17015G25KT P6SM BKN030 TEMPO 0808/0815 5SM -RA BR BKN020 FM081500 20015KT P6SM BKN040 TEMPO 0815/0820 P6SM -RA FM082000 18010KT P6SM BKN050 FM090400 09008KT P6SM FEW050 RMK NXT FCST BY 080600Z",
@@ -5798,7 +6146,7 @@
       "cameraName": "Camera 1",
       "cameraDirection": "NorthEast",
       "cameraBearing": 70,
-      "cameraLastSuccess": "2026-11-08T04:01:58.498Z",
+      "cameraLastSuccess": "2026-11-08T04:44:11.479Z",
       "cameraInMaintenance": false,
       "cameraOutOfOrder": false,
       "siteId": 426,
@@ -5809,6 +6157,30 @@
       "latitude": 49.195,
       "longitude": -123.17824,
       "currentImages": [
+        {
+          "cameraId": 11347,
+          "imageFilename": "11347-1794113029852.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11347-1794113029852.jpg",
+          "imageDatetime": "2026-11-08T04:44:11.479Z"
+        },
+        {
+          "cameraId": 11347,
+          "imageFilename": "11347-1794112277885.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11347-1794112277885.jpg",
+          "imageDatetime": "2026-11-08T04:31:32.080Z"
+        },
+        {
+          "cameraId": 11347,
+          "imageFilename": "11347-1794111782744.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11347-1794111782744.jpg",
+          "imageDatetime": "2026-11-08T04:23:14.615Z"
+        },
+        {
+          "cameraId": 11347,
+          "imageFilename": "11347-1794111280770.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11347-1794111280770.jpg",
+          "imageDatetime": "2026-11-08T04:14:56.824Z"
+        },
         {
           "cameraId": 11347,
           "imageFilename": "11347-1794110508053.jpg",
@@ -6000,30 +6372,6 @@
           "imageFilename": "11347-1794091925789.jpg",
           "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794091925789.jpg",
           "imageDatetime": "2026-11-07T22:52:15.685Z"
-        },
-        {
-          "cameraId": 11347,
-          "imageFilename": "11347-1794091383750.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794091383750.jpg",
-          "imageDatetime": "2026-11-07T22:43:13.721Z"
-        },
-        {
-          "cameraId": 11347,
-          "imageFilename": "11347-1794090848032.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794090848032.jpg",
-          "imageDatetime": "2026-11-07T22:34:31.866Z"
-        },
-        {
-          "cameraId": 11347,
-          "imageFilename": "11347-1794090332520.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794090332520.jpg",
-          "imageDatetime": "2026-11-07T22:25:46.181Z"
-        },
-        {
-          "cameraId": 11347,
-          "imageFilename": "11347-1794089741276.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11347-1794089741276.jpg",
-          "imageDatetime": "2026-11-07T22:16:09.209Z"
         }
       ],
       "clearDayImage": {
@@ -6037,7 +6385,7 @@
       "cameraName": "Camera 3",
       "cameraDirection": "SouthWest",
       "cameraBearing": 250,
-      "cameraLastSuccess": "2026-11-08T03:56:10.517Z",
+      "cameraLastSuccess": "2026-11-08T04:43:11.355Z",
       "cameraInMaintenance": false,
       "cameraOutOfOrder": false,
       "siteId": 426,
@@ -6048,6 +6396,36 @@
       "latitude": 49.195,
       "longitude": -123.17824,
       "currentImages": [
+        {
+          "cameraId": 11349,
+          "imageFilename": "11349-1794112975547.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794112975547.jpg",
+          "imageDatetime": "2026-11-08T04:43:11.355Z"
+        },
+        {
+          "cameraId": 11349,
+          "imageFilename": "11349-1794112448568.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794112448568.jpg",
+          "imageDatetime": "2026-11-08T04:34:28.487Z"
+        },
+        {
+          "cameraId": 11349,
+          "imageFilename": "11349-1794111717606.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794111717606.jpg",
+          "imageDatetime": "2026-11-08T04:22:09.581Z"
+        },
+        {
+          "cameraId": 11349,
+          "imageFilename": "11349-1794111185519.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794111185519.jpg",
+          "imageDatetime": "2026-11-08T04:13:20.531Z"
+        },
+        {
+          "cameraId": 11349,
+          "imageFilename": "11349-1794110657494.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11349-1794110657494.jpg",
+          "imageDatetime": "2026-11-08T04:04:24.477Z"
+        },
         {
           "cameraId": 11349,
           "imageFilename": "11349-1794110169515.jpg",
@@ -6233,36 +6611,6 @@
           "imageFilename": "11349-1794092043456.jpg",
           "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794092043456.jpg",
           "imageDatetime": "2026-11-07T22:54:14.756Z"
-        },
-        {
-          "cameraId": 11349,
-          "imageFilename": "11349-1794091506914.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794091506914.jpg",
-          "imageDatetime": "2026-11-07T22:45:22.508Z"
-        },
-        {
-          "cameraId": 11349,
-          "imageFilename": "11349-1794090763262.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794090763262.jpg",
-          "imageDatetime": "2026-11-07T22:32:56.228Z"
-        },
-        {
-          "cameraId": 11349,
-          "imageFilename": "11349-1794090268190.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794090268190.jpg",
-          "imageDatetime": "2026-11-07T22:24:38.066Z"
-        },
-        {
-          "cameraId": 11349,
-          "imageFilename": "11349-1794089749053.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794089749053.jpg",
-          "imageDatetime": "2026-11-07T22:16:11.901Z"
-        },
-        {
-          "cameraId": 11349,
-          "imageFilename": "11349-1794088933579.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11349-1794088933579.jpg",
-          "imageDatetime": "2026-11-07T22:02:31.589Z"
         }
       ],
       "clearDayImage": {
@@ -6276,7 +6624,7 @@
       "cameraName": "Camera 2",
       "cameraDirection": "SouthEast",
       "cameraBearing": 130,
-      "cameraLastSuccess": "2026-11-08T04:01:18.880Z",
+      "cameraLastSuccess": "2026-11-08T04:44:03.712Z",
       "cameraInMaintenance": false,
       "cameraOutOfOrder": false,
       "siteId": 426,
@@ -6287,6 +6635,30 @@
       "latitude": 49.195,
       "longitude": -123.17824,
       "currentImages": [
+        {
+          "cameraId": 11348,
+          "imageFilename": "11348-1794113028376.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11348-1794113028376.jpg",
+          "imageDatetime": "2026-11-08T04:44:03.706Z"
+        },
+        {
+          "cameraId": 11348,
+          "imageFilename": "11348-1794112251405.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11348-1794112251405.jpg",
+          "imageDatetime": "2026-11-08T04:30:57.987Z"
+        },
+        {
+          "cameraId": 11348,
+          "imageFilename": "11348-1794111722767.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11348-1794111722767.jpg",
+          "imageDatetime": "2026-11-08T04:22:18.336Z"
+        },
+        {
+          "cameraId": 11348,
+          "imageFilename": "11348-1794111207422.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11348-1794111207422.jpg",
+          "imageDatetime": "2026-11-08T04:13:49.306Z"
+        },
         {
           "cameraId": 11348,
           "imageFilename": "11348-1794110470923.jpg",
@@ -6478,30 +6850,6 @@
           "imageFilename": "11348-1794091993592.jpg",
           "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794091993592.jpg",
           "imageDatetime": "2026-11-07T22:53:23.820Z"
-        },
-        {
-          "cameraId": 11348,
-          "imageFilename": "11348-1794091494738.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794091494738.jpg",
-          "imageDatetime": "2026-11-07T22:44:59.372Z"
-        },
-        {
-          "cameraId": 11348,
-          "imageFilename": "11348-1794090808262.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794090808262.jpg",
-          "imageDatetime": "2026-11-07T22:33:40.541Z"
-        },
-        {
-          "cameraId": 11348,
-          "imageFilename": "11348-1794090302246.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794090302246.jpg",
-          "imageDatetime": "2026-11-07T22:25:22.016Z"
-        },
-        {
-          "cameraId": 11348,
-          "imageFilename": "11348-1794089780725.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11348-1794089780725.jpg",
-          "imageDatetime": "2026-11-07T22:16:31.716Z"
         }
       ],
       "clearDayImage": {
@@ -6515,7 +6863,7 @@
       "cameraName": "Camera 4",
       "cameraDirection": "NorthWest",
       "cameraBearing": 310,
-      "cameraLastSuccess": "2026-11-08T04:02:16.702Z",
+      "cameraLastSuccess": "2026-11-08T04:43:56.791Z",
       "cameraInMaintenance": false,
       "cameraOutOfOrder": false,
       "siteId": 426,
@@ -6526,6 +6874,30 @@
       "latitude": 49.195,
       "longitude": -123.17824,
       "currentImages": [
+        {
+          "cameraId": 11350,
+          "imageFilename": "11350-1794113021977.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11350-1794113021977.jpg",
+          "imageDatetime": "2026-11-08T04:43:56.791Z"
+        },
+        {
+          "cameraId": 11350,
+          "imageFilename": "11350-1794112247931.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11350-1794112247931.jpg",
+          "imageDatetime": "2026-11-08T04:30:58.049Z"
+        },
+        {
+          "cameraId": 11350,
+          "imageFilename": "11350-1794111752870.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11350-1794111752870.jpg",
+          "imageDatetime": "2026-11-08T04:22:39.859Z"
+        },
+        {
+          "cameraId": 11350,
+          "imageFilename": "11350-1794111255177.jpg",
+          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/8/11350-1794111255177.jpg",
+          "imageDatetime": "2026-11-08T04:14:28.574Z"
+        },
         {
           "cameraId": 11350,
           "imageFilename": "11350-1794110522456.jpg",
@@ -6717,30 +7089,6 @@
           "imageFilename": "11350-1794092019376.jpg",
           "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794092019376.jpg",
           "imageDatetime": "2026-11-07T22:53:57.623Z"
-        },
-        {
-          "cameraId": 11350,
-          "imageFilename": "11350-1794091482048.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794091482048.jpg",
-          "imageDatetime": "2026-11-07T22:44:55.151Z"
-        },
-        {
-          "cameraId": 11350,
-          "imageFilename": "11350-1794090778363.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794090778363.jpg",
-          "imageDatetime": "2026-11-07T22:33:10.516Z"
-        },
-        {
-          "cameraId": 11350,
-          "imageFilename": "11350-1794090283175.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794090283175.jpg",
-          "imageDatetime": "2026-11-07T22:24:56.125Z"
-        },
-        {
-          "cameraId": 11350,
-          "imageFilename": "11350-1794089766870.jpg",
-          "imageUri": "https://images.wcams-static.faa.gov/webimages/426/7/11350-1794089766870.jpg",
-          "imageDatetime": "2026-11-07T22:16:25.294Z"
         }
       ],
       "clearDayImage": {
@@ -6751,6 +7099,67 @@
     }
   ],
   "metars": [
+    {
+      "metarId": "fcae9d66-b3b6-4056-8a01-9f8e6bf62d07",
+      "rawText": "METAR CYVR 080400Z 18020G26KT 14SM -RA OVC064 13/13 A2959 RMK SC8 SLP024",
+      "stationId": "CYVR",
+      "observationDateTime": "2026-11-08T04:00:00.000Z",
+      "latitude": 49.183,
+      "longitude": -123.168,
+      "tempC": 13,
+      "dewpointC": 13,
+      "windDirDegrees": "180",
+      "windSpeedKnots": 20,
+      "windGustKnots": 26,
+      "visibilityStatuteMiles": 14,
+      "altimInHg": 29.59,
+      "seaLevelPressureMb": 1002.4,
+      "qualityControlFlags": null,
+      "wxString": "-RA",
+      "skyCondition": [
+        {
+          "skyCover": "OVC",
+          "cloudTopFtMsl": "6400",
+          "cloudBaseFtAgl": 6400
+        }
+      ],
+      "flightCategory": "VFR",
+      "threeHrPressureTendencyMb": null,
+      "maxtC": null,
+      "mintC": null,
+      "maxt24hrC": null,
+      "mint24hrC": null,
+      "precipIn": null,
+      "pcp3hrIn": null,
+      "pcp6hrIn": null,
+      "pcp24hrIn": null,
+      "snowIn": null,
+      "vertVisFt": null,
+      "ceilingFtAgl": 6400,
+      "metarType": "METAR",
+      "elevationM": 2,
+      "fetchTime": "2026-11-08T04:10:55.000Z",
+      "parsed": {
+        "maxtC": null,
+        "mintC": null,
+        "tempC": 13,
+        "remarks": "SC8 SLP024",
+        "windDir": "S",
+        "wxString": "Light Rain",
+        "altimInHg": "29.59",
+        "dewpointC": 13,
+        "skyCondition": [
+          {
+            "skyCover": "Overcast",
+            "cloudTopFtMsl": "6400",
+            "cloudBaseFtAgl": 6400
+          }
+        ],
+        "windDirDegrees": "180",
+        "seaLevelPressureMb": 1002,
+        "visibilityStatuteMi": "14"
+      }
+    },
     {
       "metarId": "90e47212-88e4-40e2-8475-7f08b2025533",
       "rawText": "SPECI CYVR 080344Z 19019G29KT 160V230 12SM RA OVC013 13/13 A2960 RMK SC8 SLP027",

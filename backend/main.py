@@ -1450,6 +1450,34 @@ def get_yvr_news():
         print(f"Error serving yvr news: {e}")
         return []
 
+@app.get("/api/airports/parkade-capacity")
+def get_yvr_parkade_capacity():
+    url = "https://www.yvr.ca/_api/ParkadeCapacity"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+        "Referer": "https://www.yvr.ca/en/passengers/parking-yvr",
+        "Accept": "application/json, text/plain, */*"
+    }
+    try:
+        resp = requests.get(url, headers=headers, timeout=6)
+        if resp.status_code == 200:
+            data = resp.json()
+            values = data.get("value", [])
+            zones = {}
+            timestamp = datetime.now(timezone.utc).isoformat()
+            for item in values:
+                if item.get("zone"):
+                    try:
+                        zones[item["zone"]] = int(item.get("available") or 0)
+                    except Exception:
+                        pass
+                if item.get("timestamp"):
+                    timestamp = item["timestamp"]
+            return {"success": True, "timestamp": timestamp, "zones": zones, "raw": values}
+    except Exception as e:
+        pass
+    return {"success": False, "timestamp": datetime.now(timezone.utc).isoformat(), "zones": {}, "error": "無法連接 YVR 官方車位 API"}
+
 @app.get("/api/tides/live")
 def get_live_tides():
     import tides_service
@@ -3804,6 +3832,66 @@ def get_admin_config_path():
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
 
 
+def get_admin_layers_config_path():
+    candidate_paths = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_layers_config.json'),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backend', 'data', 'admin_layers_config.json'),
+        os.path.join(os.getcwd(), 'backend', 'data', 'admin_layers_config.json'),
+        os.path.join(os.getcwd(), 'data', 'admin_layers_config.json'),
+        '/app/data/admin_layers_config.json',
+        '/app/backend/data/admin_layers_config.json',
+    ]
+    for p in candidate_paths:
+        if os.path.exists(p):
+            return p
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_layers_config.json')
+
+
+_admin_layers_lock = threading.Lock()
+
+
+def load_layers_config() -> dict:
+    path = get_admin_layers_config_path()
+    if os.path.exists(path):
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return {
+                        "hidden_layers": data.get("hidden_layers") or {},
+                        "custom_colors": data.get("custom_colors") or {},
+                        "layer_states": data.get("layer_states") or {},
+                    }
+        except Exception as e:
+            logger.warning(f"Failed to read admin_layers_config.json: {e}")
+    return {"hidden_layers": {}, "custom_colors": {}, "layer_states": {}}
+
+
+@app.get("/api/layers/config")
+def get_layers_config():
+    """公開前台與後台圖層全域設定 (包含面板隱藏、自訂色彩與啟用狀態)"""
+    return load_layers_config()
+
+
+@app.post("/api/admin/layers/config")
+def save_layers_config(payload: dict = Body(...)):
+    """後台管理員全域更新圖層控制設定 (即時同步至前台)"""
+    path = get_admin_layers_config_path()
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with _admin_layers_lock:
+        curr = load_layers_config()
+        if "hidden_layers" in payload and isinstance(payload["hidden_layers"], dict):
+            curr["hidden_layers"].update(payload["hidden_layers"])
+        if "custom_colors" in payload and isinstance(payload["custom_colors"], dict):
+            curr["custom_colors"].update(payload["custom_colors"])
+        if "layer_states" in payload and isinstance(payload["layer_states"], dict):
+            curr["layer_states"].update(payload["layer_states"])
+        if "reset_colors" in payload and payload["reset_colors"]:
+            curr["custom_colors"] = {}
+        _atomic_write_json(path, curr)
+    return {"status": "success", "config": curr}
+
+
 def get_persisted_github_token():
     """
     從記憶體、所有可能的 .env 檔案與 admin_sources_config.json 深度恢復 GITHUB_TOKEN
@@ -5256,6 +5344,16 @@ def toggle_source_panel_visibility(payload: dict = Body(...)):
                         break
                 if found:
                     _atomic_write_json(config_path, cfg)
+                    # 同步更新 admin_layers_config.json
+                    try:
+                        with _admin_layers_lock:
+                            l_cfg = load_layers_config()
+                            if "hidden_layers" not in l_cfg:
+                                l_cfg["hidden_layers"] = {}
+                            l_cfg["hidden_layers"][source_id] = bool(hidden)
+                            _atomic_write_json(get_admin_layers_config_path(), l_cfg)
+                    except Exception:
+                        pass
                     return {"status": "success", "source_id": source_id, "hidden_in_layer_panel": bool(hidden)}
             return {"status": "error", "message": f"找不到數據源 {source_id}"}
         except Exception as e:

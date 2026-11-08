@@ -99,10 +99,12 @@ async def fetch_gasbuddy_prices_live(lat: float = 49.2827, lon: float = -123.120
     """Attempt to fetch live station prices via py-gasbuddy library."""
     price_map: Dict[str, Dict[str, float]] = {}
     try:
+        # 抑制外部函式庫內部錯誤拋出至全域系統日誌 (例如 GasBuddy GraphQL 臨時限制或 400 警告)
+        logging.getLogger("py_gasbuddy").setLevel(logging.CRITICAL)
         from py_gasbuddy import GasBuddy
         gb = GasBuddy()
-        # Query nearby stations in Metro Vancouver
-        res = await gb.price_lookup_service(lat=lat, lon=lon, limit=50)
+        # GasBuddy GraphQL 要求合理之 limit 限制 (建議 <= 15，過大將觸發 400 Bad Request)
+        res = await gb.price_lookup_service(lat=lat, lon=lon, limit=10)
         stations = res.get("stations", []) if isinstance(res, dict) else getattr(res, "stations", [])
         for st in stations:
             st_name = getattr(st, "name", "") or (st.get("name") if isinstance(st, dict) else "")
@@ -133,9 +135,9 @@ async def fetch_gasbuddy_prices_live(lat: float = 49.2827, lon: float = -123.120
                 except (ValueError, TypeError):
                     pass
     except ImportError as ie:
-        logger.info(f"py-gasbuddy 依賴模組 (如 backoff) 尚未就緒: {ie}")
+        logger.info(f"py-gasbuddy 依賴模組尚未就緒: {ie}")
     except Exception as e:
-        logger.warning(f"py-gasbuddy live lookup failed (using calibrated Vancouver benchmark): {e}")
+        logger.debug(f"py-gasbuddy live lookup: {e}")
     return price_map
 
 async def get_fuel_stations_data(user_lat: Optional[float] = None, user_lon: Optional[float] = None, fuel_type: str = "regular", sort_by: str = "best") -> List[Dict[str, Any]]:

@@ -18,6 +18,7 @@ export async function GET() {
   }
 
   const url = 'https://www.yvr.ca/_api/ParkadeCapacity';
+  const curlBin = process.platform === 'win32' ? 'curl.exe' : 'curl';
   const headers = [
     '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
     '-H', 'Referer: https://www.yvr.ca/en/passengers/parking-yvr',
@@ -25,7 +26,28 @@ export async function GET() {
   ];
 
   try {
-    const { stdout } = await execFileAsync('curl.exe', ['-s', url, ...headers], { timeout: 7000 });
+    let stdout = '';
+    try {
+      const res = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+          'Referer': 'https://www.yvr.ca/en/passengers/parking-yvr',
+          'Accept': 'application/json, text/plain, */*'
+        },
+        signal: AbortSignal.timeout(6000)
+      });
+      if (res.ok) {
+        stdout = await res.text();
+      }
+    } catch {
+      // fallback to curl subprocess
+    }
+
+    if (!stdout || !stdout.trim().startsWith('{')) {
+      const resExec = await execFileAsync(curlBin, ['-s', url, ...headers], { timeout: 7000 });
+      stdout = resExec.stdout;
+    }
+
     const json = JSON.parse(stdout);
     const values = json.value || [];
     const zones: Record<string, number> = {};
@@ -56,11 +78,11 @@ export async function GET() {
     if (cachedData) {
       return NextResponse.json(cachedData);
     }
-    // Return sensible fallback
+    // 嚴禁虛構/預設假資料，失敗時回傳真實狀態
     return NextResponse.json({
       success: false,
       timestamp: new Date().toISOString(),
-      zones: { P1: 60, P2: 340, P3: 35 },
+      zones: {},
       error: err?.message
     });
   }

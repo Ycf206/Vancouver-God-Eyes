@@ -1623,7 +1623,11 @@ export default function AppMap() {
   const fetchParkadeCapacity = useCallback(async () => {
     setLoadingParkadeCapacity(true);
     try {
-      const res = await fetch('/api/airports/parkade-capacity');
+      let res = await fetch('/api/airports/parkade-capacity');
+      if (!res.ok) {
+        const apiUrl = getApiUrl();
+        res = await fetch(`${apiUrl}/api/airports/parkade-capacity`);
+      }
       if (res.ok) {
         const json = await res.json();
         setParkadeCapacity(json);
@@ -3630,18 +3634,44 @@ export default function AppMap() {
          if(data && data.features) setFerryTerminals(data.features);
       }).catch(e => console.error(e));
 
-    fetch('/vancouver_airports.geojson')
+    fetch(`/vancouver_airports.geojson?_t=${Date.now()}`, { cache: 'no-store' })
       .then(r => r.json())
       .then(data => {
          if(data && data.features) setAirports(data.features);
       }).catch(e => {
         console.error(e);
         const apiUrl = getApiUrl();
-        fetch(`${apiUrl}/api/geojson/airports`)
+        fetch(`${apiUrl}/api/geojson/airports?_t=${Date.now()}`, { cache: 'no-store' })
           .then(r => r.json())
           .then(d => { if (d && d.features) setAirports(d.features); })
           .catch(err => console.error(err));
       });
+
+    // 同步後端管理員全域圖層設定 (隱藏清單、自訂主題色彩、底圖啟用狀態)
+    const fetchGlobalLayersConfig = async () => {
+      try {
+        const apiUrl = getApiUrl();
+        let res = await fetch(`${apiUrl}/api/layers/config?_t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) {
+          res = await fetch(`/api/layers/config?_t=${Date.now()}`, { cache: 'no-store' });
+        }
+        if (res.ok) {
+          const cfg = await res.json();
+          if (cfg.hidden_layers && typeof cfg.hidden_layers === 'object') {
+            useUIStore.getState().setHiddenLayersInPanel(cfg.hidden_layers);
+          }
+          if (cfg.custom_colors && typeof cfg.custom_colors === 'object') {
+            useUIStore.getState().setLayerCustomColors(cfg.custom_colors);
+          }
+          if (cfg.layer_states && typeof cfg.layer_states === 'object' && Object.keys(cfg.layer_states).length > 0) {
+            useUIStore.getState().setLayers(cfg.layer_states);
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to sync global layer config from backend:', err);
+      }
+    };
+    fetchGlobalLayersConfig();
   }, []);
 
   useEffect(() => {

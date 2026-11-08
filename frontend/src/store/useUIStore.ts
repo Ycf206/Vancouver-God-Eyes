@@ -249,7 +249,9 @@ export interface UIState {
   // 11.6 圖層控制顏色客製化
   layerCustomColors: Record<string, string>;
   setLayerCustomColor: (layerKey: string, color: string) => void;
+  setLayerCustomColors: (colors: Record<string, string>) => void;
   resetLayerCustomColors: () => void;
+  setLayers: (layers: Partial<UIState['layers']>) => void;
 }
 
 
@@ -720,7 +722,9 @@ export const useUIStore = create<UIState>()(
             [layerKey]: color,
           },
         })),
+      setLayerCustomColors: (colors) => set({ layerCustomColors: colors }),
       resetLayerCustomColors: () => set({ layerCustomColors: {} }),
+      setLayers: (newLayers) => set((state) => ({ layers: { ...state.layers, ...newLayers } })),
     }),
 
     {

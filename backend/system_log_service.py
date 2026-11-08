@@ -291,7 +291,7 @@ class SystemLogCaptureHandler(logging.Handler):
         if self._in_emit:
             return
         # 避免循環日誌與過多內部雜訊
-        if record.name.startswith("system_log_service"):
+        if record.name.startswith("system_log_service") or record.name.startswith("py_gasbuddy"):
             return
         self._in_emit = True
         try:
