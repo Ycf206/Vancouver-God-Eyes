@@ -5378,10 +5378,20 @@ function ExploreContent() {
                           </span>
                         )}
                         {isDirectExternal ? (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                            <span>外部</span>
-                            <ExternalLink className="w-2.5 h-2.5" />
-                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const externalUrl = job.ExternalSource?.Source?.[0]?.Url || job.ExternalSource?.Url || (typeof job.ExternalSource === 'string' ? job.ExternalSource : null);
+                              if (externalUrl) {
+                                setExternalJobConfirmation({ url: externalUrl, title: job.Title });
+                              }
+                            }}
+                            title="前往外部職缺網站"
+                            className="p-1 rounded bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 hover:text-amber-200 border border-amber-500/40 transition-colors cursor-pointer"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                          </button>
                         ) : isItemLoading ? (
                           <span className="inline-flex items-center gap-1 text-[10.5px] text-indigo-400">
                             <RefreshCw className="w-3 h-3 animate-spin" />
@@ -5426,12 +5436,11 @@ function ExploreContent() {
 
                     {/* Bottom Row: Salary + Date */}
                     <div className="flex items-center justify-between text-[11px] pt-1 border-t border-gray-800/80 mt-0.5">
-                      <div className="flex items-center gap-1 text-emerald-400 font-medium">
-                        <DollarSign className="w-3 h-3 shrink-0" />
+                      <div className="text-emerald-400 font-medium truncate pr-2">
                         <span>{job.SalarySummary || '薪資依面議或職位說明'}</span>
                       </div>
                       {job.DatePosted && (
-                        <div className="flex items-center gap-1 text-gray-500 text-[10.5px]">
+                        <div className="flex items-center gap-1 text-gray-500 text-[10.5px] shrink-0">
                           <Clock className="w-3 h-3" />
                           <span>{formatJobPostingDate(job.DatePosted)}</span>
                         </div>
