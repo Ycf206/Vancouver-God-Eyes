@@ -48,39 +48,45 @@ jobs:
           for f in backend/data/yvr_news_rss.json frontend/public/data/yvr_news.json; do
             if [ -f "$f" ]; then
               mkdir -p "/tmp/wf_stage/$(dirname "$f")"
-              cp "$f" "/tmp/wf_stage/$f"
+              cp -f "$f" "/tmp/wf_stage/$f"
             fi
           done
 
-          git fetch origin data 2>/dev/null || true
-          if git rev-parse --verify origin/data >/dev/null 2>&1; then
-            git checkout data
-          else
-            git checkout -b data
-          fi
+          git reset --hard HEAD
+          git clean -fd
 
-          if [ -d /tmp/wf_stage ]; then
-            cp -r /tmp/wf_stage/* ./ 2>/dev/null || true
-            rm -rf /tmp/wf_stage
-          fi
+          for attempt in 1 2 3 4 5; do
+            git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+            if git show-ref --verify --quiet refs/remotes/origin/data; then
+              git checkout -f -B data refs/remotes/origin/data
+            else
+              git checkout -f -B data
+            fi
 
-          git add backend/data/yvr_news_rss.json frontend/public/data/yvr_news.json || true
-          if git diff --staged --quiet; then
-            echo "No data changes to commit."
-            exit 0
-          fi
+            for f in backend/data/yvr_news_rss.json frontend/public/data/yvr_news.json; do
+              if [ -f "/tmp/wf_stage/$f" ]; then
+                mkdir -p "$(dirname "$f")"
+                cp -f "/tmp/wf_stage/$f" "$f"
+              fi
+            done
 
-          git commit -m "chore(data): daily sync YVR airport official news rss [skip ci]"
-          for attempt in 1 2 3; do
+            git add backend/data/yvr_news_rss.json frontend/public/data/yvr_news.json || true
+            if git diff --staged --quiet; then
+              echo "No data changes to commit."
+              rm -rf /tmp/wf_stage
+              exit 0
+            fi
+
+            git commit -m "chore(data): daily sync YVR airport official news rss [skip ci]"
             echo "Attempt $attempt: pushing data update to origin/data..."
             if git push origin data; then
               echo "Push succeeded on attempt $attempt."
+              rm -rf /tmp/wf_stage
               exit 0
             fi
-            echo "Push failed. Fetching and rebasing..."
-            git fetch origin data || true
-            git rebase origin/data || { git rebase --abort; git merge -X theirs origin/data -m "merge remote data updates"; } || true
+            echo "Push failed. Retrying..."
             sleep 2
           done
-          echo "Failed to push after 3 attempts."
+          rm -rf /tmp/wf_stage
+          echo "Failed to push after 5 attempts."
           exit 1
