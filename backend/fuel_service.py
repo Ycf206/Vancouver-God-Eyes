@@ -132,6 +132,8 @@ async def fetch_gasbuddy_prices_live(lat: float = 49.2827, lon: float = -123.120
                     }
                 except (ValueError, TypeError):
                     pass
+    except ImportError as ie:
+        logger.info(f"py-gasbuddy 依賴模組 (如 backoff) 尚未就緒: {ie}")
     except Exception as e:
         logger.warning(f"py-gasbuddy live lookup failed (using calibrated Vancouver benchmark): {e}")
     return price_map

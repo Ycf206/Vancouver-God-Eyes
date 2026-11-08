@@ -7,16 +7,17 @@ from datetime import datetime, timezone
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
-from base import update_admin_source_metadata
+from base import update_admin_source_metadata, get_source_endpoint_url
 
 PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".."))
 BACKEND_DATA_DIR = os.path.join(PROJECT_ROOT, "backend", "data")
 FRONTEND_DATA_DIR = os.path.join(PROJECT_ROOT, "frontend", "public")
 
-API_URL = "https://www.tntsupermarket.com/rest/V3/xmapi/get-store-eflyers?postcode=V6B1A1"
+DEFAULT_API_URL = "https://www.tntsupermarket.com/rest/V3/xmapi/get-store-eflyers?postcode=V6B1A1"
 
 def update_tnt_eflyers():
-    print("🛒 正在更新大統華 T&T 超市每週特價海報 (T&T Store E-flyers)...")
+    api_url = get_source_endpoint_url("tnt_eflyers", DEFAULT_API_URL)
+    print(f"🛒 正在更新大統華 T&T 超市每週特價海報 (URL: {api_url})...")
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         "Accept": "application/json, text/plain, */*",
@@ -31,7 +32,7 @@ def update_tnt_eflyers():
         "Sec-Fetch-Site": "same-origin"
     }
     req = urllib.request.Request(
-        API_URL,
+        api_url,
         headers=headers
     )
     

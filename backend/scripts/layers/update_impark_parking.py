@@ -5,11 +5,12 @@ from datetime import datetime, timezone
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from base import save_layer_geojson, load_existing_geojson
+from base import save_layer_geojson, load_existing_geojson, get_source_endpoint_url
 
 def update_impark_parking():
     print("🅿️ 正在更新 ImPark 私營停車場情報...")
-    url = "https://lots.impark.com/api/lots/IMP/en?latLoc=49.25143536989855&lngLoc=-123.21715982244642&latMin=49.185169174402894&lngMin=-123.40358407781751&latMax=49.31761273382262&lngMax=-123.03073556707533&csr=0&branchName="
+    default_url = "https://lots.impark.com/api/lots/IMP/en?latLoc=49.25143536989855&lngLoc=-123.21715982244642&latMin=49.185169174402894&lngMin=-123.40358407781751&latMax=49.31761273382262&lngMax=-123.03073556707533&csr=0&branchName="
+    url = get_source_endpoint_url("impark_parking", default_url)
     features = []
     try:
         resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)

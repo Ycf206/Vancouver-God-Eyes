@@ -123,11 +123,32 @@ def estimate_flight_duration(code: str) -> float:
     # Default fallback duration
     return 2.5
 
+def get_custom_yvr_base_url() -> str:
+    try:
+        cfg_paths = [
+            os.path.join(BACKEND_DIR, "data", "admin_sources_config.json"),
+            os.path.join(BACKEND_DIR, "..", "data", "admin_sources_config.json"),
+            "/app/data/admin_sources_config.json"
+        ]
+        for p in cfg_paths:
+            if os.path.exists(p):
+                with open(p, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+                for s in cfg.get("sources", []):
+                    if s.get("id") == "flight_schedules":
+                        u = s.get("source_url") or s.get("url")
+                        if u and str(u).strip():
+                            return str(u).strip().split("?")[0]
+    except Exception:
+        pass
+    return "https://www.yvr.ca/en/_api/Flights"
+
 def fetch_yvr_endpoint(f_type: str, today_str: str, tomorrow_str: str) -> List[Dict[str, Any]]:
     referer = "https://www.yvr.ca/en/passengers/flights/arriving-flights" if f_type == "A" else "https://www.yvr.ca/en/passengers/flights/departing-flights"
     filter_expr = f"((FlightScheduledTime gt DateTime'{today_str}T00:00:00' and FlightScheduledTime lt DateTime'{tomorrow_str}T00:00:00' and FlightType eq '{f_type}') or (FlightEstimatedTime gt DateTime'{today_str}T00:00:00' and FlightEstimatedTime lt DateTime'{tomorrow_str}T00:00:00' and FlightType eq '{f_type}'))"
     encoded_filter = urllib.parse.quote(filter_expr)
-    url = f"https://www.yvr.ca/en/_api/Flights?%24filter={encoded_filter}&%24orderby=FlightScheduledTime%20asc"
+    base_api = get_custom_yvr_base_url()
+    url = f"{base_api}?%24filter={encoded_filter}&%24orderby=FlightScheduledTime%20asc"
 
     req_headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",

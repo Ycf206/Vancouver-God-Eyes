@@ -39,7 +39,9 @@ import {
   History,
   Wrench,
   RotateCcw,
-  Copy
+  Copy,
+  Layers,
+  Palette
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
@@ -126,6 +128,74 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   public_trees: 'publicTrees',
   museums: 'museums',
 };
+
+// 圖層控制管理清單 (支援開關、面板顯示與主題色彩微調)
+const LAYER_CONTROLS_LIST = [
+  // 交通
+  { id: 'bus', name: '巴士車輛', category: '交通', defaultColor: '#10b981' },
+  { id: 'busRoutes', name: '巴士路線', category: '交通', defaultColor: '#10b981' },
+  { id: 'busExchanges', name: '巴士轉車站', category: '交通', defaultColor: '#10b981' },
+  { id: 'skytrainTrains', name: '天車列車 (推算)', category: '交通', defaultColor: '#3b82f6' },
+  { id: 'skytrainRoutes', name: '天車路線與車站', category: '交通', defaultColor: '#3b82f6' },
+  { id: 'skytrainFareZones', name: '天車收費分區', category: '交通', defaultColor: '#3b82f6' },
+  { id: 'seabusVehicles', name: '水上巴士船隻', category: '交通', defaultColor: '#00a4e4' },
+  { id: 'seabusRoutes', name: '水上巴士航線', category: '交通', defaultColor: '#00a4e4' },
+  { id: 'bcferriesVehicles', name: '卑詩渡輪船隻', category: '交通', defaultColor: '#0060a9' },
+  { id: 'bcferriesRoutes', name: '卑詩渡輪航線', category: '交通', defaultColor: '#0060a9' },
+  { id: 'maritimeShipping', name: '船運船隻', category: '交通', defaultColor: '#06b6d4' },
+  { id: 'marineTerminals', name: '船運碼頭', category: '交通', defaultColor: '#06b6d4' },
+  { id: 'airports', name: '機場', category: '交通', defaultColor: '#38bdf8' },
+  // 道路
+  { id: 'trafficConditions', name: '路況色帶', category: '道路', defaultColor: '#f97316' },
+  { id: 'trafficAlerts', name: '即時路況通報', category: '道路', defaultColor: '#ef4444' },
+  { id: 'trafficCameras', name: '交通攝影機', category: '道路', defaultColor: '#38bdf8' },
+  { id: 'safetyCameras', name: '安全攝影機', category: '道路', defaultColor: '#f43f5e' },
+  { id: 'parkingMeters', name: '咪錶停車位', category: '道路', defaultColor: '#3b82f6' },
+  { id: 'motorcycleParking', name: '電單車位', category: '道路', defaultColor: '#3b82f6' },
+  { id: 'accessibleParking', name: '無障礙車位', category: '道路', defaultColor: '#38bdf8' },
+  { id: 'evCharging', name: '充電站', category: '道路', defaultColor: '#10b981' },
+  { id: 'fuel', name: '加油站', category: '道路', defaultColor: '#f59e0b' },
+  { id: 'bikeways', name: '單車專用徑', category: '道路', defaultColor: '#14b8a6' },
+  { id: 'sharedBikes', name: '共享單車 (Mobi)', category: '道路', defaultColor: '#14b8a6' },
+  { id: 'escooter', name: '共享滑板車', category: '道路', defaultColor: '#84cc16' },
+  { id: 'snowRemovalRoutes', name: '除雪主要幹道', category: '道路', defaultColor: '#06b6d4' },
+  { id: 'oneWayStreets', name: '單行道導向', category: '道路', defaultColor: '#8b5cf6' },
+  { id: 'speedLimits', name: '限速路段', category: '道路', defaultColor: '#f59e0b' },
+  { id: 'crosswalks', name: '行人穿越道', category: '道路', defaultColor: '#ec4899' },
+  // 民生
+  { id: 'schools', name: '學校教育機構', category: '民生', defaultColor: '#3b82f6' },
+  { id: 'libraries', name: '公共圖書館', category: '民生', defaultColor: '#f59e0b' },
+  { id: 'communityCentres', name: '社區中心', category: '民生', defaultColor: '#8b5cf6' },
+  { id: 'parks', name: '都會公園', category: '民生', defaultColor: '#10b981' },
+  { id: 'drinkingFountains', name: '公共飲水台', category: '民生', defaultColor: '#38bdf8' },
+  { id: 'publicWashrooms', name: '公共洗手間', category: '民生', defaultColor: '#06b6d4' },
+  { id: 'foodVendors', name: '餐車與熟食市集', category: '民生', defaultColor: '#f97316' },
+  { id: 'foodBanks', name: '食物銀行據點', category: '民生', defaultColor: '#10b981' },
+  { id: 'homelessShelters', name: '庇護收容所', category: '民生', defaultColor: '#ec4899' },
+  { id: 'banks', name: '銀行與 ATM', category: '民生', defaultColor: '#3b82f6' },
+  { id: 'canadaPost', name: '加拿大郵政據點', category: '民生', defaultColor: '#ef4444' },
+  { id: 'fedex', name: 'FedEx 據點', category: '民生', defaultColor: '#8b5cf6' },
+  { id: 'purolator', name: 'Purolator 據點', category: '民生', defaultColor: '#3b82f6' },
+  { id: 'publicArt', name: '公共街頭藝術', category: '民生', defaultColor: '#a855f7' },
+  { id: 'museums', name: '博物館與展覽館', category: '民生', defaultColor: '#6366f1' },
+  { id: 'garbageCollection', name: '垃圾清運排程', category: '民生', defaultColor: '#10b981' },
+  { id: 'recycling', name: '資源回收站', category: '民生', defaultColor: '#14b8a6' },
+  // 安全
+  { id: 'hospitals', name: '醫院與緊急醫療', category: '安全', defaultColor: '#10b981' },
+  { id: 'police', name: '警察局', category: '安全', defaultColor: '#3b82f6' },
+  { id: 'fireHalls', name: '消防局', category: '安全', defaultColor: '#ef4444' },
+  { id: 'fireHydrants', name: '市政消防栓', category: '安全', defaultColor: '#ef4444' },
+  { id: 'disasterHubs', name: '災害支援中心', category: '安全', defaultColor: '#f59e0b' },
+  { id: 'aed', name: 'AED 急救心臟去顫器', category: '安全', defaultColor: '#ef4444' },
+  // 環境與地理
+  { id: 'beachWaterQuality', name: '海灘水質', category: '環境', defaultColor: '#06b6d4' },
+  { id: 'contours', name: '等高線高程', category: '地理', defaultColor: '#14b8a6' },
+  { id: 'tideStations', name: '潮汐監測站', category: '地理', defaultColor: '#0ea5e9' },
+  { id: 'waterDistributionMains', name: '自來水管道', category: '公共事業', defaultColor: '#38bdf8' },
+  { id: 'sewerMains', name: '污水管道', category: '公共事業', defaultColor: '#14b8a6' },
+  { id: 'streetLighting', name: '路燈燈柱', category: '公共事業', defaultColor: '#f59e0b' },
+  { id: 'streetLightingConduits', name: '路燈電網管道', category: '公共事業', defaultColor: '#fbbf24' },
+];
 
 // 系統 4 大標準分頁與按鈕類別 (對應主導航與探索面板)
 const SYSTEM_CATEGORIES = ['道路', '天氣', '生活', '公共事業'] as const;
@@ -320,6 +390,7 @@ interface DataSource {
   data_pipeline_notes?: string;
   source_links?: { label: string; url: string }[];
   source_url?: string;
+  url?: string;
 }
 
 interface AuditLog {
@@ -337,7 +408,24 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
-  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'system_logs' | 'analytics' | 'issues' | 'maintenance'>('sources');
+  const [mainTab, setMainTab] = useState<'sources' | 'layers' | 'logs' | 'system_logs' | 'analytics' | 'issues' | 'maintenance'>('sources');
+
+  // 圖層控制管理狀態 (Zustand store 整合)
+  const layers = useUIStore((state) => state.layers);
+  const toggleLayer = useUIStore((state) => state.toggleLayer);
+  const hiddenLayersInPanel = useUIStore((state) => state.hiddenLayersInPanel);
+  const toggleLayerPanelHidden = useUIStore((state) => state.toggleLayerPanelHidden);
+  const layerCustomColors = useUIStore((state) => state.layerCustomColors);
+  const setLayerCustomColor = useUIStore((state) => state.setLayerCustomColor);
+  const resetLayerCustomColors = useUIStore((state) => state.resetLayerCustomColors);
+  const [layerSearchQuery, setLayerSearchQuery] = useState('');
+  const [layerCategoryFilter, setLayerCategoryFilter] = useState('all');
+
+  // 資料源來源連結 (URL) 線上編輯狀態
+  const [editingUrlId, setEditingUrlId] = useState<string | null>(null);
+  const [editingUrlVal, setEditingUrlVal] = useState<string>('');
+  const [isSavingUrl, setIsSavingUrl] = useState<boolean>(false);
+  const [savedUrlSuccessId, setSavedUrlSuccessId] = useState<string | null>(null);
   const [maintenanceEnabled, setMaintenanceEnabled] = useState(false);
   const [maintenanceMessage, setMaintenanceMessage] = useState('系統正在進行例行升級與維護，請稍後再試。');
   const [maintenanceUpdatedAt, setMaintenanceUpdatedAt] = useState<string | null>(null);
@@ -611,6 +699,29 @@ export default function AdminPage() {
     }
   };
 
+  // 3.1 手動設定並儲存特定資料源之 API / 爬取連結
+  const handleSaveSourceUrl = async (sourceId: string, newUrl: string) => {
+    setIsSavingUrl(true);
+    try {
+      const res = await adminApiFetch<{ status: string; message: string }>('/api/admin/sources/url', {
+        method: 'POST',
+        body: JSON.stringify({ source_id: sourceId, source_url: newUrl })
+      });
+      if (res.ok) {
+        setSources(prev => prev.map(s => s.id === sourceId ? { ...s, source_url: newUrl, url: newUrl } : s));
+        setEditingUrlId(null);
+        setSavedUrlSuccessId(sourceId);
+        setTimeout(() => setSavedUrlSuccessId(null), 3000);
+      } else {
+        alert(res.error || '儲存來源 URL 失敗');
+      }
+    } catch (err: any) {
+      alert(err?.message || '儲存來源 URL 網路連線錯誤');
+    } finally {
+      setIsSavingUrl(false);
+    }
+  };
+
   // 11.4 設定系統日誌保留期限 (自定義天數)
   const handleSystemRetentionChange = async (days: number) => {
     const safeDays = Math.max(0, Math.floor(isNaN(days) ? 0 : days));
@@ -875,6 +986,9 @@ export default function AdminPage() {
       if (sessionToken) {
         customHeaders['X-Admin-Token'] = sessionToken;
         customHeaders['Authorization'] = `Bearer ${sessionToken}`;
+      }
+      if (isDev) {
+        customHeaders['X-Admin-Dev-Bypass'] = 'true';
       }
       return await fetch(url, {
         ...options,
@@ -1350,7 +1464,16 @@ export default function AdminPage() {
             {isDev && (
               <button
                 type="button"
-                onClick={() => {
+                onClick={async () => {
+                  try {
+                    const res = await adminApiFetch<{ ok: boolean; token?: string }>('/api/admin/auth/login', {
+                      method: 'POST',
+                      body: JSON.stringify({ dev_bypass: true, password: 'dev' })
+                    });
+                    if (res.data?.token && typeof window !== 'undefined') {
+                      sessionStorage.setItem('gods_eye_admin_session_token', res.data.token);
+                    }
+                  } catch (_) {}
                   if (typeof window !== 'undefined') {
                     sessionStorage.setItem('gods_eye_admin_unlocked', 'true');
                   }
@@ -1472,6 +1595,27 @@ export default function AdminPage() {
               {sources.length}
             </span>
             {mainTab === 'sources' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
+
+          {/* 3.3 新增分頁: 圖層控制 */}
+          <button
+            onClick={() => setMainTab('layers')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'layers'
+                ? 'bg-[#141822] text-white border-t-2 border-t-sky-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <Layers className={`w-3.5 h-3.5 ${mainTab === 'layers' ? 'text-sky-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>圖層控制</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+              mainTab === 'layers' ? 'bg-sky-500/20 text-sky-300' : 'bg-black/30 text-gray-500'
+            }`}>
+              {LAYER_CONTROLS_LIST.length}
+            </span>
+            {mainTab === 'layers' && (
               <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
             )}
           </button>
@@ -1770,7 +1914,7 @@ export default function AdminPage() {
                           {sortField === 'schedule_interval' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th className="py-2.5 px-2 w-[100px]">來源連結</th>
+                      <th className="py-2.5 px-2 min-w-[220px]">來源 API / 爬取連結 (點擊可修改)</th>
                       <th onClick={() => handleSort('last_updated')} className="py-2.5 px-2 w-[115px] whitespace-nowrap cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>上次更新</span>
@@ -2102,36 +2246,70 @@ export default function AdminPage() {
                             )}
                           </td>
 
-                          {/* 來源連結 / 端點 */}
+                          {/* 3.1 來源連結 / 可手動修改之 API 端點 */}
                           <td className="py-2.5 px-2">
-                            <div className="flex flex-wrap items-center gap-1.5 max-w-[140px]">
-                              {source.source_links && source.source_links.length > 0 ? (
-                                source.source_links.map((link, idx) => (
-                                  <a
-                                    key={idx}
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] hover:bg-sky-950/80 text-sky-300 hover:text-sky-200 border border-[#2f3950] hover:border-sky-500/40 transition-all shadow-xs max-w-[130px] truncate"
-                                    title={link.url}
+                            <div className="flex items-center gap-1.5 min-w-[220px]">
+                              {editingUrlId === source.id ? (
+                                <div className="flex items-center gap-1 w-full">
+                                  <input
+                                    type="text"
+                                    value={editingUrlVal}
+                                    onChange={(e) => setEditingUrlVal(e.target.value)}
+                                    placeholder="https://..."
+                                    className="flex-1 bg-[#131722] border border-indigo-500/80 rounded px-2 py-1 text-xs text-white outline-none font-mono focus:ring-1 focus:ring-indigo-500"
+                                    autoFocus
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') handleSaveSourceUrl(source.id, editingUrlVal);
+                                      if (e.key === 'Escape') setEditingUrlId(null);
+                                    }}
+                                  />
+                                  <button
+                                    type="button"
+                                    disabled={isSavingUrl}
+                                    onClick={() => handleSaveSourceUrl(source.id, editingUrlVal)}
+                                    className="p-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer shadow-xs disabled:opacity-50"
+                                    title="儲存 API 連結"
                                   >
-                                    <ExternalLink className="w-2.5 h-2.5 shrink-0 text-sky-400" />
-                                    <span className="truncate">{link.label}</span>
-                                  </a>
-                                ))
-                              ) : source.source_url ? (
-                                <a
-                                  href={source.source_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] hover:bg-sky-950/80 text-sky-300 hover:text-sky-200 border border-[#2f3950] hover:border-sky-500/40 transition-all shadow-xs"
-                                  title={source.source_url}
-                                >
-                                  <ExternalLink className="w-2.5 h-2.5 shrink-0 text-sky-400" />
-                                  <span>資料端點</span>
-                                </a>
+                                    <Check className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingUrlId(null)}
+                                    className="p-1 rounded bg-[#252c3d] hover:bg-[#323b52] text-gray-400 hover:text-white cursor-pointer"
+                                    title="取消"
+                                  >
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
                               ) : (
-                                <span className="text-gray-500 font-mono text-[10px]">—</span>
+                                <div className="flex items-center gap-1.5 w-full group/url">
+                                  <input
+                                    type="text"
+                                    readOnly
+                                    value={source.source_url || source.url || ''}
+                                    onClick={() => {
+                                      setEditingUrlId(source.id);
+                                      setEditingUrlVal(source.source_url || source.url || '');
+                                    }}
+                                    placeholder="點擊設定自訂 API / 爬取連結..."
+                                    className="flex-1 bg-[#151924] hover:bg-[#1c2232] border border-[#2b3347] hover:border-indigo-500/50 rounded px-2 py-1 text-[11px] text-gray-300 hover:text-white font-mono cursor-pointer transition-colors truncate"
+                                    title="點擊以修改此資料源之 API 連結或爬取 URL"
+                                  />
+                                  {(source.source_url || source.url) && (
+                                    <a
+                                      href={source.source_url || source.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="p-1 rounded text-gray-400 hover:text-sky-300 hover:bg-sky-500/10 border border-transparent hover:border-sky-500/30 transition-all cursor-pointer shrink-0"
+                                      title="開啟並測試此端點連結"
+                                    >
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  )}
+                                  {savedUrlSuccessId === source.id && (
+                                    <span className="text-[10px] text-emerald-400 font-bold shrink-0 animate-pulse">已儲存</span>
+                                  )}
+                                </div>
                               )}
                             </div>
                           </td>
@@ -2226,7 +2404,7 @@ export default function AdminPage() {
                                 <Sliders className="w-3.5 h-3.5" />
                               </button>
 
-                              {/* 啟用/暫停切換 */}
+                               {/* 啟用/暫停切換 */}
                               <button
                                 disabled={!isUnlocked}
                                 onClick={() => handleToggleEnabled(source)}
@@ -2241,29 +2419,6 @@ export default function AdminPage() {
                               >
                                 {source.enabled !== false ? '啟用' : '暫停'}
                               </button>
-
-                              {/* 11.3 獨立圖層開關: 顯示或隱藏在圖層控制界面中 */}
-                              {SOURCE_TO_LAYER_MAP[source.id] && (() => {
-                                const layerKey = SOURCE_TO_LAYER_MAP[source.id];
-                                const isLayerHidden = !!hiddenLayersInPanelState[layerKey];
-                                return (
-                                  <button
-                                    type="button"
-                                    onClick={() => handleToggleLayerVisibility(source.id, layerKey)}
-                                    className={`p-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
-                                      isLayerHidden
-                                        ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25'
-                                        : 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/25'
-                                    }`}
-                                    title={isLayerHidden ? '目前在圖層控制面板中【隱藏】，點擊切換為【顯示】' : '目前在圖層控制面板中【顯示】，點擊切換為【隱藏】'}
-                                  >
-                                    {isLayerHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                                    <span className="text-[10px] hidden xl:inline">
-                                      {isLayerHidden ? '面板隱藏' : '面板顯示'}
-                                    </span>
-                                  </button>
-                                );
-                              })()}
                             </div>
                           </td>
                         </tr>
@@ -2277,6 +2432,207 @@ export default function AdminPage() {
                 <div className="py-12 text-center text-gray-500 text-xs flex flex-col items-center gap-2">
                   <AlertCircle className="w-6 h-6 text-gray-600" />
                   <span>沒有符合條件的數據源項目</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 3.3 分頁: 圖層控制 (面板顯示、圖層資料開關、主題色彩修改) */}
+        {mainTab === 'layers' && (
+          <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col space-y-4 p-5">
+            {/* Header info & Reset All */}
+            <div className="bg-sky-950/30 p-3.5 rounded-xl border border-sky-500/30 text-xs text-sky-200 flex items-start justify-between gap-3">
+              <div className="flex items-start gap-2.5">
+                <Sliders className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+                <div className="leading-relaxed">
+                  管理員可在此自訂全域各圖層在左側控制面板之顯示/隱藏、直接開關底圖圖層資料，以及隨選調整圖層專屬主題顏色（包含控制按鈕、地圖圓點、色帶與彈出視窗）。
+                </div>
+              </div>
+              {Object.keys(layerCustomColors).length > 0 && (
+                <button
+                  type="button"
+                  onClick={resetLayerCustomColors}
+                  className="px-3 py-1.5 rounded-lg bg-[#232b3f] hover:bg-rose-950/60 hover:text-rose-300 border border-gray-700 text-gray-300 text-xs shrink-0 cursor-pointer transition-colors font-medium flex items-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>還原所有預設色彩 ({Object.keys(layerCustomColors).length})</span>
+                </button>
+              )}
+            </div>
+
+            {/* Search and Category Filter */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div className="relative flex-1 max-w-md">
+                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={layerSearchQuery}
+                  onChange={(e) => setLayerSearchQuery(e.target.value)}
+                  placeholder="搜尋圖層名稱、標識或分類..."
+                  className="w-full bg-[#161a29] text-gray-200 text-xs pl-9 pr-4 py-2.5 rounded-xl border border-[#273047] focus:outline-none focus:border-sky-500 transition-colors"
+                />
+              </div>
+
+              <div className="flex items-center gap-1.5 bg-[#161a29] p-1 rounded-xl border border-[#2a334d] text-xs overflow-x-auto scrollbar-none">
+                {['all', '交通', '道路', '民生', '安全', '公共事業', '地理', '環境'].map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setLayerCategoryFilter(cat)}
+                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0 font-medium ${
+                      layerCategoryFilter === cat ? 'bg-sky-600 text-white shadow-sm' : 'text-gray-400 hover:text-white hover:bg-[#202738]'
+                    }`}
+                  >
+                    {cat === 'all' ? '全部圖層' : cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Layers Table */}
+            <div className="bg-[#161b2a] border border-[#273047] rounded-xl overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[#1c2235] text-gray-400 border-b border-[#273047] text-[11px] uppercase tracking-wider">
+                    <tr>
+                      <th className="py-3 px-4 font-semibold">圖層名稱 / 標識</th>
+                      <th className="py-3 px-4 font-semibold">分類</th>
+                      <th className="py-3 px-4 font-semibold text-center">面板顯示開關</th>
+                      <th className="py-3 px-4 font-semibold text-center">底圖圖層資料</th>
+                      <th className="py-3 px-4 font-semibold">主題色彩自訂 (按鈕/Popup/地圖圓點)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#232b3f]">
+                    {LAYER_CONTROLS_LIST.filter(l => {
+                      if (layerCategoryFilter !== 'all' && l.category !== layerCategoryFilter) return false;
+                      if (layerSearchQuery.trim()) {
+                        const q = layerSearchQuery.trim().toLowerCase();
+                        return l.name.toLowerCase().includes(q) || l.id.toLowerCase().includes(q) || l.category.toLowerCase().includes(q);
+                      }
+                      return true;
+                    }).map((layerItem) => {
+                      const isHiddenInPanel = !!hiddenLayersInPanel[layerItem.id] || !!hiddenLayersInPanelState[layerItem.id];
+                      const isDataActive = !!(layers as any)[layerItem.id];
+                      const currentColor = layerCustomColors[layerItem.id] || layerItem.defaultColor;
+                      const isColorCustomized = !!layerCustomColors[layerItem.id] && layerCustomColors[layerItem.id] !== layerItem.defaultColor;
+
+                      return (
+                        <tr key={layerItem.id} className="hover:bg-[#1a2133] transition-colors">
+                          <td className="py-3 px-4">
+                            <div className="font-bold text-white flex items-center gap-2">
+                              <span 
+                                className="w-3 h-3 rounded-full inline-block shrink-0 shadow-sm border border-white/20"
+                                style={{ backgroundColor: currentColor }}
+                              />
+                              <span className="text-[12.5px]">{layerItem.name}</span>
+                            </div>
+                            <div className="text-[10.5px] text-gray-500 font-mono mt-0.5">
+                              {layerItem.id}
+                            </div>
+                          </td>
+
+                          <td className="py-3 px-4 whitespace-nowrap">
+                            <span className="text-[10.5px] px-2 py-0.5 rounded-md bg-[#22293d] text-gray-300 border border-[#2f3954] font-medium">
+                              {layerItem.category}
+                            </span>
+                          </td>
+
+                          <td className="py-3 px-4 whitespace-nowrap text-center">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleLayerVisibility(layerItem.id, layerItem.id)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer inline-flex items-center gap-1.5 ${
+                                !isHiddenInPanel
+                                  ? 'bg-emerald-950/70 text-emerald-300 border-emerald-600/40 hover:bg-emerald-900/80 shadow-sm'
+                                  : 'bg-rose-950/50 text-rose-300 border-rose-700/50 hover:bg-rose-900/70'
+                              }`}
+                              title={isHiddenInPanel ? '點擊在圖層控制面板中【顯示】' : '點擊在圖層控制面板中【隱藏】'}
+                            >
+                              {!isHiddenInPanel ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                              <span>{!isHiddenInPanel ? '面板顯示' : '面板隱藏'}</span>
+                            </button>
+                          </td>
+
+                          <td className="py-3 px-4 whitespace-nowrap text-center">
+                            <button
+                              type="button"
+                              onClick={() => toggleLayer(layerItem.id as any)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer inline-flex items-center gap-1.5 ${
+                                isDataActive
+                                  ? 'bg-sky-950/70 text-sky-300 border-sky-600/50 hover:bg-sky-900/80 shadow-sm'
+                                  : 'bg-gray-800/60 text-gray-400 border-gray-700 hover:text-gray-200 hover:bg-gray-700/60'
+                              }`}
+                              title={isDataActive ? '點擊關閉此圖層資料' : '點擊在地圖上啟用此圖層資料'}
+                            >
+                              <span className={`w-2 h-2 rounded-full ${isDataActive ? 'bg-sky-400 animate-pulse' : 'bg-gray-500'}`} />
+                              <span>{isDataActive ? '圖層啟用中' : '圖層已關閉'}</span>
+                            </button>
+                          </td>
+
+                          <td className="py-3 px-4 whitespace-nowrap">
+                            <div className="flex items-center gap-2.5 flex-wrap">
+                              <div className="flex items-center gap-1.5 bg-[#121622] px-2 py-1 rounded-lg border border-[#2a3449]">
+                                <input
+                                  type="color"
+                                  value={currentColor}
+                                  onChange={(e) => setLayerCustomColor(layerItem.id, e.target.value)}
+                                  className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent p-0"
+                                  title="點擊選擇任意顏色"
+                                />
+                                <span className="font-mono text-[11px] text-gray-300 uppercase">
+                                  {currentColor}
+                                </span>
+                              </div>
+
+                              {/* 快速色盤 */}
+                              <div className="flex items-center gap-1">
+                                {['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899'].map((preset) => (
+                                  <button
+                                    key={preset}
+                                    type="button"
+                                    onClick={() => setLayerCustomColor(layerItem.id, preset)}
+                                    className={`w-4 h-4 rounded-full border transition-transform hover:scale-125 cursor-pointer ${
+                                      currentColor.toLowerCase() === preset.toLowerCase()
+                                        ? 'border-white scale-110 shadow-sm'
+                                        : 'border-transparent opacity-70 hover:opacity-100'
+                                    }`}
+                                    style={{ backgroundColor: preset }}
+                                    title={`套用 ${preset}`}
+                                  />
+                                ))}
+                              </div>
+
+                              {isColorCustomized && (
+                                <button
+                                  type="button"
+                                  onClick={() => setLayerCustomColor(layerItem.id, layerItem.defaultColor)}
+                                  className="text-[10.5px] px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/30 hover:bg-rose-500/20 cursor-pointer font-medium transition-colors"
+                                  title={`恢復預設色彩 (${layerItem.defaultColor})`}
+                                >
+                                  重設預設
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {LAYER_CONTROLS_LIST.filter(l => {
+                if (layerCategoryFilter !== 'all' && l.category !== layerCategoryFilter) return false;
+                if (layerSearchQuery.trim()) {
+                  const q = layerSearchQuery.trim().toLowerCase();
+                  return l.name.toLowerCase().includes(q) || l.id.toLowerCase().includes(q) || l.category.toLowerCase().includes(q);
+                }
+                return true;
+              }).length === 0 && (
+                <div className="py-12 text-center text-gray-500 text-xs flex flex-col items-center gap-2">
+                  <AlertCircle className="w-6 h-6 text-gray-600" />
+                  <span>沒有符合條件的圖層項目</span>
                 </div>
               )}
             </div>

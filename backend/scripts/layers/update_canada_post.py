@@ -5,9 +5,9 @@ import requests
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from base import save_layer_geojson, load_existing_geojson, sync_facility_to_db
+from base import save_layer_geojson, load_existing_geojson, sync_facility_to_db, get_source_endpoint_url
 
-CANADA_POST_QUERY_URL = "https://pub.geo.canadapost-postescanada.ca/server/rest/services/Hosted/FPO_FLEX_FACILITY_RETAIL_POINT/FeatureServer/0/query"
+DEFAULT_CANADA_POST_URL = "https://pub.geo.canadapost-postescanada.ca/server/rest/services/Hosted/FPO_FLEX_FACILITY_RETAIL_POINT/FeatureServer/0/query"
 
 def title_case(text: str) -> str:
     if not text:
@@ -16,7 +16,8 @@ def title_case(text: str) -> str:
     return " ".join(w.capitalize() if not w.startswith("#") else w for w in words)
 
 def update_canada_post():
-    print("⚡ 正在更新 Canada Post 郵政據點...")
+    CANADA_POST_QUERY_URL = get_source_endpoint_url("canada_post", DEFAULT_CANADA_POST_URL)
+    print(f"⚡ 正在更新 Canada Post 郵政據點 (URL: {CANADA_POST_QUERY_URL})...")
 
     # 4.2 Geometry rings & Vancouver mailingplace filter
     geometry = {

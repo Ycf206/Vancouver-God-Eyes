@@ -6,14 +6,15 @@ import urllib.request
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
-from base import save_layer_geojson, load_existing_geojson
+from base import save_layer_geojson, load_existing_geojson, get_source_endpoint_url
 
-API_URL = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/railways/exports/geojson"
+DEFAULT_API_URL = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/railways/exports/geojson"
 
 def update_railways():
-    print("🚂 正在更新溫哥華鐵路網絡圖資 (Vancouver Railways Network)...")
+    api_url = get_source_endpoint_url("vancouver_railways", DEFAULT_API_URL)
+    print(f"🚂 正在更新溫哥華鐵路網絡圖資 (URL: {api_url})...")
     req = urllib.request.Request(
-        API_URL,
+        api_url,
         headers={"User-Agent": "VancouverGodsEye/1.0"}
     )
     

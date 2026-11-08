@@ -5,10 +5,10 @@ import requests
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from base import save_layer_geojson
+from base import save_layer_geojson, get_source_endpoint_url
 
 # Purolator Locations API
-PUROLATOR_API_BASE = "https://94r0mbpmce.execute-api.ca-central-1.amazonaws.com/prod/locations"
+DEFAULT_PUROLATOR_API_BASE = "https://94r0mbpmce.execute-api.ca-central-1.amazonaws.com/prod/locations"
 
 # 大溫哥華核心查詢中心座標 (包含溫哥華、列治文、本拿比、素里、北溫、高貴林)，確保完整覆蓋
 QUERY_COORDINATES = [
@@ -21,6 +21,7 @@ QUERY_COORDINATES = [
 ]
 
 def fetch_purolator_locations():
+    api_base = get_source_endpoint_url("purolator", DEFAULT_PUROLATOR_API_BASE)
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Accept": "application/json"
@@ -31,7 +32,7 @@ def fetch_purolator_locations():
 
     for lat, lng in QUERY_COORDINATES:
         try:
-            url = f"{PUROLATOR_API_BASE}?lat={lat}&lng={lng}"
+            url = f"{api_base}?lat={lat}&lng={lng}"
             resp = requests.get(url, headers=headers, timeout=15)
             if resp.status_code != 200:
                 print(f"Warning: Purolator API returned {resp.status_code} for lat={lat}, lng={lng}")

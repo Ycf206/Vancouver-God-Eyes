@@ -16,16 +16,17 @@ if sys.platform == "win32":
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
-from base import update_admin_source_metadata
+from base import update_admin_source_metadata, get_source_endpoint_url
 
 PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".."))
 BACKEND_DATA_DIR = os.path.join(PROJECT_ROOT, "backend", "data")
 FRONTEND_DATA_DIR = os.path.join(PROJECT_ROOT, "frontend", "public")
 
-BASE_API_URL = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/3-1-1-service-requests/records?lang=en&order_by=service_request_open_timestamp%20desc"
+DEFAULT_API_URL = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/3-1-1-service-requests/records?lang=en&order_by=service_request_open_timestamp%20desc"
 
 def update_311(target_count=1000, page_limit=100):
-    print(f"☎️ 正在更新溫哥華 3-1-1 市政服務請求資料 (目標拉取最新 {target_count} 筆)...")
+    base_api_url = get_source_endpoint_url("service_requests_311", DEFAULT_API_URL)
+    print(f"☎️ 正在更新溫哥華 3-1-1 市政服務請求資料 (URL: {base_api_url}, 目標拉取最新 {target_count} 筆)...")
     
     all_results = []
     total_dataset_count = 0
@@ -33,7 +34,8 @@ def update_311(target_count=1000, page_limit=100):
     
     while len(all_results) < target_count:
         fetch_limit = min(page_limit, target_count - len(all_results))
-        url = f"{BASE_API_URL}&limit={fetch_limit}&offset={offset}"
+        sep = "&" if "?" in base_api_url else "?"
+        url = f"{base_api_url}{sep}limit={fetch_limit}&offset={offset}"
         req = urllib.request.Request(
             url,
             headers={"User-Agent": "VancouverGodsEye/1.0"}

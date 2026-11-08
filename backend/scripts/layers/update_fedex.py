@@ -5,10 +5,10 @@ import requests
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from base import save_layer_geojson, load_existing_geojson
+from base import save_layer_geojson, load_existing_geojson, get_source_endpoint_url
 
 # FedEx Locator / Yext Content Delivery Entities API
-FEDEX_API_URL = "https://local.fedex.com/api/v1/entities"
+DEFAULT_FEDEX_API_URL = "https://local.fedex.com/api/v1/entities"
 
 def parse_fedex_entity(item):
     """
@@ -71,7 +71,8 @@ def parse_fedex_entity(item):
     }
 
 def update_fedex():
-    print("🚀 正在更新 FedEx 門市與自取據點資料...")
+    api_url = get_source_endpoint_url("fedex", DEFAULT_FEDEX_API_URL)
+    print(f"🚀 正在更新 FedEx 門市與自取據點資料 (URL: {api_url})...")
 
     features = []
     
@@ -82,7 +83,7 @@ def update_fedex():
             "Accept": "application/json"
         }
         resp = requests.get(
-            FEDEX_API_URL,
+            api_url,
             params={"location": "Vancouver, BC", "radius": 50, "limit": 100},
             headers=headers,
             timeout=15

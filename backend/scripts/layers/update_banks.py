@@ -21,7 +21,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
 
-from base import BACKEND_DATA_DIR, FRONTEND_DATA_DIR, update_admin_source_metadata
+from base import BACKEND_DATA_DIR, FRONTEND_DATA_DIR, update_admin_source_metadata, get_source_endpoint_url
 
 try:
     import requests
@@ -201,8 +201,9 @@ def update_banks():
     seen = set()
     consecutive_failures = 0
 
+    base_banks_url = get_source_endpoint_url("banks", "https://bankee.ca/bc/vancouver/atm/")
     for p in range(1, 16):
-        url = "https://bankee.ca/bc/vancouver/atm/" if p == 1 else f"https://bankee.ca/bc/vancouver/atm/?page={p}"
+        url = base_banks_url if p == 1 else (f"{base_banks_url}&page={p}" if "?" in base_banks_url else f"{base_banks_url.rstrip('/')}/?page={p}")
         html = fetch_page(url)
         if not html:
             consecutive_failures += 1

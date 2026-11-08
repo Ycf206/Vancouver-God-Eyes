@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from base import save_layer_geojson, load_existing_geojson, HEADERS
+from base import save_layer_geojson, load_existing_geojson, HEADERS, get_source_endpoint_url
 
 def compute_centroid(rings):
     if not rings or not rings[0]:
@@ -23,8 +23,9 @@ def compute_centroid(rings):
     return [round(sum_lon / count, 6), round(sum_lat / count, 6)] if count > 0 else [0, 0]
 
 def update_beach_water():
-    print("🏖️ 正在更新 Metro Vancouver 泳灘水質監測...")
-    url = "https://gis.metrovancouver.org/arcgis/rest/services/Beach_Site_Area/FeatureServer/0/query?where=1=1&outFields=*&outSR=4326&f=json"
+    default_url = "https://gis.metrovancouver.org/arcgis/rest/services/Beach_Site_Area/FeatureServer/0/query?where=1=1&outFields=*&outSR=4326&f=json"
+    url = get_source_endpoint_url("beach_water", default_url)
+    print(f"🏖️ 正在更新 Metro Vancouver 泳灘水質監測 (URL: {url})...")
     features = []
     try:
         resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)

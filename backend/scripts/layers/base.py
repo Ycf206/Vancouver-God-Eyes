@@ -34,14 +34,76 @@ HEADERS = {
     "User-Agent": "VancouverGodsEye/1.0 (+https://github.com/Ycf206/Vancouver-God-Eyes)"
 }
 
-def fetch_all_records(dataset_id, timeout=25):
-    """Fetches all records from Vancouver Open Data API with pagination."""
-    base_url = f"https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/{dataset_id}/records"
+DATASET_ID_TO_SOURCE_ID = {
+    "bikeways": "bikeways",
+    "community-centres": "community_centres",
+    "drinking-fountains": "drinking_fountains",
+    "electric-vehicle-charging-stations": "ev_charging",
+    "water-hydrants": "fire_hydrants",
+    "homeless-shelters": "homeless_shelters",
+    "motorcycle-parking": "motorcycle_parking",
+    "road-ahead-one-way-streets": "one_way_streets",
+    "parking-meters": "parking_meters",
+    "parks": "parks",
+    "public-art": "public_art",
+    "public-washrooms": "public_washrooms",
+    "sewer-mains": "sewer_mains",
+    "snow-removal-routes": "snow_removal_routes",
+    "street-lighting-poles": "street_lighting",
+    "street-lighting-conduits": "street_lighting_conduits",
+    "traffic-signals": "traffic_signals",
+    "traffic-speed-limits": "traffic_speed_limits",
+    "truck-routes": "truck_routes",
+    "water-distribution-mains": "water_distribution_mains",
+    "zoning-districts-and-labels": "zoning_districts",
+    "3-1-1-service-requests": "service_requests_311",
+    "libraries": "libraries",
+    "schools": "schools",
+    "food-vendors": "food_vendors",
+    "litter-containers": "litter_containers",
+}
+
+def get_source_endpoint_url(source_id: str, default_url: str = None) -> str:
+    """
+    從後台 admin_sources_config.json 讀取由管理員動態設定的資料源 API 或網頁爬取 URL。
+    若後台未設定或檔案不存在，則回退至預設的 default_url。
+    徹底杜絕寫死 hardcode URL，讓後台具備 100% 靈活調整能力。
+    """
+    try:
+        cfg_paths = [
+            os.path.join(BACKEND_DATA_DIR, "admin_sources_config.json"),
+            os.path.join(PROJECT_ROOT, "backend", "data", "admin_sources_config.json"),
+            os.path.join(PROJECT_ROOT, "data", "admin_sources_config.json"),
+            "/app/data/admin_sources_config.json",
+        ]
+        for cfg_path in cfg_paths:
+            if os.path.exists(cfg_path):
+                with open(cfg_path, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+                for src in cfg.get("sources", []):
+                    if src.get("id") == source_id:
+                        custom_url = src.get("source_url") or src.get("url")
+                        if custom_url and str(custom_url).strip():
+                            return str(custom_url).strip()
+    except Exception as e:
+        print(f"⚠️ [Config] 讀取資料源 [{source_id}] 動態 URL 警告: {e}")
+    return default_url
+
+def fetch_all_records(dataset_id, timeout=25, custom_url=None):
+    """Fetches all records from Vancouver Open Data API with pagination (優先讀取後台自訂 API 端點)."""
+    source_id = DATASET_ID_TO_SOURCE_ID.get(dataset_id, dataset_id)
+    dynamic_url = custom_url or get_source_endpoint_url(source_id)
+    
+    if dynamic_url and "records" in dynamic_url:
+        base_url = dynamic_url.split("?")[0]
+    else:
+        base_url = f"https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/{dataset_id}/records"
+
     limit = 100
     offset = 0
     all_records = []
     
-    print(f"📡 正在拉取溫哥華開放資料集 [{dataset_id}]...")
+    print(f"📡 正在拉取資料集 [{dataset_id}] (URL: {base_url})...")
     while True:
         url = f"{base_url}?limit={limit}&offset={offset}&lang=en"
         try:
@@ -66,10 +128,17 @@ def fetch_all_records(dataset_id, timeout=25):
     print(f"✅ [{dataset_id}] 抓取完成，共 {len(all_records)} 筆記錄")
     return all_records
 
-def fetch_geojson_export(dataset_id, timeout=90):
-    """Directly downloads entire GeoJSON export from Vancouver Open Data API."""
-    url = f"https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/{dataset_id}/exports/geojson"
-    print(f"📡 正在下載完整 GeoJSON 匯出檔 [{dataset_id}]...")
+def fetch_geojson_export(dataset_id, timeout=90, custom_url=None):
+    """Directly downloads entire GeoJSON export from API (優先讀取後台自訂端點)."""
+    source_id = DATASET_ID_TO_SOURCE_ID.get(dataset_id, dataset_id)
+    dynamic_url = custom_url or get_source_endpoint_url(source_id)
+
+    if dynamic_url and ("geojson" in dynamic_url or "FeatureServer" in dynamic_url or "arcgis" in dynamic_url):
+        url = dynamic_url
+    else:
+        url = f"https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/{dataset_id}/exports/geojson"
+
+    print(f"📡 正在下載完整 GeoJSON 匯出檔 [{dataset_id}] (URL: {url})...")
     try:
         resp = requests.get(url, headers=HEADERS, timeout=timeout)
         if resp.status_code == 200:

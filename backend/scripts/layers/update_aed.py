@@ -7,12 +7,13 @@ from html import unescape
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from base import save_layer_geojson, load_existing_geojson, sync_facility_to_db
+from base import save_layer_geojson, load_existing_geojson, sync_facility_to_db, get_source_endpoint_url
 
-BC_PAD_URL = "https://bcpadprogram.ca/admin/contentx/default.cfm?PageId=11521"
+DEFAULT_BC_PAD_URL = "https://bcpadprogram.ca/admin/contentx/default.cfm?PageId=11521"
 
 def update_aed():
-    print("⚡ 正在從 BC PAD Program 官網爬取自動體外心臟去顫器 (AED) 資料...")
+    BC_PAD_URL = get_source_endpoint_url("aed", DEFAULT_BC_PAD_URL)
+    print(f"⚡ 正在從 BC PAD Program 官網爬取自動體外心臟去顫器 (AED) 資料 (URL: {BC_PAD_URL})...")
     
     # 載入現有 GeoJSON 快取以保留精確坐標
     existing_geojson = load_existing_geojson("vancouver_aed.geojson")

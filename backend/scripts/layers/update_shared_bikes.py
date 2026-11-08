@@ -18,9 +18,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from base import save_layer_geojson, BACKEND_DATA_DIR, FRONTEND_DATA_DIR
+from base import save_layer_geojson, BACKEND_DATA_DIR, FRONTEND_DATA_DIR, get_source_endpoint_url
 
-MOBIBIKES_ENTITIES_URL = "https://www.mobibikes.ca/api/client/entities"
+DEFAULT_MOBIBIKES_ENTITIES_URL = "https://www.mobibikes.ca/api/client/entities"
+MOBIBIKES_ENTITIES_URL = get_source_endpoint_url("shared_bikes", DEFAULT_MOBIBIKES_ENTITIES_URL)
 MOBIBIKES_STATION_DETAIL_URL = "https://www.mobibikes.ca/api/client/entities/stations/{station_id}"
 
 HEADERS = {
