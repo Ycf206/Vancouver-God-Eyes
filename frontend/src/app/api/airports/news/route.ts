@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import fs from 'fs';
+import path from 'path';
 
 const execFileAsync = promisify(execFile);
 
-interface NewsArticle {
+export interface NewsArticle {
   title: string;
   link: string;
   pubDate: string;
-  category?: string;
+  category: string;
   imageUrl?: string;
   description?: string;
 }
@@ -16,20 +18,49 @@ interface NewsArticle {
 let cachedArticles: NewsArticle[] | null = null;
 let lastFetchTime = 0;
 
+function loadDiskCache(): NewsArticle[] {
+  const candidates = [
+    path.join(process.cwd(), 'frontend', 'public', 'data', 'yvr_news.json'),
+    path.join(process.cwd(), 'public', 'data', 'yvr_news.json'),
+    path.join(process.cwd(), 'backend', 'data', 'yvr_news_rss.json'),
+    path.join(process.cwd(), '..', 'frontend', 'public', 'data', 'yvr_news.json'),
+    path.join(process.cwd(), '..', 'backend', 'data', 'yvr_news_rss.json'),
+  ];
+  for (const p of candidates) {
+    if (fs.existsSync(p)) {
+      try {
+        const raw = fs.readFileSync(p, 'utf-8');
+        const list = JSON.parse(raw);
+        if (Array.isArray(list) && list.length > 0) {
+          return list.map(item => ({
+            title: item.title || '',
+            link: item.link || '',
+            pubDate: item.pubDate || item.pub_date || '',
+            category: item.category ? (item.category.includes('Airmail') || item.category.includes('航空') ? '航空專欄' : item.category.includes('Trending') || item.category.includes('趨勢') ? '焦點趨勢' : item.category.includes('project') || item.category.includes('專案') ? '機場工程' : item.category) : '官方公告',
+            imageUrl: item.image || item.imageUrl || undefined,
+            description: item.description || item.summary || ''
+          }));
+        }
+      } catch {}
+    }
+  }
+  return [];
+}
+
 export async function GET() {
   const now = Date.now();
-  // Cache for 5 minutes
-  if (cachedArticles && (now - lastFetchTime < 300000)) {
-    return NextResponse.json({ success: true, articles: cachedArticles }, {
-      headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=600' }
+  // Cache for 10 minutes
+  if (cachedArticles && (now - lastFetchTime < 600000)) {
+    return NextResponse.json(cachedArticles, {
+      headers: { 'Cache-Control': 'public, max-age=600, stale-while-revalidate=1200' }
     });
   }
 
   const feeds = [
-    'https://news.yvr.ca/tagfeed/en-ca/tags/trending',
-    'https://news.yvr.ca/tagfeed/en-ca/tags/airmail,import-blog',
-    'https://news.yvr.ca/tagfeed/en-ca/tags/project',
-    'https://news.yvr.ca/tagfeed/en-ca/tags/values'
+    { url: 'https://news.yvr.ca/tagfeed/en-ca/tags/airmail,import-blog', category: '航空專欄' },
+    { url: 'https://news.yvr.ca/tagfeed/en-ca/tags/trending', category: '焦點趨勢' },
+    { url: 'https://news.yvr.ca/tagfeed/en-ca/tags/project', category: '機場專案' },
+    { url: 'https://news.yvr.ca/tagfeed/en-ca/tags/values', category: '社區發展' }
   ];
 
   const headers = [
@@ -40,9 +71,10 @@ export async function GET() {
   const allArticles: NewsArticle[] = [];
   const seenUrls = new Set<string>();
 
-  for (const feedUrl of feeds) {
+  for (const feed of feeds) {
     try {
-      const { stdout } = await execFileAsync('curl.exe', ['-s', feedUrl, ...headers], { timeout: 6000 });
+      const curlBin = process.platform === 'win32' ? 'curl.exe' : 'curl';
+      const { stdout } = await execFileAsync(curlBin, ['-s', feed.url, ...headers], { timeout: 6000 });
       if (!stdout || !stdout.includes('<item>')) continue;
 
       const itemRegex = /<item>([\s\S]*?)<\/item>/g;
@@ -70,31 +102,36 @@ export async function GET() {
           title,
           link,
           pubDate,
+          category: feed.category,
           imageUrl: imageUrl || undefined,
           description: plainDesc ? `${plainDesc}...` : undefined
         });
       }
-    } catch (e: any) {
-      console.warn(`Failed to fetch feed ${feedUrl}:`, e?.message);
-    }
+    } catch {}
   }
 
-  // Sort by pubDate descending
-  allArticles.sort((a, b) => {
-    const da = new Date(a.pubDate).getTime() || 0;
-    const db = new Date(b.pubDate).getTime() || 0;
-    return db - da;
-  });
+  if (allArticles.length === 0) {
+    const diskFallback = loadDiskCache();
+    if (diskFallback.length > 0) {
+      cachedArticles = diskFallback;
+      lastFetchTime = now;
+      return NextResponse.json(cachedArticles, {
+        headers: { 'Cache-Control': 'public, max-age=600, stale-while-revalidate=1200' }
+      });
+    }
+  } else {
+    // Sort descending by date
+    allArticles.sort((a, b) => {
+      const da = new Date(a.pubDate).getTime() || 0;
+      const db = new Date(b.pubDate).getTime() || 0;
+      return db - da;
+    });
 
-  if (allArticles.length > 0) {
     cachedArticles = allArticles;
     lastFetchTime = now;
   }
 
-  return NextResponse.json({
-    success: true,
-    articles: cachedArticles || []
-  }, {
-    headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=600' }
+  return NextResponse.json(cachedArticles || [], {
+    headers: { 'Cache-Control': 'public, max-age=600, stale-while-revalidate=1200' }
   });
 }

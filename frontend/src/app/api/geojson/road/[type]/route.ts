@@ -16,9 +16,9 @@ function getVancouverHour(): number {
 
 export async function GET(
   request: NextRequest,
-  props: { params?: Promise<{ type: string }> | { type: string } }
+  props: { params: Promise<{ type: string }> }
 ) {
-  const resolvedParams = props?.params ? await Promise.resolve(props.params) : null;
+  const resolvedParams = props?.params ? await props.params : null;
   const pathParts = request.nextUrl.pathname.split('?')[0].split('/').filter(Boolean);
   const facilityType = resolvedParams?.type || pathParts[pathParts.length - 1];
 

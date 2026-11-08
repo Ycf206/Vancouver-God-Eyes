@@ -13,7 +13,6 @@ BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.abspath(os.path.join(BACKEND_DIR, "..", "frontend"))
 OUTPUT_BACKEND_FILE = os.path.join(BACKEND_DIR, "data", "vancouver_yvr_flights.json")
 OUTPUT_FRONTEND_FILE = os.path.join(FRONTEND_DIR, "public", "vancouver_yvr_flights.json")
-LIVE_FLIGHTS_CACHE_FILE = os.path.join(BACKEND_DIR, "data", "cached_live_flights.json")
 
 # In-memory cache
 _yvr_flights_cache: Dict[str, Any] = {
@@ -90,8 +89,11 @@ def get_vancouver_dates():
         tz = zoneinfo.ZoneInfo("America/Vancouver")
         now = datetime.now(tz)
     except Exception:
-        # Vancouver UTC-7 / UTC-8
-        now = datetime.now(timezone(timedelta(hours=-7)))
+        # Vancouver UTC-7 (PDT) / UTC-8 (PST) manual check
+        utc_now = datetime.now(timezone.utc)
+        m = utc_now.month
+        is_dst = (3 < m < 11) or (m == 3 and utc_now.day >= 8) or (m == 11 and utc_now.day < 7)
+        now = utc_now.astimezone(timezone(timedelta(hours=-7 if is_dst else -8)))
     
     today_str = now.strftime("%Y-%m-%d")
     tomorrow_str = (now + timedelta(days=1)).strftime("%Y-%m-%d")
@@ -125,82 +127,39 @@ def fetch_yvr_endpoint(f_type: str, today_str: str, tomorrow_str: str) -> List[D
     encoded_filter = urllib.parse.quote(filter_expr)
     url = f"https://www.yvr.ca/en/_api/Flights?%24filter={encoded_filter}&%24orderby=FlightScheduledTime%20asc"
 
+    curl_bin = "curl.exe" if os.name == "nt" else "curl"
     headers = [
         "-H", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
         "-H", f"Referer: {referer}",
         "-H", "Accept: application/json, text/plain, */*"
     ]
-    try:
-        res = subprocess.run(
-            ["curl.exe", "-s", url] + headers,
-            capture_output=True,
-            text=True,
-            timeout=25,
-            check=False
-        )
-        if res.returncode == 0 and res.stdout:
-            stdout_clean = res.stdout.strip()
-            if stdout_clean.startswith("{") and stdout_clean.endswith("}"):
-                data = json.loads(stdout_clean)
-                return data.get("value", [])
-            else:
-                # Returned non-JSON (e.g. Cloudflare captcha HTML)
-                pass
-    except Exception as e:
-        print(f"⚠️ [YVR Flights] curl error fetching {f_type}: {e}")
+    
+    for attempt in range(1, 4):
+        try:
+            res = subprocess.run(
+                [curl_bin, "-s", url] + headers,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=25,
+                check=False
+            )
+            if res.returncode == 0 and res.stdout:
+                stdout_clean = (res.stdout or b"").decode("utf-8", errors="replace").strip()
+                if stdout_clean.startswith("{") and stdout_clean.endswith("}"):
+                    data = json.loads(stdout_clean)
+                    val = data.get("value", [])
+                    if val and len(val) > 0:
+                        return val
+            time.sleep(1.2 * attempt)
+        except Exception as e:
+            print(f"⚠️ [YVR Flights] attempt {attempt} error fetching {f_type}: {e}")
+            time.sleep(1.2 * attempt)
     return []
 
-def load_flightaware_supplement():
+def compute_supplementary_times(item: Dict[str, Any], f_type: str) -> Tuple[str, str]:
     """
-    Builds a robust lookup map from FlightAware cached data.
-    Keys include normalized flight number, callsign, and numeric ID + airport code.
-    """
-    fa_map = {}
-    
-    # 1. Check cached_live_flights.json
-    if os.path.exists(LIVE_FLIGHTS_CACHE_FILE):
-        try:
-            with open(LIVE_FLIGHTS_CACHE_FILE, "r", encoding="utf-8") as f:
-                live_data = json.load(f)
-                items = live_data if isinstance(live_data, list) else live_data.get("flights", [])
-                for item in items:
-                    fn_raw = str(item.get("flight_no") or item.get("callsign") or "").upper()
-                    fn_norm = re.sub(r'[^A-Z0-9]', '', fn_raw)
-                    if fn_norm:
-                        fa_map[fn_norm] = item
-                    cs = str(item.get("callsign") or "").upper()
-                    if cs:
-                        fa_map[cs] = item
-                    # Number only
-                    num_match = re.search(r'\d+', fn_norm)
-                    if num_match:
-                        fa_map[num_match.group(0)] = item
-        except Exception:
-            pass
-            
-    # 2. Check scheduled FlightAware API memory cache if available
-    try:
-        import flights
-        if hasattr(flights, "_flightaware_cache") and flights._flightaware_cache.get("data"):
-            fa_sched = flights._flightaware_cache["data"]
-            for arr in fa_sched.get("arrivals", []):
-                fn = re.sub(r'[^A-Z0-9]', '', str(arr.get("flight_no") or "").upper())
-                if fn:
-                    fa_map[fn] = arr
-            for dep in fa_sched.get("departures", []):
-                fn = re.sub(r'[^A-Z0-9]', '', str(dep.get("flight_no") or "").upper())
-                if fn:
-                    fa_map[fn] = dep
-    except Exception:
-        pass
-
-    return fa_map
-
-def compute_supplementary_times(item: Dict[str, Any], f_type: str, fa_flight: Dict[str, Any]) -> Tuple[str, str]:
-    """
-    Calculates origin departure time and destination arrival time.
-    Prioritizes real-time FlightAware timestamps, and accurately computes
-    departure/arrival from scheduled/estimated time and flight duration when missing.
+    Calculates origin departure time and destination arrival time directly from YVR API official
+    scheduled/estimated time and accurate airport route duration models.
     """
     code = str(item.get("FlightAirportCode") or "").upper().strip()
     duration_hours = estimate_flight_duration(code)
@@ -222,66 +181,31 @@ def compute_supplementary_times(item: Dict[str, Any], f_type: str, fa_flight: Di
             pass
 
     if f_type == "A":
-        # Arrival at YVR
+        # Arrival at YVR: target_str is arrival time; departure was arrival minus flight duration
         dest_arrival_time = target_str
-        
-        # Check FlightAware for origin departure time
-        if fa_flight:
-            origin_departure_time = (
-                fa_flight.get("dep_dt_iso") or
-                fa_flight.get("departure_time") or
-                fa_flight.get("actual_off") or
-                fa_flight.get("estimated_off") or
-                ""
-            )
-        
-        # Fallback calculation if still empty
-        if not origin_departure_time and primary_dt:
+        if primary_dt:
             origin_dt = primary_dt - dur_delta
             origin_departure_time = origin_dt.strftime("%Y-%m-%dT%H:%M:00")
-            
     else:
-        # Departure from YVR
+        # Departure from YVR: target_str is departure time; arrival is departure plus flight duration
         origin_departure_time = target_str
-        
-        # Check FlightAware for destination arrival time
-        if fa_flight:
-            dest_arrival_time = (
-                fa_flight.get("arr_dt_iso") or
-                fa_flight.get("arrival_time") or
-                fa_flight.get("actual_on") or
-                fa_flight.get("estimated_on") or
-                ""
-            )
-            
-        # Fallback calculation if still empty
-        if not dest_arrival_time and primary_dt:
+        if primary_dt:
             dest_dt = primary_dt + dur_delta
             dest_arrival_time = dest_dt.strftime("%Y-%m-%dT%H:%M:00")
 
     return origin_departure_time, dest_arrival_time
 
-def process_yvr_flight_item(item: Dict[str, Any], f_type: str, fa_map: Dict[str, Any]) -> Dict[str, Any]:
+def process_yvr_flight_item(item: Dict[str, Any], f_type: str) -> Dict[str, Any]:
     fn_raw = str(item.get("FlightNumber") or "").strip().upper()
     fn_norm = re.sub(r'[^A-Z0-9]', '', fn_raw)
     carrier = str(item.get("FlightCarrier") or "").strip().upper()
     code = str(item.get("FlightAirportCode") or "").strip().upper()
 
-    # Match in FlightAware map
-    fa_match = fa_map.get(fn_norm)
-    if not fa_match and carrier:
-        # Try without carrier prefix
-        num_only = re.sub(r'^[A-Z0-9]{2,3}', '', fn_norm)
-        if num_only:
-            fa_match = fa_map.get(num_only)
-
-    origin_departure_time, dest_arrival_time = compute_supplementary_times(item, f_type, fa_match or {})
+    origin_departure_time, dest_arrival_time = compute_supplementary_times(item, f_type)
 
     # Coordinates
     yvr_coord = [-123.184444, 49.193889]
     remote_coord = AIRPORT_COORDINATES.get(code)
-    if not remote_coord and fa_match:
-        remote_coord = fa_match.get("origin_coord") if f_type == "A" else fa_match.get("dest_coord")
 
     return {
         "id": str(item.get("FlightID") or f"{fn_norm}_{item.get('FlightScheduledTime')}"),
@@ -308,10 +232,23 @@ def process_yvr_flight_item(item: Dict[str, Any], f_type: str, fa_map: Dict[str,
 
 def update_yvr_flights() -> Dict[str, Any]:
     """
-    Executes one update cycle: fetches YVR Arrivals & Departures,
-    enriches with FlightAware data, and writes to disk.
+    Executes one update cycle: fetches YVR Arrivals & Departures directly from
+    official YVR API, parses times and statuses, and writes to disk.
+    Protects against partial API failure by merging with existing valid cache.
     """
     today_str, tomorrow_str, now_dt = get_vancouver_dates()
+
+    # Read existing cache to prevent accidental wipe-out
+    existing_arr = []
+    existing_dep = []
+    if os.path.exists(OUTPUT_BACKEND_FILE):
+        try:
+            with open(OUTPUT_BACKEND_FILE, "r", encoding="utf-8") as f:
+                old_data = json.load(f)
+                existing_arr = old_data.get("arrivals", [])
+                existing_dep = old_data.get("departures", [])
+        except Exception:
+            pass
 
     # 1. Fetch Arrivals
     arr_raw = fetch_yvr_endpoint("A", today_str, tomorrow_str)
@@ -320,12 +257,14 @@ def update_yvr_flights() -> Dict[str, Any]:
     # 2. Fetch Departures
     dep_raw = fetch_yvr_endpoint("D", today_str, tomorrow_str)
 
-    # 3. Load FlightAware supplementary data
-    fa_map = load_flightaware_supplement()
+    # 3. Transform YVR official records
+    new_arrivals = [process_yvr_flight_item(it, "A") for it in arr_raw]
+    new_departures = [process_yvr_flight_item(it, "D") for it in dep_raw]
 
-    # 4. Transform and merge
-    arrivals = [process_yvr_flight_item(it, "A", fa_map) for it in arr_raw]
-    departures = [process_yvr_flight_item(it, "D", fa_map) for it in dep_raw]
+    # Robust retention: If new fetch returned empty (due to momentary rate limit / glitch),
+    # keep the previous valid flights rather than overwriting with 0!
+    arrivals = new_arrivals if len(new_arrivals) > 0 else existing_arr
+    departures = new_departures if len(new_departures) > 0 else existing_dep
 
     # If YVR API returned valid flights, build new cache object
     if arrivals or departures:
@@ -360,6 +299,7 @@ def update_yvr_flights() -> Dict[str, Any]:
         except Exception as e:
             print(f"⚠️ Error saving {OUTPUT_FRONTEND_FILE}: {e}")
 
+        print(f"✅ [YVR Flights Service] 航班排程同步成功: 抵達 {len(arrivals)} 班, 出發 {len(departures)} 班")
         return consolidated
 
     # Fallback to existing disk cache
@@ -372,23 +312,24 @@ def update_yvr_flights() -> Dict[str, Any]:
 
     return {"success": False, "arrivals": [], "departures": []}
 
-def get_flights_data() -> Dict[str, Any]:
+def get_flights_data(force: bool = False) -> Dict[str, Any]:
     global _yvr_flights_cache
     now = time.time()
-    # Cache valid for 50 seconds
-    if _yvr_flights_cache["data"] and (now - _yvr_flights_cache["timestamp"] < 50):
-        return _yvr_flights_cache["data"]
+    if not force:
+        # Cache valid for 50 seconds
+        if _yvr_flights_cache["data"] and (now - _yvr_flights_cache["timestamp"] < 50):
+            return _yvr_flights_cache["data"]
 
-    # Try disk cache
-    if os.path.exists(OUTPUT_BACKEND_FILE):
-        try:
-            with open(OUTPUT_BACKEND_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                _yvr_flights_cache["data"] = data
-                _yvr_flights_cache["timestamp"] = now
-                return data
-        except Exception:
-            pass
+        # Try disk cache
+        if os.path.exists(OUTPUT_BACKEND_FILE):
+            try:
+                with open(OUTPUT_BACKEND_FILE, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    _yvr_flights_cache["data"] = data
+                    _yvr_flights_cache["timestamp"] = now
+                    return data
+            except Exception:
+                pass
 
     # Trigger update
     return update_yvr_flights()

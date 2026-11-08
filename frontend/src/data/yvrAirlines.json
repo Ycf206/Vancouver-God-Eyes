@@ -1,0 +1,284 @@
+[
+  {
+    "airline": "Aeromexico",
+    "code": "AM",
+    "passenger_line": "+1-800-237-6639",
+    "media_line": "1-800-237-6639"
+  },
+  {
+    "airline": "Air Canada",
+    "code": "AC",
+    "passenger_line": "+1-888-247-2262",
+    "media_line": "—"
+  },
+  {
+    "airline": "Air Canada Jazz",
+    "code": "AC",
+    "passenger_line": "+1-888-247-2262",
+    "media_line": "—"
+  },
+  {
+    "airline": "Air Canada Rouge",
+    "code": "AC",
+    "passenger_line": "+1-888-247-2262",
+    "media_line": "—"
+  },
+  {
+    "airline": "Air China",
+    "code": "CA",
+    "passenger_line": "+1-604-685-0921",
+    "media_line": "—"
+  },
+  {
+    "airline": "Air France",
+    "code": "AF",
+    "passenger_line": "+1-800-375-8723",
+    "media_line": "+33-141-56-56-00"
+  },
+  {
+    "airline": "Air India",
+    "code": "AI",
+    "passenger_line": "+1-888-634-1407",
+    "media_line": "—"
+  },
+  {
+    "airline": "Air New Zealand",
+    "code": "NZ",
+    "passenger_line": "+1-866-351-9528",
+    "media_line": "+64-21-747-320"
+  },
+  {
+    "airline": "Air North",
+    "code": "4N",
+    "passenger_line": "+1-800-661-0407 ext. 1",
+    "media_line": "+1-800-661-0407 ext. 353"
+  },
+  {
+    "airline": "Alaska Airlines",
+    "code": "AS",
+    "passenger_line": "+1-800-252-7522",
+    "media_line": "+1-206-392-5101"
+  },
+  {
+    "airline": "American Airlines",
+    "code": "AA",
+    "passenger_line": "+1-800-433-7300",
+    "media_line": "+1-817-967-1577"
+  },
+  {
+    "airline": "ANA",
+    "code": "NH",
+    "passenger_line": "+1-833-511-6044",
+    "media_line": "+81-3-6735-1111"
+  },
+  {
+    "airline": "British Airways",
+    "code": "BA",
+    "passenger_line": "+1-800-247-9297",
+    "media_line": "+1-208-738-5100"
+  },
+  {
+    "airline": "Cathay Pacific",
+    "code": "CX",
+    "passenger_line": "+1-833-933-2244",
+    "media_line": "—"
+  },
+  {
+    "airline": "Central Mountain Air",
+    "code": "9M",
+    "passenger_line": "+1-888-865-8585",
+    "media_line": "—"
+  },
+  {
+    "airline": "China Airlines",
+    "code": "CI",
+    "passenger_line": "+1-800-227-5118",
+    "media_line": "—"
+  },
+  {
+    "airline": "China Eastern",
+    "code": "MU",
+    "passenger_line": "+1-855-589-5530",
+    "media_line": "—"
+  },
+  {
+    "airline": "China Southern",
+    "code": "CZ",
+    "passenger_line": "+1-888-338-8988",
+    "media_line": "—"
+  },
+  {
+    "airline": "Corilair",
+    "code": "—",
+    "passenger_line": "+1-250-287-8371",
+    "media_line": "—"
+  },
+  {
+    "airline": "Delta Air Lines",
+    "code": "DL",
+    "passenger_line": "+1-800-221-1212",
+    "media_line": "+1-404-715-2554"
+  },
+  {
+    "airline": "EVA Air",
+    "code": "BR",
+    "passenger_line": "+1-800-695-1188",
+    "media_line": "—"
+  },
+  {
+    "airline": "Fiji Airways",
+    "code": "FJ",
+    "passenger_line": "+1-800-227-4446",
+    "media_line": "—"
+  },
+  {
+    "airline": "Flair Airlines",
+    "code": "F8",
+    "passenger_line": "+1-833-711-2333",
+    "media_line": "—"
+  },
+  {
+    "airline": "Harbour Air",
+    "code": "H3",
+    "passenger_line": "+1-800-665-0212",
+    "media_line": "—"
+  },
+  {
+    "airline": "Helijet",
+    "code": "JB",
+    "passenger_line": "+1-800-665-4354",
+    "media_line": "—"
+  },
+  {
+    "airline": "Icelandair",
+    "code": "FI",
+    "passenger_line": "+1-800-223-5500",
+    "media_line": "—"
+  },
+  {
+    "airline": "Iskwew Air",
+    "code": "—",
+    "passenger_line": "+1-604-273-0407",
+    "media_line": "—"
+  },
+  {
+    "airline": "Japan Airlines",
+    "code": "JL",
+    "passenger_line": "+1-800-525-3663",
+    "media_line": "—"
+  },
+  {
+    "airline": "JetBlue",
+    "code": "B6",
+    "passenger_line": "+1-800-538-2583",
+    "media_line": "—"
+  },
+  {
+    "airline": "KLM Royal Dutch Airlines",
+    "code": "KL",
+    "passenger_line": "+1-866-434-0320",
+    "media_line": "—"
+  },
+  {
+    "airline": "Korean Air",
+    "code": "KE",
+    "passenger_line": "+1-800-438-5000",
+    "media_line": "—"
+  },
+  {
+    "airline": "Lufthansa",
+    "code": "LH",
+    "passenger_line": "+1-800-645-3880",
+    "media_line": "—"
+  },
+  {
+    "airline": "Pacific Coastal Airlines",
+    "code": "8P",
+    "passenger_line": "+1-800-663-2872",
+    "media_line": "—"
+  },
+  {
+    "airline": "Philippine Airlines",
+    "code": "PR",
+    "passenger_line": "+1-800-435-9725",
+    "media_line": "—"
+  },
+  {
+    "airline": "Porter Airlines",
+    "code": "PD",
+    "passenger_line": "+1-888-619-8622",
+    "media_line": "—"
+  },
+  {
+    "airline": "Qantas",
+    "code": "QF",
+    "passenger_line": "+1-800-227-4500",
+    "media_line": "—"
+  },
+  {
+    "airline": "Saltspring Air",
+    "code": "—",
+    "passenger_line": "+1-877-537-9880",
+    "media_line": "—"
+  },
+  {
+    "airline": "Seair Seaplanes",
+    "code": "—",
+    "passenger_line": "+1-800-447-3247",
+    "media_line": "—"
+  },
+  {
+    "airline": "Sichuan Airlines",
+    "code": "3U",
+    "passenger_line": "+1-844-888-8868",
+    "media_line": "—"
+  },
+  {
+    "airline": "Singapore Airlines",
+    "code": "SQ",
+    "passenger_line": "+1-833-727-0118",
+    "media_line": "—"
+  },
+  {
+    "airline": "Sunwing Airlines",
+    "code": "WG",
+    "passenger_line": "+1-877-786-9464",
+    "media_line": "—"
+  },
+  {
+    "airline": "Sunshine Coast Air",
+    "code": "—",
+    "passenger_line": "+1-604-740-8889",
+    "media_line": "—"
+  },
+  {
+    "airline": "Turkish Airlines",
+    "code": "TK",
+    "passenger_line": "+1-800-874-8875",
+    "media_line": "—"
+  },
+  {
+    "airline": "United Airlines",
+    "code": "UA",
+    "passenger_line": "+1-800-864-8331",
+    "media_line": "+1-872-825-8640"
+  },
+  {
+    "airline": "WestJet",
+    "code": "WS",
+    "passenger_line": "+1-888-937-8538",
+    "media_line": "—"
+  },
+  {
+    "airline": "XiamenAir",
+    "code": "MF",
+    "passenger_line": "+1-844-629-5557",
+    "media_line": "—"
+  },
+  {
+    "airline": "Zipair",
+    "code": "ZG",
+    "passenger_line": "+1-888-831-1311",
+    "media_line": "—"
+  }
+]

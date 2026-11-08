@@ -1,0 +1,86 @@
+name: "Update YVR 機場官方最新資訊 (每日)"
+
+on:
+  schedule:
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: sync-yvr-news
+  cancel-in-progress: true
+
+jobs:
+  sync-yvr-news:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch latest cache from data branch
+        run: |
+          git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+          git checkout refs/remotes/origin/data -- backend/data/yvr_news_rss.json frontend/public/data/yvr_news.json 2>/dev/null || true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run YVR News RSS sync script
+        run: |
+          python backend/scripts/sync_yvr_news.py
+
+      - name: Commit and push updated data to data branch
+        id: git_push
+        run: |
+          set -e
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          mkdir -p /tmp/wf_stage
+          for f in backend/data/yvr_news_rss.json frontend/public/data/yvr_news.json; do
+            if [ -f "$f" ]; then
+              mkdir -p "/tmp/wf_stage/$(dirname "$f")"
+              cp "$f" "/tmp/wf_stage/$f"
+            fi
+          done
+
+          git fetch origin data 2>/dev/null || true
+          if git rev-parse --verify origin/data >/dev/null 2>&1; then
+            git checkout data
+          else
+            git checkout -b data
+          fi
+
+          if [ -d /tmp/wf_stage ]; then
+            cp -r /tmp/wf_stage/* ./ 2>/dev/null || true
+            rm -rf /tmp/wf_stage
+          fi
+
+          git add backend/data/yvr_news_rss.json frontend/public/data/yvr_news.json || true
+          if git diff --staged --quiet; then
+            echo "No data changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore(data): daily sync YVR airport official news rss [skip ci]"
+          for attempt in 1 2 3; do
+            echo "Attempt $attempt: pushing data update to origin/data..."
+            if git push origin data; then
+              echo "Push succeeded on attempt $attempt."
+              exit 0
+            fi
+            echo "Push failed. Fetching and rebasing..."
+            git fetch origin data || true
+            git rebase origin/data || { git rebase --abort; git merge -X theirs origin/data -m "merge remote data updates"; } || true
+            sleep 2
+          done
+          echo "Failed to push after 3 attempts."
+          exit 1

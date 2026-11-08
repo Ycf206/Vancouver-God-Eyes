@@ -1,6 +1,6 @@
 {
-  "_cache_timestamp": 1794018638.758136,
-  "updated_at": "2026-11-07 02:30 UTC",
+  "_cache_timestamp": 1794106893.4041286,
+  "updated_at": "2026-11-08 03:01 UTC",
   "update_frequency": "每 1 日更新 (Daily)",
   "count": 3,
   "resorts": [
@@ -33,12 +33,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Sat",
-        "date": "07.11.2026",
-        "temp_min": "-3",
+        "day": "Sun",
+        "date": "08.11.2026",
+        "temp_min": "-4",
         "temp_max": "4",
-        "condition": "cloudy",
-        "weather_text": "Am Samstag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen -3 bis 4 Grad."
+        "condition": "sunny",
+        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -4 bis 4 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -71,12 +71,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Sat",
-        "date": "07.11.2026",
-        "temp_min": "-3",
+        "day": "Sun",
+        "date": "08.11.2026",
+        "temp_min": "-4",
         "temp_max": "4",
-        "condition": "cloudy",
-        "weather_text": "Am Samstag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen -3 bis 4 Grad."
+        "condition": "sunny",
+        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -4 bis 4 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -109,12 +109,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Sat",
-        "date": "07.11.2026",
-        "temp_min": "-3",
+        "day": "Sun",
+        "date": "08.11.2026",
+        "temp_min": "-4",
         "temp_max": "4",
-        "condition": "cloudy",
-        "weather_text": "Am Samstag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen -3 bis 4 Grad."
+        "condition": "sunny",
+        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -4 bis 4 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     }

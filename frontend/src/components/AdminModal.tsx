@@ -99,7 +99,7 @@ const LAYER_CONTROLS_LIST = [
   { id: 'busExchanges', name: '巴士轉車站', category: '交通', defaultColor: '#10b981' },
   { id: 'skytrainTrains', name: '天車列車 (推算)', category: '交通', defaultColor: '#3b82f6' },
   { id: 'skytrainRoutes', name: '天車路線與車站', category: '交通', defaultColor: '#3b82f6' },
-  { id: 'skytrainFareZones', name: '天車區域 (Zone 1/2/3)', category: '交通', defaultColor: '#3b82f6' },
+  { id: 'skytrainFareZones', name: '天車收費分區', category: '交通', defaultColor: '#3b82f6' },
   { id: 'seabusVehicles', name: '水上巴士船隻', category: '交通', defaultColor: '#00a4e4' },
   { id: 'seabusRoutes', name: '水上巴士航線', category: '交通', defaultColor: '#00a4e4' },
   { id: 'bcferriesVehicles', name: '卑詩渡輪船隻', category: '交通', defaultColor: '#0060a9' },
@@ -556,6 +556,8 @@ export default function AdminModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
       <div 
+        onWheel={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
         className="w-full max-w-5xl h-[88vh] max-h-[920px] bg-[#121522] border border-[#2d3752] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-100 animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >

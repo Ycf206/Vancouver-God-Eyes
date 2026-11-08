@@ -61,35 +61,6 @@
     },
     {
       "type": "Feature",
-      "id": "airport_coal_harbour",
-      "properties": {
-        "id": "airport_coal_harbour",
-        "facility_type": "airports",
-        "sub_type": "seaplane_base",
-        "name": "溫哥華海港水上機場 (煤港)",
-        "name_en": "Vancouver Harbour Flight Centre (Coal Harbour)",
-        "iata": "CXH",
-        "icao": "CYHC",
-        "badge": "市中心水上機場",
-        "icon": "🛩️",
-        "terminal": "Coal Harbour Seaplane Terminal",
-        "address": "1055 Canada Place, Vancouver, BC",
-        "transit_access": "Waterfront Station (Skytrain / SeaBus / West Coast Express)",
-        "local_area": "Downtown Vancouver / Coal Harbour",
-        "operators": "Harbour Air, Seair Seaplanes, Helijet",
-        "destinations": "Victoria Harbour, Nanaimo Harbour, Gulf Islands, Seattle",
-        "wiki_url": "https://en.wikipedia.org/wiki/Vancouver_Harbour_Flight_Centre"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1147,
-          49.2894
-        ]
-      }
-    },
-    {
-      "type": "Feature",
       "id": "airport_parking_gateway_valet",
       "geometry": {
         "type": "Point",

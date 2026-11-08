@@ -14,20 +14,27 @@ import { formatTitleCase, formatPhoneNumber } from '@/utils/text';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
 import { BUS_EXCHANGES, BusExchange, BusExchangeBay } from '@/data/busExchanges';
+import yvrAirlinesData from '@/data/yvrAirlines.json';
 import { 
   LocateFixed, Train, Compass, ZoomIn, ZoomOut, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
-  RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert,
+  RotateCcw, RotateCw, MapPin, MapPinned, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, RadioTower, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert,
   CircleDollarSign, Globe, Ticket, Accessibility,
-  BusFront, Repeat, TrainFront, ShipCargo, Plane, Road, ParkingMeter, Motorbike, Milestone,
+  BusFront, Repeat, TrainFront, ShipCargo, Plane, PlaneLanding, PlaneTakeoff, Minimize2, Maximize2, RefreshCw, Wind, Thermometer, Eye, Road, ParkingMeter, Motorbike, Milestone,
   EvCharger, TrainTrack, TrafficCone, LineSquiggle, HouseHeart, UserRoundGroup, Package,
   Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet, UserShield, FireExtinguisher,
   Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
-  Sun, Moon, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking
+  Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking
 } from 'lucide-react';
+
+const LetterXIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
 
 const BridgeIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg 
@@ -760,6 +767,145 @@ function FerryWebcamImage({ cam, refreshKey, onEnlarge }: { cam: TerminalWebcamI
   );
 }
 
+const INTERACTIVE_LAYER_IDS: string[] = [
+  'bus-stops-layer', 
+  'skytrain-stops-hit-layer',
+  'skytrain-stops-layer', 
+  'skytrain-stops-inner-layer',
+  'skytrain-stops-label-layer',
+  'seabus-stops-layer',
+  'seabus-stops-label-layer',
+  'bikeways-layer',
+  'parking-meters-cluster-layer',
+  'parking-meters-layer',
+  'parking-meters-symbol-layer',
+  'impark-layer',
+  'impark-symbol-layer',
+  'accessible-parking-layer',
+  'accessible-parking-symbol-layer',
+  'motorcycle-parking-layer',
+  'motorcycle-parking-symbol-layer',
+  'ev-charging-layer',
+  'ev-charging-symbol-layer',
+  'escooter-layer',
+  'escooter-symbol-layer',
+  'shared-bikes-layer',
+  'shared-bikes-symbol-layer',
+  'traffic-cameras-layer',
+  'traffic-cameras-symbol-layer',
+  'safety-cameras-layer',
+  'safety-cameras-symbol-layer',
+  'fire-halls-layer',
+  'fire-halls-symbol-layer',
+  'community-centres-layer',
+  'community-centres-symbol-layer',
+  'hospitals-layer',
+  'hospitals-symbol-layer',
+  'parks-layer',
+  'parks-symbol-layer',
+  'parks-facilities-layer',
+  'parks-facilities-symbol-layer',
+  'community-gardens-layer',
+  'community-gardens-symbol-layer',
+  'drinking-fountains-layer',
+  'drinking-fountains-symbol-layer',
+  'public-washrooms-layer',
+  'public-washrooms-symbol-layer',
+  'schools-layer',
+  'schools-symbol-layer',
+  'libraries-layer',
+  'libraries-symbol-layer',
+  'food-vendors-layer',
+  'food-vendors-symbol-layer',
+  'food-banks-layer',
+  'food-banks-symbol-layer',
+  'recycling-layer',
+  'recycling-symbol-layer',
+  'homeless-shelters-layer',
+  'homeless-shelters-symbol-layer',
+  'car-sharing-layer',
+  'car-sharing-symbol-layer',
+  'police-layer',
+  'police-symbol-layer',
+  'disaster-hubs-layer',
+  'disaster-hubs-symbol-layer',
+  'aed-layer',
+  'aed-symbol-layer',
+  'fuel-layer',
+  'fuel-symbol-layer',
+  'tesla-layer',
+  'tesla-symbol-layer',
+  'marine-terminals-layer',
+  'marine-terminals-symbol-layer',
+  'one-way-streets-layer',
+  'snow-removal-routes-layer',
+  'traffic-speed-limits-layer',
+  'bike-racks-cluster-layer',
+  'bike-racks-layer',
+  'bike-racks-symbol-layer',
+  'public-art-layer',
+  'public-art-symbol-layer',
+  'museums-layer',
+  'museums-symbol-layer',
+  'garbage-collection-fill-layer',
+  'garbage-collection-outline-layer',
+  'traffic-crosswalks-cluster-layer',
+  'traffic-crosswalks-layer',
+  'traffic-crosswalks-symbol-layer',
+  'litter-containers-cluster-layer',
+  'litter-containers-layer',
+  'litter-containers-symbol-layer',
+  'water-distribution-mains-layer',
+  'sewer-mains-layer',
+  'contours-layer',
+  'contours-label-layer',
+  'van-wifi-cluster-layer',
+  'van-wifi-layer',
+  'van-wifi-symbol-layer',
+  'tide-stations-layer',
+  'tide-stations-symbol-layer',
+  'traffic-conditions-casing-layer',
+  'traffic-conditions-layer',
+  'traffic-conditions-label-layer',
+  'traffic-alerts-pulse-layer',
+  'traffic-alerts-layer',
+  'traffic-alerts-symbol-layer',
+  'traffic-alerts-label-layer',
+  'road-closures-casing-layer',
+  'road-closures-layer',
+  'road-construction-casing-layer',
+  'road-construction-layer',
+  'street-lighting-cluster-layer',
+  'street-lighting-layer',
+  'street-lighting-symbol-layer',
+  'fire-hydrants-cluster-layer',
+  'fire-hydrants-layer',
+  'fire-hydrants-symbol-layer',
+  'zoning-districts-fill',
+  'public-trees-cluster-layer',
+  'public-trees-layer',
+  'public-trees-symbol-layer',
+  'canada-post-layer',
+  'canada-post-symbol-layer',
+  'fedex-layer',
+  'fedex-symbol-layer',
+  'purolator-layer',
+  'purolator-symbol-layer',
+  'banks-layer',
+  'banks-symbol-layer',
+  'atm-layer',
+  'atm-symbol-layer',
+  'truck-routes-restriction-layer',
+  'truck-routes-restriction-symbol-layer',
+  'traffic-signals-layer',
+  'traffic-signals-symbol-layer',
+  'turn-restrictions-layer',
+  'turn-restrictions-symbol-layer',
+  'turn-restrictions-arrow-line-layer',
+  'turn-restrictions-arrowhead-fill-layer',
+  'street-lighting-poles-layer'
+];
+
 export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
@@ -905,9 +1051,7 @@ export default function AppMap() {
   const [ferryTerminals, setFerryTerminals] = useState<Array<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}}>>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
-  const [cursorCoords, setCursorCoords] = useState<{ lng: number; lat: number } | null>(null);
   const [copiedCoords, setCopiedCoords] = useState(false);
-  const [cursorNeighbourhood, setCursorNeighbourhood] = useState<string>('');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const localAreaBoundariesRef = useRef<any[]>([]);
   const [parkingMeterFilterOpen, setParkingMeterFilterOpen] = useState(true);
@@ -1221,41 +1365,64 @@ export default function AppMap() {
     }
   }, []);
 
+  const lastCursorCoordRef = useRef<{ lng: number; lat: number } | null>(null);
+  const isDraggingMapRef = useRef<boolean>(false);
+  const mouseMoveRafRef = useRef<number | null>(null);
+
   const handleCopyCoordinates = useCallback(() => {
-    if (!cursorCoords) return;
-    const text = `${cursorCoords.lat.toFixed(5)}, ${cursorCoords.lng.toFixed(5)}`;
+    const cur = lastCursorCoordRef.current;
+    if (!cur) return;
+    const text = `${cur.lat.toFixed(5)}, ${cur.lng.toFixed(5)}`;
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
       setCopiedCoords(true);
       setTimeout(() => setCopiedCoords(false), 2200);
     }
-  }, [cursorCoords]);
+  }, []);
 
-  const mouseMoveRafRef = useRef<number | null>(null);
-  const lastCursorCoordRef = useRef<{ lng: number; lat: number } | null>(null);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // 高效直接更新 HUD，不觸發 React 全量 22,000 行組件重新渲染
   const handleMapMouseMove = React.useCallback((e: any) => {
-    if (e.lngLat) {
-      const lng = e.lngLat.lng;
-      const lat = e.lngLat.lat;
-      const last = lastCursorCoordRef.current;
-      if (last && Math.abs(last.lng - lng) < 0.00015 && Math.abs(last.lat - lat) < 0.00015) {
-        return;
-      }
-      if (mouseMoveRafRef.current) cancelAnimationFrame(mouseMoveRafRef.current);
-      mouseMoveRafRef.current = requestAnimationFrame(() => {
-        lastCursorCoordRef.current = { lng, lat };
-        setCursorCoords({ lng, lat });
-        const nName = getNeighbourhood(lng, lat);
-        setCursorNeighbourhood(nName);
-      });
+    if (!e.lngLat) return;
+    const lng = e.lngLat.lng;
+    const lat = e.lngLat.lat;
+
+    // 拖曳地圖期間跳過多邊形計算與 HUD 更新，確保 60 FPS 極致順暢
+    if (isDraggingMapRef.current) return;
+
+    const last = lastCursorCoordRef.current;
+    if (last && Math.abs(last.lng - lng) < 0.00025 && Math.abs(last.lat - lat) < 0.00025) {
+      return;
     }
+
+    if (mouseMoveRafRef.current) cancelAnimationFrame(mouseMoveRafRef.current);
+    mouseMoveRafRef.current = requestAnimationFrame(() => {
+      lastCursorCoordRef.current = { lng, lat };
+      const hudEl = document.getElementById('godseye-cursor-hud');
+      if (hudEl) {
+        hudEl.style.display = 'flex';
+        const coordsEl = document.getElementById('godseye-hud-coords');
+        if (coordsEl) {
+          coordsEl.textContent = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? 'E' : 'W'}`;
+        }
+        const neighEl = document.getElementById('godseye-hud-neighbourhood');
+        if (neighEl) {
+          const nName = getNeighbourhood(lng, lat);
+          if (nName) {
+            const paren = nName.match(/\((.*?)\)/);
+            const cleanName = paren ? paren[1].trim() : nName.replace(/[\u4e00-\u9fa5]/g, '').trim() || 'Vancouver';
+            neighEl.textContent = cleanName;
+            neighEl.style.display = 'inline-block';
+          } else {
+            neighEl.style.display = 'none';
+          }
+        }
+      }
+    });
   }, [getNeighbourhood]);
 
   const handleMapMouseLeave = React.useCallback(() => {
-    setCursorCoords(null);
-    setCursorNeighbourhood('');
+    const hudEl = document.getElementById('godseye-cursor-hud');
+    if (hudEl) hudEl.style.display = 'none';
   }, []);
 
   // 生成半徑探索之 GeoJSON 圓形多邊形 (64 頂點)
@@ -1466,6 +1633,88 @@ export default function AppMap() {
     } finally {
       setLoadingParkadeCapacity(false);
     }
+  }, []);
+
+  // States for YVR Airport Right Drawer & WeatherCams
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedYvrAirport, setSelectedYvrAirport] = useState<any | null>(null);
+  const [yvrAirportTab, setYvrAirportTab] = useState<'info' | 'weather' | 'routes' | 'news'>('info');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [yvrWeathercamsSummary, setYvrWeathercamsSummary] = useState<any | null>(null);
+  const [loadingYvrSummary, setLoadingYvrSummary] = useState<boolean>(false);
+  const [isAirportCameraModalOpen, setIsAirportCameraModalOpen] = useState<boolean>(false);
+  const [activeAirportCamIndex, setActiveAirportCamIndex] = useState<number>(0);
+  const [airportCamZoom, setAirportCamZoom] = useState<number>(1);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [yvrNewsList, setYvrNewsList] = useState<any[]>([]);
+  const [loadingYvrNews, setLoadingYvrNews] = useState<boolean>(false);
+  const [enlargedBrochure, setEnlargedBrochure] = useState<string | null>(null);
+  const [isFlightMinimized, setIsFlightMinimized] = useState<boolean>(false);
+  const [airlineSearchTerm, setAirlineSearchTerm] = useState<string>('');
+
+  const [newsCategoryFilter, setNewsCategoryFilter] = useState<string>('all');
+
+  const filteredAirlines = useMemo(() => {
+    if (!airlineSearchTerm.trim()) return yvrAirlinesData;
+    const q = airlineSearchTerm.toLowerCase();
+    return yvrAirlinesData.filter(al =>
+      al.airline.toLowerCase().includes(q) ||
+      al.code.toLowerCase().includes(q) ||
+      al.passenger_line.includes(q) ||
+      al.media_line.includes(q)
+    );
+  }, [airlineSearchTerm]);
+
+  const fetchYvrSummary = useCallback(async () => {
+    setLoadingYvrSummary(true);
+    try {
+      const res = await fetch(`/api/airports/summary?airportId=CYVR&_t=${Date.now()}`);
+      if (res.ok) {
+        const json = await res.json();
+        setYvrWeathercamsSummary(json);
+        setLoadingYvrSummary(false);
+        return;
+      }
+    } catch (err) {
+      console.warn('Failed to fetch YVR weathercams summary via API:', err);
+    }
+    // Static fallback to public data cache
+    try {
+      const fallbackRes = await fetch(`/data/yvr_weathercams_summary.json?_t=${Date.now()}`);
+      if (fallbackRes.ok) {
+        const fallbackJson = await fallbackRes.json();
+        setYvrWeathercamsSummary(fallbackJson);
+      }
+    } catch {}
+    setLoadingYvrSummary(false);
+  }, []);
+
+  const fetchYvrNews = useCallback(async () => {
+    setLoadingYvrNews(true);
+    try {
+      const res = await fetch(`/api/airports/yvr-news?_t=${Date.now()}`);
+      if (res.ok) {
+        const json = await res.json();
+        const list = Array.isArray(json) ? json : (json?.articles || []);
+        if (list.length > 0) {
+          setYvrNewsList(list);
+          setLoadingYvrNews(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch YVR news via API:', err);
+    }
+    // Static fallback to public data cache
+    try {
+      const fallbackRes = await fetch(`/data/yvr_news.json?_t=${Date.now()}`);
+      if (fallbackRes.ok) {
+        const fallbackJson = await fallbackRes.json();
+        const list = Array.isArray(fallbackJson) ? fallbackJson : (fallbackJson?.articles || []);
+        setYvrNewsList(list);
+      }
+    } catch {}
+    setLoadingYvrNews(false);
   }, []);
   
   // States for Popup
@@ -3255,9 +3504,11 @@ export default function AppMap() {
       setSelectedStop(null);
       setSelectedFacility(null);
       setSelectedFlight(null);
+      setSelectedYvrAirport(null);
       const isParkingTarget = searchTarget.meta?.facility_type === 'airport_parking' || searchTarget.meta?.sub_type === 'airport_parking' || String(searchTarget.id).startsWith('airport_parking_');
       if (isParkingTarget) {
         setSelectedAirport(null);
+        setSelectedYvrAirport(null);
         const parkingFeat = airports.find(ap => ap.properties?.id === searchTarget.id) || {
           geometry: { coordinates: [searchTarget.lon, searchTarget.lat] },
           properties: { name: searchTarget.title, ...(searchTarget.meta || {}) }
@@ -3268,10 +3519,21 @@ export default function AppMap() {
         }
       } else {
         setSelectedAirportParking(null);
-        setSelectedAirport({
+        const isYvr = (searchTarget.title && /Vancouver|YVR/i.test(searchTarget.title)) || searchTarget.meta?.icao === 'CYVR' || searchTarget.meta?.iata === 'YVR';
+        const apObj = {
           geometry: { coordinates: [searchTarget.lon, searchTarget.lat] },
           properties: { name: searchTarget.title, ...(searchTarget.meta || {}) }
-        });
+        };
+        if (isYvr) {
+          setSelectedAirport(null);
+          setSelectedYvrAirport(apObj);
+          setYvrAirportTab('info');
+          fetchYvrSummary();
+          fetchYvrNews();
+        } else {
+          setSelectedYvrAirport(null);
+          setSelectedAirport(apObj);
+        }
       }
       if (mapRef.current) {
         mapRef.current.flyTo({
@@ -3427,6 +3689,9 @@ export default function AppMap() {
     };
   }, []);
 
+
+  const isMarineTideActive = Boolean(isExploreOpen && exploreTab === 'weather' && weatherSubTab === 'marine');
+  const isExploreTrafficActive = Boolean(isExploreOpen && exploreTab === 'traffic');
 
   const mapStyle = useMemo(() => {
     // Determine Base and Label Tiles based on mapStyleType
@@ -3641,7 +3906,7 @@ export default function AppMap() {
     }
 
     // Coastal Tide Stations (大溫海岸潮汐與即時水位站 - 僅在海洋水文開啟)
-    const showTideStations = (isExploreOpen && exploreTab === 'weather' && weatherSubTab === 'marine');
+    const showTideStations = isMarineTideActive;
     if (showTideStations) {
       style.sources['tide-stations'] = {
         type: 'geojson',
@@ -4092,7 +4357,7 @@ export default function AppMap() {
     }
 
     // Explore Traffic Tab: Major Highways & Bridges Only & Layer Traffic Conditions
-    const isExploreTrafficCorridorsVisible = (isExploreOpen && exploreTab === 'traffic') || Boolean(layers.trafficConditions);
+    const isExploreTrafficCorridorsVisible = isExploreTrafficActive || Boolean(layers.trafficConditions);
     if (isExploreTrafficCorridorsVisible) {
       style.sources['traffic_conditions'] = { 
         type: 'geojson', 
@@ -5341,7 +5606,7 @@ export default function AppMap() {
     }
 
     // Nature: Coastal Tide Stations (大溫海岸潮汐與即時水位站 - 僅在海洋水文開啟)
-    if (isExploreOpen && exploreTab === 'weather' && weatherSubTab === 'marine') {
+    if (isMarineTideActive) {
       style.layers.push({
         id: 'tide-stations-layer',
         type: 'circle',
@@ -6967,9 +7232,8 @@ export default function AppMap() {
     layerCustomColors,
     contourInterval,
     mapStyleType,
-    isExploreOpen,
-    exploreTab,
-    weatherSubTab
+    isMarineTideActive,
+    isExploreTrafficActive
   ]);
 
   const getFloatingPanelPos = (offsetIdx: number) => {
@@ -7002,6 +7266,12 @@ export default function AppMap() {
         maxZoom={20}
         mapStyle={mapStyle}
         style={{ width: '100%', height: '100%' }}
+        onDragStart={() => {
+          isDraggingMapRef.current = true;
+        }}
+        onDragEnd={() => {
+          isDraggingMapRef.current = false;
+        }}
         onMove={(e: any) => {
           if (e.viewState?.latitude !== undefined && e.viewState?.longitude !== undefined) {
             (window as any).__godsEyeMapCenter = { lat: e.viewState.latitude, lon: e.viewState.longitude };
@@ -7035,145 +7305,7 @@ export default function AppMap() {
         onContextMenu={handleMapContextMenu}
         onSourceData={handleMapSourceData}
         onIdle={handleMapIdle}
-        interactiveLayerIds={[
-          'bus-stops-layer', 
-          'skytrain-stops-hit-layer',
-          'skytrain-stops-layer', 
-          'skytrain-stops-inner-layer',
-          'skytrain-stops-label-layer',
-          'seabus-stops-layer',
-          'seabus-stops-label-layer',
-          'bikeways-layer',
-          'parking-meters-cluster-layer',
-          'parking-meters-layer',
-          'parking-meters-symbol-layer',
-          'impark-layer',
-          'impark-symbol-layer',
-          'accessible-parking-layer',
-          'accessible-parking-symbol-layer',
-          'motorcycle-parking-layer',
-          'motorcycle-parking-symbol-layer',
-          'ev-charging-layer',
-          'ev-charging-symbol-layer',
-          'escooter-layer',
-          'escooter-symbol-layer',
-          'shared-bikes-layer',
-          'shared-bikes-symbol-layer',
-          'traffic-cameras-layer',
-          'traffic-cameras-symbol-layer',
-          'safety-cameras-layer',
-          'safety-cameras-symbol-layer',
-          'fire-halls-layer',
-          'fire-halls-symbol-layer',
-          'community-centres-layer',
-          'community-centres-symbol-layer',
-          'hospitals-layer',
-          'hospitals-symbol-layer',
-          'parks-layer',
-          'parks-symbol-layer',
-          'parks-facilities-layer',
-          'parks-facilities-symbol-layer',
-          'community-gardens-layer',
-          'community-gardens-symbol-layer',
-          'drinking-fountains-layer',
-          'drinking-fountains-symbol-layer',
-          'public-washrooms-layer',
-          'public-washrooms-symbol-layer',
-          'schools-layer',
-          'schools-symbol-layer',
-          'libraries-layer',
-          'libraries-symbol-layer',
-          'food-vendors-layer',
-          'food-vendors-symbol-layer',
-          'food-banks-layer',
-          'food-banks-symbol-layer',
-          'recycling-layer',
-          'recycling-symbol-layer',
-          'homeless-shelters-layer',
-          'homeless-shelters-symbol-layer',
-          'car-sharing-layer',
-          'car-sharing-symbol-layer',
-          'police-layer',
-          'police-symbol-layer',
-          'disaster-hubs-layer',
-          'disaster-hubs-symbol-layer',
-          'aed-layer',
-          'aed-symbol-layer',
-          'fuel-layer',
-          'fuel-symbol-layer',
-          'tesla-layer',
-          'tesla-symbol-layer',
-          'marine-terminals-layer',
-          'marine-terminals-symbol-layer',
-          'one-way-streets-layer',
-          'snow-removal-routes-layer',
-          'traffic-speed-limits-layer',
-          'bike-racks-cluster-layer',
-          'bike-racks-layer',
-          'bike-racks-symbol-layer',
-          'public-art-layer',
-          'public-art-symbol-layer',
-          'museums-layer',
-          'museums-symbol-layer',
-          'garbage-collection-fill-layer',
-          'garbage-collection-outline-layer',
-          'traffic-crosswalks-cluster-layer',
-          'traffic-crosswalks-layer',
-          'traffic-crosswalks-symbol-layer',
-          'litter-containers-cluster-layer',
-          'litter-containers-layer',
-          'litter-containers-symbol-layer',
-          'water-distribution-mains-layer',
-          'sewer-mains-layer',
-          'contours-layer',
-          'contours-label-layer',
-          'van-wifi-cluster-layer',
-          'van-wifi-layer',
-          'van-wifi-symbol-layer',
-          'tide-stations-layer',
-          'tide-stations-symbol-layer',
-          'traffic-conditions-casing-layer',
-          'traffic-conditions-layer',
-          'traffic-conditions-label-layer',
-          'traffic-alerts-pulse-layer',
-          'traffic-alerts-layer',
-          'traffic-alerts-symbol-layer',
-          'traffic-alerts-label-layer',
-          'road-closures-casing-layer',
-          'road-closures-layer',
-          'road-construction-casing-layer',
-          'road-construction-layer',
-          'street-lighting-cluster-layer',
-          'street-lighting-layer',
-          'street-lighting-symbol-layer',
-          'fire-hydrants-cluster-layer',
-          'fire-hydrants-layer',
-          'fire-hydrants-symbol-layer',
-          'zoning-districts-fill',
-          'public-trees-cluster-layer',
-          'public-trees-layer',
-          'public-trees-symbol-layer',
-          'canada-post-layer',
-          'canada-post-symbol-layer',
-          'fedex-layer',
-          'fedex-symbol-layer',
-          'purolator-layer',
-          'purolator-symbol-layer',
-          'banks-layer',
-          'banks-symbol-layer',
-          'atm-layer',
-          'atm-symbol-layer',
-          'truck-routes-restriction-layer',
-          'truck-routes-restriction-symbol-layer',
-          'traffic-signals-layer',
-          'traffic-signals-symbol-layer',
-          'turn-restrictions-layer',
-          'turn-restrictions-symbol-layer',
-          'turn-restrictions-arrow-line-layer',
-          'turn-restrictions-arrowhead-fill-layer',
-          // beach-water layers removed from interactive to disable popup
-          'street-lighting-poles-layer'
-        ]}
+        interactiveLayerIds={INTERACTIVE_LAYER_IDS}
         onClick={(e) => {
           if (contextMenu) {
             setContextMenu(null);
@@ -8053,7 +8185,7 @@ export default function AppMap() {
                     e.stopPropagation();
                     handleSelectBus(v);
                   }}
-                  className={`relative flex items-center justify-center w-8 h-8 bg-gradient-to-tr from-sky-700 via-sky-600 to-cyan-500 rounded-full cursor-pointer tooltip border-2 border-white shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-125 z-30 ${
+                  className={`relative flex items-center justify-center w-8 h-8 bg-gradient-to-tr from-sky-700 via-sky-600 to-cyan-500 rounded-full cursor-pointer tooltip border-2 border-white shadow-lg transition-all duration-200 hover:scale-125 z-30 ${
                     isSelected ? 'ring-4 ring-amber-400 scale-125 z-40 shadow-xl' : ''
                   }`}
                   title={`SeaBus 跨海渡輪${v.destination ? ` 往 ${v.destination}` : ''}`}
@@ -8101,7 +8233,7 @@ export default function AppMap() {
                     e.stopPropagation();
                     handleSelectBus(v);
                   }}
-                  className={`relative flex items-center justify-center w-5 h-5 bg-emerald-500/90 rounded-full cursor-pointer tooltip border border-white/80 shadow-md backdrop-blur-sm hover:scale-125 transition-transform z-10 ${
+                  className={`relative flex items-center justify-center w-5 h-5 bg-emerald-500/90 rounded-full cursor-pointer tooltip border border-white/80 shadow-md hover:scale-125 transition-transform z-10 ${
                     isSelected ? 'ring-4 ring-emerald-300/90 bg-emerald-600 scale-125 z-30' : ''
                   }`}
                   title={`巴士 ${busNum}${v.destination ? ` 往 ${v.destination}` : ''}`}
@@ -8135,7 +8267,7 @@ export default function AppMap() {
         {layers.bcferriesVehicles && ferryVehicles.map(v => (
           <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
             <div 
-              className="relative flex items-center justify-center w-8 h-8 bg-[#0060a9] rounded-full cursor-pointer tooltip border-2 border-white shadow-xl backdrop-blur-sm transition-transform hover:scale-125 z-30" 
+              className="relative flex items-center justify-center w-8 h-8 bg-[#0060a9] rounded-full cursor-pointer tooltip border-2 border-white shadow-xl transition-transform hover:scale-125 z-30" 
               title={`${v.vessel_name || 'BC Ferries'} (${v.route_id})`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -8194,7 +8326,7 @@ export default function AppMap() {
               }}
             >
               <div 
-                className={`relative flex items-center justify-center w-7 h-7 rounded-full cursor-pointer tooltip border-2 border-white shadow-xl backdrop-blur-sm transition-transform hover:scale-125 z-30 ${
+                className={`relative flex items-center justify-center w-7 h-7 rounded-full cursor-pointer tooltip border-2 border-white shadow-xl transition-transform hover:scale-125 z-30 ${
                   isSelected ? 'ring-4 ring-cyan-400 scale-125 z-40' : ''
                 }`}
                 style={{ backgroundColor: bgColor }}
@@ -8256,7 +8388,7 @@ export default function AppMap() {
                   e.nativeEvent?.stopImmediatePropagation();
                   handleSelectTrain(train);
                 }}
-                className={`relative flex items-center justify-center w-6 h-6 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-lg backdrop-blur-sm transition-transform hover:scale-125 z-30 ${
+                className={`relative flex items-center justify-center w-6 h-6 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-lg transition-transform hover:scale-125 z-30 ${
                   isSelected ? 'ring-4 ring-amber-400 scale-125 z-40' : ''
                 }`}
                 style={{
@@ -8307,7 +8439,11 @@ export default function AppMap() {
             offset={[0, -8]}
             maxWidth="none"
           >
-            <div className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] max-h-[74vh] sm:max-h-[80vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800">
+            <div 
+              onWheel={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] max-h-[74vh] sm:max-h-[80vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800"
+            >
               {(() => {
                 const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
@@ -8473,7 +8609,11 @@ export default function AppMap() {
               className="z-50 station-alert-popup"
               maxWidth="none"
             >
-              <div className="flex flex-col gap-2 text-xs text-gray-900 w-[290px] sm:w-[325px] max-w-[calc(100vw-32px)] p-0.5">
+              <div 
+                onWheel={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className="flex flex-col gap-2 text-xs text-gray-900 w-[290px] sm:w-[325px] max-w-[calc(100vw-32px)] p-0.5"
+              >
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2 pb-2 border-b border-gray-200">
                   <div className="flex items-center gap-2 min-w-0">
@@ -8780,7 +8920,11 @@ export default function AppMap() {
               offset={[0, -14]}
               maxWidth="none"
             >
-              <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
+              <div 
+                onWheel={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800"
+              >
                 <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     <span className="px-2.5 py-1 rounded-full bg-[#0060a9]/10 text-[#0060a9] border border-[#0060a9]/30 text-xs font-bold shrink-0">
@@ -8874,7 +9018,11 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div 
+              onWheel={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800"
+            >
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-100 text-cyan-800 border border-cyan-300 shrink-0">
@@ -8992,18 +9140,31 @@ export default function AppMap() {
           const isParking = props.facility_type === 'airport_parking' || props.sub_type === 'airport_parking';
           const isMain = props.sub_type === 'international_airport';
           const isSeaplane = props.sub_type === 'seaplane_base' || props.sub_type === 'south_terminal';
+          const isYvr = isMain || props.icao === 'CYVR' || props.iata === 'YVR' || (props.name && /Vancouver International/i.test(props.name));
+
+          // 5. 機場圖層的圓點 (包括機場及停車場) 大小跟隨其他圖層的大小 (如道路類別的圖層)
+          // 低縮放 (zoom < 13.5) 時為 2.5px 半徑幼圓點 (w-2.5 h-2.5)，高縮放時展開為圖示按鈕
+          const isLowZoom = currentZoom < 13.5;
 
           return (
             <Marker key={props.id || `ap-${i}`} longitude={coords[0]} latitude={coords[1]} anchor="center">
               <div
-                className={`relative flex items-center justify-center w-5 h-5 rounded-full border border-white shadow-md cursor-pointer backdrop-blur-md transition-all hover:scale-125 z-35 select-none ${
-                  isParking
-                    ? 'bg-blue-700 text-white'
-                    : isMain 
-                    ? 'bg-sky-600 text-white ring-1 ring-sky-400/50' 
-                    : isSeaplane 
-                    ? 'bg-teal-600 text-white' 
-                    : 'bg-emerald-600 text-white'
+                className={`relative flex items-center justify-center rounded-full border border-white cursor-pointer transition-all hover:scale-125 z-35 select-none ${
+                  isLowZoom
+                    ? isParking
+                      ? 'w-2.5 h-2.5 bg-blue-700 shadow-xs'
+                      : isMain
+                      ? 'w-2.5 h-2.5 bg-sky-600 ring-1 ring-sky-400/50 shadow-xs'
+                      : 'w-2.5 h-2.5 bg-teal-600 shadow-xs'
+                    : `w-5 h-5 shadow-md ${
+                        isParking
+                          ? 'bg-blue-700 text-white'
+                          : isMain 
+                          ? 'bg-sky-600 text-white ring-1 ring-sky-400/50' 
+                          : isSeaplane 
+                          ? 'bg-teal-600 text-white' 
+                          : 'bg-emerald-600 text-white'
+                      }`
                 }`}
                 title={props.name}
                 onClick={(e) => {
@@ -9014,21 +9175,32 @@ export default function AppMap() {
                   setSelectedTerminal(null);
                   setSelectedFerry(null);
                   if (isParking) {
+                    setSelectedYvrAirport(null);
                     setSelectedAirport(null);
                     setSelectedAirportParking(ap);
                     if (props.has_live_capacity) {
                       fetchParkadeCapacity();
                     }
+                  } else if (isYvr) {
+                    setSelectedAirport(null);
+                    setSelectedAirportParking(null);
+                    setSelectedYvrAirport(ap);
+                    setYvrAirportTab('info');
+                    fetchYvrSummary();
+                    fetchYvrNews();
                   } else {
+                    setSelectedYvrAirport(null);
                     setSelectedAirportParking(null);
                     setSelectedAirport(ap);
                   }
                 }}
               >
-                {isParking ? (
-                  <SquareParking className="w-3 h-3 text-white" />
-                ) : (
-                  <Plane className="w-2.5 h-2.5 text-white" />
+                {!isLowZoom && (
+                  isParking ? (
+                    <SquareParking className="w-3 h-3 text-white" />
+                  ) : (
+                    <Plane className="w-2.5 h-2.5 text-white" />
+                  )
                 )}
               </div>
             </Marker>
@@ -9053,7 +9225,11 @@ export default function AppMap() {
             offset={[0, -12]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div 
+              onWheel={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] max-h-[75vh] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800"
+            >
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 min-w-0 pr-2">
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-blue-700 text-white shrink-0 mt-0.5 shadow-xs whitespace-nowrap">
@@ -9160,16 +9336,17 @@ export default function AppMap() {
                     <div className="flex items-center justify-between text-[11px]">
                       <span className="font-semibold text-gray-800 flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        即時空位現況 (Parkade Capacity)
+                        即時空位現況
                       </span>
                       {loadingParkadeCapacity ? (
                         <span className="text-gray-400 text-[10px]">查詢中...</span>
                       ) : (
                         <button
                           onClick={fetchParkadeCapacity}
-                          className="text-[10px] text-blue-600 hover:text-blue-800 underline font-medium"
+                          className="p-1 rounded hover:bg-gray-100 text-gray-500 hover:text-sky-600 transition-colors"
+                          title="重新整理"
                         >
-                          重新整理
+                          <RefreshCw className="w-3.5 h-3.5" />
                         </button>
                       )}
                     </div>
@@ -9209,7 +9386,7 @@ export default function AppMap() {
               {/* 設施通用坐標與複製按鈕 */}
               <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2 mt-2 border-t border-gray-100 font-mono">
                 <span className="flex items-center gap-1 text-gray-600">
-                  <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                  <MapPinned className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                   <span>{selectedAirportParking.geometry.coordinates[1].toFixed(6)}, {selectedAirportParking.geometry.coordinates[0].toFixed(6)}</span>
                 </span>
                 <button
@@ -9242,7 +9419,11 @@ export default function AppMap() {
             offset={[0, -12]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div 
+              onWheel={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] max-h-[75vh] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800"
+            >
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 min-w-0 pr-2">
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-sky-600 text-white shrink-0 mt-0.5 shadow-xs whitespace-nowrap">
@@ -9355,7 +9536,7 @@ export default function AppMap() {
               {/* 設施通用坐標與複製按鈕 */}
               <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2.5 mt-2.5 border-t border-gray-100 font-mono">
                 <span className="flex items-center gap-1 text-gray-600">
-                  <span>📍</span>
+                  <MapPinned className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                   <span>{selectedAirport.geometry.coordinates[1].toFixed(6)}, {selectedAirport.geometry.coordinates[0].toFixed(6)}</span>
                 </span>
                 <button
@@ -9378,7 +9559,7 @@ export default function AppMap() {
               type="line"
               layout={{ 'line-join': 'round', 'line-cap': 'round' }}
               paint={{
-                'line-color': selectedFlight?.is_domestic ? '#38bdf8' : '#f59e0b',
+                'line-color': selectedFlight?.range === 'D' ? '#38bdf8' : selectedFlight?.range === 'T' ? '#fb7185' : '#f59e0b',
                 'line-width': 7,
                 'line-blur': 4,
                 'line-opacity': 0.65
@@ -9389,78 +9570,13 @@ export default function AppMap() {
               type="line"
               layout={{ 'line-join': 'round', 'line-cap': 'round' }}
               paint={{
-                'line-color': selectedFlight?.is_domestic ? '#0284c7' : '#d97706',
+                'line-color': selectedFlight?.range === 'D' ? '#0284c7' : selectedFlight?.range === 'T' ? '#e11d48' : '#d97706',
                 'line-width': 2.8,
                 'line-dasharray': [2, 1]
               }}
             />
           </Source>
         )}
-
-        {/* Selected Flight Waypoint Markers for Origin & Destination */}
-        {(() => {
-          if (!selectedFlight) return null;
-          const isDom = selectedFlight.is_domestic ?? false;
-          const isDep = selectedFlight.flight_type === 'dep';
-          let origCode = selectedFlight.origin_code;
-          let origCity = selectedFlight.origin_city || selectedFlight.origin_name;
-          let destCode = selectedFlight.dest_code;
-          let destCity = selectedFlight.dest_city || selectedFlight.dest_name;
-
-          if (!origCode && !destCode) {
-            origCode = isDep ? 'YVR' : (isDom ? 'YYC' : 'SEA');
-            origCity = isDep ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
-            destCode = isDep ? (isDom ? 'YYC' : 'SEA') : 'YVR';
-            destCity = isDep ? (isDom ? '卡加利' : '西雅圖') : '溫哥華';
-          } else if (origCode === destCode || (origCode === 'YVR' && destCode === 'YVR')) {
-            if (isDep) {
-              origCode = 'YVR';
-              origCity = '溫哥華';
-              destCode = isDom ? 'YYC' : 'SEA';
-              destCity = isDom ? '卡加利' : '西雅圖';
-            } else {
-              origCode = isDom ? 'YYC' : 'SEA';
-              origCity = isDom ? '卡加利' : '西雅圖';
-              destCode = 'YVR';
-              destCity = '溫哥華';
-            }
-          } else {
-            if (!origCode) {
-              origCode = destCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
-              origCity = origCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
-            }
-            if (!destCode) {
-              destCode = origCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
-              destCity = destCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
-            }
-          }
-
-          const hasOrigCoord = selectedFlight.origin_coord && selectedFlight.origin_coord.length === 2;
-          const hasDestCoord = selectedFlight.dest_coord && selectedFlight.dest_coord.length === 2;
-
-          return (
-            <>
-              {hasOrigCoord && (
-                <Marker longitude={selectedFlight.origin_coord[0]} latitude={selectedFlight.origin_coord[1]} anchor="center">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-sky-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
-                    <Plane className="w-3 h-3 text-sky-400" />
-                    <span className="font-mono">{origCode}</span>
-                    {origCity && <span className="text-[9.5px] text-gray-300 font-normal">({origCity.split(' ')[0]})</span>}
-                  </div>
-                </Marker>
-              )}
-              {hasDestCoord && (
-                <Marker longitude={selectedFlight.dest_coord[0]} latitude={selectedFlight.dest_coord[1]} anchor="center">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-amber-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
-                    <Plane className="w-3 h-3 text-amber-400" />
-                    <span className="font-mono">{destCode}</span>
-                    {destCity && <span className="text-[9.5px] text-gray-300 font-normal">({destCity.split(' ')[0]})</span>}
-                  </div>
-                </Marker>
-              )}
-            </>
-          );
-        })()}
 
         {/* 滑雪場標記 (當開啟探索且分頁為滑雪時，在地圖上為 3 個滑雪場加上圖示，按下即彈去該地點) */}
         {((isExploreOpen && exploreTab === 'ski') || (searchTarget && searchTarget.category === 'ski_resort')) && mapSkiResorts.map((resort) => {
@@ -9494,10 +9610,10 @@ export default function AppMap() {
                 className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
               >
                 {/* 標記光環與按鈕 */}
-                <div className={`relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 ${
+                <div className={`relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl transition-all duration-300 group-hover:scale-125 ${
                   isSelected 
                     ? 'bg-cyan-500 border-white text-white scale-120 shadow-[0_0_20px_rgba(6,182,212,0.8)] ring-4 ring-cyan-400/40' 
-                    : 'bg-[#121927]/95 border-cyan-400/80 text-cyan-300 hover:border-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                    : 'bg-[#121927] border-cyan-400/80 text-cyan-300 hover:border-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
                 }`}>
                   <CableCar className="w-4 h-4" />
                   {/* 小脈衝指示圈 */}
@@ -9542,10 +9658,10 @@ export default function AppMap() {
                 className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
               >
                 {/* 標記光環與按鈕 */}
-                <div className={`relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 ${
+                <div className={`relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl transition-all duration-300 group-hover:scale-125 ${
                   isSelected 
                     ? 'bg-emerald-500 border-white text-white scale-120 shadow-[0_0_20px_rgba(16,185,129,0.8)] ring-4 ring-emerald-400/40' 
-                    : 'bg-[#121927]/95 border-emerald-400/80 text-emerald-300 hover:border-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
+                    : 'bg-[#121927] border-emerald-400/80 text-emerald-300 hover:border-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
                 }`}>
                   <Fence className="w-4 h-4" />
                 </div>
@@ -9587,7 +9703,7 @@ export default function AppMap() {
               }}
               className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
             >
-              <div className="relative flex items-center justify-center w-8 h-8 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 bg-[#121927]/95 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]">
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-full border-2 shadow-xl transition-all duration-300 group-hover:scale-125 bg-[#121927] border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]">
                 <BridgeIcon className="w-4 h-4 text-emerald-400" />
               </div>
             </div>
@@ -9685,6 +9801,59 @@ export default function AppMap() {
             popupLat = selectedFlight.dest_coord?.[1] ?? 49.1967;
           }
 
+          if (isFlightMinimized) {
+            return (
+              <div className="fixed top-20 right-4 sm:right-6 z-40 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-full shadow-lg border border-gray-200 flex items-center gap-2.5 animate-in fade-in select-none">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white ${
+                  selectedFlight.range === 'T' ? 'bg-red-600' : selectedFlight.range === 'I' ? 'bg-orange-500' : 'bg-blue-600'
+                }`}>
+                  {isDep ? <PlaneTakeoff className="w-3.5 h-3.5" /> : <PlaneLanding className="w-3.5 h-3.5" />}
+                </div>
+                <span className="font-mono font-bold text-xs text-gray-900">{selectedFlight.flight_no}</span>
+                <span className="text-xs text-gray-500 font-medium">
+                  {isDep ? `YVR ➔ ${destCode}` : `${origCode} ➔ YVR`}
+                </span>
+                <button
+                  onClick={() => setIsFlightMinimized(false)}
+                  className="p-1 hover:bg-gray-100 rounded-full text-gray-600 transition ml-0.5"
+                  title="展開航班資訊"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedFlight(null);
+                    setSearchTarget(null);
+                    setIsFlightMinimized(false);
+                    mapRef.current?.flyTo({
+                      center: [-123.1207, 49.2827],
+                      zoom: 11.5,
+                      duration: 1200
+                    });
+                  }}
+                  className="p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-700 transition"
+                  title="關閉"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            );
+          }
+
+          const formatFlightStatusZh = (status?: string) => {
+            if (!status) return '準時';
+            const s = status.trim().toLowerCase();
+            if (s.includes('final call') || s.includes('最後召集')) return '最後召集';
+            if (s.includes('on time') || s.includes('準時') || s.includes('scheduled')) return '準時';
+            if (s.includes('boarding') || s.includes('登機')) return '登機中';
+            if (s.includes('gate closed') || s.includes('閘口關閉')) return '閘口關閉';
+            if (s.includes('departed') || s.includes('已起飛') || s.includes('airborne')) return '已起飛';
+            if (s.includes('landed') || s.includes('arrived') || s.includes('已降落') || s.includes('已抵達')) return '已抵達';
+            if (s.includes('cancelled') || s.includes('canceled') || s.includes('已取消')) return '已取消';
+            if (s.includes('delayed') || s.includes('延誤')) return '延誤';
+            return status;
+          };
+
           return (
           <Popup
             longitude={popupLon}
@@ -9693,6 +9862,12 @@ export default function AppMap() {
             onClose={() => {
               setSelectedFlight(null);
               setSearchTarget(null);
+              setIsFlightMinimized(false);
+              mapRef.current?.flyTo({
+                center: [-123.1207, 49.2827],
+                zoom: 11.5,
+                duration: 1200
+              });
             }}
             closeOnClick={false}
             closeButton={false}
@@ -9700,46 +9875,59 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3 w-[280px] sm:w-[310px] max-w-[calc(100vw-32px)] text-gray-800">
               {/* Header */}
-              <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
-                <div className="flex items-center gap-2.5">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 ${
-                    selectedFlight.is_domestic ? 'bg-sky-500' : 'bg-amber-500'
+              <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0 ${
+                    selectedFlight.range === 'T' ? 'bg-red-600' : selectedFlight.range === 'I' ? 'bg-orange-500' : 'bg-blue-600'
                   }`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
-                      <path d="M10.18 9 L2.5 12.5 L2.5 14.5 L10.18 12.5 L10.18 19 L7.5 21 L7.5 22.5 L12 21 L16.5 22.5 L16.5 21 L13.82 19 L13.82 12.5 L21.5 14.5 L21.5 12.5 L13.82 9 L13.82 3 C13.82 1.9 12.92 1 12 1 C11.08 1 10.18 1.9 10.18 3 Z"/>
-                    </svg>
+                    {isDep ? (
+                      <PlaneTakeoff className="w-4 h-4" />
+                    ) : (
+                      <PlaneLanding className="w-4 h-4" />
+                    )}
                   </div>
                   <div>
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="font-bold text-gray-900 text-base font-mono">{selectedFlight.flight_no}</h3>
-                    </div>
-                    <p className="text-xs text-gray-600 font-medium truncate max-w-[140px] sm:max-w-[165px]">
+                    <h3 className="font-bold text-gray-900 text-sm font-mono leading-tight">{selectedFlight.flight_no}</h3>
+                    <p className="text-[11px] text-gray-600 font-medium truncate max-w-[130px] sm:max-w-[150px]">
                       {selectedFlight.airline}
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => {
-                    setSelectedFlight(null);
-                    setSearchTarget(null);
-                  }}
-                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 -mt-1"
-                >
-                  &times;
-                </button>
+                <div className="flex items-center gap-1 -mt-0.5">
+                  <button
+                    onClick={() => setIsFlightMinimized(true)}
+                    className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition"
+                    title="最小化"
+                  >
+                    <Minimize2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedFlight(null);
+                      setSearchTarget(null);
+                      setIsFlightMinimized(false);
+                      mapRef.current?.flyTo({
+                        center: [-123.1207, 49.2827],
+                        zoom: 11.5,
+                        duration: 1200
+                      });
+                    }}
+                    className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition"
+                    title="關閉"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               {/* Route Banner (出發地 ➔ 目的地) */}
-              <div className="mb-2.5 p-2.5 rounded-xl bg-gradient-to-r from-gray-50 via-sky-50/40 to-gray-50 border border-gray-200/80 shadow-sm">
+              <div className="mb-2 p-2 rounded-xl bg-gradient-to-r from-gray-50 via-sky-50/40 to-gray-50 border border-gray-200/80 shadow-sm">
                 <div className="flex items-center justify-between">
                   {/* Origin */}
                   <div className="flex flex-col min-w-0 max-w-[44%]">
-                    <span className="text-[10px] text-gray-500 flex items-center gap-1 font-medium">
-                      <Plane className="w-3 h-3 text-sky-600" />
-                      <span>起飛出發</span>
-                    </span>
+                    <span className="text-[10px] text-gray-500 font-medium">起飛出發</span>
                     <span className="font-bold text-gray-900 text-sm truncate font-mono">
                       {origCode}
                     </span>
@@ -9756,15 +9944,11 @@ export default function AppMap() {
                   {/* Route Indicator Arrow */}
                   <div className="flex flex-col items-center px-1">
                     <span className="text-sky-500 font-bold text-sm">➔</span>
-                    <span className="text-[9px] text-gray-400 font-mono">大圓航線</span>
                   </div>
 
                   {/* Destination */}
                   <div className="flex flex-col min-w-0 max-w-[44%] text-right items-end">
-                    <span className="text-[10px] text-gray-500 flex items-center gap-1 font-medium">
-                      <span>預計抵達</span>
-                      <Plane className="w-3 h-3 text-amber-600" />
-                    </span>
+                    <span className="text-[10px] text-gray-500 font-medium">預計抵達</span>
                     <span className="font-bold text-gray-900 text-sm truncate font-mono">
                       {destCode}
                     </span>
@@ -9780,18 +9964,30 @@ export default function AppMap() {
                 </div>
               </div>
 
-              {/* 航班類別與當前狀態灰色區塊 (刪除航廈，第一行是航班類別，第二行是當前狀態) */}
-              <div className="mb-2.5 flex flex-col gap-1 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100 text-xs">
-                <div className="flex items-center justify-between text-gray-700">
-                  <span className="font-semibold text-[11.5px]">
-                    {selectedFlight.range === 'D' ? '國內航班' : selectedFlight.range === 'T' ? '美加航班' : '國際航班'}
-                    {selectedFlight.gate && selectedFlight.gate !== '--' ? ` · 閘口 ${selectedFlight.gate}` : ''}
+              {/* Row-by-row gray blocks: 航班類別, 行李提取/閘口, 即時狀態 */}
+              <div className="space-y-1.5 mb-2">
+                <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-xs">
+                  <span className="text-gray-500 font-medium">航班類別</span>
+                  <span className={`font-semibold px-1.5 py-0.5 rounded text-[11px] ${
+                    selectedFlight.range === 'T' ? 'bg-red-50 text-red-700' : selectedFlight.range === 'I' ? 'bg-orange-50 text-orange-700' : 'bg-blue-50 text-blue-700'
+                  }`}>
+                    {selectedFlight.range === 'D' ? '國內航線' : selectedFlight.range === 'T' ? '美國航線' : '國際航線'}
                   </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-sky-700 flex items-center gap-1.5">
+                <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-xs">
+                  <span className="text-gray-500 font-medium">{isDep ? '登機閘口' : '行李提取'}</span>
+                  <span className="font-semibold text-gray-800">
+                    {isDep 
+                      ? (selectedFlight.gate && selectedFlight.gate !== '--' ? `閘口 ${selectedFlight.gate}` : '--')
+                      : (selectedFlight.carousel && selectedFlight.carousel !== '--' ? `${selectedFlight.carousel} 號轉盤` : (selectedFlight.gate && selectedFlight.gate !== '--' ? `閘口 ${selectedFlight.gate}` : '--'))
+                    }
+                  </span>
+                </div>
+                <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-xs">
+                  <span className="text-gray-500 font-medium">即時狀態</span>
+                  <span className="font-bold text-sky-700 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-ping"></span>
-                    {selectedFlight.status || '依時刻表排程'}
+                    {formatFlightStatusZh(selectedFlight.status)}
                   </span>
                 </div>
               </div>
@@ -9871,7 +10067,7 @@ export default function AppMap() {
                 }
 
                 return (
-                  <div className="mb-2 p-2.5 rounded-lg bg-sky-50/70 border border-sky-100 flex flex-col gap-2">
+                  <div className="mb-1 p-2 rounded-lg bg-sky-50/70 border border-sky-100 flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Clock className="w-3.5 h-3.5 text-sky-700" />
@@ -9884,17 +10080,13 @@ export default function AppMap() {
                           </span>
                         </div>
                       </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-100/80 text-sky-800 font-medium border border-sky-200">
-                        航線圖已繪製
-                      </span>
                     </div>
 
                     {/* Progress Bar inside Popup */}
-                    <div className="pt-1.5 border-t border-sky-200/60">
+                    <div className="pt-1 border-t border-sky-200/60">
                       <div className="flex items-center justify-between text-[10.5px] font-mono mb-1">
-                        <span className="font-semibold text-sky-900 flex items-center gap-1">
-                          <Plane className="w-3 h-3 text-sky-600" />
-                          <span>飛行進度 · {phaseLabel}</span>
+                        <span className="font-semibold text-sky-900">
+                          飛行進度 · {phaseLabel}
                         </span>
                         <span className="font-bold text-sky-800 bg-sky-200/70 px-1.5 py-0.2 rounded">
                           {pct}%
@@ -9932,7 +10124,10 @@ export default function AppMap() {
               offset={[0, -10]}
               maxWidth="none"
             >
-              <div className={`p-3.5 ${
+              <div 
+                onWheel={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[300px] sm:w-[335px]' :
               (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[320px] sm:w-[350px]' : 
               (selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'street_lighting') ? 'w-[280px] sm:w-[310px]' :
@@ -11403,8 +11598,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 11.1 & 11.2 淺綠色區塊：刪除「道路設施」那行，顯示頭盔警語 */}
-                    <div className="bg-lime-500/10 p-2.5 rounded-lg border border-lime-500/25 flex items-center gap-1.5 text-[11px] text-lime-950 font-medium leading-snug">
-                      <Bike className="w-3.5 h-3.5 text-lime-700 shrink-0" />
+                    <div className="bg-lime-500/10 p-2.5 rounded-lg border border-lime-500/25 flex items-center text-[11px] text-lime-950 font-medium leading-snug">
                       <span>騎滑板車必須佩戴符合安全規範的頭盔，並注意安全。</span>
                     </div>
 
@@ -11560,8 +11754,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 10.1 主題 #00A3AD，10.2 刪除「道路設施」那行，10.4 說明文字 */}
-                    <div className="bg-[#00A3AD]/10 p-2.5 rounded-lg border border-[#00A3AD]/25 flex items-center gap-1.5 text-[11px] text-[#00A3AD] font-medium leading-snug">
-                      <Bike className="w-3.5 h-3.5 text-[#00A3AD] shrink-0" />
+                    <div className="bg-[#00A3AD]/10 p-2.5 rounded-lg border border-[#00A3AD]/25 flex items-center text-[11px] text-[#00A3AD] font-medium leading-snug">
                       <span>騎乘單車必須佩戴符合安全規範的頭盔，並注意安全。</span>
                     </div>
 
@@ -11717,8 +11910,7 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className={`p-2.5 rounded-lg border ${tipStyle.box} flex items-center gap-1.5 text-[11px] font-medium leading-snug`}>
-                      <Bike className={`w-3.5 h-3.5 ${tipStyle.icon} shrink-0`} />
+                    <div className={`p-2.5 rounded-lg border ${tipStyle.box} flex items-center text-[11px] font-medium leading-snug`}>
                       <span>騎乘單車必須佩戴符合安全規範的頭盔，並注意安全。</span>
                     </div>
 
@@ -15457,8 +15649,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'one_way_streets' && (
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 4.1 主題 #0F172A；4.3 刪除「道路設施」列；4.4 標語 */}
-                  <div className="bg-[#0F172A]/10 p-2.5 rounded-lg border border-[#0F172A]/25 flex items-center gap-2 text-[11px] text-[#0F172A] font-medium leading-snug">
-                    <ArrowRight className="w-3.5 h-3.5 text-[#0F172A] shrink-0" />
+                  <div className="bg-[#0F172A]/10 p-2.5 rounded-lg border border-[#0F172A]/25 flex items-center text-[11px] text-[#0F172A] font-medium leading-snug">
                     <span>請依地面標線與箭頭方向行駛，嚴禁逆向進入。</span>
                   </div>
                 </div>
@@ -15640,8 +15831,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 5.1 主題 #F59E0B；5.2 刪除「道路設施」那行；5.3 警示標語 */}
-                    <div className="bg-[#F59E0B]/10 p-2.5 rounded-lg border border-[#F59E0B]/25 flex items-center gap-2 text-[11px] text-[#B45309] font-medium leading-snug">
-                      <Gauge className="w-4 h-4 text-[#B45309] shrink-0" />
+                    <div className="bg-[#F59E0B]/10 p-2.5 rounded-lg border border-[#F59E0B]/25 flex items-center text-[11px] text-[#B45309] font-medium leading-snug">
                       <span>本路段為速限管制 · 請依限速行駛並禮讓行人。</span>
                     </div>
 
@@ -15880,8 +16070,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'traffic_crosswalks' && (
                 <div className="flex flex-col gap-2 text-xs">
                   {/* 6.1 主題 #FEF3C7；6.3 刪除「道路設施」那行；6.4 禮讓警示標語 */}
-                  <div className="bg-[#FEF3C7] p-2.5 rounded-lg border border-amber-300 flex items-center gap-2 text-[11px] text-amber-950 font-medium leading-snug">
-                    <Footprints className="w-4 h-4 text-amber-800 shrink-0" />
+                  <div className="bg-[#FEF3C7] p-2.5 rounded-lg border border-amber-300 flex items-center text-[11px] text-amber-950 font-medium leading-snug">
                     <span>車輛遇行人合法進入穿越道時，必須完全停駛禮讓。</span>
                   </div>
                 </div>
@@ -16255,8 +16444,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 13.1 主題 #DC2626；13.2 刪除「道路設施」那行；標語 */}
-                    <div className="bg-[#DC2626]/10 p-2.5 rounded-lg border border-[#DC2626]/30 flex items-center gap-2 text-[11px] text-[#DC2626] font-medium leading-snug">
-                      <Ban className="w-4 h-4 text-[#DC2626] shrink-0" />
+                    <div className="bg-[#DC2626]/10 p-2.5 rounded-lg border border-[#DC2626]/30 flex items-center text-[11px] text-[#DC2626] font-medium leading-snug">
                       <span>受市府工務影響道路封閉，建議改行周邊替代道路。</span>
                     </div>
 
@@ -16337,8 +16525,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 14.1 主題 #EA580C；14.2 刪除「道路設施」那行；標語 */}
-                    <div className="bg-[#EA580C]/10 p-2.5 rounded-lg border border-[#EA580C]/30 flex items-center gap-2 text-[11px] text-[#EA580C] font-medium leading-snug">
-                      <Cone className="w-4 h-4 text-[#EA580C] shrink-0" />
+                    <div className="bg-[#EA580C]/10 p-2.5 rounded-lg border border-[#EA580C]/30 flex items-center text-[11px] text-[#EA580C] font-medium leading-snug">
                       <span>工區路段施工中，請減速慢行並隨時注意現場工務人員。</span>
                     </div>
 
@@ -17132,7 +17319,7 @@ export default function AppMap() {
               {/* 設施通用坐標與複製按鈕 */}
               <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2.5 mt-2.5 border-t border-gray-100 font-mono">
                 <span className="flex items-center gap-1 text-gray-600">
-                  <span>📍</span>
+                  <MapPinned className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                   <span>{selectedFacility.lat.toFixed(6)}, {selectedFacility.lon.toFixed(6)}</span>
                 </span>
                 <button
@@ -17281,34 +17468,26 @@ export default function AppMap() {
         </div>
       </div>
 
-      {/* 底部座標與地理資訊列升級 (Bottom Coordinate, Neighbourhood & Zoom Level HUD) */}
-      {/* 坐標與地理資訊狀態列 (Fixed Top-Right Coordinate Display HUD) */}
-      {cursorCoords && (
-        <div
-          className="absolute top-2 right-2 z-20 pointer-events-auto select-none flex items-center gap-2 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-xl text-[11px] font-mono text-gray-200"
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+      {/* 坐標與地理資訊狀態列 (Fixed Top-Right Coordinate Display HUD - DOM 高效架構，免組件重繪) */}
+      <div
+        id="godseye-cursor-hud"
+        onClick={handleCopyCoordinates}
+        className="absolute top-2 right-2 z-20 pointer-events-auto select-none hidden items-center gap-2 px-2.5 py-1.5 bg-[#10131a] rounded-full border border-[#2a2f3d] shadow-xl text-[11px] font-mono text-gray-200 cursor-pointer hover:border-emerald-500/50 transition-colors"
+        title="點擊複製當前鼠標坐標"
+      >
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
 
-          {cursorNeighbourhood && (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-sans font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 shrink-0">
-              {(() => {
-                const paren = cursorNeighbourhood.match(/\((.*?)\)/);
-                if (paren) return paren[1].trim();
-                const enOnly = cursorNeighbourhood.replace(/[\u4e00-\u9fa5]/g, '').trim();
-                return enOnly || 'Vancouver';
-              })()}
-            </span>
-          )}
+        <span
+          id="godseye-hud-neighbourhood"
+          className="hidden px-2 py-0.5 rounded-full text-[10px] font-sans font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 shrink-0"
+        ></span>
 
-          <span className="tracking-tight text-gray-200 font-medium">
-            {Math.abs(cursorCoords.lat).toFixed(4)}° {cursorCoords.lat >= 0 ? 'N' : 'S'}, {Math.abs(cursorCoords.lng).toFixed(4)}° {cursorCoords.lng >= 0 ? 'E' : 'W'}
-          </span>
+        <span id="godseye-hud-coords" className="tracking-tight text-gray-200 font-medium"></span>
 
-          <span className="text-[10px] text-gray-400 px-1.5 py-0.5 rounded bg-black/40 border border-white/5 font-sans">
-            Zoom {currentZoom.toFixed(1)}
-          </span>
-        </div>
-      )}
+        <span id="godseye-hud-zoom" className="text-[10px] text-gray-400 px-1.5 py-0.5 rounded bg-black/40 border border-white/5 font-sans">
+          Zoom {currentZoom.toFixed(1)}
+        </span>
+      </div>
 
       {/* 探索功能橫向平排底欄 (Explore Horizontal Bottom Bar Dock) */}
       <div className="fixed bottom-[calc(10px+env(safe-area-inset-bottom,0px))] sm:bottom-3 left-0 right-0 z-40 pointer-events-none flex flex-col items-center px-2">
@@ -17555,7 +17734,11 @@ export default function AppMap() {
       )}
 
       {searchedBusRoute && !selectedBus && (
-        <div className="fixed top-[72px] right-4 z-40 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-4 py-3 shadow-2xl border border-[#2a2f3d] flex items-center gap-3 animate-in fade-in slide-in-from-right-4 duration-200 select-none max-w-[calc(100vw-32px)]">
+        <div 
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="fixed top-[72px] right-4 z-40 bg-[#131620] text-gray-100 rounded-xl px-4 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2a2f3d] flex items-center gap-3 animate-in fade-in slide-in-from-right-4 duration-150 select-none max-w-[calc(100vw-32px)]"
+        >
           <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
@@ -17634,7 +17817,11 @@ export default function AppMap() {
         const stopList = selectedBus.is_seabus ? seabusStops : (busDetails?.stops || []);
 
         return (
-          <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+          <div 
+            onWheel={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+          >
             {/* Header */}
             <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
               <div className="flex items-start gap-2.5 min-w-0 flex-1">
@@ -17808,7 +17995,11 @@ export default function AppMap() {
           .trim();
 
         return (
-          <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+          <div 
+            onWheel={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+          >
             {/* Header */}
             <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
               <div className="flex items-start gap-2.5 min-w-0 flex-1">
@@ -19198,7 +19389,11 @@ export default function AppMap() {
 
       {/* 周邊半徑探索面板 (Nearby Radius Exploration Floating Card) */}
       {radiusExploration?.active && (
-        <div className="fixed top-[72px] left-4 md:left-[256px] z-30 w-[330px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-cyan-500/50 flex flex-col max-h-[calc(100vh-100px)] animate-in fade-in duration-200 select-none">
+        <div 
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="fixed top-[72px] left-4 md:left-[256px] z-30 w-[330px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-cyan-500/50 flex flex-col max-h-[calc(100vh-100px)] animate-in fade-in duration-150 select-none"
+        >
           <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0">
@@ -19379,7 +19574,11 @@ export default function AppMap() {
 
       {/* 點選天車站點時展示之路線班次與綜合資訊面板 */}
       {selectedSkytrainStation && (
-        <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+        <div 
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+        >
           {/* Header */}
           <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
             <div className="flex items-start gap-2.5 min-w-0 flex-1">
@@ -19695,24 +19894,45 @@ export default function AppMap() {
                   <span>列車發車班距頻率</span>
                 </div>
 
-                <div className="flex flex-col gap-1.5 text-[11px]">
-                  <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-300 shrink-0">尖峰時段</span>
-                    <span className="font-bold text-white font-mono text-right">{selectedSkytrainStation.frequencies?.peak || '2 - 3.5 分鐘'}</span>
-                  </div>
-                  <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-300 shrink-0">日間離峰</span>
-                    <span className="font-bold text-white font-mono text-right">{selectedSkytrainStation.frequencies?.midday || '3 - 6 分鐘'}</span>
-                  </div>
-                  <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-300 shrink-0">晚間時段</span>
-                    <span className="font-bold text-white font-mono text-right">{selectedSkytrainStation.frequencies?.evening || '6 - 8 分鐘'}</span>
-                  </div>
-                  <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-300 shrink-0">深夜時段</span>
-                    <span className="font-bold text-white font-mono text-right">{selectedSkytrainStation.frequencies?.late_night || '10 - 15 分鐘'}</span>
-                  </div>
-                </div>
+                {(() => {
+                  const renderSkytrainFreq = (freqStr?: string, defaultVal = '2 - 3.5 分鐘') => {
+                    const val = (freqStr || defaultVal).trim();
+                    const parts = val.split(/\s*\/\s*/);
+                    if (parts.length <= 1) {
+                      return <span className="font-bold text-white font-mono text-right">{val}</span>;
+                    }
+                    return (
+                      <div className="flex flex-col items-end gap-1">
+                        {parts.map((p, idx) => (
+                          <span key={idx} className="font-bold text-white font-mono text-right text-[11px] leading-tight">
+                            {p}
+                          </span>
+                        ))}
+                      </div>
+                    );
+                  };
+
+                  return (
+                    <div className="flex flex-col gap-1.5 text-[11px]">
+                      <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-start justify-between gap-2">
+                        <span className="text-gray-300 shrink-0 mt-0.5">尖峰時段</span>
+                        {renderSkytrainFreq(selectedSkytrainStation.frequencies?.peak, '2 - 3.5 分鐘')}
+                      </div>
+                      <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-start justify-between gap-2">
+                        <span className="text-gray-300 shrink-0 mt-0.5">日間離峰</span>
+                        {renderSkytrainFreq(selectedSkytrainStation.frequencies?.midday, '3 - 6 分鐘')}
+                      </div>
+                      <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-start justify-between gap-2">
+                        <span className="text-gray-300 shrink-0 mt-0.5">晚間時段</span>
+                        {renderSkytrainFreq(selectedSkytrainStation.frequencies?.evening, '6 - 8 分鐘')}
+                      </div>
+                      <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-start justify-between gap-2">
+                        <span className="text-gray-300 shrink-0 mt-0.5">深夜時段</span>
+                        {renderSkytrainFreq(selectedSkytrainStation.frequencies?.late_night, '10 - 15 分鐘')}
+                      </div>
+                    </div>
+                  );
+                })()}
                 <div className="text-[10px] text-gray-400 text-center">
                   * 實際班距視 TransLink 營運調度與尖峰客流有所變動
                 </div>
@@ -19920,7 +20140,11 @@ export default function AppMap() {
         const fareZone = isWaterfront ? 'Zone 1' : 'Zone 2';
 
         return (
-          <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+          <div 
+            onWheel={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+          >
             {/* Header */}
             <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
               <div className="flex items-start gap-2.5 min-w-0 flex-1">
@@ -20482,7 +20706,11 @@ export default function AppMap() {
 
       {/* 🚏 巴士轉乘站停靠浮動面板 (仿天車站點面板，位於地圖右方) */}
       {selectedBusExchange && (
-        <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[460px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+        <div 
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[460px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+        >
           {/* Header */}
           <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
             <div className="flex items-start gap-2.5 min-w-0 flex-1">
@@ -20671,6 +20899,847 @@ export default function AppMap() {
         </div>
       )}
 
+      {/* YVR Airport 右側資訊面板 (Vancouver International Airport) */}
+      {selectedYvrAirport && (
+        <div 
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="fixed top-[72px] right-4 z-40 w-[420px] sm:w-[490px] md:w-[530px] max-w-[calc(100vw-24px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2c3244] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+        >
+          {/* Header */}
+          <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
+            <div className="flex items-start gap-2.5 min-w-0 flex-1">
+              <div className="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400 shrink-0 mt-0.5 shadow-sm">
+                <Plane className="w-4 h-4 text-sky-400" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
+                  Vancouver International Airport
+                </h3>
+                <p className="text-[11px] text-gray-400 mt-0.5 font-medium leading-tight">
+                  3211 Grant McConachie Wy, Richmond, BC V7B 0A4
+                </p>
+              </div>
+            </div>
+
+            {/* 右側按鈕組：複製名稱、導航、關閉；下方為官方網站、實時攝影機與無線電按鈕 */}
+            <div className="flex flex-col items-end gap-1.5 shrink-0">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => copyNameToClipboard("Vancouver International Airport")}
+                  className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors cursor-pointer"
+                  title="複製名稱"
+                >
+                  <Copy className="w-4 h-4 text-cyan-400" />
+                </button>
+                <a
+                  href={getGoogleNavUrl(49.1939, -123.1844)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-sky-500/20 hover:text-sky-400 transition-colors cursor-pointer"
+                  title="Google Maps 導航至此"
+                >
+                  <Navigation className="w-4 h-4 text-sky-400" />
+                </a>
+                <button
+                  onClick={() => {
+                    setSelectedYvrAirport(null);
+                    setSearchTarget(null);
+                  }}
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-[#252a38] transition-colors cursor-pointer"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* 關閉按鈕下方：官方旅客指南、實時攝影機與無線電按鈕 */}
+              <div className="flex items-center gap-1.5 pr-0.5">
+                <a
+                  href="https://www.yvr.ca/en/passengers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 transition-colors flex items-center justify-center border border-sky-500/30 shadow-2xs cursor-pointer"
+                  title="前往旅客指南官方網站"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                </a>
+                <button
+                  onClick={() => {
+                    setIsAirportCameraModalOpen(true);
+                    setAirportCamZoom(1);
+                  }}
+                  className="p-1 rounded-md text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/20 transition-colors flex items-center justify-center border border-emerald-500/30 shadow-2xs cursor-pointer"
+                  title="機場即時氣象攝影機"
+                >
+                  <Camera className="w-3.5 h-3.5 text-emerald-400" />
+                </button>
+                <a
+                  href="https://www.liveatc.net/hlisten.php?mount=cyvr1_app&icao=cyvr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1 rounded-md text-purple-400 hover:text-purple-300 hover:bg-purple-500/20 transition-colors flex items-center justify-center border border-purple-500/30 shadow-2xs cursor-pointer"
+                  title="收聽機場即時無線電通訊"
+                >
+                  <RadioTower className="w-3.5 h-3.5 text-purple-400" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 分頁導覽 (Tabs) */}
+          <div className="flex border-b border-[#262b38] mb-2.5 shrink-0 text-xs">
+            <button
+              onClick={() => setYvrAirportTab('info')}
+              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+                yvrAirportTab === 'info'
+                  ? 'border-sky-500 text-sky-400'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              機場資料
+            </button>
+            <button
+              onClick={() => setYvrAirportTab('weather')}
+              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+                yvrAirportTab === 'weather'
+                  ? 'border-sky-500 text-sky-400'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              天氣狀況
+            </button>
+            <button
+              onClick={() => setYvrAirportTab('routes')}
+              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+                yvrAirportTab === 'routes'
+                  ? 'border-sky-500 text-sky-400'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              航線與航司
+            </button>
+            <button
+              onClick={() => {
+                setYvrAirportTab('news');
+                if (yvrNewsList.length === 0) fetchYvrNews();
+              }}
+              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+                yvrAirportTab === 'news'
+                  ? 'border-sky-500 text-sky-400'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              最新資訊
+            </button>
+          </div>
+
+          {/* 分頁內容主體 */}
+          <div className="flex-1 overflow-y-auto pr-1 space-y-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full text-xs">
+            {/* 分頁 1: 機場資料 */}
+            {yvrAirportTab === 'info' && (() => {
+              const siteInfo = yvrWeathercamsSummary?.payload?.site?.site || yvrWeathercamsSummary?.payload?.site || yvrWeathercamsSummary?.site?.site || yvrWeathercamsSummary?.site || yvrWeathercamsSummary || {};
+              const sunriseVal = yvrWeathercamsSummary?.sunrise || siteInfo?.sunrise;
+              const sunsetVal = yvrWeathercamsSummary?.sunset || siteInfo?.sunset;
+              const timeZoneVal = yvrWeathercamsSummary?.timeZone || siteInfo?.timeZone || 'America/Vancouver';
+              const operatedByVal = yvrWeathercamsSummary?.operatedBy || siteInfo?.operatedBy || 'NAV CANADA';
+              const latVal = yvrWeathercamsSummary?.latitude ?? siteInfo?.latitude ?? 49.195;
+              const lonVal = yvrWeathercamsSummary?.longitude ?? siteInfo?.longitude ?? -123.17824;
+
+              const formatSunTime = (sunStr?: string) => {
+                if (!sunStr) return '--';
+                try {
+                  const d = new Date(sunStr);
+                  if (isNaN(d.getTime())) return sunStr;
+                  return d.toLocaleTimeString('en-US', { timeZone: 'America/Vancouver', hour12: timeFormat === '12h', hour: '2-digit', minute: '2-digit' });
+                } catch {
+                  return sunStr;
+                }
+              };
+
+              return (
+                <div className="flex flex-col gap-2.5">
+                  {/* 機場編碼與坐標卡片 */}
+                  <div className="p-2.5 rounded-lg bg-[#1a1f2b] border border-[#262c3d] flex flex-col gap-2">
+                    <div className="flex items-center justify-between pb-1.5 border-b border-[#262c3d]">
+                      <span className="text-gray-400 font-medium">機場代碼</span>
+                      <span className="font-mono font-bold text-white flex items-center gap-2">
+                        <span className="px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">IATA: YVR</span>
+                        <span className="px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">ICAO: CYVR</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 font-medium">地理坐標</span>
+                      <span className="font-mono text-gray-200">
+                        {latVal}° N, {Math.abs(lonVal)}° W
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 font-medium">所在時區</span>
+                      <span className="font-mono text-gray-200">{timeZoneVal}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 font-medium">營運單位</span>
+                      <span className="text-gray-200 font-medium">{operatedByVal}</span>
+                    </div>
+                  </div>
+
+                  {/* 日出與日落時間 */}
+                  <div className="p-2.5 rounded-lg bg-[#1a1f2b] border border-[#262c3d] flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sunrise className="w-4 h-4 text-amber-400" />
+                      <div>
+                        <span className="text-[10px] text-gray-400 block">今日日出</span>
+                        <span className="font-mono font-bold text-amber-300">
+                          {formatSunTime(sunriseVal)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="h-6 w-px bg-gray-700"></div>
+                    <div className="flex items-center gap-2">
+                      <Sunset className="w-4 h-4 text-indigo-400" />
+                      <div>
+                        <span className="text-[10px] text-gray-400 block">今日日落</span>
+                        <span className="font-mono font-bold text-indigo-300">
+                          {formatSunTime(sunsetVal)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 聯絡資料卡片 */}
+                  <div className="p-2.5 rounded-lg bg-[#1a1f2b] border border-[#262c3d] flex flex-col gap-2">
+                    <span className="text-gray-300 font-bold text-xs flex items-center gap-1.5">
+                      <PhoneCall className="w-3.5 h-3.5 text-sky-400" />
+                      機場聯絡與客戶服務
+                    </span>
+                    <div className="flex flex-col gap-1.5 pt-1 text-[11.5px]">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-400">24小時服務電話</span>
+                        <a href="tel:6042077077" className="font-mono font-bold text-sky-400 hover:underline">
+                          604.207.7077
+                        </a>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-400">TTY / (TDD) 專線</span>
+                        <a href="tel:6042077070" className="font-mono text-gray-300 hover:underline">
+                          604.207.7070
+                        </a>
+                      </div>
+                      <div className="flex items-center justify-between pt-1 border-t border-[#262c3d]">
+                        <span className="text-gray-400">電子郵件</span>
+                        <a
+                          href="mailto:customercallcentre@yvr.ca"
+                          className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-500/30 font-medium transition-colors"
+                        >
+                          <Mail className="w-3 h-3 text-sky-400" />
+                          <span>customercallcentre@yvr.ca</span>
+                        </a>
+                      </div>
+                      <div className="flex items-center justify-between pt-1 border-t border-[#262c3d]">
+                        <span className="text-gray-400">X</span>
+                        <a
+                          href="https://x.com/yvrairport"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-gray-800 text-gray-200 hover:bg-gray-700 border border-gray-600 font-medium transition-colors"
+                        >
+                          <LetterXIcon className="w-3 h-3" />
+                          <span>@yvrairport</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* 分頁 2: 天氣狀況 (METAR) */}
+            {yvrAirportTab === 'weather' && (
+              <div className="flex flex-col gap-2.5">
+                {(() => {
+                  const metarList = yvrWeathercamsSummary?.metars || yvrWeathercamsSummary?.payload?.metars || [];
+                  const metar = metarList[0];
+                  if (!metar) {
+                    return (
+                      <div className="p-4 text-center text-gray-400 bg-[#1a1f2b] rounded-lg border border-[#262c3d]">
+                        {loadingYvrSummary ? '即時氣象資料載入中...' : '暫無即時 METAR 氣象資訊'}
+                      </div>
+                    );
+                  }
+
+                  const flightCat = metar.flightCategory || 'VFR';
+                  const catColor = flightCat === 'VFR'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                    : flightCat === 'MVFR'
+                    ? 'bg-blue-500/20 text-blue-300 border-blue-500/40'
+                    : flightCat === 'IFR'
+                    ? 'bg-red-500/20 text-red-300 border-red-500/40'
+                    : 'bg-purple-500/20 text-purple-300 border-purple-500/40';
+
+                  const obsTime = metar.observationDateTime
+                    ? new Date(metar.observationDateTime).toLocaleString('zh-TW', {
+                        timeZone: 'America/Vancouver',
+                        hour12: timeFormat === '12h',
+                        month: 'numeric',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })
+                    : '--';
+
+                  return (
+                    <>
+                      {/* 核心氣象指標網格 */}
+                      <div className="grid grid-cols-2 gap-2">
+                        {/* 氣溫 / 露點 */}
+                        <div className="p-2.5 rounded-lg bg-[#1a1f2b] border border-[#262c3d] flex flex-col gap-1">
+                          <span className="text-gray-400 text-[10.5px] flex items-center gap-1">
+                            <Thermometer className="w-3 h-3 text-red-400" />
+                            氣溫 / 露點
+                          </span>
+                          <span className="font-mono font-bold text-white text-sm">
+                            {metar.tempC ?? '--'}°C
+                            <span className="text-xs text-gray-400 font-normal ml-1.5">露點 {metar.dewpointC ?? '--'}°C</span>
+                          </span>
+                        </div>
+
+                        {/* 風向 / 風速 */}
+                        <div className="p-2.5 rounded-lg bg-[#1a1f2b] border border-[#262c3d] flex flex-col gap-1">
+                          <span className="text-gray-400 text-[10.5px] flex items-center gap-1">
+                            <Wind className="w-3 h-3 text-cyan-400" />
+                            風向 / 風速
+                          </span>
+                          <span className="font-mono font-bold text-white text-sm">
+                            {metar.parsed?.windDir || metar.windDirDegrees || '--'} {metar.windSpeedKnots ?? 0} kt
+                            {metar.windGustKnots ? <span className="text-xs text-amber-400 ml-1">陣風 {metar.windGustKnots}kt</span> : null}
+                          </span>
+                        </div>
+
+                        {/* 能見度 */}
+                        <div className="p-2.5 rounded-lg bg-[#1a1f2b] border border-[#262c3d] flex flex-col gap-1">
+                          <span className="text-gray-400 text-[10.5px] flex items-center gap-1">
+                            <Eye className="w-3 h-3 text-emerald-400" />
+                            能見度
+                          </span>
+                          <span className="font-mono font-bold text-white text-sm">
+                            {metar.visibilityStatuteMiles ?? metar.parsed?.visibilityStatuteMi ?? '--'} SM
+                          </span>
+                        </div>
+
+                        {/* 氣壓 */}
+                        <div className="p-2.5 rounded-lg bg-[#1a1f2b] border border-[#262c3d] flex flex-col gap-1">
+                          <span className="text-gray-400 text-[10.5px] flex items-center gap-1">
+                            <Gauge className="w-3 h-3 text-amber-400" />
+                            高度計 / 氣壓
+                          </span>
+                          <span className="font-mono font-bold text-white text-sm">
+                            {metar.altimInHg ?? '--'} inHg
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* 雲況與雲底高度 */}
+                      <div className="p-2.5 rounded-lg bg-[#1a1f2b] border border-[#262c3d] flex flex-col gap-1.5">
+                        <span className="text-gray-400 text-[10.5px] flex items-center justify-between">
+                          <span>雲層狀況</span>
+                          {metar.ceilingFtAgl && (
+                            <span className="text-gray-300 font-mono">雲底高: {metar.ceilingFtAgl} 呎 (AGL)</span>
+                          )}
+                        </span>
+                        {metar.skyCondition && Array.isArray(metar.skyCondition) && metar.skyCondition.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5">
+                            {metar.skyCondition.map((sc: any, idx: number) => (
+                              <span key={idx} className="px-2 py-0.5 rounded bg-[#222838] text-gray-200 border border-gray-700/60 font-mono text-[11px]">
+                                {sc.skyCover} {sc.cloudBaseFtAgl ? `${sc.cloudBaseFtAgl} ft` : ''}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 text-xs">碧空 / 無顯著雲層</span>
+                        )}
+                      </div>
+
+                      {/* 原始 METAR 電報 */}
+                      <div className="p-2.5 rounded-lg bg-[#11141d] border border-[#262c3d] flex flex-col gap-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] text-gray-400">原始航空氣象電報</span>
+                          <span className="text-[10px] text-gray-400 font-mono">觀測時間: {obsTime}</span>
+                        </div>
+                        <div className="font-mono text-[11px] text-cyan-300 break-all select-all leading-relaxed">
+                          {metar.rawText}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* 分頁 3: 航線與航司 */}
+            {yvrAirportTab === 'routes' && (
+              <div className="flex flex-col gap-3">
+                <div className="text-gray-300 font-bold text-xs">
+                  <span>航線分佈與執飛頻率指南</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div
+                    onClick={() => setEnlargedBrochure('/images/yvr/2026_RouteBrochure_July_English_Adjusted-1.png')}
+                    className="group relative rounded-lg overflow-hidden border border-[#2a3042] bg-[#1a1f2b] cursor-pointer hover:border-sky-500 transition-all shadow-md"
+                  >
+                    <img
+                      src="/images/yvr/2026_RouteBrochure_July_English_Adjusted-1.png"
+                      alt="航線手冊 1"
+                      className="w-full h-32 object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+
+                  <div
+                    onClick={() => setEnlargedBrochure('/images/yvr/2026_RouteBrochure_July_English_Adjusted-2.png')}
+                    className="group relative rounded-lg overflow-hidden border border-[#2a3042] bg-[#1a1f2b] cursor-pointer hover:border-sky-500 transition-all shadow-md"
+                  >
+                    <img
+                      src="/images/yvr/2026_RouteBrochure_July_English_Adjusted-2.png"
+                      alt="航線手冊 2"
+                      className="w-full h-32 object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </div>
+
+                {/* 航空公司官方聯絡資料表格 (對齊 YVR 官方目錄) */}
+                <div className="flex flex-col gap-2 mt-1">
+                  <div className="flex items-center justify-between text-gray-300 font-bold text-xs pt-2 border-t border-[#262c3d]">
+                    <span>航空公司官方聯絡資料</span>
+                    <span className="text-[10px] text-gray-400 font-normal">
+                      共 {filteredAirlines.length} 間航空公司
+                    </span>
+                  </div>
+
+                  {/* 搜尋過濾輸入框 */}
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={airlineSearchTerm}
+                      onChange={(e) => setAirlineSearchTerm(e.target.value)}
+                      placeholder="搜尋航空公司名稱或二字代碼..."
+                      className="w-full bg-[#141824] text-gray-200 text-[11px] pl-8 pr-3 py-1.5 rounded-lg border border-[#262c3d] focus:outline-none focus:border-sky-500 transition-colors"
+                    />
+                  </div>
+
+                  {/* 聯絡資料表格 */}
+                  <div className="rounded-lg overflow-hidden border border-[#262c3d] bg-[#141824]">
+                    <div className="overflow-x-auto max-h-[380px] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full">
+                      <table className="w-full text-left border-collapse text-[11px] min-w-[460px]">
+                        <thead className="sticky top-0 z-10 bg-[#1e3a6a] text-white font-semibold text-[10.5px]">
+                          <tr>
+                            <th className="py-2 px-2.5 w-[36%]">航空公司</th>
+                            <th className="py-2 px-1.5 text-center w-[12%]">代號</th>
+                            <th className="py-2 px-2 w-[26%]">乘客專線</th>
+                            <th className="py-2 px-2 w-[26%]">媒體專線</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#202636]">
+                          {filteredAirlines.map((al, idx) => (
+                            <tr key={idx} className="hover:bg-[#1a2130] transition-colors">
+                              <td className="py-2 px-2.5 font-medium text-gray-200">
+                                {al.airline}
+                              </td>
+                              <td className="py-2 px-1.5 text-center">
+                                {al.code && al.code !== '—' ? (
+                                  <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-300 font-mono text-[10px] font-bold border border-blue-500/30">
+                                    {al.code}
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-500">—</span>
+                                )}
+                              </td>
+                              <td className="py-2 px-2">
+                                {al.passenger_line && al.passenger_line !== '—' ? (
+                                  <a href={`tel:${al.passenger_line.replace(/[^\d+]/g, '')}`} className="font-mono text-sky-400 hover:underline text-[10.5px] break-all">
+                                    {al.passenger_line}
+                                  </a>
+                                ) : (
+                                  <span className="text-gray-500">—</span>
+                                )}
+                              </td>
+                              <td className="py-2 px-2">
+                                {al.media_line && al.media_line !== '—' ? (
+                                  <a href={`tel:${al.media_line.replace(/[^\d+]/g, '')}`} className="font-mono text-gray-300 hover:underline text-[10.5px] break-all">
+                                    {al.media_line}
+                                  </a>
+                                ) : (
+                                  <span className="text-gray-500">—</span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 分頁 4: 最新資訊 (RSS News) */}
+            {yvrAirportTab === 'news' && (() => {
+              const filterCategories = [
+                { id: 'all', label: '全部' },
+                { id: '航空專欄', label: '航空專欄' },
+                { id: '焦點趨勢', label: '焦點趨勢' },
+                { id: '機場專案', label: '機場專案' }
+              ];
+
+              const filteredNews = yvrNewsList.filter(item => {
+                if (newsCategoryFilter === 'all') return true;
+                const cat = (item.category || '').toLowerCase();
+                if (newsCategoryFilter === '航空專欄') return cat.includes('航空') || cat.includes('airmail');
+                if (newsCategoryFilter === '焦點趨勢') return cat.includes('趨勢') || cat.includes('trending') || cat.includes('焦點');
+                if (newsCategoryFilter === '機場專案') return cat.includes('專案') || cat.includes('project') || cat.includes('工程');
+                return true;
+              });
+
+              return (
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between text-gray-400 text-[11px] pb-1 border-b border-[#262c3d]">
+                    <span className="flex items-center gap-1.5 text-gray-300 font-semibold">
+                      <Newspaper className="w-3.5 h-3.5 text-sky-400" />
+                      機場官方公告與最新動態
+                    </span>
+                    <button
+                      onClick={fetchYvrNews}
+                      className="p-1 rounded text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 transition-colors"
+                      title="重新整理新聞"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${loadingYvrNews ? 'animate-spin' : ''}`} />
+                    </button>
+                  </div>
+
+                  {/* 分類標籤篩選列 */}
+                  <div className="flex items-center gap-1.5 pb-0.5 overflow-x-auto select-none">
+                    {filterCategories.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => setNewsCategoryFilter(c.id)}
+                        className={`px-2.5 py-1 rounded-full text-[10.5px] font-medium transition-colors shrink-0 cursor-pointer ${
+                          newsCategoryFilter === c.id
+                            ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold'
+                            : 'bg-[#181d28] text-gray-400 hover:text-gray-200 border border-[#262c3d]'
+                        }`}
+                      >
+                        {c.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {loadingYvrNews && yvrNewsList.length === 0 ? (
+                    <div className="p-6 text-center text-gray-400">最新公告載入中...</div>
+                  ) : filteredNews.length === 0 ? (
+                    <div className="p-6 text-center text-gray-400">目前暫無符合條件的新聞發布。</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {filteredNews.map((item, idx) => {
+                        const dateRaw = item.pubDate || item.pub_date;
+                        let dateDisplay = '';
+                        if (dateRaw) {
+                          try {
+                            const d = new Date(dateRaw);
+                            dateDisplay = isNaN(d.getTime()) ? dateRaw : d.toLocaleDateString('zh-TW', { timeZone: 'America/Vancouver', year: 'numeric', month: '2-digit', day: '2-digit' });
+                          } catch {
+                            dateDisplay = dateRaw;
+                          }
+                        }
+
+                        const catRaw = item.category || '官方公告';
+                        const catClean = catRaw.includes('Airmail') || catRaw.includes('航空')
+                          ? '航空專欄'
+                          : catRaw.includes('Trending') || catRaw.includes('趨勢')
+                          ? '焦點趨勢'
+                          : catRaw.includes('project') || catRaw.includes('專案')
+                          ? '機場專案'
+                          : catRaw;
+
+                        const descText = item.description || item.summary || '';
+
+                        return (
+                          <a
+                            key={idx}
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2.5 rounded-lg bg-[#1a1f2b] hover:bg-[#202738] border border-[#262c3d] hover:border-sky-500/50 flex flex-col gap-1.5 transition-all group block cursor-pointer"
+                          >
+                            <div className="flex items-start justify-between gap-2.5">
+                              <h4 className="text-gray-200 group-hover:text-sky-300 font-semibold text-xs leading-snug flex-1">
+                                {item.title}
+                              </h4>
+                              {dateDisplay && (
+                                <span className="text-[10px] text-gray-400 font-mono shrink-0 whitespace-nowrap bg-black/40 px-1.5 py-0.5 rounded border border-white/5">
+                                  {dateDisplay}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[9.5px] px-1.5 py-0.2 rounded font-medium border ${
+                                catClean === '航空專欄'
+                                  ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+                                  : catClean === '焦點趨勢'
+                                  ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                                  : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                              }`}>
+                                {catClean}
+                              </span>
+                            </div>
+                            {descText && (
+                              <p className="text-[11px] text-gray-400 line-clamp-2 leading-relaxed">
+                                {descText}
+                              </p>
+                            )}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
+      {/* YVR 機場氣象攝影機 Modal (FAA WeatherCams) */}
+      {isAirportCameraModalOpen && (
+        <div className="fixed inset-0 z-[80] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 select-none animate-in fade-in duration-200">
+          <div className="bg-[#161922] border border-[#2a2f3d] rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            {/* Header */}
+            <div className="p-3 border-b border-[#262c3d] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Camera className="w-4 h-4 text-emerald-400" />
+                <h3 className="font-bold text-white text-sm">
+                  溫哥華國際機場實時氣象攝影機
+                </h3>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setAirportCamZoom(prev => Math.min(3, prev + 0.25))}
+                  className="p-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition"
+                  title="放大"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setAirportCamZoom(prev => Math.max(1, prev - 0.25))}
+                  className="p-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition"
+                  title="縮小"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setAirportCamZoom(1)}
+                  className="px-2 py-1 rounded-lg bg-gray-800 text-gray-300 hover:text-white text-xs font-mono transition"
+                  title="重設大小"
+                >
+                  1:1
+                </button>
+                {(() => {
+                  const cams = yvrWeathercamsSummary?.cameras || yvrWeathercamsSummary?.payload?.site?.cameras || yvrWeathercamsSummary?.payload?.cameras || [];
+                  const activeCam = cams[activeAirportCamIndex] || cams[0];
+                  const imgUri = activeCam?.currentImages?.[0]?.imageUri;
+                  return imgUri ? (
+                    <a
+                      href={imgUri}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition"
+                      title="在新分頁打開原始圖片"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : null;
+                })()}
+                <button
+                  onClick={() => setIsAirportCameraModalOpen(false)}
+                  className="p-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition ml-1"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Camera Direction Tabs */}
+            {(() => {
+              const cams = yvrWeathercamsSummary?.cameras || yvrWeathercamsSummary?.payload?.site?.cameras || yvrWeathercamsSummary?.payload?.cameras || [];
+              const getCameraChineseDirection = (c: any, idx: number) => {
+                const dir = String(c?.cameraDirection || '').toUpperCase().replace(/[\s_-]+/g, '');
+                if (dir.includes('NORTHEAST') || dir === 'NE') return '東北';
+                if (dir.includes('SOUTHEAST') || dir === 'SE') return '東南';
+                if (dir.includes('NORTHWEST') || dir === 'NW') return '西北';
+                if (dir.includes('SOUTHWEST') || dir === 'SW') return '西南';
+                if (dir.includes('NORTH') || dir === 'N') return '正北';
+                if (dir.includes('SOUTH') || dir === 'S') return '正南';
+                if (dir.includes('EAST') || dir === 'E') return '正東';
+                if (dir.includes('WEST') || dir === 'W') return '正西';
+                const bearing = typeof c?.cameraBearing === 'number' ? c.cameraBearing : parseFloat(c?.cameraBearing);
+                if (!isNaN(bearing)) {
+                  if (bearing >= 22.5 && bearing < 67.5) return '東北';
+                  if (bearing >= 67.5 && bearing < 112.5) return '正東';
+                  if (bearing >= 112.5 && bearing < 157.5) return '東南';
+                  if (bearing >= 157.5 && bearing < 202.5) return '正南';
+                  if (bearing >= 202.5 && bearing < 247.5) return '西南';
+                  if (bearing >= 247.5 && bearing < 292.5) return '正西';
+                  if (bearing >= 292.5 && bearing < 337.5) return '西北';
+                  return '正北';
+                }
+                return `方位 ${idx + 1}`;
+              };
+              return cams.length > 0 ? (
+                <div className="flex border-b border-[#262c3d] bg-[#11141d] px-3 gap-1 overflow-x-auto text-xs">
+                  {cams.map((c: any, idx: number) => {
+                    const label = getCameraChineseDirection(c, idx);
+                    return (
+                      <button
+                        key={c.cameraId || idx}
+                        onClick={() => {
+                          setActiveAirportCamIndex(idx);
+                          setAirportCamZoom(1);
+                        }}
+                        className={`px-3 py-2 font-medium border-b-2 -mb-px transition-colors whitespace-nowrap cursor-pointer ${
+                          activeAirportCamIndex === idx
+                            ? 'border-emerald-500 text-emerald-400'
+                            : 'border-transparent text-gray-400 hover:text-gray-200'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null;
+            })()}
+
+            {/* Image Viewer */}
+            <div className="relative flex-1 bg-black overflow-hidden flex items-center justify-center min-h-[300px] sm:min-h-[420px]">
+              {(() => {
+                const cams = yvrWeathercamsSummary?.cameras || yvrWeathercamsSummary?.payload?.site?.cameras || yvrWeathercamsSummary?.payload?.cameras || [];
+                const activeCam = cams[activeAirportCamIndex] || cams[0];
+                const curImg = activeCam?.currentImages?.[0];
+                const imgUri = curImg?.imageUri;
+                const imgDt = curImg?.imageDatetime;
+
+                if (!imgUri) {
+                  return (
+                    <div className="text-gray-400 text-sm">暫無可用的即時鏡頭畫面</div>
+                  );
+                }
+
+                const formattedTime = imgDt ? (() => {
+                  try {
+                    const d = new Date(imgDt);
+                    return d.toLocaleString('zh-TW', {
+                      timeZone: 'America/Vancouver',
+                      hour12: timeFormat === '12h',
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit'
+                    });
+                  } catch { return imgDt; }
+                })() : '';
+
+                return (
+                  <>
+                    <div className="overflow-auto max-w-full max-h-[70vh] flex items-center justify-center p-2">
+                      <img
+                        src={`/api/webcam/proxy?url=${encodeURIComponent(imgUri)}`}
+                        alt="Airport WeatherCam"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.dataset.triedDirect) {
+                            target.dataset.triedDirect = 'true';
+                            target.src = imgUri;
+                          }
+                        }}
+                        style={{ transform: `scale(${airportCamZoom})`, transformOrigin: 'center center' }}
+                        className="max-w-full max-h-[65vh] object-contain transition-transform duration-200 rounded"
+                      />
+                    </div>
+
+                    {/* Image Footer Info Overlay */}
+                    {formattedTime && (
+                      <div className="absolute bottom-3 right-3 bg-black/70 px-3 py-1 rounded-lg border border-white/10 text-xs text-gray-300">
+                        <span className="font-mono text-gray-400 text-[11px]">
+                          拍攝時間: {formattedTime}
+                        </span>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 航線指南手冊大圖 Lightbox (Route Brochure Lightbox) */}
+      {enlargedBrochure && (
+        <div
+          onClick={() => setEnlargedBrochure(null)}
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[99999] bg-black/90 flex flex-col items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 select-none animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="relative w-[94vw] max-w-5xl h-[82vh] max-h-[82vh] bg-[#161922] border border-[#2a2f3d] rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+          >
+            <div className="p-3 sm:p-4 border-b border-[#262c3d] bg-[#1a1f2b] flex items-center justify-between shrink-0">
+              <span className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                <span>航線分佈與執飛頻率指南</span>
+                <span className="text-[10.5px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40 font-mono font-normal">
+                  YVR 官方手冊
+                </span>
+              </span>
+              <div className="flex items-center gap-2.5">
+                <a
+                  href={enlargedBrochure}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1.5 rounded-xl bg-gray-800 hover:bg-sky-500/20 text-gray-300 hover:text-sky-300 transition-colors border border-gray-700/80 flex items-center gap-1.5 text-xs"
+                  title="在新分頁開啟高畫質原圖"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">在新分頁開啟</span>
+                </a>
+                <button
+                  onClick={() => setEnlargedBrochure(null)}
+                  className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-gray-800 hover:bg-rose-500/20 text-gray-300 hover:text-rose-400 transition-colors border border-gray-700/80 flex items-center gap-1 text-xs cursor-pointer"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                  <span className="hidden sm:inline">關閉</span>
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-auto p-2 sm:p-4 flex items-center justify-center bg-black/70 min-h-0">
+              <img
+                src={enlargedBrochure}
+                alt="YVR Route Brochure Enlarged"
+                className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 系統與 API 初始載入畫面 (API Data & Image Preloading Screen) */}
       {isInitialApiLoading && (
         <div className="fixed inset-0 z-[100] bg-[#0c0e14]/90 backdrop-blur-md flex flex-col items-center justify-center select-none transition-opacity duration-300">
@@ -20714,7 +21783,7 @@ export default function AppMap() {
             top: `${Math.min(contextMenu.y, (typeof window !== 'undefined' ? window.innerHeight : 800) - 260)}px` 
           }}
           onClick={(e) => e.stopPropagation()}
-          className="fixed z-50 w-56 bg-[#11141d]/95 backdrop-blur-md border border-[#2b354a] rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] p-1.5 flex flex-col gap-1 text-xs select-none animate-in fade-in zoom-in-95 duration-150"
+          className="fixed z-50 w-56 bg-[#11141d] border border-[#2b354a] rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] p-1.5 flex flex-col gap-1 text-xs select-none animate-in fade-in zoom-in-95 duration-150"
         >
           {/* Header with Coordinates and Neighbourhood */}
           <div className="px-2.5 py-1.5 bg-[#181d2a] rounded-lg border border-[#242d40] flex flex-col gap-0.5">

@@ -373,7 +373,7 @@ async def broadcast_ws(message: dict):
             active_connections.discard(res)
 
 
-import flights
+import yvr_flights_service
 import skytrain_service
 from weather_service import weather_service
 from shipping_service import shipping_service
@@ -1347,22 +1347,45 @@ def get_live_flights():
     }
 
 @app.get("/api/flights/schedules")
-def get_flight_schedules():
-    global cached_flight_schedules
-    schedules = flights.fetch_flightaware_schedules(allow_api_call=True)
+def get_flight_schedules(refresh: bool = False, force: bool = False):
+    import yvr_flights_service
+    schedules = yvr_flights_service.get_flights_data(force=(refresh or force))
     if schedules:
-        cached_flight_schedules = schedules
         _oci_runtime_ts["flight_schedules"] = time.time()
-    return cached_flight_schedules or schedules or {"arrivals": [], "departures": []}
+    return schedules or {"arrivals": [], "departures": []}
 
 @app.get("/api/airports/flights")
-def get_yvr_airport_flights():
+def get_yvr_airport_flights(refresh: bool = False, force: bool = False):
     try:
         import yvr_flights_service
-        return yvr_flights_service.get_flights_data()
+        return yvr_flights_service.get_flights_data(force=(refresh or force))
     except Exception as e:
         print(f"Error serving yvr_flights: {e}")
         return {"success": False, "arrivals": [], "departures": []}
+
+@app.get("/api/airports/weathercams/{airport_id}")
+@app.get("/api/airports/summary")
+def get_airport_weathercams_summary(airport_id: str = "CYVR", airportId: Optional[str] = None):
+    target_id = airportId or airport_id or "CYVR"
+    try:
+        import yvr_airport_service
+        return yvr_airport_service.fetch_weathercams_summary(target_id)
+    except Exception as e:
+        print(f"Error serving weathercams summary: {e}")
+        return {"success": False, "error": str(e), "cameras": [], "metars": []}
+
+@app.get("/api/airports/webcam-proxy")
+def proxy_airport_webcam_image_endpoint(url: str):
+    return proxy_webcam_image(url)
+
+@app.get("/api/airports/yvr-news")
+def get_yvr_news():
+    try:
+        import yvr_airport_service
+        return yvr_airport_service.fetch_yvr_news_rss()
+    except Exception as e:
+        print(f"Error serving yvr news: {e}")
+        return []
 
 @app.get("/api/tides/live")
 def get_live_tides():
@@ -2143,6 +2166,12 @@ _ALLOWED_WEBCAM_HOSTS = {
     "drivebc.ca",
     "webcams.drivebc.ca",
     "ns-webcams.its.sfu.ca",
+    "weathercams.faa.gov",
+    "weathercams-api.faa.gov",
+    "images.weathercams.faa.gov",
+    "images.wcams-static.faa.gov",
+    "wcams-static.faa.gov",
+    "wcams.faa.gov",
 }
 
 
@@ -2167,7 +2196,7 @@ def _validate_safe_webcam_url(raw_url: str) -> str | None:
     if parsed.port not in (None, 443):
         return None
     hostname = (parsed.hostname or "").lower().strip(".")
-    if hostname not in _ALLOWED_WEBCAM_HOSTS:
+    if hostname not in _ALLOWED_WEBCAM_HOSTS and not hostname.endswith(".faa.gov") and not hostname.endswith(".drivebc.ca"):
         return None
     try:
         infos = socket.getaddrinfo(hostname, 443, proto=socket.IPPROTO_TCP)
@@ -2286,9 +2315,10 @@ def proxy_webcam_image(url: str):
                 headers={"Cache-Control": "public, max-age=180"}
             )
     try:
+        ref_host = "https://weathercams.faa.gov/" if "faa.gov" in url else "https://trafficcams.vancouver.ca/"
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Referer": "https://trafficcams.vancouver.ca/"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+            "Referer": ref_host
         }
         r = requests.get(url, headers=headers, timeout=12, allow_redirects=False, stream=True)
         if r.status_code == 200:
@@ -4176,10 +4206,10 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
             _unix_to_iso(fuel_service._fuel_cache.get("timestamp", 0)),
             len(fuel_st) if fuel_st else None,
         )
-    fl_ts = max(_oci_runtime_ts.get("flight_schedules", 0.0), float(flights._flightaware_cache.get("timestamp", 0) or 0.0))
-    fl_data = cached_flight_schedules or flights._flightaware_cache.get("data") or {}
+    import yvr_flights_service
+    fl_data = yvr_flights_service.get_flights_data()
     fl_cnt = (len(fl_data.get("arrivals", [])) + len(fl_data.get("departures", []))) if isinstance(fl_data, dict) else 0
-    oci_live_updates["flight_schedules"] = (_unix_to_iso(fl_ts), fl_cnt if fl_cnt > 0 else None)
+    oci_live_updates["flight_schedules"] = (_unix_to_iso(_oci_runtime_ts.get("flight_schedules", time.time())), fl_cnt if fl_cnt > 0 else None)
 
     oci_live_updates["border_wait_times"] = (
         _unix_to_iso(getattr(border_service, "last_fetch_time", 0.0)),
@@ -4435,11 +4465,12 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["maritime_shipping"] = time.time()
         return (len(vessels) if vessels else None, f"OCI 伺服器已即時同步 AIS 海事船舶追蹤快取，目前監控 {len(vessels)} 艘船隻。")
     if sid == "flight_schedules":
-        schedules = flights.fetch_flightaware_schedules(allow_api_call=True)
+        import yvr_flights_service
+        schedules = yvr_flights_service.get_flights_data(force=True)
         if schedules:
             _oci_runtime_ts["flight_schedules"] = time.time()
         cnt = (len(schedules.get("arrivals", [])) + len(schedules.get("departures", []))) if isinstance(schedules, dict) else None
-        return (cnt, "OCI 伺服器已即時同步 YVR 溫哥華國際機場航班時刻與起降狀態快取。")
+        return (cnt, f"OCI 伺服器已即時同步 YVR 官方即時航班時刻表，目前排程 {cnt} 班。")
     return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
 
 
@@ -5074,11 +5105,11 @@ def get_admin_recent_commits():
                 ["git", "log", "-n", "12", "--pretty=format:%h|%s|%ad|%an|%H", "--date=short"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True,
-                timeout=3
+                timeout=5
             )
-            if res.returncode == 0 and res.stdout.strip():
-                for line in res.stdout.strip().split("\n"):
+            out_str = (res.stdout or b"").decode("utf-8", errors="replace").strip()
+            if res.returncode == 0 and out_str:
+                for line in out_str.split("\n"):
                     parts = line.split("|")
                     if len(parts) >= 2:
                         short_sha = parts[0].strip()

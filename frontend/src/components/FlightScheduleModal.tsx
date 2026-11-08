@@ -153,6 +153,21 @@ function formatInAirportTimezone(
   }
 }
 
+function parseFlightTimeToMs(timeStr?: string): number | null {
+  if (!timeStr) return null;
+  try {
+    let s = timeStr.trim();
+    if (s.includes('T')) {
+      if (!s.endsWith('Z') && !s.match(/[+-]\d\d:\d\d$/)) {
+        s = `${s}-08:00`;
+      }
+      const t = new Date(s).getTime();
+      return isNaN(t) ? null : t;
+    }
+  } catch {}
+  return null;
+}
+
 interface MergedFlight {
   id: string;
   flight_number: string;
@@ -185,37 +200,43 @@ export default function FlightScheduleModal() {
   const [departures, setDepartures] = useState<MergedFlight[]>([]);
   const [loading, setLoading] = useState(false);
   const [showCompletedAccordion, setShowCompletedAccordion] = useState(false);
+  const [showCancelledAccordion, setShowCancelledAccordion] = useState(false);
 
   const fetchFlights = async () => {
     setLoading(true);
+    let loadedArr = false;
+    let loadedDep = false;
     try {
-      const res = await fetch('/api/airports/flights');
+      const res = await fetch(`/api/airports/flights?refresh=true&_t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
-        if (json.arrivals) setArrivals(json.arrivals);
-        if (json.departures) setDepartures(json.departures);
-      } else {
-        // Fallback to static cache
-        const cacheRes = await fetch('/vancouver_yvr_flights.json');
-        if (cacheRes.ok) {
-          const json = await cacheRes.json();
-          if (json.arrivals) setArrivals(json.arrivals);
-          if (json.departures) setDepartures(json.departures);
+        if (json.arrivals && json.arrivals.length > 0) {
+          setArrivals(json.arrivals);
+          loadedArr = true;
         }
+        if (json.departures && json.departures.length > 0) {
+          setDepartures(json.departures);
+          loadedDep = true;
+        }
+        console.log(`✅ [YVR Flights Service] 航班排程同步成功: 抵達 ${json.arrivals?.length || 0} 班, 出發 ${json.departures?.length || 0} 班`);
       }
     } catch (err) {
-      console.warn('Failed to fetch flights:', err);
+      console.warn('Failed to fetch flights from API, trying cache fallback:', err);
+    }
+
+    if (!loadedArr || !loadedDep) {
       try {
-        const cacheRes = await fetch('/vancouver_yvr_flights.json');
+        const cacheRes = await fetch(`/vancouver_yvr_flights.json?_t=${Date.now()}`, { cache: 'no-store' });
         if (cacheRes.ok) {
           const json = await cacheRes.json();
-          if (json.arrivals) setArrivals(json.arrivals);
-          if (json.departures) setDepartures(json.departures);
+          if (!loadedArr && json.arrivals && json.arrivals.length > 0) setArrivals(json.arrivals);
+          if (!loadedDep && json.departures && json.departures.length > 0) setDepartures(json.departures);
         }
-      } catch {}
-    } finally {
-      setLoading(false);
+      } catch (err) {
+        console.warn('Failed to fetch static flight cache:', err);
+      }
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -228,24 +249,34 @@ export default function FlightScheduleModal() {
 
   // Format flight status text and colors
   const formatStatus = (statusStr?: string) => {
-    if (!statusStr) return { text: '準點', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
+    if (!statusStr) return { text: '準時', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
     const s = statusStr.trim();
+    if (/final\s*call|最後召集/i.test(s)) return { text: '最後召集', color: 'text-rose-400 bg-rose-500/20 border-rose-500/40 animate-pulse font-bold' };
+    if (/on\s*time|準點|準時/i.test(s)) return { text: '準時', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
     if (/arrived|已降落|已抵達/i.test(s)) return { text: '已抵達', color: 'text-gray-400 bg-gray-500/10 border-gray-500/30' };
     if (/departed|已起飛/i.test(s)) return { text: '已起飛', color: 'text-gray-400 bg-gray-500/10 border-gray-500/30' };
     if (/delayed|延誤/i.test(s)) return { text: '延誤', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' };
-    if (/cancelled|取消/i.test(s)) return { text: '已取消', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' };
+    if (/cancelled|canceled|取消/i.test(s)) return { text: '已取消', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' };
     if (/early|提早/i.test(s)) return { text: '提早', color: 'text-sky-400 bg-sky-500/10 border-sky-500/30' };
     if (/boarding|登機中/i.test(s)) return { text: '登機中', color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/40 animate-pulse' };
+    if (/gate\s*closed|閘口關閉/i.test(s)) return { text: '閘口關閉', color: 'text-red-400 bg-red-500/10 border-red-500/30' };
+    if (/scheduled|排程/i.test(s)) return { text: '依時刻表排程', color: 'text-sky-400 bg-sky-500/10 border-sky-500/30' };
     return { text: s, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
   };
 
-  // Determine if a flight is completed (arrived or departed)
+  // Determine if a flight is completed (arrived or departed, or landing/takeoff time has passed)
   const isFlightCompleted = (f: MergedFlight) => {
     const s = (f.status || '').toLowerCase();
     if (f.type === 'A') {
-      return s.includes('arrived') || s.includes('已抵達') || s.includes('已降落');
+      if (s.includes('arrived') || s.includes('已抵達') || s.includes('已降落')) return true;
+    } else {
+      if (s.includes('departed') || s.includes('已起飛')) return true;
     }
-    return s.includes('departed') || s.includes('已起飛');
+    const targetMs = parseFlightTimeToMs(f.estimated_time || f.scheduled_time);
+    if (targetMs && Date.now() > targetMs + 10 * 60 * 1000) {
+      return true;
+    }
+    return false;
   };
 
   // Progress Bar & Duration calculation
@@ -301,9 +332,62 @@ export default function FlightScheduleModal() {
     });
   }, [currentRawList, filterRange, searchTerm]);
 
-  // Separate upcoming and completed flights
-  const upcomingFlights = useMemo(() => filteredList.filter(f => !isFlightCompleted(f)), [filteredList]);
-  const completedFlights = useMemo(() => filteredList.filter(f => isFlightCompleted(f)), [filteredList]);
+  // Count of upcoming/active flights only (excluding past/completed flights)
+  const upcomingArrivalsCount = useMemo(() => {
+    return arrivals.filter(f => !isFlightCompleted(f)).length;
+  }, [arrivals]);
+
+  const upcomingDeparturesCount = useMemo(() => {
+    return departures.filter(f => !isFlightCompleted(f)).length;
+  }, [departures]);
+
+  // Separate into: 1. Upcoming Flights, 2. Completed Flights (Arrived/Departed), 3. Cancelled Past Flights
+  const { upcomingFlights, completedFlights, cancelledPastFlights } = useMemo(() => {
+    const upcoming: MergedFlight[] = [];
+    const completed: MergedFlight[] = [];
+    const cancelledPast: MergedFlight[] = [];
+
+    const now = Date.now();
+
+    for (const f of filteredList) {
+      const st = (f.status || '').toLowerCase();
+      const isCanc = st.includes('cancel') || st.includes('取消');
+
+      const targetMs = parseFlightTimeToMs(f.estimated_time || f.scheduled_time);
+      const isPast = targetMs ? now > targetMs : false;
+
+      if (isCanc && isPast) {
+        cancelledPast.push(f);
+      } else if (isFlightCompleted(f)) {
+        completed.push(f);
+      } else {
+        upcoming.push(f);
+      }
+    }
+
+    // Upcoming flights: sort ascending (soonest flight first)
+    upcoming.sort((a, b) => {
+      const ta = parseFlightTimeToMs(a.estimated_time || a.scheduled_time) || 0;
+      const tb = parseFlightTimeToMs(b.estimated_time || b.scheduled_time) || 0;
+      return ta - tb;
+    });
+
+    // Completed flights: sort descending (most recently completed first)
+    completed.sort((a, b) => {
+      const ta = parseFlightTimeToMs(a.estimated_time || a.scheduled_time) || 0;
+      const tb = parseFlightTimeToMs(b.estimated_time || b.scheduled_time) || 0;
+      return tb - ta;
+    });
+
+    // Cancelled past flights: sort descending
+    cancelledPast.sort((a, b) => {
+      const ta = parseFlightTimeToMs(a.estimated_time || a.scheduled_time) || 0;
+      const tb = parseFlightTimeToMs(b.estimated_time || b.scheduled_time) || 0;
+      return tb - ta;
+    });
+
+    return { upcomingFlights: upcoming, completedFlights: completed, cancelledPastFlights: cancelledPast };
+  }, [filteredList]);
 
   // Draw Flight Route on Map
   const handleDrawRoute = (f: MergedFlight, e: React.MouseEvent) => {
@@ -373,8 +457,8 @@ export default function FlightScheduleModal() {
     const destTz = AIRPORT_TIMEZONES[destCode] || 'America/Vancouver';
 
     // 起飛時間:
-    // 如果是抵達航班, 從Flightaware出得資料, 沒有資料可以只顯示抵達時間 (以出發地時區顯示)
-    // 如果是出發航班, 用FlightEstimatedTime (以溫哥華時區顯示)
+    // 抵達航班: 依表訂/預估抵達時間與航程計算出發地起飛時間 (以出發地時區顯示)
+    // 出發航班: 依溫哥華預估或表訂起飛時間顯示
     const depDisplay = isArr 
       ? (flight.origin_departure_time 
           ? formatInAirportTimezone(flight.origin_departure_time, originTz, timeFormat) 
@@ -384,8 +468,8 @@ export default function FlightScheduleModal() {
           : timeDisplay);
 
     // 抵達時間:
-    // 如果是抵達航班, 用FlightEstimatedTime (以溫哥華時區顯示)
-    // 如果是出發航班, 從Flightaware出得資料, 沒有資料可以只顯示出發時間 (以目的地時區顯示)
+    // 抵達航班: 依溫哥華預估或表訂抵達時間顯示
+    // 出發航班: 依表訂/預估起飛時間與航程計算目的地抵達時間 (以目的地時區顯示)
     const arrDisplay = isArr
       ? (flight.estimated_time 
           ? formatTimePreference(flight.estimated_time.split('T')[1]?.substring(0, 5) || flight.estimated_time, timeFormat) 
@@ -421,15 +505,16 @@ export default function FlightScheduleModal() {
             </div>
           </div>
 
-          {/* 3. 航線 (Code -> Code & City -> City) */}
-          <div className="col-span-2 min-w-0">
-            <div className="flex items-center gap-1 text-[11px] font-mono font-bold text-gray-200">
-              <span>{isArr ? flight.airport_code : 'YVR'}</span>
-              <ArrowRight className="w-3 h-3 text-sky-400 shrink-0" />
-              <span>{isArr ? 'YVR' : flight.airport_code}</span>
-            </div>
-            <div className="text-[10px] text-gray-400 truncate mt-0.5">
-              {isArr ? `${flight.city} → Vancouver` : `Vancouver → ${flight.city}`}
+          {/* 3. 航線: 刪除 Vancouver，抵達航班只顯示出發地，出發航班只顯示目的地 */}
+          <div className="col-span-2 min-w-0 pr-1">
+            <div className="flex items-center gap-1.5 text-[12px] font-mono font-bold text-gray-200">
+              <span className="text-sky-300 font-bold tracking-tight">{flight.airport_code}</span>
+              {flight.city && (
+                <>
+                  <span className="text-gray-500 font-normal">·</span>
+                  <span className="text-gray-300 text-[11px] font-sans truncate font-medium">{flight.city}</span>
+                </>
+              )}
             </div>
           </div>
 
@@ -493,7 +578,9 @@ export default function FlightScheduleModal() {
   return (
     <div className="fixed top-[64px] right-2 sm:right-4 md:right-6 bottom-4 w-[96vw] sm:w-[94vw] md:w-[960px] lg:w-[1080px] xl:w-[1180px] max-w-[calc(100vw-24px)] z-40 flex flex-col pointer-events-none animate-fade-in select-none">
       <div 
-        className="w-full h-full bg-[#13151a]/95 backdrop-blur-md border border-[#2b303c] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-200 pointer-events-auto"
+        onWheel={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        className="w-full h-full bg-[#13151a] border border-[#2b303c] rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden text-gray-200 pointer-events-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -541,7 +628,7 @@ export default function FlightScheduleModal() {
                 <PlaneLanding className="w-4 h-4 text-emerald-400" />
                 <span>抵達航班</span>
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">
-                  {arrivals.length}
+                  {upcomingArrivalsCount}
                 </span>
               </button>
               <button
@@ -555,12 +642,12 @@ export default function FlightScheduleModal() {
                 <PlaneTakeoff className="w-4 h-4 text-amber-400" />
                 <span>出發航班</span>
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-mono">
-                  {departures.length}
+                  {upcomingDeparturesCount}
                 </span>
               </button>
             </div>
 
-            {/* Range Filters: T / D / I */}
+            {/* Range Filters */}
             <div className="flex items-center gap-1.5 text-xs">
               <button
                 onClick={() => setFilterRange('all')}
@@ -580,7 +667,7 @@ export default function FlightScheduleModal() {
                     : 'bg-[#181a22] border-[#262933] text-gray-400 hover:text-gray-200'
                 }`}
               >
-                🇨🇦 國內線 (D)
+                🇨🇦 國內線
               </button>
               <button
                 onClick={() => setFilterRange('T')}
@@ -590,7 +677,7 @@ export default function FlightScheduleModal() {
                     : 'bg-[#181a22] border-[#262933] text-gray-400 hover:text-gray-200'
                 }`}
               >
-                🇺🇸 美加線 (T)
+                🇺🇸 美加線
               </button>
               <button
                 onClick={() => setFilterRange('I')}
@@ -600,7 +687,7 @@ export default function FlightScheduleModal() {
                     : 'bg-[#181a22] border-[#262933] text-gray-400 hover:text-gray-200'
                 }`}
               >
-                🌐 國際線 (I)
+                🌐 國際線
               </button>
             </div>
           </div>
@@ -665,7 +752,7 @@ export default function FlightScheduleModal() {
                   >
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-gray-300">
-                        {activeTab === 'arrivals' ? '已抵達 / 已降落航班' : '已起飛 / 航行完畢航班'}
+                        {activeTab === 'arrivals' ? '已抵達航班' : '已起飛航班'}
                       </span>
                       <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-gray-700/40 text-gray-400 font-mono">
                         {completedFlights.length}
@@ -680,6 +767,33 @@ export default function FlightScheduleModal() {
                   {showCompletedAccordion && (
                     <div className="opacity-75 divide-y divide-[#1b1f2a]">
                       {completedFlights.map(flight => renderFlightRow(flight))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 3. Collapsible Cancelled Past Flights (獨立已取消航班摺疊清單) */}
+              {cancelledPastFlights.length > 0 && (
+                <div className="bg-[#120f12]/90 border-t border-rose-950/40">
+                  <button
+                    onClick={() => setShowCancelledAccordion(v => !v)}
+                    className="w-full px-4 py-2.5 flex items-center justify-between text-xs text-rose-300/80 hover:text-rose-200 hover:bg-[#1a1318] transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-rose-300">已取消航班 (已過表訂時間)</span>
+                      <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-rose-950/60 text-rose-400 font-mono border border-rose-900/40">
+                        {cancelledPastFlights.length}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[11px] text-rose-400">
+                      <span>{showCancelledAccordion ? '收合' : '展開檢視'}</span>
+                      {showCancelledAccordion ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </div>
+                  </button>
+
+                  {showCancelledAccordion && (
+                    <div className="opacity-75 divide-y divide-[#1b1f2a]">
+                      {cancelledPastFlights.map(flight => renderFlightRow(flight))}
                     </div>
                   )}
                 </div>

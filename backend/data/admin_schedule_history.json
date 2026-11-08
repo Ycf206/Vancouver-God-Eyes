@@ -1,0 +1,11 @@
+[
+  {
+    "id": "sync-1794104893122-service_requests_311",
+    "timestamp": "2026-11-08T02:28:12.926Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "3-1-1",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+  }
+]

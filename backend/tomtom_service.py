@@ -722,6 +722,14 @@ class TomTomTrafficService:
             return
 
         api_key = self.get_tomtom_api_key()
+        if not api_key:
+            # 無 API Key 或無資料時嚴格回傳空白，絕不預設以自由流回傳走廊數據
+            self.cached_jams_geojson = {"type": "FeatureCollection", "features": []}
+            self.cached_alerts_geojson = {"type": "FeatureCollection", "features": []}
+            self.cached_corridors_summary = {"corridors": [], "top_alerts": []}
+            self.last_fetch_time = now
+            return
+
         base_corridors = self._get_base_corridors_definition()
 
         # 1. 只針對 7 個核心走廊探針點查詢 TomTom Flow Segment Data (平行查詢，每次更新僅耗 7 次 API Call)
@@ -877,20 +885,8 @@ class TomTomTrafficService:
                     t_cur_corridor_min = (length_km / max(10.0, cur_speed)) * 60.0
                     delay_min = max(0.0, round(t_cur_corridor_min - t_ff_corridor_min, 1))
             else:
-                # 若尚未取得特定支線或本地未設定 API Key，預設依真實離峰/無事故暢通狀態推算 (絕不寫死假塞車)
-                cur_speed = freeflow
-                delay_min = 0.0
-                road_closure = False
-                # 檢查附近 1.5km 內是否有真實重大事故
-                probe = b.get("probe_point")
-                if probe:
-                    for af in alert_features:
-                        ap = af["properties"]
-                        if ap.get("type") in ("ACCIDENT", "ROAD_CLOSED"):
-                            dist = ((ap["lat"] - probe[0]) ** 2 + (ap["lon"] - probe[1]) ** 2) ** 0.5
-                            if dist < 0.018:
-                                delay_min = max(delay_min, float(ap.get("delay_min", 4)))
-                                cur_speed = max(25.0, round(freeflow * 0.65))
+                # 若無該路段即時探針數據，嚴格跳過不顯示，絕不預設以自由流回傳假走廊數據
+                continue
 
             delay_int = int(round(delay_min))
             cls = self._classify_congestion(cur_speed, freeflow, delay_min, road_closure)

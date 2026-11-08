@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   // Try proxying to backend first
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 1800);
+    const timeout = setTimeout(() => controller.abort(), 2000);
     const res = await fetch(`${backendUrl}/api/traffic/jams?t=${t}`, {
       signal: controller.signal,
       headers: { 'Accept': 'application/json' }
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     clearTimeout(timeout);
     if (res.ok) {
       const data = await res.json();
-      if (data && data.features && data.features.length > 0) {
+      if (data && data.features) {
         return NextResponse.json(data, {
           headers: {
             'Cache-Control': 'public, max-age=60, stale-while-revalidate=120'
@@ -26,27 +26,9 @@ export async function GET(request: NextRequest) {
       }
     }
   } catch {
-    // Fall back to static file
+    // Backend offline or error
   }
 
-  // Fallback to static cache
-  try {
-    let filePath = path.join(process.cwd(), 'public', 'vancouver_traffic_conditions.geojson');
-    if (!fs.existsSync(filePath)) {
-      filePath = path.join(process.cwd(), 'frontend', 'public', 'vancouver_traffic_conditions.geojson');
-    }
-    if (fs.existsSync(filePath)) {
-      const raw = fs.readFileSync(filePath, 'utf-8');
-      const data = JSON.parse(raw);
-      return NextResponse.json(data, {
-        headers: {
-          'Cache-Control': 'public, max-age=60, stale-while-revalidate=300'
-        }
-      });
-    }
-  } catch {
-    // Ignore
-  }
-
+  // 無資料或無 API Key 時嚴格回傳空白，絕不使用任何假自由流或 Rollback 靜態快取
   return NextResponse.json({ type: 'FeatureCollection', features: [] });
 }

@@ -1,19 +1,37 @@
 'use client';
 
-import React from 'react';
-import { History, X, Sparkles, Tag, Calendar, CheckCircle2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { History, X, Sparkles, Tag, Calendar, ChevronDown, ChevronUp, CheckCircle2, Layers } from 'lucide-react';
 
 interface ChangelogEntry {
-  date: string;
   version: string;
-  tag?: string;
+  title: string;
+  date: string;
+  isLatest?: boolean;
   highlights: string[];
 }
 
 const CHANGELOG_DATA: ChangelogEntry[] = [
   {
-    date: '2026-11-01',
+    version: 'v2026.11.1',
+    title: 'v2026.11.1 更新內容',
+    date: '2026-11-07',
+    isLatest: true,
+    highlights: [
+      '新增巴士轉車站',
+      '新增天車車票資訊及收費區劃分',
+      '新增卑詩渡輪碼頭攝影機',
+      '新增交通工具箭頭顯示方向',
+      '新增機場停車場資訊',
+      '優化交通圖層界面',
+      '優化航班資訊及界面',
+      '修正天車轉車站首尾班車資料'
+    ]
+  },
+  {
     version: 'v2026.11.0',
+    title: 'v2026.11.0 更新內容',
+    date: '2026-11-01',
     highlights: [
       '釋出正式版'
     ]
@@ -26,12 +44,28 @@ interface ChangelogModalProps {
 }
 
 export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
+  // 記錄展開的分頁，預設展開最新版本
+  const [expandedVersions, setExpandedVersions] = useState<Record<string, boolean>>({
+    'v2026.11.1': true,
+    'v2026.11.0': false
+  });
+
   if (!isOpen) return null;
 
+  const toggleVersion = (version: string) => {
+    setExpandedVersions(prev => ({
+      ...prev,
+      [version]: !prev[version]
+    }));
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150 select-none">
+    <div 
+      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150 select-none"
+      onClick={onClose}
+    >
       <div 
-        className="bg-[#161a23] border border-[#2e374c] rounded-2xl w-full max-w-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
+        className="bg-[#161a23] border border-[#2e374c] rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -43,9 +77,11 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
             <div>
               <h2 className="text-base font-bold text-white tracking-wide flex items-center gap-2">
                 <span>系統更新日誌</span>
-
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 font-semibold">
+                  CHANGELOG
+                </span>
               </h2>
-                          </div>
+            </div>
           </div>
           <button 
             onClick={onClose}
@@ -56,77 +92,82 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
           </button>
         </div>
 
-        {/* Table Content (左至右欄: 日期 / 版本 / 內容) */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#3e4e6d]">
-          <div className="border border-[#263147] rounded-xl overflow-hidden bg-[#121620]">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-[#181e2b] border-b border-[#263147] text-gray-400 font-semibold uppercase text-[11px] tracking-wider">
-                  <th className="py-3 px-4 w-[110px] sm:w-[130px]">
-                    <span className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                      <span>日期</span>
-                    </span>
-                  </th>
-                  <th className="py-3 px-4 w-[110px] sm:w-[130px]">
-                    <span className="flex items-center gap-1.5">
-                      <Tag className="w-3.5 h-3.5 text-gray-400" />
-                      <span>版本</span>
-                    </span>
-                  </th>
-                  <th className="py-3 px-4">
-                    <span className="flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-                      <span>更新內容</span>
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#1e2638]">
-                {CHANGELOG_DATA.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="py-16 text-center text-gray-500 text-xs">
-                      <div className="flex flex-col items-center justify-center gap-2.5">
-                        <History className="w-8 h-8 text-gray-600/60" />
-                        <span className="text-gray-300 font-medium text-xs">正式版本即將推出</span>
-                        <span className="text-gray-500 text-[11px]">系統更新歷程將於首個正式版本發佈時記錄於此</span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  CHANGELOG_DATA.map((entry, idx) => (
-                  <tr 
-                    key={entry.version}
-                    className={`hover:bg-[#161c28] transition-colors ${idx === 0 ? 'bg-sky-500/[0.03]' : ''}`}
-                  >
-                    {/* 日期欄 */}
-                    <td className="py-3.5 px-4 font-mono text-[11px] text-gray-400 align-top whitespace-nowrap">
-                      {entry.date}
-                    </td>
+        {/* Collapsible Accordion Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#3e4e6d]">
+          {CHANGELOG_DATA.map((entry) => {
+            const isExpanded = expandedVersions[entry.version] ?? false;
 
-                    {/* 版本欄 */}
-                    <td className="py-3.5 px-4 align-top whitespace-nowrap">
-                      <span className="font-mono font-bold text-xs text-sky-300 px-2 py-0.5 rounded bg-sky-950/80 border border-sky-500/40 inline-block">
-                        {entry.version}
+            return (
+              <div 
+                key={entry.version}
+                className={`border rounded-xl transition-all duration-200 overflow-hidden ${
+                  entry.isLatest 
+                    ? 'border-sky-500/40 bg-[#121622] shadow-[0_0_12px_rgba(56,189,248,0.06)]' 
+                    : 'border-[#263147] bg-[#12151e]'
+                }`}
+              >
+                {/* Accordion Header */}
+                <button
+                  type="button"
+                  onClick={() => toggleVersion(entry.version)}
+                  className={`w-full flex items-center justify-between px-4 py-3.5 transition-colors cursor-pointer text-left ${
+                    isExpanded 
+                      ? entry.isLatest ? 'bg-sky-500/10' : 'bg-[#181f2d]' 
+                      : 'hover:bg-[#181e2b]'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 flex-wrap min-w-0">
+                    <span className={`font-mono font-bold text-xs px-2.5 py-0.5 rounded border inline-flex items-center gap-1.5 ${
+                      entry.isLatest 
+                        ? 'bg-sky-950/90 border-sky-400/50 text-sky-300 shadow-xs' 
+                        : 'bg-[#1c2333] border-gray-700 text-gray-300'
+                    }`}>
+                      <Tag className="w-3 h-3 text-sky-400" />
+                      {entry.version}
+                    </span>
+
+                    <h3 className="font-bold text-sm text-white tracking-wide">
+                      {entry.title}
+                    </h3>
+
+                    {entry.isLatest && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                        最新版本
                       </span>
-                    </td>
+                    )}
+                  </div>
 
-                    {/* 內容欄 */}
-                    <td className="py-3.5 px-4 align-top text-gray-200">
-                      <ul className="space-y-1.5">
-                        {entry.highlights.map((item, hIdx) => (
-                          <li key={hIdx} className="flex items-start gap-2 text-[11.5px] leading-relaxed">
-                            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 mt-1.5 shrink-0"></span>
-                            <span className="text-gray-300">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </td>
-                  </tr>
-                )))}
-              </tbody>
-            </table>
-          </div>
+                  <div className="flex items-center gap-3 shrink-0 ml-2">
+                    <span className="flex items-center gap-1 text-[11px] font-mono text-gray-400">
+                      <Calendar className="w-3 h-3 text-gray-500" />
+                      <span>{entry.date}</span>
+                    </span>
+                    <div className={`p-1 rounded-md text-gray-400 transition-transform duration-200 ${
+                      isExpanded ? 'text-sky-400 rotate-180' : 'text-gray-500'
+                    }`}>
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
+                  </div>
+                </button>
+
+                {/* Accordion Body */}
+                {isExpanded && (
+                  <div className="px-5 py-4 border-t border-[#1e273a] bg-[#10141d]/80 animate-in fade-in duration-150">
+                    <ul className="space-y-2">
+                      {entry.highlights.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5 text-xs leading-relaxed group">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0 mt-0.5 group-hover:text-cyan-300 transition-colors" />
+                          <span className="text-gray-200 group-hover:text-white transition-colors">
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

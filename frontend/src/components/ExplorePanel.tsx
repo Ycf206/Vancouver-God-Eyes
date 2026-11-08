@@ -4736,16 +4736,13 @@ function ExploreContent() {
                   >
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-start gap-2.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-sky-400 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(56,189,248,0.6)]" />
-                        <div className="flex flex-col min-w-0">
-                          <h4 className="text-sm font-bold text-white tracking-wide truncate group-hover:text-cyan-300 transition-colors">
-                            {resort.english_name}
-                          </h4>
-                          <span className="text-[11px] text-gray-400 truncate">
-                            {resort.name}
-                          </span>
-                        </div>
+                      <div className="flex flex-col min-w-0">
+                        <h4 className="text-sm font-bold text-white tracking-wide truncate group-hover:text-cyan-300 transition-colors">
+                          {resort.english_name}
+                        </h4>
+                        <span className="text-[11px] text-gray-400 truncate">
+                          {resort.name}
+                        </span>
                       </div>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${
                         isOpen 

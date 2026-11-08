@@ -31,7 +31,6 @@ jobs:
     - name: Execute SSH commands on OCI VM
       uses: appleboy/ssh-action@v1.0.3
       env:
-        FLIGHTAWARE_API_KEY: ${{ secrets.FLIGHTAWARE_API_KEY }}
         TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
         ADMIN_API_SECRET: ${{ secrets.ADMIN_API_SECRET }}
         ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
@@ -40,7 +39,7 @@ jobs:
         host: ${{ secrets.OCI_HOST_IP }}
         username: ubuntu
         key: ${{ secrets.OCI_SSH_KEY }}
-        envs: FLIGHTAWARE_API_KEY,TOMTOM_API_KEY,ADMIN_API_SECRET,ADMIN_PASSWORD,ROLLBACK_TARGET
+        envs: TOMTOM_API_KEY,ADMIN_API_SECRET,ADMIN_PASSWORD,ROLLBACK_TARGET
         script: |
           set -e
           cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
@@ -53,7 +52,7 @@ jobs:
           [ -f frontend/.env.local ] && cp frontend/.env.local /tmp/godseye_frontend_env.bak || true
           [ -f backend/data/admin_sources_config.json ] && cp backend/data/admin_sources_config.json /tmp/godseye_admin_cfg.bak || true
           mkdir -p /tmp/godseye_runtime_bak
-          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key system_maintenance.json flightaware_quota.json; do
+          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key system_maintenance.json; do
             [ -f "backend/data/$rt_file" ] && cp -f "backend/data/$rt_file" "/tmp/godseye_runtime_bak/$rt_file" || true
           done
 
@@ -93,29 +92,11 @@ jobs:
           [ -f /tmp/godseye_backend_env.bak ] && cp /tmp/godseye_backend_env.bak backend/.env || true
           [ -f /tmp/godseye_frontend_env.bak ] && cp /tmp/godseye_frontend_env.bak frontend/.env.local || true
           mkdir -p backend/data
-          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key system_maintenance.json flightaware_quota.json; do
+          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key system_maintenance.json; do
             [ -f "/tmp/godseye_runtime_bak/$rt_file" ] && cp -f "/tmp/godseye_runtime_bak/$rt_file" "backend/data/$rt_file" || true
           done
           rm -rf /tmp/godseye_runtime_bak || true
           python3 backend/scripts/merge_admin_config.py || true
-
-          # 如果 GitHub Secrets 有設定 FLIGHTAWARE_API_KEY，自動同步至 backend/.env 與根目錄 .env
-          if [ -n "$FLIGHTAWARE_API_KEY" ]; then
-            mkdir -p backend
-            touch backend/.env
-            if grep -q "^FLIGHTAWARE_API_KEY=" backend/.env 2>/dev/null; then
-              sed -i "s|^FLIGHTAWARE_API_KEY=.*|FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY|" backend/.env
-            else
-              echo "FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY" >> backend/.env
-            fi
-            touch .env
-            if grep -q "^FLIGHTAWARE_API_KEY=" .env 2>/dev/null; then
-              sed -i "s|^FLIGHTAWARE_API_KEY=.*|FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY|" .env
-            else
-              echo "FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY" >> .env
-            fi
-            echo "✅ FLIGHTAWARE_API_KEY successfully synced from GitHub Secrets"
-          fi
 
           # 如果 GitHub Secrets 有設定 TOMTOM_API_KEY，自動同步至 backend/.env 與根目錄 .env
           if [ -n "$TOMTOM_API_KEY" ]; then

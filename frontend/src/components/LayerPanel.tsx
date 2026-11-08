@@ -97,7 +97,7 @@ const SEARCHABLE_LAYERS: Array<{
   { id: 'busRoutes', name: '巴士路線', category: '交通', keywords: ['bus', 'route', '路線', '巴士路線'], icon: Route },
   { id: 'skytrainTrains', name: '天車列車 (推算)', category: '交通', keywords: ['skytrain', 'train', '天車', '捷運', '列車'], icon: TrainFront },
   { id: 'skytrainRoutes', name: '天車路線', category: '交通', keywords: ['skytrain', 'route', '天車路線', '世博線', '千禧線', '加拿大線'], icon: Route },
-  { id: 'skytrainFareZones', name: '天車區域 (Zone 1/2/3)', category: '交通', keywords: ['skytrain', 'zone', '天車區域', '收費分區', 'zone 1', 'zone 2', 'zone 3'], icon: Map },
+  { id: 'skytrainFareZones', name: '天車收費分區', category: '交通', keywords: ['skytrain', 'zone', '天車區域', '收費分區', '收費區'], icon: Map },
   { id: 'seabusVehicles', name: '海上巴士車輛', category: '交通', keywords: ['seabus', '渡輪', '船', '海上巴士'], icon: Ship },
   { id: 'seabusRoutes', name: '海上巴士路線', category: '交通', keywords: ['seabus', '航線', '海上巴士路線'], icon: Route },
   { id: 'bcferriesVehicles', name: '卑詩渡輪車輛', category: '交通', keywords: ['bc ferries', 'ferry', '渡輪', '卑詩渡輪'], icon: Ship },
@@ -428,7 +428,11 @@ export default function LayerPanel() {
         className="fixed inset-0 top-[60px] z-40 bg-black/60 backdrop-blur-xs md:hidden animate-in fade-in duration-200"
       />
 
-      <div className="fixed top-[60px] left-0 bottom-0 z-50 md:z-30 w-[280px] sm:w-[240px] bg-[#161719] border-r border-[#2d2e32] flex flex-col shadow-2xl select-none animate-in slide-in-from-left duration-200">
+      <div 
+        onWheel={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        className="fixed top-[60px] left-0 bottom-0 z-50 md:z-30 w-[280px] sm:w-[240px] bg-[#161719] border-r border-[#2d2e32] flex flex-col shadow-2xl select-none animate-in slide-in-from-left duration-150"
+      >
       
       {/* Header */}
       <div className="flex items-center justify-between px-3 h-10 border-b border-[#2d2e32] bg-[#1a1b1e] shrink-0">
@@ -577,7 +581,7 @@ export default function LayerPanel() {
                 <span className="text-[11px] font-medium text-blue-400 pl-0.5">天車</span>
                 <LayerButton layerKey="skytrainTrains" label="列車 (推算)" title="天車列車 (推算)" icon={TrainFront} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
                 <LayerButton layerKey="skytrainRoutes" label="車站" title="天車站點與路線" icon={Route} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
-                <LayerButton layerKey="skytrainFareZones" label="天車區域" title="天車收費區域 (Zone 1/2/3)" icon={Map} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+                <LayerButton layerKey="skytrainFareZones" label="天車區域" title="天車收費區域" icon={Map} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
               </div>
 
               {/* 海上巴士 */}

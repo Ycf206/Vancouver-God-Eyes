@@ -59,9 +59,11 @@ function loadDiskCache() {
   return null;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const isRefresh = url.searchParams.get('refresh') === 'true' || url.searchParams.get('force') === 'true';
   const now = Date.now();
-  if (cachedFlights && (now - lastFetchTime < 45000)) {
+  if (!isRefresh && cachedFlights && (now - lastFetchTime < 45000)) {
     return NextResponse.json(cachedFlights, {
       headers: { 'Cache-Control': 'public, max-age=30, stale-while-revalidate=60' }
     });
@@ -71,14 +73,16 @@ export async function GET() {
   try {
     const backendUrl = process.env.INTERNAL_BACKEND_URL || 'http://127.0.0.1:8000';
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    const bRes = await fetch(`${backendUrl}/api/airports/flights`, { signal: controller.signal });
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const backendEndpoint = isRefresh ? `${backendUrl}/api/airports/flights?refresh=true` : `${backendUrl}/api/airports/flights`;
+    const bRes = await fetch(backendEndpoint, { signal: controller.signal });
     clearTimeout(timeoutId);
     if (bRes.ok) {
       const bJson = await bRes.json();
       if (bJson && (bJson.arrivals?.length || bJson.departures?.length)) {
         cachedFlights = bJson;
         lastFetchTime = now;
+        console.log(`✅ [YVR Flights Service] 航班排程同步成功: 抵達 ${bJson.arrivals?.length || 0} 班, 出發 ${bJson.departures?.length || 0} 班`);
         return NextResponse.json(cachedFlights, {
           headers: { 'Cache-Control': 'public, max-age=30, stale-while-revalidate=60' }
         });
@@ -106,83 +110,103 @@ export async function GET() {
 
     try {
       // Sequential to prevent Cloudflare challenge rate limit
-      const arrRes = await execFileAsync('curl.exe', ['-s', arrivalsUrl, ...headers, '-H', 'Referer: https://www.yvr.ca/en/passengers/flights/arriving-flights'], { timeout: 15000 });
-      await new Promise(r => setTimeout(r, 1500));
-      const depRes = await execFileAsync('curl.exe', ['-s', departuresUrl, ...headers, '-H', 'Referer: https://www.yvr.ca/en/passengers/flights/departing-flights'], { timeout: 15000 });
+      let arrJson: any = null;
+      let depJson: any = null;
 
-      const arrOut = (arrRes.stdout || '').trim();
-      const depOut = (depRes.stdout || '').trim();
+      try {
+        const arrRes = await execFileAsync('curl.exe', ['-s', arrivalsUrl, ...headers, '-H', 'Referer: https://www.yvr.ca/en/passengers/flights/arriving-flights'], { timeout: 15000 });
+        const arrOut = (arrRes.stdout || '').trim();
+        if (arrOut.startsWith('{') && arrOut.endsWith('}')) {
+          arrJson = JSON.parse(arrOut);
+        }
+      } catch (err) {
+        console.warn('Arrivals fetch warning:', err);
+      }
 
-      if (arrOut.startsWith('{') && depOut.startsWith('{')) {
-        const arrJson = JSON.parse(arrOut);
-        const depJson = JSON.parse(depOut);
-        const yvrArrivals = arrJson.value || [];
-        const yvrDepartures = depJson.value || [];
+      await new Promise(r => setTimeout(r, 1200));
 
-        const processFlight = (item: any, type: 'A' | 'D') => {
-          const fn = (item.FlightNumber || '').replace(/\s+/g, '').toUpperCase();
-          const code = item.FlightAirportCode || '';
-          const durHours = AIRPORT_DURATIONS_HOURS[code] || 2.5;
-          const durMs = durHours * 3600 * 1000;
+      try {
+        const depRes = await execFileAsync('curl.exe', ['-s', departuresUrl, ...headers, '-H', 'Referer: https://www.yvr.ca/en/passengers/flights/departing-flights'], { timeout: 15000 });
+        const depOut = (depRes.stdout || '').trim();
+        if (depOut.startsWith('{') && depOut.endsWith('}')) {
+          depJson = JSON.parse(depOut);
+        }
+      } catch (err) {
+        console.warn('Departures fetch warning:', err);
+      }
 
-          const primaryTime = item.FlightEstimatedTime || item.FlightScheduledTime || '';
-          let originDepartureTime = '';
-          let destArrivalTime = '';
+      const processFlight = (item: any, type: 'A' | 'D') => {
+        const fn = (item.FlightNumber || '').replace(/\s+/g, '').toUpperCase();
+        const code = item.FlightAirportCode || '';
+        const durHours = AIRPORT_DURATIONS_HOURS[code] || 2.5;
+        const durMs = durHours * 3600 * 1000;
 
-          if (type === 'A') {
-            destArrivalTime = primaryTime;
-            if (primaryTime) {
-              const dt = new Date(primaryTime);
-              if (!isNaN(dt.getTime())) {
-                originDepartureTime = new Date(dt.getTime() - durMs).toISOString().slice(0, 19);
-              }
-            }
-          } else {
-            originDepartureTime = primaryTime;
-            if (primaryTime) {
-              const dt = new Date(primaryTime);
-              if (!isNaN(dt.getTime())) {
-                destArrivalTime = new Date(dt.getTime() + durMs).toISOString().slice(0, 19);
-              }
+        const primaryTime = item.FlightEstimatedTime || item.FlightScheduledTime || '';
+        let originDepartureTime = '';
+        let destArrivalTime = '';
+
+        if (type === 'A') {
+          destArrivalTime = primaryTime;
+          if (primaryTime) {
+            const dt = new Date(primaryTime);
+            if (!isNaN(dt.getTime())) {
+              originDepartureTime = new Date(dt.getTime() - durMs).toISOString().slice(0, 19);
             }
           }
+        } else {
+          originDepartureTime = primaryTime;
+          if (primaryTime) {
+            const dt = new Date(primaryTime);
+            if (!isNaN(dt.getTime())) {
+              destArrivalTime = new Date(dt.getTime() + durMs).toISOString().slice(0, 19);
+            }
+          }
+        }
 
-          return {
-            id: item.FlightID || `${fn}_${item.FlightScheduledTime}`,
-            flight_number: item.FlightNumber,
-            airline: item.FlightAirlineName,
-            carrier: item.FlightCarrier || '',
-            type,
-            range: item.FlightRange || 'D',
-            city: item.FlightCity || '',
-            airport_code: code,
-            scheduled_time: item.FlightScheduledTime,
-            estimated_time: item.FlightEstimatedTime,
-            origin_departure_time: originDepartureTime,
-            dest_arrival_time: destArrivalTime,
-            desk_from: item.FlightDeskFrom || '',
-            desk_to: item.FlightDeskTo || '',
-            gate: item.FlightGate || '',
-            carousel: item.FlightCarousel || '',
-            status: item.FlightStatus || item.FlightRemarks || 'On Time',
-            aircraft_type: item.FlightAircraftType || '',
-            yvr_coords: [-123.184444, 49.193889]
-          };
+        return {
+          id: item.FlightID || `${fn}_${item.FlightScheduledTime}`,
+          flight_number: item.FlightNumber,
+          airline: item.FlightAirlineName,
+          carrier: item.FlightCarrier || '',
+          type,
+          range: item.FlightRange || 'D',
+          city: item.FlightCity || '',
+          airport_code: code,
+          scheduled_time: item.FlightScheduledTime,
+          estimated_time: item.FlightEstimatedTime,
+          origin_departure_time: originDepartureTime,
+          dest_arrival_time: destArrivalTime,
+          desk_from: item.FlightDeskFrom || '',
+          desk_to: item.FlightDeskTo || '',
+          gate: item.FlightGate || '',
+          carousel: item.FlightCarousel || '',
+          status: item.FlightStatus || item.FlightRemarks || 'On Time',
+          aircraft_type: item.FlightAircraftType || '',
+          yvr_coords: [-123.184444, 49.193889]
         };
+      };
 
-        const processedArrivals = yvrArrivals.map((it: any) => processFlight(it, 'A'));
-        const processedDepartures = yvrDepartures.map((it: any) => processFlight(it, 'D'));
+      const yvrArrivals = arrJson?.value || [];
+      const yvrDepartures = depJson?.value || [];
 
+      const newArrivals = yvrArrivals.map((it: any) => processFlight(it, 'A'));
+      const newDepartures = yvrDepartures.map((it: any) => processFlight(it, 'D'));
+
+      const fallbackArrivals = cachedFlights?.arrivals?.length ? cachedFlights.arrivals : (diskData?.arrivals || []);
+      const fallbackDepartures = cachedFlights?.departures?.length ? cachedFlights.departures : (diskData?.departures || []);
+
+      const finalArrivals = newArrivals.length > 0 ? newArrivals : fallbackArrivals;
+      const finalDepartures = newDepartures.length > 0 ? newDepartures : fallbackDepartures;
+
+      if (finalArrivals.length > 0 || finalDepartures.length > 0) {
         cachedFlights = {
           success: true,
           updated_at: new Date().toISOString(),
-          counts: { arrivals: processedArrivals.length, departures: processedDepartures.length },
-          arrivals: processedArrivals,
-          departures: processedDepartures
+          counts: { arrivals: finalArrivals.length, departures: finalDepartures.length },
+          arrivals: finalArrivals,
+          departures: finalDepartures
         };
         lastFetchTime = now;
-      } else {
-        console.warn('YVR API returned non-JSON response, using verified cache data');
       }
     } catch (e: any) {
       console.warn('YVR API query warning (fallback active):', e?.message);
