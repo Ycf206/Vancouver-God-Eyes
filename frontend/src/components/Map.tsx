@@ -27,7 +27,7 @@ import {
   Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet, UserShield, FireExtinguisher,
   Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
-  Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking
+  Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy
 } from 'lucide-react';
 
 const LetterXIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
@@ -17542,6 +17542,7 @@ export default function AppMap() {
                   { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
                   { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
                   { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
+                  { id: 'sports', label: '體育', icon: Trophy, color: 'text-blue-400' },
                   { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
                   { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
                   { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
@@ -17564,6 +17565,7 @@ export default function AppMap() {
                 { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
                 { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
                 { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
+                { id: 'sports', label: '體育', icon: Trophy, color: 'text-blue-400' },
                 { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
                 { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
                 { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
@@ -17656,6 +17658,7 @@ export default function AppMap() {
             { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
             { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
             { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
+            { id: 'sports', label: '體育', icon: Trophy, color: 'text-blue-400' },
             { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
             { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
             { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },

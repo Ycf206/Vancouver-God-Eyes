@@ -1378,6 +1378,12 @@ async def startup_event():
         asyncio.create_task(fuel_service.run_fuel_background_loop())
     except Exception as e:
         print(f"Failed to start fuel_service task: {e}")
+
+    try:
+        import sports_service
+        asyncio.create_task(sports_service.run_sports_background_loop())
+    except Exception as e:
+        print(f"Failed to start sports_service task: {e}")
     # 背景預熱全圖層記憶體倒排索引，避免首次搜尋冷啟動延遲
     threading.Thread(
         target=lambda: search_engine.ensure_ready(get_gtfs_metadata, database.SessionLocal),
@@ -1462,6 +1468,40 @@ def get_yvr_news():
     except Exception as e:
         print(f"Error serving yvr news: {e}")
         return []
+
+@app.get("/api/sports/canucks-schedule")
+def get_sports_canucks_schedule(season: Optional[str] = None, refresh: bool = False, force: bool = False):
+    """
+    取得 NHL Vancouver Canucks 官方真實賽季賽程資料 (後台預先更新快取，0ms 極速無卡頓)。
+    """
+    try:
+        import sports_service
+        data = sports_service.fetch_canucks_schedule(season=season, force=(refresh or force))
+        return JSONResponse(
+            content=data or {"success": False, "games": []},
+            headers={"Cache-Control": "public, max-age=300, stale-while-revalidate=600"}
+        )
+    except Exception as e:
+        print(f"Error serving canucks schedule: {e}")
+        return JSONResponse(
+            content={"success": False, "games": [], "error": str(e)},
+            status_code=500
+        )
+
+@app.get("/api/sports/seasons")
+def get_sports_available_seasons():
+    """
+    取得可用賽季下拉選單清單 (由近至遠)。
+    """
+    try:
+        import sports_service
+        return {
+            "currentSeason": sports_service.get_current_nhl_season(),
+            "seasons": sports_service.get_available_seasons()
+        }
+    except Exception as e:
+        print(f"Error serving available seasons: {e}")
+        return {"currentSeason": "20262027", "seasons": []}
 
 # In-memory cache for live parkade capacity (retained for up to 60 seconds to prevent rate limits)
 _LATEST_PARKADE_CAPACITY = None
@@ -4721,6 +4761,19 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
             _oci_runtime_ts["flight_schedules"] = time.time()
         cnt = (len(schedules.get("arrivals", [])) + len(schedules.get("departures", []))) if isinstance(schedules, dict) else None
         return (cnt, f"OCI 伺服器已即時同步 YVR 官方即時航班時刻表，目前排程 {cnt} 班。")
+    if sid in ("sports_canucks", "canucks_schedule"):
+        import sports_service
+        cur_s = sports_service.get_current_nhl_season()
+        data = sports_service.fetch_canucks_schedule(cur_s, force=True)
+        _oci_runtime_ts["sports_canucks"] = time.time()
+        cnt = data.get("totalGames") or len(data.get("games", []))
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 NHL 官方 Vancouver Canucks {cur_s} 賽季賽程，共 {cnt} 場賽事。")
+    if sid == "yvr_weathercams":
+        import yvr_airport_service
+        data = yvr_airport_service.fetch_weathercams_summary("CYVR")
+        _oci_runtime_ts["yvr_weathercams"] = time.time()
+        cnt = len(data.get("cameras", []))
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 FAA 溫哥華機場 (CYVR) 氣象攝影機與 METAR，共 {cnt} 組鏡頭。")
     return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
 
 

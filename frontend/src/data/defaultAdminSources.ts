@@ -217,13 +217,13 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "id": "fuel_prices",
     "name": "油站",
     "type": "api",
-    "cron_expr": "0 */1 * * *",
-    "schedule_interval": "每 1 小時",
+    "cron_expr": "* * * * *",
+    "schedule_interval": "每 1 分鐘",
     "record_count": 88,
     "unit": "間油站點價格",
     "last_updated": "2026-10-24T18:00:00Z",
     "status": "healthy",
-    "data_pipeline_notes": "GasBuddy & 加拿大能源情報聚合接口 -> 取得溫哥華市區各品牌 (Chevron, Shell, Petro-Canada 等) 87/91/柴油即時公升單價 -> 計算比價排名與市區油價均線",
+    "data_pipeline_notes": "GasBuddy & 加拿大能源情報聚合接口 -> 取得溫哥華市區各品牌 (Chevron, Shell, Petro-Canada 等) 87/91/柴油即時公升單價 -> 每 1 分鐘後台即時更新快取 -> 支援地圖比價與 0ms 探索",
     "runner": "oci",
     "category": "道路",
     "workflow_file": null,
@@ -234,6 +234,54 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://www.gasbuddy.com/home?search=Vancouver%2C+BC"
+  },
+  {
+    "id": "yvr_weathercams",
+    "name": "YVR 氣象攝影機 & METAR",
+    "type": "api",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 8,
+    "unit": "組高畫質觀測鏡頭與氣象報文",
+    "last_updated": "2026-11-08T00:00:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "FAA WeatherCams API & NAV CANADA -> 即時抓取溫哥華國際機場跑道氣象攝影機快照與 METAR 氣象解碼報文 -> 每 1 小時自動快取 -> 支援地圖機場側邊欄預覽",
+    "runner": "oci",
+    "category": "天氣",
+    "workflow_file": null,
+    "source_links": [
+      {
+        "label": "FAA WeatherCams 官方 API",
+        "url": "https://weathercams.faa.gov/api/summary?airportId=CYVR"
+      }
+    ],
+    "source_url": "https://weathercams.faa.gov/api/summary?airportId=CYVR"
+  },
+  {
+    "id": "sports_canucks",
+    "name": "NHL 溫哥華加人隊賽程",
+    "type": "api",
+    "cron_expr": "0 4 * * *",
+    "schedule_interval": "每天 1 次",
+    "record_count": 82,
+    "unit": "場賽季例行與季後賽賽事",
+    "last_updated": "2026-11-08T00:00:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "NHL 官方 Web API (club-schedule-season) -> 自動依年份切換賽季代碼 -> 解析主客場隊伍、場地、比分與即時狀態 -> 每日更新 1 次快取 -> 支援探索體育分頁 0ms 即時檢視",
+    "runner": "oci",
+    "category": "生活",
+    "workflow_file": null,
+    "source_links": [
+      {
+        "label": "NHL 官方賽程 API",
+        "url": "https://api-web.nhle.com/v1/club-schedule-season/VAN/20262027"
+      },
+      {
+        "label": "Canucks 官方賽程網",
+        "url": "https://www.nhl.com/canucks/schedule"
+      }
+    ],
+    "source_url": "https://api-web.nhle.com/v1/club-schedule-season/VAN/20262027"
   },
   {
     "id": "flight_schedules",

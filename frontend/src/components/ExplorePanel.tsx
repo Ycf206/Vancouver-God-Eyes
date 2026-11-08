@@ -5,16 +5,68 @@ import { createPortal } from 'react-dom';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
 import { Landmark, 
   Compass, X, Fuel, Zap, Ship, MapPin, ArrowUpDown, 
-  ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
+  ChevronDown, ChevronUp, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
   Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain, CreditCard,
   Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign,
   PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle,
   Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
-  Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront
+  Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
+
+export function HockeyStickIcon({ className = "w-4 h-4", ...props }: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M4 21h6a2 2 0 0 0 1.9-1.37L20 4" />
+      <ellipse cx="6" cy="18" rx="2" ry="1.2" fill="currentColor" opacity="0.8" />
+    </svg>
+  );
+}
+
+export interface NHLGameItem {
+  id: number;
+  season: number;
+  gameType: number;
+  gameDate: string;
+  venue?: { default?: string };
+  startTimeUTC?: string;
+  easternUTCOffset?: string;
+  venueUTCOffset?: string;
+  venueTimezone?: string;
+  gameState: string;
+  gameScheduleState?: string;
+  awayTeam: {
+    id?: number;
+    commonName?: { default?: string };
+    placeName?: { default?: string };
+    abbrev?: string;
+    logo?: string;
+    darkLogo?: string;
+    score?: number;
+  };
+  homeTeam: {
+    id?: number;
+    commonName?: { default?: string };
+    placeName?: { default?: string };
+    abbrev?: string;
+    logo?: string;
+    darkLogo?: string;
+    score?: number;
+  };
+  ticketsLink?: string;
+  gameCenterLink?: string;
+}
 import { getApiUrl } from '@/utils/api';
 import { formatShipEta, formatTimePreference, formatTimeRange, formatDateTime, formatDateOnly, formatTimeOnly } from '@/utils/time';
 import skytrainStationsData from '@/data/skytrainStations.json';
@@ -1072,6 +1124,26 @@ function ExploreContent() {
   const [loadingEvents, setLoadingEvents] = useState(false);
   const [eventsFilter, setEventsFilter] = useState<'all' | 'daily_hive' | 'eventbrite' | 'destination_vancouver'>('all');
   const [eventsSearchQuery, setEventsSearchQuery] = useState('');
+
+  // --- Sports (Canucks Hockey) tab states ---
+  const [sportsSubTab, setSportsSubTab] = useState<'hockey'>('hockey');
+  const [canucksSeason, setCanucksSeason] = useState<string>('20262027');
+  const [availableSeasons, setAvailableSeasons] = useState<Array<{ code: string; label: string }>>([
+    { code: '20262027', label: '2026 - 2027' },
+    { code: '20252026', label: '2025 - 2026' },
+    { code: '20242025', label: '2024 - 2025' },
+    { code: '20232024', label: '2023 - 2024' },
+    { code: '20222023', label: '2022 - 2023' },
+    { code: '20212022', label: '2021 - 2022' },
+    { code: '20202021', label: '2020 - 2021' },
+  ]);
+  const [nhlGames, setNhlGames] = useState<NHLGameItem[]>([]);
+  const [loadingNhl, setLoadingNhl] = useState<boolean>(false);
+  const [nhlSearchQuery, setNhlSearchQuery] = useState<string>('');
+  const [nhlLocationFilter, setNhlLocationFilter] = useState<'all' | 'home' | 'away'>('all');
+  const [nhlStatusFilter, setNhlStatusFilter] = useState<'all' | 'future' | 'final' | 'live'>('all');
+  const [showPastGamesAccordion, setShowPastGamesAccordion] = useState<boolean>(false);
+  const [nhlLastUpdated, setNhlLastUpdated] = useState<string>('');
 
   // --- Weather tab states ---
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -2592,6 +2664,147 @@ function ExploreContent() {
     });
   }, [eventsList, eventsFilter, eventsSearchQuery]);
 
+  // 6.1 Fetch NHL Vancouver Canucks Schedule
+  const fetchCanucksSchedule = React.useCallback(async (targetSeason?: string, force = false) => {
+    setLoadingNhl(true);
+    const s = targetSeason || canucksSeason;
+    try {
+      const apiUrl = getApiUrl();
+      const endpoints = [
+        `/api/sports/canucks-schedule?season=${s}${force ? '&refresh=true' : ''}`,
+        `${apiUrl}/api/sports/canucks-schedule?season=${s}${force ? '&refresh=true' : ''}`
+      ];
+      let loaded = false;
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.games)) {
+              setNhlGames(data.games);
+              if (data.updated_at) setNhlLastUpdated(data.updated_at);
+              loaded = true;
+              break;
+            }
+          }
+        } catch {}
+      }
+      if (!loaded) {
+        try {
+          const sRes = await fetch(`/vancouver_canucks_schedule_${s}.json`);
+          if (sRes.ok) {
+            const sData = await sRes.json();
+            if (sData && Array.isArray(sData.games)) {
+              setNhlGames(sData.games);
+              if (sData.updated_at) setNhlLastUpdated(sData.updated_at);
+            }
+          }
+        } catch {}
+      }
+    } catch (err) {
+      console.error('Error fetching Canucks schedule:', err);
+    } finally {
+      setLoadingNhl(false);
+    }
+  }, [canucksSeason]);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'sports') return;
+    const fetchSeasons = async () => {
+      try {
+        const res = await fetch('/api/sports/seasons');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.seasons) && data.seasons.length > 0) {
+            setAvailableSeasons(data.seasons);
+          }
+          if (data.currentSeason) {
+            setCanucksSeason((prev) => prev || data.currentSeason);
+          }
+        }
+      } catch {}
+    };
+    fetchSeasons();
+    fetchCanucksSchedule(canucksSeason, false);
+  }, [isExploreOpen, activeTab, canucksSeason, fetchCanucksSchedule]);
+
+  // Separate games into Upcoming/Live games vs Past Completed games, with filter & search
+  const { upcomingNhlGames, pastNhlGames, totalFilteredNhlGames } = useMemo(() => {
+    let list = nhlGames || [];
+
+    // Search query filter
+    if (nhlSearchQuery.trim()) {
+      const q = nhlSearchQuery.trim().toLowerCase();
+      list = list.filter((g) => {
+        const homeCommon = (g.homeTeam?.commonName?.default || '').toLowerCase();
+        const homePlace = (g.homeTeam?.placeName?.default || '').toLowerCase();
+        const awayCommon = (g.awayTeam?.commonName?.default || '').toLowerCase();
+        const awayPlace = (g.awayTeam?.placeName?.default || '').toLowerCase();
+        const venueName = (g.venue?.default || '').toLowerCase();
+        const dateStr = (g.gameDate || '').toLowerCase();
+        return (
+          homeCommon.includes(q) ||
+          homePlace.includes(q) ||
+          awayCommon.includes(q) ||
+          awayPlace.includes(q) ||
+          venueName.includes(q) ||
+          dateStr.includes(q)
+        );
+      });
+    }
+
+    // Home / Away filter
+    if (nhlLocationFilter === 'home') {
+      list = list.filter((g) => g.homeTeam?.abbrev === 'VAN');
+    } else if (nhlLocationFilter === 'away') {
+      list = list.filter((g) => g.awayTeam?.abbrev === 'VAN');
+    }
+
+    // Status filter
+    if (nhlStatusFilter === 'live') {
+      list = list.filter((g) => g.gameState === 'LIVE' || g.gameState === 'CRIT');
+    } else if (nhlStatusFilter === 'final') {
+      list = list.filter((g) => g.gameState === 'FINAL' || g.gameState === 'OFF');
+    } else if (nhlStatusFilter === 'future') {
+      list = list.filter((g) => g.gameState === 'FUT' || g.gameState === 'PRE');
+    }
+
+    const now = Date.now();
+    const upcoming: NHLGameItem[] = [];
+    const past: NHLGameItem[] = [];
+
+    for (const g of list) {
+      const isFinal = g.gameState === 'FINAL' || g.gameState === 'OFF';
+      const gameTime = g.startTimeUTC ? new Date(g.startTimeUTC).getTime() : (g.gameDate ? new Date(g.gameDate).getTime() : 0);
+      
+      if (isFinal || (gameTime > 0 && gameTime + 4 * 3600 * 1000 < now)) {
+        past.push(g);
+      } else {
+        upcoming.push(g);
+      }
+    }
+
+    // Upcoming: 依時間由近至遠 (升序：最接近現在的比賽在上方)
+    upcoming.sort((a, b) => {
+      const ta = a.startTimeUTC ? new Date(a.startTimeUTC).getTime() : new Date(a.gameDate).getTime();
+      const tb = b.startTimeUTC ? new Date(b.startTimeUTC).getTime() : new Date(b.gameDate).getTime();
+      return ta - tb;
+    });
+
+    // Past: 依時間由近至遠 (降序：剛結束的比賽在上方)
+    past.sort((a, b) => {
+      const ta = a.startTimeUTC ? new Date(a.startTimeUTC).getTime() : new Date(a.gameDate).getTime();
+      const tb = b.startTimeUTC ? new Date(b.startTimeUTC).getTime() : new Date(b.gameDate).getTime();
+      return tb - ta;
+    });
+
+    return {
+      upcomingNhlGames: upcoming,
+      pastNhlGames: past,
+      totalFilteredNhlGames: list.length
+    };
+  }, [nhlGames, nhlSearchQuery, nhlLocationFilter, nhlStatusFilter]);
+
   const formatNewsTime = (timestamp?: number, rawDate?: string) => {
     const ts = timestamp || (rawDate ? new Date(rawDate).getTime() : 0);
     if (!ts) return '';
@@ -3412,6 +3625,7 @@ function ExploreContent() {
     weather: { label: '天氣資訊', icon: CloudSun, color: 'text-sky-400' },
     news: { label: '新聞快訊', icon: Newspaper, color: 'text-amber-400' },
     events: { label: '活動情報', icon: CalendarDays, color: 'text-purple-400' },
+    sports: { label: '體育賽事', icon: Trophy, color: 'text-blue-400' },
     beach: { label: '海灘水質', icon: Parasol, color: 'text-teal-300' },
     ski: { label: '滑雪場現況', icon: CableCar, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
@@ -3437,6 +3651,7 @@ function ExploreContent() {
     weather: '天氣',
     news: '新聞',
     events: '活動',
+    sports: '體育',
     beach: '海灘',
     ski: '滑雪',
     aurora: '極光',
@@ -6817,6 +7032,476 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 體育分頁 (Vancouver Sports - NHL Canucks) ==================== */}
+      {activeTab === 'sports' && (
+        <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
+          {/* Header Controls: Subtabs (冰球) & Right Tools (賽季選單、官方賽程連結、重新整理) */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            {/* 子分頁導航列 */}
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setSportsSubTab('hockey')}
+                className={`flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg font-semibold transition-all cursor-pointer ${
+                  sportsSubTab === 'hockey'
+                    ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-sm'
+                    : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838]'
+                }`}
+                title="NHL 溫哥華加人隊冰球賽程"
+              >
+                <HockeyStickIcon className="w-3.5 h-3.5 text-sky-400" />
+                <span>冰球 (Canucks)</span>
+              </button>
+            </div>
+
+            {/* 右上角工具列：賽季下拉選單 + 官方日程連結 + 手動更新 */}
+            <div className="flex items-center gap-1.5">
+              {/* 賽季下拉選單 (選項由近至遠，2026 - 2027 在最上方) */}
+              <div className="relative">
+                <select
+                  value={canucksSeason}
+                  onChange={(e) => {
+                    const nextSeason = e.target.value;
+                    setCanucksSeason(nextSeason);
+                    fetchCanucksSchedule(nextSeason, false);
+                  }}
+                  className="appearance-none bg-[#151922] text-gray-200 border border-[#283042] hover:border-sky-500/50 rounded-lg pl-2.5 pr-7 py-1 text-xs font-mono font-medium focus:outline-none focus:ring-1 focus:ring-sky-500/50 cursor-pointer"
+                  title="選擇 NHL 賽季"
+                >
+                  {availableSeasons.map((s) => (
+                    <option key={s.code} value={s.code} className="bg-[#121620] text-gray-200">
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-3 h-3 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+
+              {/* 官方日程連結圖示按鈕 */}
+              <a
+                href="https://www.nhl.com/canucks/schedule"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1.5 rounded-lg bg-[#151922] hover:bg-sky-500/20 text-gray-400 hover:text-sky-300 border border-[#232838] hover:border-sky-500/40 transition-colors flex items-center justify-center cursor-pointer"
+                title="開啟 Canucks 官方賽程表 (nhl.com/canucks/schedule)"
+              >
+                <Calendar className="w-3.5 h-3.5" />
+              </a>
+
+              {/* 重新整理快取按鈕 */}
+              <button
+                type="button"
+                onClick={() => fetchCanucksSchedule(canucksSeason, true)}
+                disabled={loadingNhl}
+                className="p-1.5 rounded-lg bg-[#151922] hover:bg-[#202738] text-gray-400 hover:text-white border border-[#232838] transition-colors flex items-center justify-center cursor-pointer"
+                title="即時同步賽程資料"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingNhl ? 'animate-spin text-sky-400' : ''}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* 搜尋欄與篩選器列 */}
+          <div className="flex flex-col gap-1.5 shrink-0">
+            {/* 搜尋框 */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={nhlSearchQuery}
+                onChange={(e) => setNhlSearchQuery(e.target.value)}
+                placeholder="搜尋對手球隊名、城市、場地或日期 (如 2026-10)..."
+                className="w-full pl-8 pr-16 py-1.5 bg-[#0f1219] border border-[#242b3b] rounded-lg text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500/50"
+              />
+              {nhlSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setNhlSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-[11px] px-1"
+                >
+                  清除
+                </button>
+              )}
+            </div>
+
+            {/* 主客場與比賽狀態篩選 */}
+            <div className="flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar pb-0.5">
+              <div className="flex items-center gap-1 shrink-0">
+                <span className="text-[10px] text-gray-400 mr-0.5">場地:</span>
+                {[
+                  { id: 'all', label: '全部' },
+                  { id: 'home', label: '🏠 主場' },
+                  { id: 'away', label: '✈️ 客場' },
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setNhlLocationFilter(f.id as any)}
+                    className={`px-2 py-0.5 text-[11px] rounded border transition-colors cursor-pointer ${
+                      nhlLocationFilter === f.id
+                        ? 'bg-sky-500/20 text-sky-300 border-sky-500/40 font-semibold'
+                        : 'bg-[#121620] text-gray-400 hover:text-gray-200 border-[#202738]'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-1 shrink-0">
+                <span className="text-[10px] text-gray-400 mr-0.5">狀態:</span>
+                {[
+                  { id: 'all', label: '全部' },
+                  { id: 'future', label: '即將進行' },
+                  { id: 'final', label: '已結束' },
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setNhlStatusFilter(s.id as any)}
+                    className={`px-2 py-0.5 text-[11px] rounded border transition-colors cursor-pointer ${
+                      nhlStatusFilter === s.id
+                        ? 'bg-blue-500/20 text-blue-300 border-blue-500/40 font-semibold'
+                        : 'bg-[#121620] text-gray-400 hover:text-gray-200 border-[#202738]'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 表頭欄位標籤 (依圖 1 規格設計) */}
+          <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0">
+            <div className="col-span-3 text-left">比賽日期 / 比賽場地</div>
+            <div className="col-span-3 text-right">主隊 (名稱·城市·比分)</div>
+            <div className="col-span-1 text-center font-bold text-gray-500">-</div>
+            <div className="col-span-3 text-left">客隊 (名稱·城市·比分)</div>
+            <div className="col-span-2 text-right">比賽狀態</div>
+          </div>
+
+          {/* 賽事列表 (清單方式顯示) */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-0.5 custom-scrollbar">
+            {loadingNhl && nhlGames.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-gray-400 gap-2">
+                <RefreshCw className="w-6 h-6 animate-spin text-sky-400" />
+                <span className="text-xs">正在載入 NHL Canucks 官方賽季賽程...</span>
+              </div>
+            ) : totalFilteredNhlGames === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-gray-500 gap-1.5 text-xs">
+                <HockeyStickIcon className="w-8 h-8 text-gray-600 mb-1" />
+                <span>查無符合篩選條件的賽事</span>
+                {nhlSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setNhlSearchQuery('')}
+                    className="text-sky-400 hover:underline text-[11px] mt-1"
+                  >
+                    清除搜尋條件
+                  </button>
+                )}
+              </div>
+            ) : (
+              <>
+                {/* 1. 即將到來／進行中的賽事 (依時間由近至遠順序排列) */}
+                {upcomingNhlGames.length > 0 && (
+                  <div className="space-y-1.5">
+                    {upcomingNhlGames.map((game) => {
+                      const isHomeVan = game.homeTeam?.abbrev === 'VAN';
+                      const isAwayVan = game.awayTeam?.abbrev === 'VAN';
+                      const hasHomeScore = game.homeTeam?.score !== undefined && game.homeTeam?.score !== null;
+                      const hasAwayScore = game.awayTeam?.score !== undefined && game.awayTeam?.score !== null;
+                      const hasScores = hasHomeScore || hasAwayScore;
+                      const isLive = game.gameState === 'LIVE' || game.gameState === 'CRIT';
+
+                      // 狀態文字與顏色
+                      let statusText = '未開始';
+                      let statusClass = 'bg-sky-500/10 text-sky-300 border-sky-500/30';
+                      if (isLive) {
+                        statusText = '進行中';
+                        statusClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 animate-pulse font-bold';
+                      } else if (game.gameState === 'PRE') {
+                        statusText = '即將開始';
+                        statusClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+                      }
+
+                      // 時間格式化 (轉為當地 PCT 時間)
+                      let timeDisplay = '';
+                      if (game.startTimeUTC) {
+                        try {
+                          const dt = new Date(game.startTimeUTC);
+                          if (!isNaN(dt.getTime())) {
+                            timeDisplay = dt.toLocaleTimeString('en-US', {
+                              timeZone: 'Etc/GMT+7',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: timeFormat === '12h'
+                            });
+                          }
+                        } catch {}
+                      }
+
+                      return (
+                        <div
+                          key={game.id}
+                          className={`px-3 py-2.5 rounded-xl border transition-all ${
+                            isHomeVan
+                              ? 'bg-[#131926]/90 hover:bg-[#182030] border-[#222d42]'
+                              : 'bg-[#11141c]/80 hover:bg-[#161a24] border-[#1e2433]'
+                          } text-xs flex flex-col gap-1`}
+                        >
+                          <div className="grid grid-cols-12 gap-1 items-center">
+                            {/* 1. 比賽日期 gameDate & 比賽場地 venue.default */}
+                            <div className="col-span-3 min-w-0 pr-1 text-left">
+                              <div className="font-mono font-bold text-white text-[11px]">
+                                {game.gameDate}
+                              </div>
+                              {timeDisplay && (
+                                <div className="text-[10px] text-sky-400 font-mono">
+                                  {timeDisplay}
+                                </div>
+                              )}
+                              {game.venue?.default && (
+                                <div className="text-[9.5px] text-gray-400 truncate mt-0.5" title={game.venue.default}>
+                                  {game.venue.default}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* 2. 主隊 homeTeam */}
+                            <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                              <div className="min-w-0">
+                                <div className="flex items-center justify-end gap-1">
+                                  <span className={`text-[11px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                    {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
+                                  </span>
+                                  {game.homeTeam?.placeName?.default && (
+                                    <span className="text-[9.5px] text-gray-400 hidden sm:inline truncate">
+                                      ({game.homeTeam.placeName.default})
+                                    </span>
+                                  )}
+                                </div>
+                                {hasHomeScore && (
+                                  <div className="text-sm font-black font-mono text-white leading-none mt-0.5">
+                                    {game.homeTeam.score}
+                                  </div>
+                                )}
+                              </div>
+                              {game.homeTeam?.logo && (
+                                <img
+                                  src={game.homeTeam.logo}
+                                  alt={game.homeTeam.commonName?.default || 'Home'}
+                                  className="w-5 h-5 object-contain shrink-0"
+                                  loading="lazy"
+                                />
+                              )}
+                            </div>
+
+                            {/* 3. 分隔符 - */}
+                            <div className="col-span-1 text-center font-bold text-gray-500 text-xs">
+                              -
+                            </div>
+
+                            {/* 4. 客隊 awayTeam */}
+                            <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0 text-left">
+                              {game.awayTeam?.logo && (
+                                <img
+                                  src={game.awayTeam.logo}
+                                  alt={game.awayTeam.commonName?.default || 'Away'}
+                                  className="w-5 h-5 object-contain shrink-0"
+                                  loading="lazy"
+                                />
+                              )}
+                              <div className="min-w-0">
+                                <div className="flex items-center justify-start gap-1">
+                                  <span className={`text-[11px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                    {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
+                                  </span>
+                                  {game.awayTeam?.placeName?.default && (
+                                    <span className="text-[9.5px] text-gray-400 hidden sm:inline truncate">
+                                      ({game.awayTeam.placeName.default})
+                                    </span>
+                                  )}
+                                </div>
+                                {hasAwayScore && (
+                                  <div className="text-sm font-black font-mono text-white leading-none mt-0.5">
+                                    {game.awayTeam.score}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* 5. 比賽狀態 gameState */}
+                            <div className="col-span-2 flex flex-col items-end justify-center gap-0.5 text-right">
+                              <span className={`text-[9.5px] px-1.5 py-0.5 rounded border font-medium whitespace-nowrap ${statusClass}`}>
+                                {statusText}
+                              </span>
+                              {game.ticketsLink && (
+                                <a
+                                  href={game.ticketsLink}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-[9px] text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-0.5 mt-0.5"
+                                  title="前往購票"
+                                >
+                                  購票 <ExternalLink className="w-2.5 h-2.5" />
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* 2. 過去已結束的比賽：清單底部的摺疊清單 (依時間由近至遠排序) */}
+                {pastNhlGames.length > 0 && (
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setShowPastGamesAccordion((v) => !v)}
+                      className="w-full px-3 py-2 rounded-xl bg-[#121620] hover:bg-[#181d2a] border border-[#232b3b] flex items-center justify-between text-xs text-gray-300 hover:text-white transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-300">
+                          已結束賽事
+                        </span>
+                        <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-gray-800 text-gray-300 font-mono">
+                          {pastNhlGames.length} 場
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-[11px] text-sky-400 font-medium">
+                        <span>{showPastGamesAccordion ? '收合清單' : '展開檢視'}</span>
+                        {showPastGamesAccordion ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      </div>
+                    </button>
+
+                    {showPastGamesAccordion && (
+                      <div className="mt-2 space-y-1.5 opacity-90">
+                        {pastNhlGames.map((game) => {
+                          const isHomeVan = game.homeTeam?.abbrev === 'VAN';
+                          const isAwayVan = game.awayTeam?.abbrev === 'VAN';
+                          const hasHomeScore = game.homeTeam?.score !== undefined && game.homeTeam?.score !== null;
+                          const hasAwayScore = game.awayTeam?.score !== undefined && game.awayTeam?.score !== null;
+
+                          return (
+                            <div
+                              key={game.id}
+                              className={`px-3 py-2 rounded-xl border transition-all ${
+                                isHomeVan
+                                  ? 'bg-[#111622]/80 hover:bg-[#161c2a] border-[#1e2638]'
+                                  : 'bg-[#0f121a]/70 hover:bg-[#141822] border-[#1a202e]'
+                              } text-xs flex flex-col gap-1`}
+                            >
+                              <div className="grid grid-cols-12 gap-1 items-center">
+                                {/* 1. 比賽日期 gameDate & 比賽場地 venue.default */}
+                                <div className="col-span-3 min-w-0 pr-1 text-left">
+                                  <div className="font-mono font-medium text-gray-300 text-[11px]">
+                                    {game.gameDate}
+                                  </div>
+                                  {game.venue?.default && (
+                                    <div className="text-[9.5px] text-gray-500 truncate mt-0.5" title={game.venue.default}>
+                                      {game.venue.default}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* 2. 主隊 homeTeam */}
+                                <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                                  <div className="min-w-0">
+                                    <div className="flex items-center justify-end gap-1">
+                                      <span className={`text-[11px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                        {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
+                                      </span>
+                                      {game.homeTeam?.placeName?.default && (
+                                        <span className="text-[9.5px] text-gray-500 hidden sm:inline truncate">
+                                          ({game.homeTeam.placeName.default})
+                                        </span>
+                                      )}
+                                    </div>
+                                    {hasHomeScore && (
+                                      <div className="text-sm font-black font-mono text-white leading-none mt-0.5">
+                                        {game.homeTeam.score}
+                                      </div>
+                                    )}
+                                  </div>
+                                  {game.homeTeam?.logo && (
+                                    <img
+                                      src={game.homeTeam.logo}
+                                      alt={game.homeTeam.commonName?.default || 'Home'}
+                                      className="w-5 h-5 object-contain shrink-0"
+                                      loading="lazy"
+                                    />
+                                  )}
+                                </div>
+
+                                {/* 3. 分隔符 - */}
+                                <div className="col-span-1 text-center font-bold text-gray-600 text-xs">
+                                  -
+                                </div>
+
+                                {/* 4. 客隊 awayTeam */}
+                                <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0 text-left">
+                                  {game.awayTeam?.logo && (
+                                    <img
+                                      src={game.awayTeam.logo}
+                                      alt={game.awayTeam.commonName?.default || 'Away'}
+                                      className="w-5 h-5 object-contain shrink-0"
+                                      loading="lazy"
+                                    />
+                                  )}
+                                  <div className="min-w-0">
+                                    <div className="flex items-center justify-start gap-1">
+                                      <span className={`text-[11px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                        {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
+                                      </span>
+                                      {game.awayTeam?.placeName?.default && (
+                                        <span className="text-[9.5px] text-gray-500 hidden sm:inline truncate">
+                                          ({game.awayTeam.placeName.default})
+                                        </span>
+                                      )}
+                                    </div>
+                                    {hasAwayScore && (
+                                      <div className="text-sm font-black font-mono text-white leading-none mt-0.5">
+                                        {game.awayTeam.score}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* 5. 比賽狀態 gameState */}
+                                <div className="col-span-2 flex flex-col items-end justify-center gap-0.5 text-right">
+                                  <span className="text-[9.5px] px-1.5 py-0.5 rounded border font-medium bg-gray-800/60 text-gray-400 border-gray-700/50 whitespace-nowrap">
+                                    已完賽
+                                  </span>
+                                  {game.gameCenterLink && (
+                                    <a
+                                      href={`https://www.nhl.com${game.gameCenterLink}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="text-[9px] text-gray-400 hover:text-sky-300 hover:underline flex items-center gap-0.5 mt-0.5"
+                                      title="查看官方比賽戰報"
+                                    >
+                                      戰報 <ExternalLink className="w-2.5 h-2.5" />
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ==================== 大溫海灘水質分頁 (Beach Water Quality) ==================== */}
       {activeTab === 'beach' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
@@ -8307,6 +8992,12 @@ function ExploreContent() {
           )}
           {activeTab === 'events' && (
             <span>共有 {filteredEvents.length} 項活動資料</span>
+          )}
+          {activeTab === 'sports' && (
+            <>
+              <span>共有 {nhlGames.length} 場 Canucks 賽事 (符合條件 {totalFilteredNhlGames} 場)</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：NHL 官方 API (Vancouver Canucks)</span>
+            </>
           )}
           {activeTab === 'beach' && (
             <>

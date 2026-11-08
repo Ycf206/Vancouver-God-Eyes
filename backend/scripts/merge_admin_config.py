@@ -129,6 +129,14 @@ def merge_admin_config():
                     if not cur_u or "/passengers/flights" in cur_u.lower() or ("yvr.ca" in cur_u.lower() and "/_api/" not in cur_u.lower()):
                         s["source_url"] = "https://www.yvr.ca/en/_api/Flights"
 
+                if sid == "fuel_prices":
+                    s["cron_expr"] = "* * * * *"
+                    s["schedule_interval"] = "每 1 分鐘"
+
+                if sid == "yvr_weathercams":
+                    s["cron_expr"] = "0 * * * *"
+                    s["schedule_interval"] = "每 1 小時"
+
                 # GitHub Actions 管線強制與實際 .github/workflows/*.yml 的 cron 同步
                 if s.get("runner") == "github_actions" and s.get("workflow_file"):
                     wf_cron = _read_workflow_cron(repo_root, s["workflow_file"])

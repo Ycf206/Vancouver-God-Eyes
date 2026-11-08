@@ -68,14 +68,16 @@ def fetch_weathercams_summary(airport_id: str = "CYVR") -> Dict[str, Any]:
     """
     global _summary_cache
     now = time.time()
-    if _summary_cache["data"] and (now - _summary_cache["timestamp"] < 50):
+    WEATHERCAMS_TTL = 3600  # 每 1 小時更新週期
+
+    if _summary_cache["data"] and (now - _summary_cache["timestamp"] < WEATHERCAMS_TTL):
         return _summary_cache["data"]
 
-    # Check disk cache if recent (< 60s)
+    # Check disk cache if recent (< 3600s)
     if os.path.exists(SUMMARY_CACHE_FILE):
         try:
             mtime = os.path.getmtime(SUMMARY_CACHE_FILE)
-            if now - mtime < 60:
+            if now - mtime < WEATHERCAMS_TTL:
                 with open(SUMMARY_CACHE_FILE, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     norm = _normalize_summary_data(data, airport_id)
@@ -346,10 +348,11 @@ def fetch_yvr_news_rss(force_refresh: bool = False) -> List[Dict[str, Any]]:
 
 async def run_yvr_airport_background_loop():
     """
-    OCI 後台 24/7 自動排程預熱快取 (每 3 分鐘自動抓取真實 FAA 氣象攝影機與 METAR，每 2 小時抓取真實 YVR RSS 新聞)
+    OCI 後台 24/7 自動排程預熱快取 (每 1 小時自動抓取真實 FAA 氣象攝影機與 METAR，每 2 小時抓取真實 YVR RSS 新聞)
+    真實性保證：全數連線官方真實來源，若暫時中斷維持最後一次成功的官方真實記錄，絕不生成假資料。
     """
     import asyncio
-    print("🛫 [YVR Airport Service] 機場氣象攝影機與官方資訊背景定時快取服務啟動 (3 分鐘週期)...")
+    print("🛫 [YVR Airport Service] 機場氣象攝影機與官方資訊背景定時快取服務啟動 (1 小時週期)...")
     loop = asyncio.get_event_loop()
     # 啟動時先進行一次預熱
     try:
@@ -361,10 +364,10 @@ async def run_yvr_airport_background_loop():
     counter = 0
     while True:
         try:
-            await asyncio.sleep(180)  # 3 分鐘
+            await asyncio.sleep(3600)  # 每 1 小時
             counter += 1
             await loop.run_in_executor(None, fetch_weathercams_summary, "CYVR")
-            if counter >= 40:  # ~2 小時
+            if counter >= 2:  # 每 2 小時
                 counter = 0
                 await loop.run_in_executor(None, fetch_yvr_news_rss, True)
         except Exception as e:
