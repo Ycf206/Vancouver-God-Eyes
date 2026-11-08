@@ -3,7 +3,7 @@
   "source_url": "https://www.swpc.noaa.gov/",
   "api_endpoint": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
   "update_frequency": "每天 2 次 (12 小時快取)",
-  "last_updated": "2026-11-08T19:01:07.362146Z",
+  "last_updated": "2026-11-08T20:27:13.102059Z",
   "latest": {
     "time_tag": "2026-11-08T15:00:00",
     "kp": 3.33,

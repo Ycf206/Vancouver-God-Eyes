@@ -21,17 +21,17 @@ _nhl_schedules_cache: Dict[str, Dict[str, Any]] = {}
 def get_current_nhl_season() -> str:
     """
     根據 NHL 賽季週期推算目前賽季代碼：
-    賽季時段通常為 9 月至隔年 4 月；4 月尾後自動切換至下個賽季。
-    例如 2026 年 5 月至 2027 年 4 月 -> 20262027；2027 年 5 月起 -> 20272028。
+    賽季時段通常為 9 月至隔年 4 月；每年 4 月尾 (4 月 25 日起) 或 5 月自動切換至下個賽季。
+    例如 2026 年 5 月至 2027 年 4 月 24 日 -> 20262027；2027 年 4 月 25 日起 -> 20272028。
     """
     now = datetime.now(PCT_TZ)
-    if now.month >= 5:
+    if now.month > 4 or (now.month == 4 and now.day >= 25):
         return f"{now.year}{now.year + 1}"
     return f"{now.year - 1}{now.year}"
 
 def get_available_seasons() -> List[Dict[str, str]]:
     """
-    產生由近至遠的賽季下拉選單選項：由當前賽季 (2026 - 2027) 往回推至 2020 - 2021
+    產生由近至遠的賽季下拉選單選項：由當前最新賽季往回推至 2020 - 2021
     """
     cur_season = get_current_nhl_season()
     cur_start_year = int(cur_season[:4])

@@ -5,8 +5,9 @@ export const dynamic = 'force-dynamic';
 function getVancouverSeason(): string {
   const pctNow = new Date(Date.now() - 7 * 3600 * 1000);
   const m = pctNow.getUTCMonth() + 1;
+  const d = pctNow.getUTCDate();
   const y = pctNow.getUTCFullYear();
-  if (m >= 5) {
+  if (m > 4 || (m === 4 && d >= 25)) {
     return `${y}${y + 1}`;
   }
   return `${y - 1}${y}`;

@@ -54,7 +54,7 @@
       "schedule_interval": "每 30 秒",
       "record_count": 769,
       "unit": "輛運作中巴士與天車",
-      "last_updated": "2026-11-08T19:17:09Z",
+      "last_updated": "2026-11-08T19:19:24Z",
       "status": "healthy",
       "data_pipeline_notes": "TransLink RTTI GTFS-RT API -> 解析巴士 GPS、班次準點率、天車位置與海上巴士 -> 整合緊急廣播警報 (Alerts) -> 平滑插值座標更新地圖車輛標記",
       "runner": "oci",
@@ -172,7 +172,7 @@
       "schedule_interval": "每 1 分鐘",
       "record_count": 65,
       "unit": "間油站點價格",
-      "last_updated": "2026-11-08T19:16:33Z",
+      "last_updated": "2026-11-08T19:18:35Z",
       "status": "healthy",
       "data_pipeline_notes": "GasBuddy & 加拿大能源情報聚合接口 -> 取得溫哥華市區各品牌 (Chevron, Shell, Petro-Canada 等) 87/91/柴油即時公升單價 -> 計算比價排名與市區油價均線",
       "runner": "oci",
@@ -194,7 +194,7 @@
       "schedule_interval": "每 1 分鐘",
       "record_count": 500,
       "unit": "架起降航班動態",
-      "last_updated": "2026-11-08T12:16:37.721653-07:00",
+      "last_updated": "2026-11-08T12:18:44.610228-07:00",
       "status": "healthy",
       "data_pipeline_notes": "YVR Airport Open Flight Data API -> 篩選客貨運起飛與降落時刻表 -> 比對航班準點/延誤/取消狀態、登機門與行李轉盤 -> 提供即時看板與地圖航空走廊展示",
       "runner": "oci",
@@ -242,7 +242,7 @@
       "schedule_interval": "每 1 分鐘",
       "record_count": 36,
       "unit": "艘在港航行船隻",
-      "last_updated": "2026-11-08T19:17:08Z",
+      "last_updated": "2026-11-08T19:19:23Z",
       "status": "healthy",
       "data_pipeline_notes": "AISStream WebSocket & 溫哥華港務局航標數據 -> 監控布勒內灣、英吉利灣、菲沙河各類貨櫃輪、油輪、拖船與渡輪 -> 實時繪製船舶航速、航向角與吃水資訊",
       "runner": "oci",
@@ -287,7 +287,7 @@
       "schedule_interval": "每 5 分鐘",
       "record_count": 5,
       "unit": "處主要陸路海關通道",
-      "last_updated": "2026-11-08T19:16:25Z",
+      "last_updated": "2026-11-08T19:17:56Z",
       "status": "healthy",
       "data_pipeline_notes": "加拿大邊境服務局 (CBSA BWT) & 美國 CBP 即時關口等候 API -> 追蹤和平拱門 (Peace Arch)、太平洋公路、亞博斯福等口岸之標準車道與 NEXUS 車道預估排隊分鐘數",
       "runner": "oci",
@@ -1486,6 +1486,32 @@
         }
       ],
       "source_url": "https://www.playnow.com/services2/lotto/draw/latest/"
+    },
+    {
+      "id": "whitecaps_schedule",
+      "name": "MLS 溫哥華白浪足球賽程",
+      "type": "api",
+      "cron_expr": "0 14 * * *",
+      "schedule_interval": "每日",
+      "record_count": 88,
+      "unit": "場 Whitecaps 足球賽程",
+      "last_updated": "2026-11-08T20:27:15.364Z",
+      "status": "healthy",
+      "data_pipeline_notes": "MLS 官方 Stats API (matches/seasons) -> 自動動態解析 Vancouver Whitecaps 賽季排程、主客場對戰、比分、場地與進行時長 -> 每日更新 1 次快取 -> 支援探索體育足球分頁 0ms 即時檢視",
+      "runner": "oci",
+      "category": "生活",
+      "workflow_file": null,
+      "source_links": [
+        {
+          "label": "MLS 官方賽程 API",
+          "url": "https://stats-api.mlssoccer.com/matches/seasons/MLS-SEA-0001KA?match_date[gte]=2026-01-01&match_date[lte]=2026-12-31&team_id=MLS-CLU-00000C&per_page=120&sort=planned_kickoff_time:asc,home_team_name:asc"
+        },
+        {
+          "label": "Whitecaps 官方賽程網",
+          "url": "https://www.whitecapsfc.com/schedule"
+        }
+      ],
+      "source_url": "https://stats-api.mlssoccer.com/matches/seasons/MLS-SEA-0001KA?match_date[gte]=2026-01-01&match_date[lte]=2026-12-31&team_id=MLS-CLU-00000C&per_page=120&sort=planned_kickoff_time:asc,home_team_name:asc"
     }
   ],
   "logs": [

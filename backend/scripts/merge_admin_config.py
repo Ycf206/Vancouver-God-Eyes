@@ -141,6 +141,10 @@ def merge_admin_config():
                     s["cron_expr"] = "0 */12 * * *"
                     s["schedule_interval"] = "每 12 小時"
 
+                if sid in ("whitecaps_schedule", "sports_whitecaps"):
+                    s["cron_expr"] = "0 14 * * *"
+                    s["schedule_interval"] = "每日"
+
                 # GitHub Actions 管線強制與實際 .github/workflows/*.yml 的 cron 同步
                 if s.get("runner") == "github_actions" and s.get("workflow_file"):
                     wf_cron = _read_workflow_cron(repo_root, s["workflow_file"])

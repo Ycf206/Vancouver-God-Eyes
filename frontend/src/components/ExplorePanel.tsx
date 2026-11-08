@@ -35,6 +35,54 @@ export function HockeyStickIcon({ className = "w-4 h-4", ...props }: React.SVGPr
   );
 }
 
+export function SoccerBallIcon({ className = "w-4 h-4", ...props }: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="12 7 15.5 9.5 14 13.5 10 13.5 8.5 9.5 12 7" fill="currentColor" fillOpacity="0.25" />
+      <path d="M12 7V2" />
+      <path d="M15.5 9.5L20.5 7" />
+      <path d="M14 13.5L18 19" />
+      <path d="M10 13.5L6 19" />
+      <path d="M8.5 9.5L3.5 7" />
+    </svg>
+  );
+}
+
+export interface WhitecapsMatchItem {
+  competition_id?: string;
+  competition_name?: string;
+  away_team_id?: string;
+  away_team_name?: string;
+  away_team_short_name?: string;
+  away_team_three_letter_code?: string;
+  home_team_id?: string;
+  home_team_name?: string;
+  home_team_short_name?: string;
+  home_team_three_letter_code?: string;
+  match_scheduled?: boolean;
+  match_id?: string;
+  planned_kickoff_time?: string;
+  season?: number;
+  season_id?: string;
+  stadium_name?: string;
+  stadium_city?: string;
+  result?: string;
+  away_team_goals?: number;
+  home_team_goals?: number;
+  match_status?: string;
+  minute_of_play?: string;
+}
+
 export interface NHLGameItem {
   id: number;
   season: number;
@@ -1208,8 +1256,8 @@ function ExploreContent() {
   const [eventsFilter, setEventsFilter] = useState<'all' | 'daily_hive' | 'eventbrite' | 'destination_vancouver'>('all');
   const [eventsSearchQuery, setEventsSearchQuery] = useState('');
 
-  // --- Sports (Canucks Hockey) tab states ---
-  const [sportsSubTab, setSportsSubTab] = useState<'hockey'>('hockey');
+  // --- Sports (Canucks Hockey & Whitecaps Soccer) tab states ---
+  const [sportsSubTab, setSportsSubTab] = useState<'hockey' | 'soccer'>('hockey');
   const [canucksSeason, setCanucksSeason] = useState<string>('20262027');
   const [availableSeasons, setAvailableSeasons] = useState<Array<{ code: string; label: string }>>([
     { code: '20262027', label: '2026 - 2027' },
@@ -1227,6 +1275,25 @@ function ExploreContent() {
   const [nhlStatusFilter, setNhlStatusFilter] = useState<'all' | 'future' | 'final' | 'live'>('all');
   const [showPastGamesAccordion, setShowPastGamesAccordion] = useState<boolean>(false);
   const [nhlLastUpdated, setNhlLastUpdated] = useState<string>('');
+
+  // --- Whitecaps Soccer states ---
+  const [whitecapsSeason, setWhitecapsSeason] = useState<number>(2026);
+  const [availableWhitecapsSeasons, setAvailableWhitecapsSeasons] = useState<Array<{ year: number; label: string }>>([
+    { year: 2027, label: '2027 賽季' },
+    { year: 2026, label: '2026 賽季' },
+    { year: 2025, label: '2025 賽季' },
+    { year: 2024, label: '2024 賽季' },
+    { year: 2023, label: '2023 賽季' },
+    { year: 2022, label: '2022 賽季' },
+    { year: 2021, label: '2021 賽季' },
+    { year: 2020, label: '2020 賽季' },
+  ]);
+  const [whitecapsMatches, setWhitecapsMatches] = useState<WhitecapsMatchItem[]>([]);
+  const [loadingWhitecaps, setLoadingWhitecaps] = useState<boolean>(false);
+  const [whitecapsSearchQuery, setWhitecapsSearchQuery] = useState<string>('');
+  const [whitecapsLocationFilter, setWhitecapsLocationFilter] = useState<'all' | 'home' | 'away'>('all');
+  const [whitecapsStatusFilter, setWhitecapsStatusFilter] = useState<'all' | 'future' | 'final'>('all');
+  const [showPastWhitecapsAccordion, setShowPastWhitecapsAccordion] = useState<boolean>(false);
 
   // --- 彩票 / PlayNow Lottery States ---
   const [lotterySubTab, setLotterySubTab] = useState<'SIX49' | 'BC49' | 'LMAX' | 'DGRD'>('SIX49');
@@ -2818,6 +2885,70 @@ function ExploreContent() {
     fetchCanucksSchedule(canucksSeason, false);
   }, [isExploreOpen, activeTab, canucksSeason, fetchCanucksSchedule]);
 
+  // 6.1b Fetch Whitecaps Soccer Schedule (MLS 官方 API，每日更新 1 次)
+  const fetchWhitecapsSchedule = React.useCallback(async (y: number, force = false) => {
+    setLoadingWhitecaps(true);
+    try {
+      const apiUrl = getApiUrl();
+      const endpoints = [
+        `/api/sports/whitecaps-schedule?year=${y}${force ? '&refresh=true' : ''}`,
+        `${apiUrl}/api/sports/whitecaps-schedule?year=${y}${force ? '&refresh=true' : ''}`,
+        `/vancouver_whitecaps_schedule_${y}.json`
+      ];
+      let loaded = false;
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.matches)) {
+              setWhitecapsMatches(data.matches);
+              loaded = true;
+              break;
+            }
+          }
+        } catch {}
+      }
+      if (!loaded) {
+        try {
+          const sRes = await fetch(`/vancouver_whitecaps_schedule_${y}.json`);
+          if (sRes.ok) {
+            const sData = await sRes.json();
+            if (sData && Array.isArray(sData.matches)) {
+              setWhitecapsMatches(sData.matches);
+            }
+          }
+        } catch {}
+      }
+    } catch (err) {
+      console.error('Error fetching Whitecaps schedule:', err);
+    } finally {
+      setLoadingWhitecaps(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'sports') return;
+    if (sportsSubTab === 'soccer') {
+      const fetchWhitecapsSeasons = async () => {
+        try {
+          const res = await fetch('/api/sports/whitecaps-seasons');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.seasons) && data.seasons.length > 0) {
+              setAvailableWhitecapsSeasons(data.seasons);
+            }
+            if (data.currentSeason) {
+              setWhitecapsSeason((prev) => prev || data.currentSeason);
+            }
+          }
+        } catch {}
+      };
+      fetchWhitecapsSeasons();
+      fetchWhitecapsSchedule(whitecapsSeason, false);
+    }
+  }, [isExploreOpen, activeTab, sportsSubTab, whitecapsSeason, fetchWhitecapsSchedule]);
+
   // 6.2 Fetch PlayNow Lottery Data (每 12 小時更新一次)
   const fetchLotteryData = React.useCallback(async (force = false) => {
     setLoadingLottery(true);
@@ -2929,6 +3060,75 @@ function ExploreContent() {
       totalFilteredNhlGames: list.length
     };
   }, [nhlGames, nhlSearchQuery, nhlLocationFilter, nhlStatusFilter]);
+
+  // Separate Whitecaps soccer matches into Upcoming vs Past Completed matches, with filter & search
+  const { upcomingWhitecapsMatches, pastWhitecapsMatches, totalFilteredWhitecapsMatches } = useMemo(() => {
+    let list = whitecapsMatches || [];
+
+    if (whitecapsSearchQuery.trim()) {
+      const q = whitecapsSearchQuery.trim().toLowerCase();
+      list = list.filter((m) => {
+        const homeName = (m.home_team_name || '').toLowerCase();
+        const awayName = (m.away_team_name || '').toLowerCase();
+        const homeShort = (m.home_team_short_name || '').toLowerCase();
+        const awayShort = (m.away_team_short_name || '').toLowerCase();
+        const stadium = (m.stadium_name || '').toLowerCase();
+        const city = (m.stadium_city || '').toLowerCase();
+        const comp = (m.competition_name || '').toLowerCase();
+        return (
+          homeName.includes(q) ||
+          awayName.includes(q) ||
+          homeShort.includes(q) ||
+          awayShort.includes(q) ||
+          stadium.includes(q) ||
+          city.includes(q) ||
+          comp.includes(q)
+        );
+      });
+    }
+
+    if (whitecapsLocationFilter === 'home') {
+      list = list.filter((m) => m.home_team_id === 'MLS-CLU-00000C');
+    } else if (whitecapsLocationFilter === 'away') {
+      list = list.filter((m) => m.away_team_id === 'MLS-CLU-00000C');
+    }
+
+    if (whitecapsStatusFilter === 'future') {
+      list = list.filter((m) => !m.match_scheduled || m.match_status === 'scheduled');
+    } else if (whitecapsStatusFilter === 'final') {
+      list = list.filter((m) => m.match_scheduled === true || m.match_status === 'finalWhistle' || m.match_status === 'finished');
+    }
+
+    const upcoming: WhitecapsMatchItem[] = [];
+    const past: WhitecapsMatchItem[] = [];
+
+    list.forEach((m) => {
+      const isCompleted = m.match_scheduled === true || m.match_status === 'finalWhistle' || m.match_status === 'finished';
+      if (isCompleted) {
+        past.push(m);
+      } else {
+        upcoming.push(m);
+      }
+    });
+
+    upcoming.sort((a, b) => {
+      const ta = a.planned_kickoff_time ? new Date(a.planned_kickoff_time).getTime() : 0;
+      const tb = b.planned_kickoff_time ? new Date(b.planned_kickoff_time).getTime() : 0;
+      return ta - tb;
+    });
+
+    past.sort((a, b) => {
+      const ta = a.planned_kickoff_time ? new Date(a.planned_kickoff_time).getTime() : 0;
+      const tb = b.planned_kickoff_time ? new Date(b.planned_kickoff_time).getTime() : 0;
+      return tb - ta;
+    });
+
+    return {
+      upcomingWhitecapsMatches: upcoming,
+      pastWhitecapsMatches: past,
+      totalFilteredWhitecapsMatches: list.length
+    };
+  }, [whitecapsMatches, whitecapsSearchQuery, whitecapsLocationFilter, whitecapsStatusFilter]);
 
   const formatNewsTime = (timestamp?: number, rawDate?: string) => {
     const ts = timestamp || (rawDate ? new Date(rawDate).getTime() : 0);
@@ -6743,18 +6943,18 @@ function ExploreContent() {
                       </div>
                     </div>
 
-                    {/* 額外抽獎 (Extra 4 碼) - 若有資料 */}
+                    {/* 額外抽獎 (4 碼) - 若有資料 */}
                     {currentDraw?.extraNbrs && currentDraw.extraNbrs.length > 0 && (
-                      <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#0e121a] border border-[#1f2637] text-xs">
-                        <span className="text-gray-400 font-medium">額外抽獎 (Extra)</span>
-                        <div className="flex items-center gap-1.5 font-mono font-bold text-sky-300">
+                      <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#0e121a] border border-[#1f2637] text-xs">
+                        <span className="text-gray-300 font-medium">額外抽獎</span>
+                        <div className="flex items-center gap-2">
                           {currentDraw.extraNbrs.map((ex, idx) => (
-                            <span
+                            <div
                               key={idx}
-                              className="px-2 py-0.5 rounded bg-sky-950/60 border border-sky-800/60 text-sky-200"
+                              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm font-mono text-white bg-gradient-to-b from-blue-500 to-blue-700 border border-blue-300/50 shadow-md shadow-blue-950/50"
                             >
                               {ex < 10 ? `0${ex}` : ex}
-                            </span>
+                            </div>
                           ))}
                         </div>
                       </div>
@@ -6765,18 +6965,38 @@ function ExploreContent() {
                       <>
                         <div className="border-t border-[#202738] my-0.5"></div>
 
-                        {/* 金球專屬號碼 */}
-                        {goldBallCode && (
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border border-amber-500/35">
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
-                              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                              <span>金球開彩專屬號碼</span>
+                        {/* 649 開彩專屬號碼 (金球 / 白球判定：30個球中只有1個金球，goldBallsDrawn若為0代表抽中白球，為1代表抽中金球) */}
+                        {goldBallCode && (() => {
+                          const isGoldBallDrawn = (gp.goldBallsDrawn ?? 0) > 0;
+                          return (
+                            <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 px-3 py-2.5 rounded-xl border ${
+                              isGoldBallDrawn
+                                ? 'bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border-amber-500/40 shadow-sm shadow-amber-950/40'
+                                : 'bg-gradient-to-r from-slate-700/30 via-slate-800/40 to-slate-700/30 border-slate-600/50 shadow-sm'
+                            }`}>
+                              <div className="flex items-center gap-2 text-xs font-bold">
+                                {isGoldBallDrawn ? (
+                                  <>
+                                    <Sparkles className="w-4 h-4 text-amber-400" />
+                                    <span className="text-amber-300">
+                                      金球開彩專屬號碼 (抽中金球 • 獲得金球頭獎 ${gp.goldBallPrizeAmount ? gp.goldBallPrizeAmount.toLocaleString() : '36,000,000'})
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="w-3 h-3 rounded-full bg-white shadow-sm shrink-0"></span>
+                                    <span className="text-slate-100">
+                                      開彩專屬號碼 (抽中白球 • 獲得白球獎金 ${gp.whiteBallPrizeAmount ? gp.whiteBallPrizeAmount.toLocaleString() : '1,000,000'})
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                              <span className={`font-mono font-black text-sm tracking-widest ${isGoldBallDrawn ? 'text-amber-200' : 'text-white'}`}>
+                                {goldBallCode}
+                              </span>
                             </div>
-                            <span className="font-mono font-black text-sm tracking-widest text-amber-200">
-                              {goldBallCode}
-                            </span>
-                          </div>
-                        )}
+                          );
+                        })()}
 
                         {/* 白球 & 金球次數及獎金 */}
                         <div className="grid grid-cols-2 gap-2 text-xs">
@@ -7513,7 +7733,7 @@ function ExploreContent() {
       {/* ==================== 體育分頁 (Vancouver Sports - NHL Canucks) ==================== */}
       {activeTab === 'sports' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
-          {/* Header Controls: 子分頁列 (預留空間放其他子分頁) */}
+          {/* Header Controls: 子分頁列 (冰球 & 足球) */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
             <div className="flex items-center gap-1.5 flex-1 min-w-0">
               <button
@@ -7524,58 +7744,77 @@ function ExploreContent() {
                     ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-sm'
                     : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838]'
                 }`}
-                title="冰球賽程"
+                title="冰球賽程 (Canucks)"
               >
                 <HockeyStickIcon className="w-3.5 h-3.5 text-sky-400" />
                 <span>冰球</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setSportsSubTab('soccer')}
+                className={`flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg font-semibold transition-all cursor-pointer ${
+                  sportsSubTab === 'soccer'
+                    ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-sm'
+                    : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838]'
+                }`}
+                title="足球賽程 (Whitecaps FC)"
+              >
+                <SoccerBallIcon className="w-3.5 h-3.5 text-sky-400" />
+                <span>足球</span>
+              </button>
             </div>
           </div>
 
-          {/* 搜尋欄與控制項 (搜尋列修短，右方依序放置：賽季下拉選單、前往賽程圖示按鈕、重新整理按鈕) */}
-          <div className="flex flex-col gap-1.5 shrink-0">
-            <div className="flex items-center gap-1.5">
-              {/* 修短的搜尋框 */}
-              <div className="relative flex-1 min-w-[120px] max-w-[200px]">
-                <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  value={nhlSearchQuery}
-                  onChange={(e) => setNhlSearchQuery(e.target.value)}
-                  placeholder="搜尋球隊、城市、場地..."
-                  className="w-full pl-7 pr-10 py-1 bg-[#0f1219] border border-[#242b3b] rounded-lg text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500/50"
-                />
-                {nhlSearchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setNhlSearchQuery('')}
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-[10px] px-1"
-                  >
-                    清除
-                  </button>
-                )}
-              </div>
+          {/* ==================== 1. 冰球子分頁 (Hockey) ==================== */}
+          {sportsSubTab === 'hockey' && (
+            <>
+              {/* 搜尋欄與控制項 (搜尋列調闊，右方按鈕貼近邊界) */}
+              <div className="flex flex-col gap-1.5 shrink-0">
+                <div className="flex items-center gap-1.5 w-full">
+                  {/* 調闊的搜尋框 */}
+                  <div className="relative flex-1 min-w-[140px]">
+                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={nhlSearchQuery}
+                      onChange={(e) => setNhlSearchQuery(e.target.value)}
+                      placeholder="搜尋球隊、城市、場地..."
+                      className="w-full pl-7 pr-10 py-1 bg-[#0f1219] border border-[#242b3b] rounded-lg text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500/50"
+                    />
+                    {nhlSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setNhlSearchQuery('')}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-[10px] px-1"
+                      >
+                        清除
+                      </button>
+                    )}
+                  </div>
 
-              {/* 賽季下拉選單 (選項由近至遠，2026 - 2027 在最上方) */}
-              <div className="relative">
-                <select
-                  value={canucksSeason}
-                  onChange={(e) => {
-                    const nextSeason = e.target.value;
-                    setCanucksSeason(nextSeason);
-                    fetchCanucksSchedule(nextSeason, false);
-                  }}
-                  className="appearance-none bg-[#151922] text-gray-200 border border-[#283042] hover:border-sky-500/50 rounded-lg pl-2 pr-6 py-1 text-xs font-mono font-medium focus:outline-none focus:ring-1 focus:ring-sky-500/50 cursor-pointer"
-                  title="選擇賽季"
-                >
-                  {availableSeasons.map((s) => (
-                    <option key={s.code} value={s.code} className="bg-[#121620] text-gray-200">
-                      {s.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              </div>
+                  {/* 右方按鈕組 (貼近界面邊界) */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {/* 賽季下拉選單 (選項由近至遠，2026 - 2027 在最上方) */}
+                    <div className="relative">
+                      <select
+                        value={canucksSeason}
+                        onChange={(e) => {
+                          const nextSeason = e.target.value;
+                          setCanucksSeason(nextSeason);
+                          fetchCanucksSchedule(nextSeason, false);
+                        }}
+                        className="appearance-none bg-[#151922] text-gray-200 border border-[#283042] hover:border-sky-500/50 rounded-lg pl-2 pr-6 py-1 text-xs font-mono font-medium focus:outline-none focus:ring-1 focus:ring-sky-500/50 cursor-pointer"
+                        title="選擇賽季"
+                      >
+                        {availableSeasons.map((s) => (
+                          <option key={s.code} value={s.code} className="bg-[#121620] text-gray-200">
+                            {s.label}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
 
               {/* 官方日程連結圖示按鈕 (刪除英文 Canucks, nhl...) */}
               <a
@@ -7599,6 +7838,7 @@ function ExploreContent() {
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingNhl ? 'animate-spin text-sky-400' : ''}`} />
               </button>
             </div>
+          </div>
 
             {/* 主客場與比賽狀態篩選 (刪除「場地:」與「主場/客場」左方圖示，刪除「狀態:」冒號) */}
             <div className="flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar pb-0.5">
@@ -7960,6 +8200,410 @@ function ExploreContent() {
               </>
             )}
           </div>
+            </>
+          )}
+
+          {/* ==================== 2. 足球子分頁 (Whitecaps FC) ==================== */}
+          {sportsSubTab === 'soccer' && (
+            <>
+              {/* 搜尋欄與控制項 (搜尋列調闊，右方按鈕貼近邊界) */}
+              <div className="flex flex-col gap-1.5 shrink-0">
+                <div className="flex items-center gap-1.5 w-full">
+                  {/* 調闊的搜尋框 */}
+                  <div className="relative flex-1 min-w-[140px]">
+                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={whitecapsSearchQuery}
+                      onChange={(e) => setWhitecapsSearchQuery(e.target.value)}
+                      placeholder="搜尋對手、城市、球場..."
+                      className="w-full pl-7 pr-10 py-1 bg-[#0f1219] border border-[#242b3b] rounded-lg text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500/50"
+                    />
+                    {whitecapsSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setWhitecapsSearchQuery('')}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-[10px] px-1"
+                      >
+                        清除
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 右方按鈕組 (貼近界面邊界) */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {/* 賽季下拉選單 (選項由近至遠，選擇該賽季才呼叫 API) */}
+                    <div className="relative">
+                      <select
+                        value={whitecapsSeason}
+                        onChange={(e) => {
+                          const nextSeason = parseInt(e.target.value, 10);
+                          setWhitecapsSeason(nextSeason);
+                          fetchWhitecapsSchedule(nextSeason, false);
+                        }}
+                        className="appearance-none bg-[#151922] text-gray-200 border border-[#283042] hover:border-sky-500/50 rounded-lg pl-2 pr-6 py-1 text-xs font-mono font-medium focus:outline-none focus:ring-1 focus:ring-sky-500/50 cursor-pointer"
+                        title="選擇賽季"
+                      >
+                        {availableWhitecapsSeasons.map((s) => (
+                          <option key={s.year} value={s.year} className="bg-[#121620] text-gray-200">
+                            {s.label}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+
+                    {/* 官方日程連結圖示按鈕 */}
+                    <a
+                      href="https://www.whitecapsfc.com/schedule"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-1.5 rounded-lg bg-[#151922] hover:bg-sky-500/20 text-gray-400 hover:text-sky-300 border border-[#232838] hover:border-sky-500/40 transition-colors flex items-center justify-center cursor-pointer"
+                      title="開啟 Whitecaps 官方賽程表"
+                    >
+                      <Calendar className="w-3.5 h-3.5" />
+                    </a>
+
+                    {/* 重新整理快取按鈕 */}
+                    <button
+                      type="button"
+                      onClick={() => fetchWhitecapsSchedule(whitecapsSeason, true)}
+                      disabled={loadingWhitecaps}
+                      className="p-1.5 rounded-lg bg-[#151922] hover:bg-[#202738] text-gray-400 hover:text-white border border-[#232838] transition-colors flex items-center justify-center cursor-pointer"
+                      title="即時同步 Whitecaps 賽程資料"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${loadingWhitecaps ? 'animate-spin text-sky-400' : ''}`} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* 主客場與比賽狀態篩選 */}
+                <div className="flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar pb-0.5">
+                  <div className="flex items-center gap-1 shrink-0">
+                    {[
+                      { id: 'all', label: '全部' },
+                      { id: 'home', label: '主場' },
+                      { id: 'away', label: '客場' },
+                    ].map((f) => (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => setWhitecapsLocationFilter(f.id as any)}
+                        className={`px-2 py-0.5 text-[11px] rounded border transition-colors cursor-pointer ${
+                          whitecapsLocationFilter === f.id
+                            ? 'bg-sky-500/20 text-sky-300 border-sky-500/40 font-semibold'
+                            : 'bg-[#121620] text-gray-400 hover:text-gray-200 border-[#202738]'
+                        }`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="text-[10px] text-gray-400 mr-0.5">狀態</span>
+                    {[
+                      { id: 'all', label: '全部' },
+                      { id: 'future', label: '即將進行' },
+                      { id: 'final', label: '已結束' },
+                    ].map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setWhitecapsStatusFilter(s.id as any)}
+                        className={`px-2 py-0.5 text-[11px] rounded border transition-colors cursor-pointer ${
+                          whitecapsStatusFilter === s.id
+                            ? 'bg-blue-500/20 text-blue-300 border-blue-500/40 font-semibold'
+                            : 'bg-[#121620] text-gray-400 hover:text-gray-200 border-[#202738]'
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 表頭欄位標籤 (比賽日期/場地, 主場, -, 客場, 狀態) */}
+              <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0">
+                <div className="col-span-3 text-left">比賽日期/場地</div>
+                <div className="col-span-3 text-left">主場</div>
+                <div className="col-span-2 text-center font-bold text-gray-500">-</div>
+                <div className="col-span-3 text-right">客場</div>
+                <div className="col-span-1 text-center">狀態</div>
+              </div>
+
+              {/* 賽事列表 (清單方式顯示) */}
+              <div className="flex-1 overflow-y-auto space-y-2 pr-0.5 custom-scrollbar">
+                {loadingWhitecaps && whitecapsMatches.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16 text-gray-400 gap-2">
+                    <RefreshCw className="w-6 h-6 animate-spin text-sky-400" />
+                    <span className="text-xs">正在載入 MLS Whitecaps 官方賽季賽程...</span>
+                  </div>
+                ) : totalFilteredWhitecapsMatches === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16 text-gray-500 gap-1.5 text-xs">
+                    <SoccerBallIcon className="w-8 h-8 text-gray-600 mb-1" />
+                    <span>查無符合篩選條件的足球賽事</span>
+                    {whitecapsSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setWhitecapsSearchQuery('')}
+                        className="text-sky-400 hover:underline text-[11px] mt-1"
+                      >
+                        清除搜尋條件
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    {/* 1. 即將到來／進行中的足球賽事 (依時間由近至遠順序排列) */}
+                    {upcomingWhitecapsMatches.length > 0 && (
+                      <div className="space-y-1.5">
+                        {upcomingWhitecapsMatches.map((m) => {
+                          const isHomeVan = m.home_team_id === 'MLS-CLU-00000C' || (m.home_team_name || '').includes('Vancouver');
+                          const isAwayVan = m.away_team_id === 'MLS-CLU-00000C' || (m.away_team_name || '').includes('Vancouver');
+                          const isLive = m.match_status === 'live' || m.match_status === 'inProgress';
+                          const hasScore = m.match_scheduled === true || (m.home_team_goals !== undefined && m.home_team_goals !== null);
+
+                          let statusText = '未開始';
+                          let statusClass = 'bg-sky-500/10 text-sky-300 border-sky-500/30';
+                          if (isLive) {
+                            statusText = '進行中';
+                            statusClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 animate-pulse font-bold';
+                          }
+
+                          let dateDisplay = '--';
+                          let timeDisplay = '';
+                          if (m.planned_kickoff_time) {
+                            try {
+                              const dt = new Date(m.planned_kickoff_time);
+                              if (!isNaN(dt.getTime())) {
+                                dateDisplay = dt.toLocaleDateString('en-CA', {
+                                  timeZone: 'Etc/GMT+7',
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit'
+                                });
+                                timeDisplay = dt.toLocaleTimeString('en-US', {
+                                  timeZone: 'Etc/GMT+7',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  hour12: timeFormat === '12h'
+                                });
+                              }
+                            } catch {}
+                          }
+
+                          return (
+                            <div
+                              key={m.match_id || m.planned_kickoff_time}
+                              className={`relative px-3 py-2.5 rounded-xl border transition-all ${
+                                isHomeVan
+                                  ? 'bg-[#131926]/90 hover:bg-[#182030] border-[#222d42]'
+                                  : 'bg-[#11141c]/80 hover:bg-[#161a24] border-[#1e2433]'
+                              } text-xs flex flex-col gap-1`}
+                            >
+                              <div className="grid grid-cols-12 gap-1 items-center">
+                                {/* 1. 比賽日期/場地 / 時長 */}
+                                <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                  <div className="font-mono font-bold text-white text-[11px]">
+                                    {dateDisplay}
+                                  </div>
+                                  {timeDisplay && (
+                                    <div className="text-[10px] text-sky-400 font-mono mt-0.5">
+                                      {timeDisplay}
+                                    </div>
+                                  )}
+                                  {m.stadium_name && (
+                                    <div className="text-[9.5px] text-gray-400 truncate mt-0.5" title={m.stadium_name}>
+                                      {m.stadium_name}
+                                    </div>
+                                  )}
+                                  {m.minute_of_play && (
+                                    <div className="text-[9px] text-amber-400 font-mono mt-0.5">
+                                      {m.minute_of_play}'
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* 2. 主場：隊名 / (城市或縮寫) */}
+                                <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0">
+                                  <div className="flex flex-col min-w-0 leading-tight">
+                                    <span className={`text-[11.5px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                      {m.home_team_name || '--'}
+                                    </span>
+                                    {(m.home_team_short_name || m.home_team_three_letter_code) && (
+                                      <span className="text-[9.5px] text-gray-400 truncate">
+                                        ({m.home_team_short_name || m.home_team_three_letter_code})
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* 3. 比分 */}
+                                <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                  <span className="font-black text-sm text-white w-5 text-right">
+                                    {hasScore ? m.home_team_goals : '--'}
+                                  </span>
+                                  <span className="font-bold text-gray-500 text-xs">-</span>
+                                  <span className="font-black text-sm text-white w-5 text-left">
+                                    {hasScore ? m.away_team_goals : '--'}
+                                  </span>
+                                </div>
+
+                                {/* 4. 客場：隊名 / (城市或縮寫) */}
+                                <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                                  <div className="flex flex-col items-end min-w-0 leading-tight">
+                                    <span className={`text-[11.5px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                      {m.away_team_name || '--'}
+                                    </span>
+                                    {(m.away_team_short_name || m.away_team_three_letter_code) && (
+                                      <span className="text-[9.5px] text-gray-400 truncate">
+                                        ({m.away_team_short_name || m.away_team_three_letter_code})
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* 5. 狀態 */}
+                                <div className="col-span-1 flex items-center justify-center">
+                                  <span className={`text-[9px] px-1 py-0.5 rounded border font-medium whitespace-nowrap ${statusClass}`}>
+                                    {statusText}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* 2. 過去已結束的足球賽事：清單底部的摺疊清單 */}
+                    {pastWhitecapsMatches.length > 0 && (
+                      <div className="pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowPastWhitecapsAccordion((v) => !v)}
+                          className="w-full px-3 py-2 rounded-xl bg-[#121620] hover:bg-[#181d2a] border border-[#232b3b] flex items-center justify-between text-xs text-gray-300 hover:text-white transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-gray-300">
+                              已結束賽事
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-gray-800 text-gray-300 font-mono">
+                              {pastWhitecapsMatches.length} 場
+                            </span>
+                          </div>
+                          <div className="flex items-center text-sky-400">
+                            {showPastWhitecapsAccordion ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          </div>
+                        </button>
+
+                        {showPastWhitecapsAccordion && (
+                          <div className="mt-2 space-y-1.5 opacity-90">
+                            {pastWhitecapsMatches.map((m) => {
+                              const isHomeVan = m.home_team_id === 'MLS-CLU-00000C' || (m.home_team_name || '').includes('Vancouver');
+                              const isAwayVan = m.away_team_id === 'MLS-CLU-00000C' || (m.away_team_name || '').includes('Vancouver');
+                              let dateDisplay = '--';
+                              if (m.planned_kickoff_time) {
+                                try {
+                                  const dt = new Date(m.planned_kickoff_time);
+                                  if (!isNaN(dt.getTime())) {
+                                    dateDisplay = dt.toLocaleDateString('en-CA', {
+                                      timeZone: 'Etc/GMT+7',
+                                      year: 'numeric',
+                                      month: '2-digit',
+                                      day: '2-digit'
+                                    });
+                                  }
+                                } catch {}
+                              }
+
+                              return (
+                                <div
+                                  key={m.match_id || m.planned_kickoff_time}
+                                  className={`px-3 py-2.5 rounded-xl border transition-all ${
+                                    isHomeVan
+                                      ? 'bg-[#111622]/80 hover:bg-[#161c2a] border-[#1e2638]'
+                                      : 'bg-[#0f121a]/70 hover:bg-[#141822] border-[#1a202e]'
+                                  } text-xs flex flex-col gap-1`}
+                                >
+                                  <div className="grid grid-cols-12 gap-1 items-center">
+                                    {/* 1. 比賽日期/場地 / 時長 */}
+                                    <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                      <div className="font-mono font-medium text-gray-300 text-[11px]">
+                                        {dateDisplay}
+                                      </div>
+                                      {m.stadium_name && (
+                                        <div className="text-[9.5px] text-gray-500 truncate mt-0.5" title={m.stadium_name}>
+                                          {m.stadium_name}
+                                        </div>
+                                      )}
+                                      {m.minute_of_play && (
+                                        <div className="text-[9px] text-gray-500 font-mono mt-0.5">
+                                          {m.minute_of_play}'
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {/* 2. 主場 */}
+                                    <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0">
+                                      <div className="flex flex-col min-w-0 leading-tight">
+                                        <span className={`text-[11px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                          {m.home_team_name || '--'}
+                                        </span>
+                                        {(m.home_team_short_name || m.home_team_three_letter_code) && (
+                                          <span className="text-[9.5px] text-gray-500 truncate">
+                                            ({m.home_team_short_name || m.home_team_three_letter_code})
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {/* 3. 比分 */}
+                                    <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                      <span className="font-black text-sm text-white w-5 text-right">
+                                        {m.home_team_goals ?? '--'}
+                                      </span>
+                                      <span className="font-bold text-gray-600 text-xs">-</span>
+                                      <span className="font-black text-sm text-white w-5 text-left">
+                                        {m.away_team_goals ?? '--'}
+                                      </span>
+                                    </div>
+
+                                    {/* 4. 客場 */}
+                                    <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                                      <div className="flex flex-col items-end min-w-0 leading-tight">
+                                        <span className={`text-[11px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                          {m.away_team_name || '--'}
+                                        </span>
+                                        {(m.away_team_short_name || m.away_team_three_letter_code) && (
+                                          <span className="text-[9.5px] text-gray-500 truncate">
+                                            ({m.away_team_short_name || m.away_team_three_letter_code})
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {/* 5. 狀態 */}
+                                    <div className="col-span-1 flex items-center justify-center">
+                                      <span className="text-[9px] px-1 py-0.5 rounded border font-medium whitespace-nowrap bg-gray-800/60 text-gray-400 border-gray-700/50">
+                                        已完成
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -9455,10 +10099,11 @@ function ExploreContent() {
             <span>共有 {filteredEvents.length} 項活動資料</span>
           )}
           {activeTab === 'sports' && (
-            <>
-              <span>共有 {nhlGames.length} 場 Canucks 賽事 (符合條件 {totalFilteredNhlGames} 場)</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：National Hockey League</span>
-            </>
+            <span>
+              {sportsSubTab === 'hockey'
+                ? `共有 ${nhlGames.length} 場 Canucks 賽事 (符合條件 ${totalFilteredNhlGames} 場)`
+                : `共有 ${whitecapsMatches.length} 場 Whitecaps 賽事 (符合條件 ${totalFilteredWhitecapsMatches} 場)`}
+            </span>
           )}
           {activeTab === 'beach' && (
             <>
@@ -9484,9 +10129,6 @@ function ExploreContent() {
           )}
           {activeTab === 'shopping' && (
             <span className="text-[9.5px] text-gray-500">資料來源：T&T Supermarket</span>
-          )}
-          {activeTab === 'lottery' && (
-            <span className="text-[9.5px] text-gray-500">資料來源：PlayNow (BC Lottery Corporation - BCLC) • 每 12 小時自動更新</span>
           )}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>

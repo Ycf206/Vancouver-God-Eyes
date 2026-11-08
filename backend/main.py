@@ -1386,6 +1386,12 @@ async def startup_event():
         print(f"Failed to start sports_service task: {e}")
 
     try:
+        import whitecaps_service
+        asyncio.create_task(whitecaps_service.run_whitecaps_background_loop())
+    except Exception as e:
+        print(f"Failed to start whitecaps_service task: {e}")
+
+    try:
         import lottery_service
         asyncio.create_task(lottery_service.run_lottery_background_loop())
     except Exception as e:
@@ -1508,6 +1514,40 @@ def get_sports_available_seasons():
     except Exception as e:
         print(f"Error serving available seasons: {e}")
         return {"currentSeason": "20262027", "seasons": []}
+
+@app.get("/api/sports/whitecaps-schedule")
+def get_sports_whitecaps_schedule(year: Optional[int] = None, refresh: bool = False, force: bool = False):
+    """
+    獲取 MLS Vancouver Whitecaps 官方足球賽季賽程表 (原子磁碟快取，0ms 極速無卡頓)。
+    """
+    try:
+        import whitecaps_service
+        data = whitecaps_service.fetch_whitecaps_schedule(year=year, force=(refresh or force))
+        return JSONResponse(
+            content=data or {"success": False, "matches": []},
+            headers={"Cache-Control": "public, max-age=300, stale-while-revalidate=600"}
+        )
+    except Exception as e:
+        print(f"Error serving whitecaps schedule: {e}")
+        return JSONResponse(
+            content={"success": False, "matches": [], "error": str(e)},
+            status_code=500
+        )
+
+@app.get("/api/sports/whitecaps-seasons")
+def get_sports_whitecaps_seasons():
+    """
+    取得 MLS Whitecaps 可用賽季下拉選單清單 (由近至遠)。
+    """
+    try:
+        import whitecaps_service
+        return {
+            "currentSeason": whitecaps_service.get_current_whitecaps_season(),
+            "seasons": whitecaps_service.get_available_whitecaps_seasons()
+        }
+    except Exception as e:
+        print(f"Error serving available whitecaps seasons: {e}")
+        return {"currentSeason": 2026, "seasons": []}
 
 @app.get("/api/lottery/latest")
 def get_lottery_latest(refresh: bool = False, force: bool = False):
@@ -4793,6 +4833,13 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["sports_canucks"] = time.time()
         cnt = data.get("totalGames") or len(data.get("games", []))
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 NHL 官方 Vancouver Canucks {cur_s} 賽季賽程，共 {cnt} 場賽事。")
+    if sid in ("sports_whitecaps", "whitecaps_schedule"):
+        import whitecaps_service
+        cur_y = whitecaps_service.get_current_whitecaps_season()
+        data = whitecaps_service.fetch_whitecaps_schedule(cur_y, force=True)
+        _oci_runtime_ts["sports_whitecaps"] = time.time()
+        cnt = data.get("totalMatches") or len(data.get("matches", []))
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 MLS 官方 Vancouver Whitecaps {cur_y} 賽季賽程，共 {cnt} 場賽事。")
     if sid in ("lottery_latest", "lottery"):
         import lottery_service
         data = lottery_service.fetch_lottery_latest(force=True)

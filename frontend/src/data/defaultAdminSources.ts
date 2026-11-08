@@ -284,6 +284,32 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "source_url": "https://api-web.nhle.com/v1/club-schedule-season/VAN/20262027"
   },
   {
+    "id": "whitecaps_schedule",
+    "name": "MLS 溫哥華白浪足球賽程",
+    "type": "api",
+    "cron_expr": "0 14 * * *",
+    "schedule_interval": "每日",
+    "record_count": 88,
+    "unit": "場 Whitecaps 足球賽程",
+    "last_updated": "2026-11-08T00:00:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "MLS 官方 Stats API (matches/seasons) -> 自動動態解析 Vancouver Whitecaps 賽季排程、主客場對戰、比分、場地與進行時長 -> 每日更新 1 次快取 -> 支援探索體育足球分頁 0ms 即時檢視",
+    "runner": "oci",
+    "category": "生活",
+    "workflow_file": null,
+    "source_links": [
+      {
+        "label": "MLS 官方賽程 API",
+        "url": "https://stats-api.mlssoccer.com/matches/seasons/MLS-SEA-0001KA?match_date[gte]=2026-01-01&match_date[lte]=2026-12-31&team_id=MLS-CLU-00000C&per_page=120&sort=planned_kickoff_time:asc,home_team_name:asc"
+      },
+      {
+        "label": "Whitecaps 官方賽程網",
+        "url": "https://www.whitecapsfc.com/schedule"
+      }
+    ],
+    "source_url": "https://stats-api.mlssoccer.com/matches/seasons/MLS-SEA-0001KA?match_date[gte]=2026-01-01&match_date[lte]=2026-12-31&team_id=MLS-CLU-00000C&per_page=120&sort=planned_kickoff_time:asc,home_team_name:asc"
+  },
+  {
     "id": "lottery_latest",
     "name": "PlayNow 彩票開彩結果",
     "type": "api",
