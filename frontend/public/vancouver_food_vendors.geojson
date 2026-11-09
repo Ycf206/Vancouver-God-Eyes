@@ -1,8 +1,8 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
-  "total_count": 6,
-  "updated_at": "2026-11-08T12:54:12.659Z",
+  "total_count": 7,
+  "updated_at": "2026-11-09T15:28:39.915Z",
   "features": [
     {
       "type": "Feature",
@@ -10,17 +10,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.030974,
-          49.206493
+          -123.115931,
+          49.23516
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_1",
         "facility_type": "food_vendors",
-        "name": "Babb D Thai Food",
-        "business_name": "Babb D Thai Food",
-        "address": "River District Town Centre, 8558 River District Cross, Vancouver, BC",
-        "hours": "11 AM – 7 PM",
+        "name": "Armanmobile STEAMWORKS",
+        "business_name": "Armanmobile STEAMWORKS",
+        "address": "5516 Cambie St., Vancouver",
+        "hours": "9 AM – 9 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -32,17 +32,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.161777,
-          49.26212
+          -123.106352,
+          49.27141
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_2",
         "facility_type": "food_vendors",
-        "name": "Crack On",
-        "business_name": "Crack On",
-        "address": "Kitsilano Farmers Market, 2690 Larch St, Vancouver, BC",
-        "hours": "10 AM – 2 PM",
+        "name": "BC The Mad Greek",
+        "business_name": "BC The Mad Greek",
+        "address": "1600 Manitoba St, Vancouver, BC",
+        "hours": "11 AM – 7 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -54,17 +54,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.078664,
-          49.282208
+          -123.044216,
+          49.259704
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_3",
         "facility_type": "food_vendors",
-        "name": "Disco Cheetah Korean Bowl",
-        "business_name": "Disco Cheetah Korean Bowl",
-        "address": "Container Brewing Ltd., 1216 Franklin St, Vancouver",
-        "hours": "1 PM – 7 PM",
+        "name": "Miss Siam",
+        "business_name": "Miss Siam",
+        "address": "Broadway Tech Centre",
+        "hours": "11 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -76,17 +76,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.16417,
-          49.262245
+          -123.090515,
+          49.267318
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_4",
         "facility_type": "food_vendors",
-        "name": "Indish",
-        "business_name": "Indish",
-        "address": "Kitsilano Winter market",
-        "hours": "10 AM – 2 PM",
+        "name": "arturosmexico2go",
+        "business_name": "arturosmexico2go",
+        "address": "Centre for Digital Media, 577 Great Northern Way (west side of the building)",
+        "hours": "11:30 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -120,17 +120,39 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.157335,
-          49.268244
+          -123.128023,
+          49.203243
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_6",
         "facility_type": "food_vendors",
+        "name": "Meet2Eat",
+        "business_name": "Meet2Eat",
+        "address": "9015 Shaughnessy St, Vancouver",
+        "hours": "8:45 AM – 4 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_7",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120867,
+          49.244489
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_7",
+        "facility_type": "food_vendors",
         "name": "Planted Love",
         "business_name": "Planted Love",
-        "address": "2239 W 4th Ave, Vancouver, BC",
-        "hours": "11 AM – 7 PM",
+        "address": "Women&#039;s BC Hospital, 693 W 30th Ave, Vancouver",
+        "hours": "11 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
