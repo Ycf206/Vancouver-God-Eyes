@@ -1,6 +1,6 @@
 {
-  "_cache_timestamp": 1794169631.855867,
-  "updated_at": "2026-11-08 20:27 UTC",
+  "_cache_timestamp": 1794187704.6427326,
+  "updated_at": "2026-11-09 01:28 UTC",
   "update_frequency": "每 1 日更新 (Daily)",
   "count": 3,
   "resorts": [
@@ -36,9 +36,9 @@
         "day": "Sun",
         "date": "08.11.2026",
         "temp_min": "-3",
-        "temp_max": "4",
+        "temp_max": "3",
         "condition": "sunny",
-        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 4 Grad."
+        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -74,9 +74,9 @@
         "day": "Sun",
         "date": "08.11.2026",
         "temp_min": "-3",
-        "temp_max": "4",
+        "temp_max": "3",
         "condition": "sunny",
-        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 4 Grad."
+        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -112,9 +112,9 @@
         "day": "Sun",
         "date": "08.11.2026",
         "temp_min": "-3",
-        "temp_max": "4",
+        "temp_max": "3",
         "condition": "sunny",
-        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 4 Grad."
+        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     }

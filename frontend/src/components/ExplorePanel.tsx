@@ -12,7 +12,8 @@ import { Landmark,
   Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign,
   PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle,
   Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
-  Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy, Ticket
+  Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy, Ticket,
+  CircleChevronLeft, CircleChevronRight, Globe, BarChart2
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
@@ -81,6 +82,32 @@ export interface WhitecapsMatchItem {
   home_team_goals?: number;
   match_status?: string;
   minute_of_play?: string;
+}
+
+export interface BanditsGameItem {
+  id?: number;
+  home_team_id?: number;
+  home_team_name?: string;
+  home_team_logo_url?: string;
+  home_team_stats_url_en?: string;
+  home_team_stats_url_fr?: string;
+  away_team_id?: number;
+  away_team_name?: string;
+  away_team_logo_url?: string;
+  away_team_stats_url_en?: string;
+  away_team_stats_url_fr?: string;
+  home_team_score?: number | null;
+  away_team_score?: number | null;
+  start_time_utc?: string;
+  venue_name?: string;
+  tickets_url_en?: string;
+  tickets_url_fr?: string;
+  stats_url_en?: string;
+  stats_url_fr?: string;
+  cebl_stats_url_en?: string;
+  competition?: string;
+  status?: string;
+  period?: string | null;
 }
 
 export interface NHLGameItem {
@@ -1256,8 +1283,8 @@ function ExploreContent() {
   const [eventsFilter, setEventsFilter] = useState<'all' | 'daily_hive' | 'eventbrite' | 'destination_vancouver'>('all');
   const [eventsSearchQuery, setEventsSearchQuery] = useState('');
 
-  // --- Sports (Canucks Hockey & Whitecaps Soccer) tab states ---
-  const [sportsSubTab, setSportsSubTab] = useState<'hockey' | 'soccer'>('hockey');
+  // --- Sports (Canucks Hockey, Whitecaps Soccer & Bandits Basketball) tab states ---
+  const [sportsSubTab, setSportsSubTab] = useState<'hockey' | 'soccer' | 'basketball'>('hockey');
   const [canucksSeason, setCanucksSeason] = useState<string>('20262027');
   const [availableSeasons, setAvailableSeasons] = useState<Array<{ code: string; label: string }>>([
     { code: '20262027', label: '2026 - 2027' },
@@ -1294,6 +1321,25 @@ function ExploreContent() {
   const [whitecapsLocationFilter, setWhitecapsLocationFilter] = useState<'all' | 'home' | 'away'>('all');
   const [whitecapsStatusFilter, setWhitecapsStatusFilter] = useState<'all' | 'future' | 'final'>('all');
   const [showPastWhitecapsAccordion, setShowPastWhitecapsAccordion] = useState<boolean>(false);
+
+  // --- Bandits Basketball states ---
+  const [banditsSeason, setBanditsSeason] = useState<number>(2026);
+  const [availableBanditsSeasons, setAvailableBanditsSeasons] = useState<Array<{ year: number; label: string }>>([
+    { year: 2027, label: '2027 賽季' },
+    { year: 2026, label: '2026 賽季' },
+    { year: 2025, label: '2025 賽季' },
+    { year: 2024, label: '2024 賽季' },
+    { year: 2023, label: '2023 賽季' },
+    { year: 2022, label: '2022 賽季' },
+    { year: 2021, label: '2021 賽季' },
+    { year: 2020, label: '2020 賽季' },
+  ]);
+  const [banditsGames, setBanditsGames] = useState<BanditsGameItem[]>([]);
+  const [loadingBandits, setLoadingBandits] = useState<boolean>(false);
+  const [banditsSearchQuery, setBanditsSearchQuery] = useState<string>('');
+  const [banditsLocationFilter, setBanditsLocationFilter] = useState<'all' | 'home' | 'away'>('all');
+  const [banditsStatusFilter, setBanditsStatusFilter] = useState<'all' | 'future' | 'final'>('all');
+  const [showPastBanditsAccordion, setShowPastBanditsAccordion] = useState<boolean>(false);
 
   // --- 彩票 / PlayNow Lottery States ---
   const [lotterySubTab, setLotterySubTab] = useState<'SIX49' | 'BC49' | 'LMAX' | 'DGRD'>('SIX49');
@@ -2927,6 +2973,41 @@ function ExploreContent() {
     }
   }, []);
 
+  // 6.1c Fetch Bandits Basketball Schedule (CEBL 官方 API，每日更新 1 次，5月~8月)
+  const fetchBanditsSchedule = React.useCallback(async (y: number, force = false) => {
+    setLoadingBandits(true);
+    try {
+      const apiUrl = getApiUrl();
+      const endpoints = [
+        `/api/sports/bandits-schedule?year=${y}${force ? '&refresh=true' : ''}`,
+        `${apiUrl}/api/sports/bandits-schedule?year=${y}${force ? '&refresh=true' : ''}`,
+        `/vancouver_bandits_schedule_${y}.json`
+      ];
+      let loaded = false;
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.games) && data.games.length > 0) {
+              setBanditsGames(data.games);
+              loaded = true;
+              break;
+            }
+          }
+        } catch {}
+      }
+      if (!loaded && force) {
+        console.warn(`[Bandits] 暫無 ${y} 賽季賽程記錄`);
+      }
+    } catch (err) {
+      console.error('Error fetching Bandits schedule:', err);
+    } finally {
+      setLoadingBandits(false);
+    }
+  }, []);
+
+  // 6.1d Trigger fetching sports data based on active sports tab
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'sports') return;
     if (sportsSubTab === 'soccer') {
@@ -2946,8 +3027,25 @@ function ExploreContent() {
       };
       fetchWhitecapsSeasons();
       fetchWhitecapsSchedule(whitecapsSeason, false);
+    } else if (sportsSubTab === 'basketball') {
+      const fetchBanditsSeasons = async () => {
+        try {
+          const res = await fetch('/api/sports/bandits-seasons');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.seasons) && data.seasons.length > 0) {
+              setAvailableBanditsSeasons(data.seasons);
+            }
+            if (data.currentSeason) {
+              setBanditsSeason((prev) => prev || data.currentSeason);
+            }
+          }
+        } catch {}
+      };
+      fetchBanditsSeasons();
+      fetchBanditsSchedule(banditsSeason, false);
     }
-  }, [isExploreOpen, activeTab, sportsSubTab, whitecapsSeason, fetchWhitecapsSchedule]);
+  }, [isExploreOpen, activeTab, sportsSubTab, whitecapsSeason, fetchWhitecapsSchedule, banditsSeason, fetchBanditsSchedule]);
 
   // 6.2 Fetch PlayNow Lottery Data (每 12 小時更新一次)
   const fetchLotteryData = React.useCallback(async (force = false) => {
@@ -3129,6 +3227,84 @@ function ExploreContent() {
       totalFilteredWhitecapsMatches: list.length
     };
   }, [whitecapsMatches, whitecapsSearchQuery, whitecapsLocationFilter, whitecapsStatusFilter]);
+
+  // Separate Bandits basketball games into Upcoming vs Past Completed games, with filter & search
+  const { upcomingBanditsGames, pastBanditsGames, totalFilteredBanditsGames } = useMemo(() => {
+    let list = banditsGames || [];
+
+    if (banditsSearchQuery.trim()) {
+      const q = banditsSearchQuery.trim().toLowerCase();
+      list = list.filter((g) => {
+        const homeName = (g.home_team_name || '').toLowerCase();
+        const awayName = (g.away_team_name || '').toLowerCase();
+        const venue = (g.venue_name || '').toLowerCase();
+        const comp = (g.competition || '').toLowerCase();
+        return (
+          homeName.includes(q) ||
+          awayName.includes(q) ||
+          venue.includes(q) ||
+          comp.includes(q)
+        );
+      });
+    }
+
+    if (banditsLocationFilter === 'home') {
+      list = list.filter((g) => g.home_team_id === 16 || (g.home_team_name || '').includes('Bandits'));
+    } else if (banditsLocationFilter === 'away') {
+      list = list.filter((g) => g.away_team_id === 16 || (g.away_team_name || '').includes('Bandits'));
+    }
+
+    const now = Date.now();
+    const upcoming: BanditsGameItem[] = [];
+    const past: BanditsGameItem[] = [];
+
+    list.forEach((g) => {
+      let isFinal = false;
+      const statusLower = (g.status || '').toLowerCase();
+      if (
+        statusLower === 'final' ||
+        statusLower === 'completed' ||
+        statusLower === 'post' ||
+        (g.home_team_score !== null && g.home_team_score !== undefined && g.away_team_score !== null && g.away_team_score !== undefined)
+      ) {
+        isFinal = true;
+      } else if (g.start_time_utc) {
+        const ts = new Date(g.start_time_utc).getTime();
+        if (!isNaN(ts) && ts < now - 4 * 3600 * 1000) {
+          isFinal = true;
+        }
+      }
+
+      if (banditsStatusFilter === 'future' && isFinal) return;
+      if (banditsStatusFilter === 'final' && !isFinal) return;
+
+      if (isFinal) {
+        past.push(g);
+      } else {
+        upcoming.push(g);
+      }
+    });
+
+    // Upcoming games: sorted near to far (asc)
+    upcoming.sort((a, b) => {
+      const tA = a.start_time_utc ? new Date(a.start_time_utc).getTime() : 0;
+      const tB = b.start_time_utc ? new Date(b.start_time_utc).getTime() : 0;
+      return tA - tB;
+    });
+
+    // Past games: sorted most recent first (desc)
+    past.sort((a, b) => {
+      const tA = a.start_time_utc ? new Date(a.start_time_utc).getTime() : 0;
+      const tB = b.start_time_utc ? new Date(b.start_time_utc).getTime() : 0;
+      return tB - tA;
+    });
+
+    return {
+      upcomingBanditsGames: upcoming,
+      pastBanditsGames: past,
+      totalFilteredBanditsGames: list.length
+    };
+  }, [banditsGames, banditsSearchQuery, banditsLocationFilter, banditsStatusFilter]);
 
   const formatNewsTime = (timestamp?: number, rawDate?: string) => {
     const ts = timestamp || (rawDate ? new Date(rawDate).getTime() : 0);
@@ -6979,14 +7155,14 @@ function ExploreContent() {
                                   <>
                                     <Sparkles className="w-4 h-4 text-amber-400" />
                                     <span className="text-amber-300">
-                                      金球開彩專屬號碼 (抽中金球 • 獲得金球頭獎 ${gp.goldBallPrizeAmount ? gp.goldBallPrizeAmount.toLocaleString() : '36,000,000'})
+                                      金球開彩專屬號碼
                                     </span>
                                   </>
                                 ) : (
                                   <>
                                     <span className="w-3 h-3 rounded-full bg-white shadow-sm shrink-0"></span>
                                     <span className="text-slate-100">
-                                      開彩專屬號碼 (抽中白球 • 獲得白球獎金 ${gp.whiteBallPrizeAmount ? gp.whiteBallPrizeAmount.toLocaleString() : '1,000,000'})
+                                      開彩專屬號碼
                                     </span>
                                   </>
                                 )}
@@ -7008,7 +7184,7 @@ function ExploreContent() {
                             </span>
                             <div className="flex items-center justify-between pt-1 border-t border-gray-800 text-[11px]">
                               <span className="text-gray-400">白球獎金</span>
-                              <span className="font-mono font-bold text-emerald-400">
+                              <span className="font-mono font-bold text-white">
                                 ${gp.whiteBallPrizeAmount ? gp.whiteBallPrizeAmount.toLocaleString() : '1,000,000'}
                               </span>
                             </div>
@@ -7763,6 +7939,20 @@ function ExploreContent() {
                 <SoccerBallIcon className="w-3.5 h-3.5 text-sky-400" />
                 <span>足球</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setSportsSubTab('basketball')}
+                className={`flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg font-semibold transition-all cursor-pointer ${
+                  sportsSubTab === 'basketball'
+                    ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-sm'
+                    : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838]'
+                }`}
+                title="籃球賽程 (Vancouver Bandits)"
+              >
+                <Globe className="w-3.5 h-3.5 text-sky-400" />
+                <span>籃球</span>
+              </button>
             </div>
           </div>
 
@@ -7795,26 +7985,64 @@ function ExploreContent() {
 
                   {/* 右方按鈕組 (貼近界面邊界) */}
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {/* 賽季下拉選單 (選項由近至遠，2026 - 2027 在最上方) */}
-                    <div className="relative">
-                      <select
-                        value={canucksSeason}
-                        onChange={(e) => {
-                          const nextSeason = e.target.value;
-                          setCanucksSeason(nextSeason);
-                          fetchCanucksSchedule(nextSeason, false);
-                        }}
-                        className="appearance-none bg-[#151922] text-gray-200 border border-[#283042] hover:border-sky-500/50 rounded-lg pl-2 pr-6 py-1 text-xs font-mono font-medium focus:outline-none focus:ring-1 focus:ring-sky-500/50 cursor-pointer"
-                        title="選擇賽季"
-                      >
-                        {availableSeasons.map((s) => (
-                          <option key={s.code} value={s.code} className="bg-[#121620] text-gray-200">
-                            {s.label}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    </div>
+                    {/* 年份選擇工具 (包含左右按鈕，回到上一年 / 去下一年) */}
+                    {(() => {
+                      const curIdx = availableSeasons.findIndex((s) => s.code === canucksSeason);
+                      const activeIdx = curIdx >= 0 ? curIdx : 0;
+                      return (
+                        <div className="flex items-center gap-0.5 bg-[#151922] border border-[#283042] rounded-lg p-0.5">
+                          <button
+                            type="button"
+                            disabled={activeIdx >= availableSeasons.length - 1}
+                            onClick={() => {
+                              if (activeIdx < availableSeasons.length - 1) {
+                                const next = availableSeasons[activeIdx + 1].code;
+                                setCanucksSeason(next);
+                                fetchCanucksSchedule(next, false);
+                              }
+                            }}
+                            className="p-1 rounded text-gray-400 hover:text-sky-300 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                            title="回到上一年"
+                          >
+                            <CircleChevronLeft className="w-3.5 h-3.5" />
+                          </button>
+                          <div className="relative px-1 font-mono text-xs font-semibold text-gray-200">
+                            <select
+                              value={canucksSeason}
+                              onChange={(e) => {
+                                const nextSeason = e.target.value;
+                                setCanucksSeason(nextSeason);
+                                fetchCanucksSchedule(nextSeason, false);
+                              }}
+                              className="appearance-none bg-transparent text-gray-200 cursor-pointer pr-4 focus:outline-none"
+                              title="選擇賽季"
+                            >
+                              {availableSeasons.map((s) => (
+                                <option key={s.code} value={s.code} className="bg-[#121620] text-gray-200">
+                                  {s.label}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className="w-2.5 h-2.5 text-gray-500 absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                          <button
+                            type="button"
+                            disabled={activeIdx <= 0}
+                            onClick={() => {
+                              if (activeIdx > 0) {
+                                const next = availableSeasons[activeIdx - 1].code;
+                                setCanucksSeason(next);
+                                fetchCanucksSchedule(next, false);
+                              }
+                            }}
+                            className="p-1 rounded text-gray-400 hover:text-sky-300 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                            title="去下一年"
+                          >
+                            <CircleChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })()}
 
               {/* 官方日程連結圖示按鈕 (刪除英文 Canucks, nhl...) */}
               <a
@@ -7887,13 +8115,12 @@ function ExploreContent() {
             </div>
           </div>
 
-          {/* 表頭欄位標籤 (比賽日期/場地, 主隊, -, 客隊, 狀態) */}
+          {/* 表頭欄位標籤 (比賽日期/場地, 主隊, -, 客隊) - 刪除狀態 */}
           <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0 pr-7">
             <div className="col-span-3 text-left">比賽日期/場地</div>
-            <div className="col-span-3 text-left">主隊</div>
+            <div className="col-span-3.5 text-left">主隊</div>
             <div className="col-span-2 text-center font-bold text-gray-500">-</div>
-            <div className="col-span-3 text-right">客隊</div>
-            <div className="col-span-1 text-center">狀態</div>
+            <div className="col-span-3.5 text-right">客隊</div>
           </div>
 
           {/* 賽事列表 (清單方式顯示) */}
@@ -7940,14 +8167,19 @@ function ExploreContent() {
                         statusClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
                       }
 
-                      // 時間格式化 (轉為當地 PCT 時間)
+                      // 日期與時間格式化 (跟隨系統時區設定)
+                      let dateDisplay = game.gameDate;
                       let timeDisplay = '';
                       if (game.startTimeUTC) {
                         try {
                           const dt = new Date(game.startTimeUTC);
                           if (!isNaN(dt.getTime())) {
-                            timeDisplay = dt.toLocaleTimeString('en-US', {
-                              timeZone: 'Etc/GMT+7',
+                            dateDisplay = dt.toLocaleDateString(undefined, {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit'
+                            });
+                            timeDisplay = dt.toLocaleTimeString(undefined, {
                               hour: '2-digit',
                               minute: '2-digit',
                               hour12: timeFormat === '12h'
@@ -7982,7 +8214,7 @@ function ExploreContent() {
                             {/* 1. 比賽日期/場地 (第 1 欄) */}
                             <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
                               <div className="font-mono font-bold text-white text-[11px]">
-                                {game.gameDate}
+                                {dateDisplay}
                               </div>
                               {timeDisplay && (
                                 <div className="text-[10px] text-sky-400 font-mono mt-0.5">
@@ -7997,7 +8229,7 @@ function ExploreContent() {
                             </div>
 
                             {/* 2. 主隊：Logo(橫跨2列) + 隊名 / (城市) */}
-                            <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0">
+                            <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
                               {game.homeTeam?.logo && (
                                 <img
                                   src={game.homeTeam.logo}
@@ -8007,7 +8239,7 @@ function ExploreContent() {
                                 />
                               )}
                               <div className="flex flex-col min-w-0 leading-tight">
-                                <span className={`text-[11.5px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
                                   {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
                                 </span>
                                 {game.homeTeam?.placeName?.default && (
@@ -8030,9 +8262,9 @@ function ExploreContent() {
                             </div>
 
                             {/* 4. 客隊：隊名 / (城市) + Logo(橫跨2列) */}
-                            <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                            <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                               <div className="flex flex-col items-end min-w-0 leading-tight">
-                                <span className={`text-[11.5px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
                                   {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
                                 </span>
                                 {game.awayTeam?.placeName?.default && (
@@ -8049,13 +8281,6 @@ function ExploreContent() {
                                   loading="lazy"
                                 />
                               )}
-                            </div>
-
-                            {/* 5. 狀態：放在客隊 logo 右方 */}
-                            <div className="col-span-1 flex items-center justify-center">
-                              <span className={`text-[9px] px-1 py-0.5 rounded border font-medium whitespace-nowrap ${statusClass}`}>
-                                {statusText}
-                              </span>
                             </div>
                           </div>
                         </div>
@@ -8093,6 +8318,26 @@ function ExploreContent() {
                           const hasHomeScore = game.homeTeam?.score !== undefined && game.homeTeam?.score !== null;
                           const hasAwayScore = game.awayTeam?.score !== undefined && game.awayTeam?.score !== null;
 
+                          let dateDisplay = game.gameDate;
+                          let timeDisplay = '';
+                          if (game.startTimeUTC) {
+                            try {
+                              const dt = new Date(game.startTimeUTC);
+                              if (!isNaN(dt.getTime())) {
+                                dateDisplay = dt.toLocaleDateString(undefined, {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit'
+                                });
+                                timeDisplay = dt.toLocaleTimeString(undefined, {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  hour12: timeFormat === '12h'
+                                });
+                              }
+                            } catch {}
+                          }
+
                           return (
                             <div
                               key={game.id}
@@ -8119,8 +8364,13 @@ function ExploreContent() {
                                 {/* 1. 比賽日期/場地 */}
                                 <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
                                   <div className="font-mono font-medium text-gray-300 text-[11px]">
-                                    {game.gameDate}
+                                    {dateDisplay}
                                   </div>
+                                  {timeDisplay && (
+                                    <div className="text-[10px] text-sky-400 font-mono mt-0.5">
+                                      {timeDisplay}
+                                    </div>
+                                  )}
                                   {game.venue?.default && (
                                     <div className="text-[9.5px] text-gray-500 truncate mt-0.5" title={game.venue.default}>
                                       {game.venue.default}
@@ -8129,7 +8379,7 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 2. 主隊：Logo + 隊名 / (城市) */}
-                                <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0">
+                                <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
                                   {game.homeTeam?.logo && (
                                     <img
                                       src={game.homeTeam.logo}
@@ -8139,7 +8389,7 @@ function ExploreContent() {
                                     />
                                   )}
                                   <div className="flex flex-col min-w-0 leading-tight">
-                                    <span className={`text-[11px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                    <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
                                       {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
                                     </span>
                                     {game.homeTeam?.placeName?.default && (
@@ -8162,9 +8412,9 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 4. 客隊：隊名 / (城市) + Logo */}
-                                <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                                <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                                   <div className="flex flex-col items-end min-w-0 leading-tight">
-                                    <span className={`text-[11px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                    <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
                                       {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
                                     </span>
                                     {game.awayTeam?.placeName?.default && (
@@ -8181,13 +8431,6 @@ function ExploreContent() {
                                       loading="lazy"
                                     />
                                   )}
-                                </div>
-
-                                {/* 5. 狀態：放在客隊 logo 右方 */}
-                                <div className="col-span-1 flex items-center justify-center">
-                                  <span className="text-[9px] px-1 py-0.5 rounded border font-medium bg-gray-800/60 text-gray-400 border-gray-700/50 whitespace-nowrap">
-                                    已完賽
-                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -8232,26 +8475,64 @@ function ExploreContent() {
 
                   {/* 右方按鈕組 (貼近界面邊界) */}
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {/* 賽季下拉選單 (選項由近至遠，選擇該賽季才呼叫 API) */}
-                    <div className="relative">
-                      <select
-                        value={whitecapsSeason}
-                        onChange={(e) => {
-                          const nextSeason = parseInt(e.target.value, 10);
-                          setWhitecapsSeason(nextSeason);
-                          fetchWhitecapsSchedule(nextSeason, false);
-                        }}
-                        className="appearance-none bg-[#151922] text-gray-200 border border-[#283042] hover:border-sky-500/50 rounded-lg pl-2 pr-6 py-1 text-xs font-mono font-medium focus:outline-none focus:ring-1 focus:ring-sky-500/50 cursor-pointer"
-                        title="選擇賽季"
-                      >
-                        {availableWhitecapsSeasons.map((s) => (
-                          <option key={s.year} value={s.year} className="bg-[#121620] text-gray-200">
-                            {s.label}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    </div>
+                    {/* 年份選擇工具 (包含左右按鈕，回到上一年 / 去下一年) */}
+                    {(() => {
+                      const curIdx = availableWhitecapsSeasons.findIndex((s) => s.year === whitecapsSeason);
+                      const activeIdx = curIdx >= 0 ? curIdx : 0;
+                      return (
+                        <div className="flex items-center gap-0.5 bg-[#151922] border border-[#283042] rounded-lg p-0.5">
+                          <button
+                            type="button"
+                            disabled={activeIdx >= availableWhitecapsSeasons.length - 1}
+                            onClick={() => {
+                              if (activeIdx < availableWhitecapsSeasons.length - 1) {
+                                const nextYear = availableWhitecapsSeasons[activeIdx + 1].year;
+                                setWhitecapsSeason(nextYear);
+                                fetchWhitecapsSchedule(nextYear, false);
+                              }
+                            }}
+                            className="p-1 rounded text-gray-400 hover:text-sky-300 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                            title="回到上一年"
+                          >
+                            <CircleChevronLeft className="w-3.5 h-3.5" />
+                          </button>
+                          <div className="relative px-1 font-mono text-xs font-semibold text-gray-200">
+                            <select
+                              value={whitecapsSeason}
+                              onChange={(e) => {
+                                const nextSeason = parseInt(e.target.value, 10);
+                                setWhitecapsSeason(nextSeason);
+                                fetchWhitecapsSchedule(nextSeason, false);
+                              }}
+                              className="appearance-none bg-transparent text-gray-200 cursor-pointer pr-4 focus:outline-none"
+                              title="選擇賽季"
+                            >
+                              {availableWhitecapsSeasons.map((s) => (
+                                <option key={s.year} value={s.year} className="bg-[#121620] text-gray-200">
+                                  {s.label}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className="w-2.5 h-2.5 text-gray-500 absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                          <button
+                            type="button"
+                            disabled={activeIdx <= 0}
+                            onClick={() => {
+                              if (activeIdx > 0) {
+                                const nextYear = availableWhitecapsSeasons[activeIdx - 1].year;
+                                setWhitecapsSeason(nextYear);
+                                fetchWhitecapsSchedule(nextYear, false);
+                              }
+                            }}
+                            className="p-1 rounded text-gray-400 hover:text-sky-300 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                            title="去下一年"
+                          >
+                            <CircleChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })()}
 
                     {/* 官方日程連結圖示按鈕 */}
                     <a
@@ -8324,13 +8605,12 @@ function ExploreContent() {
                 </div>
               </div>
 
-              {/* 表頭欄位標籤 (比賽日期/場地, 主場, -, 客場, 狀態) */}
+              {/* 表頭欄位標籤 (比賽日期/場地, 主場, -, 客場) - 刪除狀態 */}
               <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0">
                 <div className="col-span-3 text-left">比賽日期/場地</div>
-                <div className="col-span-3 text-left">主場</div>
+                <div className="col-span-3.5 text-left">主場</div>
                 <div className="col-span-2 text-center font-bold text-gray-500">-</div>
-                <div className="col-span-3 text-right">客場</div>
-                <div className="col-span-1 text-center">狀態</div>
+                <div className="col-span-3.5 text-right">客場</div>
               </div>
 
               {/* 賽事列表 (清單方式顯示) */}
@@ -8378,14 +8658,12 @@ function ExploreContent() {
                             try {
                               const dt = new Date(m.planned_kickoff_time);
                               if (!isNaN(dt.getTime())) {
-                                dateDisplay = dt.toLocaleDateString('en-CA', {
-                                  timeZone: 'Etc/GMT+7',
+                                dateDisplay = dt.toLocaleDateString(undefined, {
                                   year: 'numeric',
                                   month: '2-digit',
                                   day: '2-digit'
                                 });
-                                timeDisplay = dt.toLocaleTimeString('en-US', {
-                                  timeZone: 'Etc/GMT+7',
+                                timeDisplay = dt.toLocaleTimeString(undefined, {
                                   hour: '2-digit',
                                   minute: '2-digit',
                                   hour12: timeFormat === '12h'
@@ -8427,9 +8705,9 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 2. 主場：隊名 / (城市或縮寫) */}
-                                <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0">
+                                <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
                                   <div className="flex flex-col min-w-0 leading-tight">
-                                    <span className={`text-[11.5px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
                                       {m.home_team_name || '--'}
                                     </span>
                                     {(m.home_team_short_name || m.home_team_three_letter_code) && (
@@ -8452,9 +8730,9 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 4. 客場：隊名 / (城市或縮寫) */}
-                                <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                                <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                                   <div className="flex flex-col items-end min-w-0 leading-tight">
-                                    <span className={`text-[11.5px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
                                       {m.away_team_name || '--'}
                                     </span>
                                     {(m.away_team_short_name || m.away_team_three_letter_code) && (
@@ -8463,13 +8741,6 @@ function ExploreContent() {
                                       </span>
                                     )}
                                   </div>
-                                </div>
-
-                                {/* 5. 狀態 */}
-                                <div className="col-span-1 flex items-center justify-center">
-                                  <span className={`text-[9px] px-1 py-0.5 rounded border font-medium whitespace-nowrap ${statusClass}`}>
-                                    {statusText}
-                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -8505,15 +8776,20 @@ function ExploreContent() {
                               const isHomeVan = m.home_team_id === 'MLS-CLU-00000C' || (m.home_team_name || '').includes('Vancouver');
                               const isAwayVan = m.away_team_id === 'MLS-CLU-00000C' || (m.away_team_name || '').includes('Vancouver');
                               let dateDisplay = '--';
+                              let timeDisplay = '';
                               if (m.planned_kickoff_time) {
                                 try {
                                   const dt = new Date(m.planned_kickoff_time);
                                   if (!isNaN(dt.getTime())) {
-                                    dateDisplay = dt.toLocaleDateString('en-CA', {
-                                      timeZone: 'Etc/GMT+7',
+                                    dateDisplay = dt.toLocaleDateString(undefined, {
                                       year: 'numeric',
                                       month: '2-digit',
                                       day: '2-digit'
+                                    });
+                                    timeDisplay = dt.toLocaleTimeString(undefined, {
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      hour12: timeFormat === '12h'
                                     });
                                   }
                                 } catch {}
@@ -8547,9 +8823,9 @@ function ExploreContent() {
                                     </div>
 
                                     {/* 2. 主場 */}
-                                    <div className="col-span-3 flex items-center justify-start gap-1.5 min-w-0">
+                                    <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
                                       <div className="flex flex-col min-w-0 leading-tight">
-                                        <span className={`text-[11px] font-bold truncate ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
                                           {m.home_team_name || '--'}
                                         </span>
                                         {(m.home_team_short_name || m.home_team_three_letter_code) && (
@@ -8572,9 +8848,9 @@ function ExploreContent() {
                                     </div>
 
                                     {/* 4. 客場 */}
-                                    <div className="col-span-3 flex items-center justify-end gap-1.5 min-w-0 text-right">
+                                    <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                                       <div className="flex flex-col items-end min-w-0 leading-tight">
-                                        <span className={`text-[11px] font-bold truncate ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
                                           {m.away_team_name || '--'}
                                         </span>
                                         {(m.away_team_short_name || m.away_team_three_letter_code) && (
@@ -8584,12 +8860,537 @@ function ExploreContent() {
                                         )}
                                       </div>
                                     </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </>
+          )}
 
-                                    {/* 5. 狀態 */}
-                                    <div className="col-span-1 flex items-center justify-center">
-                                      <span className="text-[9px] px-1 py-0.5 rounded border font-medium whitespace-nowrap bg-gray-800/60 text-gray-400 border-gray-700/50">
-                                        已完成
+          {/* ==================== 3. 籃球子分頁 (Vancouver Bandits - CEBL) ==================== */}
+          {sportsSubTab === 'basketball' && (
+            <>
+              {/* 搜尋欄與控制項 (搜尋列調闊，右方按鈕貼近邊界) */}
+              <div className="flex flex-col gap-1.5 shrink-0">
+                <div className="flex items-center gap-1.5 w-full">
+                  {/* 調闊的搜尋框 */}
+                  <div className="relative flex-1 min-w-[140px]">
+                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={banditsSearchQuery}
+                      onChange={(e) => setBanditsSearchQuery(e.target.value)}
+                      placeholder="搜尋球隊、場地、聯賽..."
+                      className="w-full pl-7 pr-10 py-1 bg-[#0f121a] border border-[#242b3b] rounded-lg text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500/50"
+                    />
+                    {banditsSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setBanditsSearchQuery('')}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-[10px] px-1"
+                      >
+                        清除
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 右方按鈕組 (貼近界面邊界) */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {/* 年份選擇工具 (包含左右按鈕，回到上一年 / 去下一年) */}
+                    {(() => {
+                      const curIdx = availableBanditsSeasons.findIndex((s) => s.year === banditsSeason);
+                      const activeIdx = curIdx >= 0 ? curIdx : 0;
+                      return (
+                        <div className="flex items-center gap-0.5 bg-[#151922] border border-[#283042] rounded-lg p-0.5">
+                          <button
+                            type="button"
+                            disabled={activeIdx >= availableBanditsSeasons.length - 1}
+                            onClick={() => {
+                              if (activeIdx < availableBanditsSeasons.length - 1) {
+                                const nextYear = availableBanditsSeasons[activeIdx + 1].year;
+                                setBanditsSeason(nextYear);
+                                fetchBanditsSchedule(nextYear, false);
+                              }
+                            }}
+                            className="p-1 rounded text-gray-400 hover:text-sky-300 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                            title="回到上一年"
+                          >
+                            <CircleChevronLeft className="w-3.5 h-3.5" />
+                          </button>
+                          <div className="relative px-1 font-mono text-xs font-semibold text-gray-200">
+                            <select
+                              value={banditsSeason}
+                              onChange={(e) => {
+                                const nextSeason = parseInt(e.target.value, 10);
+                                setBanditsSeason(nextSeason);
+                                fetchBanditsSchedule(nextSeason, false);
+                              }}
+                              className="appearance-none bg-transparent text-gray-200 cursor-pointer pr-4 focus:outline-none"
+                              title="選擇賽季"
+                            >
+                              {availableBanditsSeasons.map((s) => (
+                                <option key={s.year} value={s.year} className="bg-[#121620] text-gray-200">
+                                  {s.label}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className="w-2.5 h-2.5 text-gray-500 absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                          <button
+                            type="button"
+                            disabled={activeIdx <= 0}
+                            onClick={() => {
+                              if (activeIdx > 0) {
+                                const nextYear = availableBanditsSeasons[activeIdx - 1].year;
+                                setBanditsSeason(nextYear);
+                                fetchBanditsSchedule(nextYear, false);
+                              }
+                            }}
+                            className="p-1 rounded text-gray-400 hover:text-sky-300 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                            title="去下一年"
+                          >
+                            <CircleChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })()}
+
+                    {/* 官方日程連結圖示按鈕 */}
+                    <a
+                      href="https://www.thebandits.ca/schedule"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-1.5 rounded-lg bg-[#151922] hover:bg-sky-500/20 text-gray-400 hover:text-sky-300 border border-[#232838] hover:border-sky-500/40 transition-colors flex items-center justify-center cursor-pointer"
+                      title="開啟 Bandits 官方賽程表"
+                    >
+                      <Calendar className="w-3.5 h-3.5" />
+                    </a>
+
+                    {/* 重新整理快取按鈕 */}
+                    <button
+                      type="button"
+                      onClick={() => fetchBanditsSchedule(banditsSeason, true)}
+                      disabled={loadingBandits}
+                      className="p-1.5 rounded-lg bg-[#151922] hover:bg-[#202738] text-gray-400 hover:text-white border border-[#232838] transition-colors flex items-center justify-center cursor-pointer"
+                      title="即時同步 Bandits 賽程資料"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${loadingBandits ? 'animate-spin text-sky-400' : ''}`} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* 主客場與比賽狀態篩選 */}
+                <div className="flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar pb-0.5">
+                  <div className="flex items-center gap-1 shrink-0">
+                    {[
+                      { id: 'all', label: '全部' },
+                      { id: 'home', label: '主場' },
+                      { id: 'away', label: '客場' },
+                    ].map((f) => (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => setBanditsLocationFilter(f.id as any)}
+                        className={`px-2 py-0.5 text-[11px] rounded border transition-colors cursor-pointer ${
+                          banditsLocationFilter === f.id
+                            ? 'bg-sky-500/20 text-sky-300 border-sky-500/40 font-semibold'
+                            : 'bg-[#121620] text-gray-400 hover:text-gray-200 border-[#202738]'
+                        }`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="text-[10px] text-gray-400 mr-0.5">狀態</span>
+                    {[
+                      { id: 'all', label: '全部' },
+                      { id: 'future', label: '即將進行' },
+                      { id: 'final', label: '已結束' },
+                    ].map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setBanditsStatusFilter(s.id as any)}
+                        className={`px-2 py-0.5 text-[11px] rounded border transition-colors cursor-pointer ${
+                          banditsStatusFilter === s.id
+                            ? 'bg-blue-500/20 text-blue-300 border-blue-500/40 font-semibold'
+                            : 'bg-[#121620] text-gray-400 hover:text-gray-200 border-[#202738]'
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 表頭欄位標籤 (比賽日期/地點, 主隊, -, 客隊) */}
+              <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0 pr-7">
+                <div className="col-span-3 text-left">比賽日期/地點</div>
+                <div className="col-span-3.5 text-left">主隊</div>
+                <div className="col-span-2 text-center font-bold text-gray-500">-</div>
+                <div className="col-span-3.5 text-right">客隊</div>
+              </div>
+
+              {/* 賽事列表 (清單方式顯示) */}
+              <div className="flex-1 overflow-y-auto space-y-2 pr-0.5 custom-scrollbar">
+                {loadingBandits && banditsGames.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16 text-gray-400 gap-2">
+                    <RefreshCw className="w-6 h-6 animate-spin text-sky-400" />
+                    <span className="text-xs">正在載入 CEBL Bandits 官方賽季賽程...</span>
+                  </div>
+                ) : totalFilteredBanditsGames === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16 text-gray-500 gap-1.5 text-xs">
+                    <Globe className="w-8 h-8 text-gray-600 mb-1" />
+                    <span>查無符合篩選條件的籃球賽事</span>
+                    {banditsSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setBanditsSearchQuery('')}
+                        className="text-sky-400 hover:underline text-[11px] mt-1"
+                      >
+                        清除搜尋條件
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    {/* 1. 即將到來／進行中的籃球賽事 (依時間由近至遠順序排列) */}
+                    {upcomingBanditsGames.length > 0 && (
+                      <div className="space-y-1.5">
+                        {upcomingBanditsGames.map((g) => {
+                          const isHomeBandits = g.home_team_id === 16 || (g.home_team_name || '').includes('Bandits');
+                          const isAwayBandits = g.away_team_id === 16 || (g.away_team_name || '').includes('Bandits');
+                          const hasScore = (g.home_team_score !== null && g.home_team_score !== undefined) || (g.away_team_score !== null && g.away_team_score !== undefined);
+
+                          let dateDisplay = '--';
+                          let timeDisplay = '';
+                          if (g.start_time_utc) {
+                            try {
+                              const dt = new Date(g.start_time_utc);
+                              if (!isNaN(dt.getTime())) {
+                                dateDisplay = dt.toLocaleDateString(undefined, {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit'
+                                });
+                                timeDisplay = dt.toLocaleTimeString(undefined, {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  hour12: timeFormat === '12h'
+                                });
+                              }
+                            } catch {}
+                          }
+
+                          return (
+                            <div
+                              key={g.id || g.start_time_utc}
+                              className={`relative px-3 py-2.5 rounded-xl border transition-all ${
+                                isHomeBandits
+                                  ? 'bg-[#151722]/90 hover:bg-[#1a1c2a] border-[#292a3d]'
+                                  : 'bg-[#11141c]/80 hover:bg-[#161a24] border-[#1e2433]'
+                              } text-xs flex flex-col gap-1`}
+                            >
+                              {/* 項目清單右上角加入連結圖示按鈕 (未開始顯示 tickets_url_en，已完成顯示 stats_url_en) */}
+                              {g.tickets_url_en ? (
+                                <a
+                                  href={g.tickets_url_en}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="absolute top-2 right-2 p-1 rounded-md text-amber-400/80 hover:text-amber-300 hover:bg-amber-500/10 transition-colors cursor-pointer"
+                                  title="前往官方購票"
+                                >
+                                  <Ticket className="w-3.5 h-3.5" />
+                                </a>
+                              ) : (g.stats_url_en || g.cebl_stats_url_en) ? (
+                                <a
+                                  href={g.stats_url_en || g.cebl_stats_url_en}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="absolute top-2 right-2 p-1 rounded-md text-gray-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors cursor-pointer"
+                                  title="查看比賽官方數據統計"
+                                >
+                                  <BarChart2 className="w-3.5 h-3.5" />
+                                </a>
+                              ) : null}
+
+                              <div className="grid grid-cols-12 gap-1 items-center pr-6">
+                                {/* 1. 比賽日期/地點 */}
+                                <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                  <div className="font-mono font-bold text-white text-[11px]">
+                                    {dateDisplay}
+                                  </div>
+                                  {timeDisplay && (
+                                    <div className="text-[10px] text-amber-400 font-mono mt-0.5">
+                                      {timeDisplay}
+                                    </div>
+                                  )}
+                                  {g.venue_name && (
+                                    <div className="text-[9.5px] text-gray-400 truncate mt-0.5" title={g.venue_name}>
+                                      {g.venue_name}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* 2. 主隊：Logo + 隊名 (點擊 Logo 跳轉至統計頁) */}
+                                <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
+                                  {g.home_team_logo_url && (
+                                    g.home_team_stats_url_en ? (
+                                      <a
+                                        href={g.home_team_stats_url_en}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        title={`查看 ${g.home_team_name || '主隊'} 官方數據統計`}
+                                        className="shrink-0"
+                                      >
+                                        <img
+                                          src={g.home_team_logo_url}
+                                          alt={g.home_team_name || 'Home'}
+                                          className="w-7 h-7 object-contain hover:scale-110 transition-transform cursor-pointer"
+                                          loading="lazy"
+                                        />
+                                      </a>
+                                    ) : (
+                                      <img
+                                        src={g.home_team_logo_url}
+                                        alt={g.home_team_name || 'Home'}
+                                        className="w-7 h-7 object-contain shrink-0"
+                                        loading="lazy"
+                                      />
+                                    )
+                                  )}
+                                  <div className="flex flex-col min-w-0 leading-tight">
+                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isHomeBandits ? 'text-amber-300' : 'text-gray-200'}`}>
+                                      {g.home_team_name || '--'}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* 3. 比分 */}
+                                <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                  <span className="font-black text-sm text-white w-5 text-right">
+                                    {hasScore && g.home_team_score !== null && g.home_team_score !== undefined ? g.home_team_score : '--'}
+                                  </span>
+                                  <span className="font-bold text-gray-500 text-xs">-</span>
+                                  <span className="font-black text-sm text-white w-5 text-left">
+                                    {hasScore && g.away_team_score !== null && g.away_team_score !== undefined ? g.away_team_score : '--'}
+                                  </span>
+                                </div>
+
+                                {/* 4. 客隊：隊名 + Logo (點擊 Logo 跳轉至統計頁) */}
+                                <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
+                                  <div className="flex flex-col items-end min-w-0 leading-tight">
+                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isAwayBandits ? 'text-amber-300' : 'text-gray-200'}`}>
+                                      {g.away_team_name || '--'}
+                                    </span>
+                                  </div>
+                                  {g.away_team_logo_url && (
+                                    g.away_team_stats_url_en ? (
+                                      <a
+                                        href={g.away_team_stats_url_en}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        title={`查看 ${g.away_team_name || '客隊'} 官方數據統計`}
+                                        className="shrink-0"
+                                      >
+                                        <img
+                                          src={g.away_team_logo_url}
+                                          alt={g.away_team_name || 'Away'}
+                                          className="w-7 h-7 object-contain hover:scale-110 transition-transform cursor-pointer"
+                                          loading="lazy"
+                                        />
+                                      </a>
+                                    ) : (
+                                      <img
+                                        src={g.away_team_logo_url}
+                                        alt={g.away_team_name || 'Away'}
+                                        className="w-7 h-7 object-contain shrink-0"
+                                        loading="lazy"
+                                      />
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* 2. 過去已結束的籃球賽事：清單底部的摺疊清單 */}
+                    {pastBanditsGames.length > 0 && (
+                      <div className="pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowPastBanditsAccordion((v) => !v)}
+                          className="w-full px-3 py-2 rounded-xl bg-[#121620] hover:bg-[#181d2a] border border-[#232b3b] flex items-center justify-between text-xs text-gray-300 hover:text-white transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-gray-300">
+                              已結束賽事
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-gray-800 text-gray-300 font-mono">
+                              {pastBanditsGames.length} 場
+                            </span>
+                          </div>
+                          <div className="flex items-center text-sky-400">
+                            {showPastBanditsAccordion ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          </div>
+                        </button>
+
+                        {showPastBanditsAccordion && (
+                          <div className="mt-2 space-y-1.5 opacity-90">
+                            {pastBanditsGames.map((g) => {
+                              const isHomeBandits = g.home_team_id === 16 || (g.home_team_name || '').includes('Bandits');
+                              const isAwayBandits = g.away_team_id === 16 || (g.away_team_name || '').includes('Bandits');
+
+                              let dateDisplay = '--';
+                              let timeDisplay = '';
+                              if (g.start_time_utc) {
+                                try {
+                                  const dt = new Date(g.start_time_utc);
+                                  if (!isNaN(dt.getTime())) {
+                                    dateDisplay = dt.toLocaleDateString(undefined, {
+                                      year: 'numeric',
+                                      month: '2-digit',
+                                      day: '2-digit'
+                                    });
+                                    timeDisplay = dt.toLocaleTimeString(undefined, {
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      hour12: timeFormat === '12h'
+                                    });
+                                  }
+                                } catch {}
+                              }
+
+                              return (
+                                <div
+                                  key={g.id || g.start_time_utc}
+                                  className={`relative px-3 py-2.5 rounded-xl border transition-all ${
+                                    isHomeBandits
+                                      ? 'bg-[#151722]/80 hover:bg-[#1a1c2a] border-[#292a3d]'
+                                      : 'bg-[#0f121a]/70 hover:bg-[#141822] border-[#1a202e]'
+                                  } text-xs flex flex-col gap-1`}
+                                >
+                                  {/* 已結束賽事顯示官方數據統計按鈕 */}
+                                  {(g.stats_url_en || g.cebl_stats_url_en) && (
+                                    <a
+                                      href={g.stats_url_en || g.cebl_stats_url_en}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="absolute top-2 right-2 p-1 rounded-md text-gray-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors cursor-pointer"
+                                      title="查看比賽官方數據統計"
+                                    >
+                                      <BarChart2 className="w-3.5 h-3.5" />
+                                    </a>
+                                  )}
+
+                                  <div className="grid grid-cols-12 gap-1 items-center pr-6">
+                                    {/* 1. 比賽日期/地點 */}
+                                    <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                      <div className="font-mono font-medium text-gray-300 text-[11px]">
+                                        {dateDisplay}
+                                      </div>
+                                      {timeDisplay && (
+                                        <div className="text-[10px] text-gray-400 font-mono mt-0.5">
+                                          {timeDisplay}
+                                        </div>
+                                      )}
+                                      {g.venue_name && (
+                                        <div className="text-[9.5px] text-gray-500 truncate mt-0.5" title={g.venue_name}>
+                                          {g.venue_name}
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {/* 2. 主隊：Logo + 隊名 */}
+                                    <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
+                                      {g.home_team_logo_url && (
+                                        g.home_team_stats_url_en ? (
+                                          <a
+                                            href={g.home_team_stats_url_en}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            title={`查看 ${g.home_team_name || '主隊'} 官方數據統計`}
+                                            className="shrink-0"
+                                          >
+                                            <img
+                                              src={g.home_team_logo_url}
+                                              alt={g.home_team_name || 'Home'}
+                                              className="w-7 h-7 object-contain hover:scale-110 transition-transform cursor-pointer"
+                                              loading="lazy"
+                                            />
+                                          </a>
+                                        ) : (
+                                          <img
+                                            src={g.home_team_logo_url}
+                                            alt={g.home_team_name || 'Home'}
+                                            className="w-7 h-7 object-contain shrink-0"
+                                            loading="lazy"
+                                          />
+                                        )
+                                      )}
+                                      <div className="flex flex-col min-w-0 leading-tight">
+                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isHomeBandits ? 'text-amber-300' : 'text-gray-300'}`}>
+                                          {g.home_team_name || '--'}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    {/* 3. 比分 */}
+                                    <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                      <span className="font-black text-sm text-white w-5 text-right">
+                                        {g.home_team_score !== null && g.home_team_score !== undefined ? g.home_team_score : '--'}
                                       </span>
+                                      <span className="font-bold text-gray-600 text-xs">-</span>
+                                      <span className="font-black text-sm text-white w-5 text-left">
+                                        {g.away_team_score !== null && g.away_team_score !== undefined ? g.away_team_score : '--'}
+                                      </span>
+                                    </div>
+
+                                    {/* 4. 客隊：隊名 + Logo */}
+                                    <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
+                                      <div className="flex flex-col items-end min-w-0 leading-tight">
+                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isAwayBandits ? 'text-amber-300' : 'text-gray-300'}`}>
+                                          {g.away_team_name || '--'}
+                                        </span>
+                                      </div>
+                                      {g.away_team_logo_url && (
+                                        g.away_team_stats_url_en ? (
+                                          <a
+                                            href={g.away_team_stats_url_en}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            title={`查看 ${g.away_team_name || '客隊'} 官方數據統計`}
+                                            className="shrink-0"
+                                          >
+                                            <img
+                                              src={g.away_team_logo_url}
+                                              alt={g.away_team_name || 'Away'}
+                                              className="w-7 h-7 object-contain hover:scale-110 transition-transform cursor-pointer"
+                                              loading="lazy"
+                                            />
+                                          </a>
+                                        ) : (
+                                          <img
+                                            src={g.away_team_logo_url}
+                                            alt={g.away_team_name || 'Away'}
+                                            className="w-7 h-7 object-contain shrink-0"
+                                            loading="lazy"
+                                          />
+                                        )
+                                      )}
                                     </div>
                                   </div>
                                 </div>
@@ -10102,7 +10903,9 @@ function ExploreContent() {
             <span>
               {sportsSubTab === 'hockey'
                 ? `共有 ${nhlGames.length} 場 Canucks 賽事 (符合條件 ${totalFilteredNhlGames} 場)`
-                : `共有 ${whitecapsMatches.length} 場 Whitecaps 賽事 (符合條件 ${totalFilteredWhitecapsMatches} 場)`}
+                : sportsSubTab === 'soccer'
+                ? `共有 ${whitecapsMatches.length} 場 Whitecaps 賽事 (符合條件 ${totalFilteredWhitecapsMatches} 場)`
+                : `共有 ${banditsGames.length} 場 Bandits 賽事 (符合條件 ${totalFilteredBanditsGames} 場)`}
             </span>
           )}
           {activeTab === 'beach' && (

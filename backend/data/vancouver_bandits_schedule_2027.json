@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "season": 2027,
+  "team_id": 16,
+  "source_url": "https://api.data.cebl.ca/games/2027/?team_id=16",
+  "updated_at": "2026-11-08T18:35:51.064238-07:00",
+  "totalGames": 0,
+  "games": []
+}

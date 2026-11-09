@@ -3,14 +3,14 @@
   "source_url": "https://www.swpc.noaa.gov/",
   "api_endpoint": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
   "update_frequency": "每天 2 次 (12 小時快取)",
-  "last_updated": "2026-11-08T20:27:13.102059Z",
+  "last_updated": "2026-11-09T01:27:29.165259Z",
   "latest": {
-    "time_tag": "2026-11-08T15:00:00",
-    "kp": 3.33,
+    "time_tag": "2026-11-08T21:00:00",
+    "kp": 2.67,
     "kp_int": 3,
-    "g_scale": "微擾",
-    "g_desc": "輕微擾動",
-    "g_color": "#06b6d4",
+    "g_scale": "平靜",
+    "g_desc": "平靜平穩",
+    "g_color": "#3b82f6",
     "visibility": {
       "level": "不可見",
       "description": "地磁場處於平靜狀態。極光主要侷限於阿拉斯加、黃刀鎮等高緯度極圈附近，溫哥華目前無法觀測到極光。",
@@ -20,22 +20,6 @@
     }
   },
   "history": [
-    {
-      "time_tag": "2026-11-06T18:00:00",
-      "kp": 2.33,
-      "a_running": 9,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
-    {
-      "time_tag": "2026-11-06T21:00:00",
-      "kp": 3.33,
-      "a_running": 18,
-      "g_scale": "微擾",
-      "g_desc": "輕微擾動",
-      "g_color": "#06b6d4"
-    },
     {
       "time_tag": "2026-11-07T00:00:00",
       "kp": 3.0,
@@ -147,6 +131,22 @@
       "g_scale": "微擾",
       "g_desc": "輕微擾動",
       "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-11-08T18:00:00",
+      "kp": 4.0,
+      "a_running": 27,
+      "g_scale": "活躍",
+      "g_desc": "活躍擾動",
+      "g_color": "#10b981"
+    },
+    {
+      "time_tag": "2026-11-08T21:00:00",
+      "kp": 2.67,
+      "a_running": 12,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
     }
   ],
   "spots": [

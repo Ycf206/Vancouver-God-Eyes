@@ -1392,6 +1392,12 @@ async def startup_event():
         print(f"Failed to start whitecaps_service task: {e}")
 
     try:
+        import bandits_service
+        asyncio.create_task(bandits_service.run_bandits_background_loop())
+    except Exception as e:
+        print(f"Failed to start bandits_service task: {e}")
+
+    try:
         import lottery_service
         asyncio.create_task(lottery_service.run_lottery_background_loop())
     except Exception as e:
@@ -1547,6 +1553,40 @@ def get_sports_whitecaps_seasons():
         }
     except Exception as e:
         print(f"Error serving available whitecaps seasons: {e}")
+        return {"currentSeason": 2026, "seasons": []}
+
+@app.get("/api/sports/bandits-schedule")
+def get_sports_bandits_schedule(year: Optional[int] = None, refresh: bool = False, force: bool = False):
+    """
+    獲取 CEBL Vancouver Bandits 官方籃球賽季賽程表 (原子磁碟快取，0ms 極速無卡頓)。
+    """
+    try:
+        import bandits_service
+        data = bandits_service.fetch_bandits_schedule(year=year, force=(refresh or force))
+        return JSONResponse(
+            content=data or {"success": False, "games": []},
+            headers={"Cache-Control": "public, max-age=300, stale-while-revalidate=600"}
+        )
+    except Exception as e:
+        print(f"Error serving bandits schedule: {e}")
+        return JSONResponse(
+            content={"success": False, "games": [], "error": str(e)},
+            status_code=500
+        )
+
+@app.get("/api/sports/bandits-seasons")
+def get_sports_bandits_seasons():
+    """
+    取得 CEBL Bandits 可用賽季下拉選單清單 (由近至遠)。
+    """
+    try:
+        import bandits_service
+        return {
+            "currentSeason": bandits_service.get_current_bandits_season(),
+            "seasons": bandits_service.get_available_bandits_seasons()
+        }
+    except Exception as e:
+        print(f"Error serving available bandits seasons: {e}")
         return {"currentSeason": 2026, "seasons": []}
 
 @app.get("/api/lottery/latest")
@@ -4840,6 +4880,13 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["sports_whitecaps"] = time.time()
         cnt = data.get("totalMatches") or len(data.get("matches", []))
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 MLS 官方 Vancouver Whitecaps {cur_y} 賽季賽程，共 {cnt} 場賽事。")
+    if sid in ("sports_bandits", "bandits_schedule"):
+        import bandits_service
+        cur_y = bandits_service.get_current_bandits_season()
+        data = bandits_service.fetch_bandits_schedule(cur_y, force=True)
+        _oci_runtime_ts["sports_bandits"] = time.time()
+        cnt = data.get("totalGames") or len(data.get("games", []))
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 CEBL 官方 Vancouver Bandits {cur_y} 賽季賽程，共 {cnt} 場賽事。")
     if sid in ("lottery_latest", "lottery"):
         import lottery_service
         data = lottery_service.fetch_lottery_latest(force=True)
