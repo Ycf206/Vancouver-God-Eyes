@@ -43,7 +43,7 @@ def get_available_bandits_seasons() -> List[Dict[str, Any]]:
     for y in range(max_year, min_year - 1, -1):
         seasons.append({
             "year": y,
-            "label": f"{y} 賽季"
+            "label": f"{y}"
         })
     return seasons
 

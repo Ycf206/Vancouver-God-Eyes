@@ -14,7 +14,7 @@ export async function GET() {
   for (let y = maxYear; y >= 2020; y--) {
     seasons.push({
       year: y,
-      label: `${y} 賽季`
+      label: `${y}`
     });
   }
   return NextResponse.json({

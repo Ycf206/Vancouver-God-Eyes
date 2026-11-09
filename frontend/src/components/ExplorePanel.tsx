@@ -1306,14 +1306,14 @@ function ExploreContent() {
   // --- Whitecaps Soccer states ---
   const [whitecapsSeason, setWhitecapsSeason] = useState<number>(2026);
   const [availableWhitecapsSeasons, setAvailableWhitecapsSeasons] = useState<Array<{ year: number; label: string }>>([
-    { year: 2027, label: '2027 賽季' },
-    { year: 2026, label: '2026 賽季' },
-    { year: 2025, label: '2025 賽季' },
-    { year: 2024, label: '2024 賽季' },
-    { year: 2023, label: '2023 賽季' },
-    { year: 2022, label: '2022 賽季' },
-    { year: 2021, label: '2021 賽季' },
-    { year: 2020, label: '2020 賽季' },
+    { year: 2027, label: '2027' },
+    { year: 2026, label: '2026' },
+    { year: 2025, label: '2025' },
+    { year: 2024, label: '2024' },
+    { year: 2023, label: '2023' },
+    { year: 2022, label: '2022' },
+    { year: 2021, label: '2021' },
+    { year: 2020, label: '2020' },
   ]);
   const [whitecapsMatches, setWhitecapsMatches] = useState<WhitecapsMatchItem[]>([]);
   const [loadingWhitecaps, setLoadingWhitecaps] = useState<boolean>(false);
@@ -1325,14 +1325,14 @@ function ExploreContent() {
   // --- Bandits Basketball states ---
   const [banditsSeason, setBanditsSeason] = useState<number>(2026);
   const [availableBanditsSeasons, setAvailableBanditsSeasons] = useState<Array<{ year: number; label: string }>>([
-    { year: 2027, label: '2027 賽季' },
-    { year: 2026, label: '2026 賽季' },
-    { year: 2025, label: '2025 賽季' },
-    { year: 2024, label: '2024 賽季' },
-    { year: 2023, label: '2023 賽季' },
-    { year: 2022, label: '2022 賽季' },
-    { year: 2021, label: '2021 賽季' },
-    { year: 2020, label: '2020 賽季' },
+    { year: 2027, label: '2027' },
+    { year: 2026, label: '2026' },
+    { year: 2025, label: '2025' },
+    { year: 2024, label: '2024' },
+    { year: 2023, label: '2023' },
+    { year: 2022, label: '2022' },
+    { year: 2021, label: '2021' },
+    { year: 2020, label: '2020' },
   ]);
   const [banditsGames, setBanditsGames] = useState<BanditsGameItem[]>([]);
   const [loadingBandits, setLoadingBandits] = useState<boolean>(false);
@@ -8015,7 +8015,7 @@ function ExploreContent() {
                                 fetchCanucksSchedule(nextSeason, false);
                               }}
                               className="appearance-none bg-transparent text-gray-200 cursor-pointer pr-4 focus:outline-none"
-                              title="選擇賽季"
+                              title="選擇年份"
                             >
                               {availableSeasons.map((s) => (
                                 <option key={s.code} value={s.code} className="bg-[#121620] text-gray-200">
@@ -8116,11 +8116,11 @@ function ExploreContent() {
           </div>
 
           {/* 表頭欄位標籤 (比賽日期/場地, 主隊, -, 客隊) - 刪除狀態 */}
-          <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0 pr-7">
-            <div className="col-span-3 text-left">比賽日期/場地</div>
-            <div className="col-span-3.5 text-left">主隊</div>
-            <div className="col-span-2 text-center font-bold text-gray-500">-</div>
-            <div className="col-span-3.5 text-right">客隊</div>
+          <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0 pr-7">
+            <div className="text-left">比賽日期/場地</div>
+            <div className="text-left">主隊</div>
+            <div className="text-center font-bold text-gray-500">-</div>
+            <div className="text-right">客隊</div>
           </div>
 
           {/* 賽事列表 (清單方式顯示) */}
@@ -8210,9 +8210,9 @@ function ExploreContent() {
                             </a>
                           )}
 
-                          <div className="grid grid-cols-12 gap-1 items-center pr-6">
+                          <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 items-center pr-6">
                             {/* 1. 比賽日期/場地 (第 1 欄) */}
-                            <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                            <div className="min-w-0 pr-1 text-left leading-tight">
                               <div className="font-mono font-bold text-white text-[11px]">
                                 {dateDisplay}
                               </div>
@@ -8229,7 +8229,7 @@ function ExploreContent() {
                             </div>
 
                             {/* 2. 主隊：Logo(橫跨2列) + 隊名 / (城市) */}
-                            <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
+                            <div className="flex items-center justify-start gap-1.5 min-w-0 pr-1">
                               {game.homeTeam?.logo && (
                                 <img
                                   src={game.homeTeam.logo}
@@ -8239,7 +8239,7 @@ function ExploreContent() {
                                 />
                               )}
                               <div className="flex flex-col min-w-0 leading-tight">
-                                <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-tight ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
                                   {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
                                 </span>
                                 {game.homeTeam?.placeName?.default && (
@@ -8251,7 +8251,7 @@ function ExploreContent() {
                             </div>
 
                             {/* 3. 比分與分隔符：比分 - 比分 */}
-                            <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                            <div className="flex items-center justify-center gap-1 font-mono text-center">
                               <span className="font-black text-sm text-white w-5 text-right">
                                 {hasHomeScore ? game.homeTeam.score : '--'}
                               </span>
@@ -8262,9 +8262,9 @@ function ExploreContent() {
                             </div>
 
                             {/* 4. 客隊：隊名 / (城市) + Logo(橫跨2列) */}
-                            <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
+                            <div className="flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                               <div className="flex flex-col items-end min-w-0 leading-tight">
-                                <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-tight ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
                                   {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
                                 </span>
                                 {game.awayTeam?.placeName?.default && (
@@ -8360,9 +8360,9 @@ function ExploreContent() {
                                 </a>
                               )}
 
-                              <div className="grid grid-cols-12 gap-1 items-center pr-6">
+                              <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 items-center pr-6">
                                 {/* 1. 比賽日期/場地 */}
-                                <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                <div className="min-w-0 pr-1 text-left leading-tight">
                                   <div className="font-mono font-medium text-gray-300 text-[11px]">
                                     {dateDisplay}
                                   </div>
@@ -8379,7 +8379,7 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 2. 主隊：Logo + 隊名 / (城市) */}
-                                <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
+                                <div className="flex items-center justify-start gap-1.5 min-w-0 pr-1">
                                   {game.homeTeam?.logo && (
                                     <img
                                       src={game.homeTeam.logo}
@@ -8389,7 +8389,7 @@ function ExploreContent() {
                                     />
                                   )}
                                   <div className="flex flex-col min-w-0 leading-tight">
-                                    <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                    <span className={`text-[11px] font-bold break-words whitespace-normal leading-tight ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
                                       {game.homeTeam?.commonName?.default || game.homeTeam?.abbrev || '--'}
                                     </span>
                                     {game.homeTeam?.placeName?.default && (
@@ -8401,7 +8401,7 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 3. 比分與分隔符：比分 - 比分 */}
-                                <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                <div className="flex items-center justify-center gap-1 font-mono text-center">
                                   <span className="font-black text-sm text-white w-5 text-right">
                                     {hasHomeScore ? game.homeTeam.score : '--'}
                                   </span>
@@ -8412,9 +8412,9 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 4. 客隊：隊名 / (城市) + Logo */}
-                                <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
+                                <div className="flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                                   <div className="flex flex-col items-end min-w-0 leading-tight">
-                                    <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                    <span className={`text-[11px] font-bold break-words whitespace-normal leading-tight ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
                                       {game.awayTeam?.commonName?.default || game.awayTeam?.abbrev || '--'}
                                     </span>
                                     {game.awayTeam?.placeName?.default && (
@@ -8505,7 +8505,7 @@ function ExploreContent() {
                                 fetchWhitecapsSchedule(nextSeason, false);
                               }}
                               className="appearance-none bg-transparent text-gray-200 cursor-pointer pr-4 focus:outline-none"
-                              title="選擇賽季"
+                              title="選擇年份"
                             >
                               {availableWhitecapsSeasons.map((s) => (
                                 <option key={s.year} value={s.year} className="bg-[#121620] text-gray-200">
@@ -8606,11 +8606,11 @@ function ExploreContent() {
               </div>
 
               {/* 表頭欄位標籤 (比賽日期/場地, 主場, -, 客場) - 刪除狀態 */}
-              <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0">
-                <div className="col-span-3 text-left">比賽日期/場地</div>
-                <div className="col-span-3.5 text-left">主場</div>
-                <div className="col-span-2 text-center font-bold text-gray-500">-</div>
-                <div className="col-span-3.5 text-right">客場</div>
+              <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0 pr-3 sm:pr-4">
+                <div className="text-left">比賽日期/場地</div>
+                <div className="text-left">主場</div>
+                <div className="text-center font-bold text-gray-500">-</div>
+                <div className="text-right">客場</div>
               </div>
 
               {/* 賽事列表 (清單方式顯示) */}
@@ -8681,9 +8681,9 @@ function ExploreContent() {
                                   : 'bg-[#11141c]/80 hover:bg-[#161a24] border-[#1e2433]'
                               } text-xs flex flex-col gap-1`}
                             >
-                              <div className="grid grid-cols-12 gap-1 items-center">
+                              <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 items-center pr-3 sm:pr-4">
                                 {/* 1. 比賽日期/場地 / 時長 */}
-                                <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                <div className="min-w-0 pr-1 text-left leading-tight">
                                   <div className="font-mono font-bold text-white text-[11px]">
                                     {dateDisplay}
                                   </div>
@@ -8705,9 +8705,9 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 2. 主場：隊名 / (城市或縮寫) */}
-                                <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
+                                <div className="flex items-center justify-start gap-1.5 min-w-0 pr-1">
                                   <div className="flex flex-col min-w-0 leading-tight">
-                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-tight ${isHomeVan ? 'text-sky-300' : 'text-gray-200'}`}>
                                       {m.home_team_name || '--'}
                                     </span>
                                     {(m.home_team_short_name || m.home_team_three_letter_code) && (
@@ -8719,7 +8719,7 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 3. 比分 */}
-                                <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                <div className="flex items-center justify-center gap-1 font-mono text-center">
                                   <span className="font-black text-sm text-white w-5 text-right">
                                     {hasScore ? m.home_team_goals : '--'}
                                   </span>
@@ -8730,9 +8730,9 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 4. 客場：隊名 / (城市或縮寫) */}
-                                <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
+                                <div className="flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                                   <div className="flex flex-col items-end min-w-0 leading-tight">
-                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
+                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-tight ${isAwayVan ? 'text-sky-300' : 'text-gray-200'}`}>
                                       {m.away_team_name || '--'}
                                     </span>
                                     {(m.away_team_short_name || m.away_team_three_letter_code) && (
@@ -8804,9 +8804,9 @@ function ExploreContent() {
                                       : 'bg-[#0f121a]/70 hover:bg-[#141822] border-[#1a202e]'
                                   } text-xs flex flex-col gap-1`}
                                 >
-                                  <div className="grid grid-cols-12 gap-1 items-center">
+                                  <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 items-center pr-3 sm:pr-4">
                                     {/* 1. 比賽日期/場地 / 時長 */}
-                                    <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                    <div className="min-w-0 pr-1 text-left leading-tight">
                                       <div className="font-mono font-medium text-gray-300 text-[11px]">
                                         {dateDisplay}
                                       </div>
@@ -8823,9 +8823,9 @@ function ExploreContent() {
                                     </div>
 
                                     {/* 2. 主場 */}
-                                    <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
+                                    <div className="flex items-center justify-start gap-1.5 min-w-0 pr-1">
                                       <div className="flex flex-col min-w-0 leading-tight">
-                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-tight ${isHomeVan ? 'text-sky-300' : 'text-gray-300'}`}>
                                           {m.home_team_name || '--'}
                                         </span>
                                         {(m.home_team_short_name || m.home_team_three_letter_code) && (
@@ -8837,7 +8837,7 @@ function ExploreContent() {
                                     </div>
 
                                     {/* 3. 比分 */}
-                                    <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                    <div className="flex items-center justify-center gap-1 font-mono text-center">
                                       <span className="font-black text-sm text-white w-5 text-right">
                                         {m.home_team_goals ?? '--'}
                                       </span>
@@ -8848,9 +8848,9 @@ function ExploreContent() {
                                     </div>
 
                                     {/* 4. 客場 */}
-                                    <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
+                                    <div className="flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                                       <div className="flex flex-col items-end min-w-0 leading-tight">
-                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
+                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-tight ${isAwayVan ? 'text-sky-300' : 'text-gray-300'}`}>
                                           {m.away_team_name || '--'}
                                         </span>
                                         {(m.away_team_short_name || m.away_team_three_letter_code) && (
@@ -8933,7 +8933,7 @@ function ExploreContent() {
                                 fetchBanditsSchedule(nextSeason, false);
                               }}
                               className="appearance-none bg-transparent text-gray-200 cursor-pointer pr-4 focus:outline-none"
-                              title="選擇賽季"
+                              title="選擇年份"
                             >
                               {availableBanditsSeasons.map((s) => (
                                 <option key={s.year} value={s.year} className="bg-[#121620] text-gray-200">
@@ -9034,11 +9034,11 @@ function ExploreContent() {
               </div>
 
               {/* 表頭欄位標籤 (比賽日期/地點, 主隊, -, 客隊) */}
-              <div className="grid grid-cols-12 gap-1 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0 pr-7">
-                <div className="col-span-3 text-left">比賽日期/地點</div>
-                <div className="col-span-3.5 text-left">主隊</div>
-                <div className="col-span-2 text-center font-bold text-gray-500">-</div>
-                <div className="col-span-3.5 text-right">客隊</div>
+              <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 px-3 py-1.5 bg-[#0e121a] border border-[#202636] rounded-lg text-[10.5px] font-semibold text-gray-400 shrink-0 pr-7">
+                <div className="text-left">比賽日期/地點</div>
+                <div className="text-left">主隊</div>
+                <div className="text-center font-bold text-gray-500">-</div>
+                <div className="text-right">客隊</div>
               </div>
 
               {/* 賽事列表 (清單方式顯示) */}
@@ -9124,9 +9124,9 @@ function ExploreContent() {
                                 </a>
                               ) : null}
 
-                              <div className="grid grid-cols-12 gap-1 items-center pr-6">
+                              <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 items-center pr-6">
                                 {/* 1. 比賽日期/地點 */}
-                                <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                <div className="min-w-0 pr-1 text-left leading-tight">
                                   <div className="font-mono font-bold text-white text-[11px]">
                                     {dateDisplay}
                                   </div>
@@ -9143,7 +9143,7 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 2. 主隊：Logo + 隊名 (點擊 Logo 跳轉至統計頁) */}
-                                <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
+                                <div className="flex items-center justify-start gap-1.5 min-w-0 pr-1">
                                   {g.home_team_logo_url && (
                                     g.home_team_stats_url_en ? (
                                       <a
@@ -9170,14 +9170,14 @@ function ExploreContent() {
                                     )
                                   )}
                                   <div className="flex flex-col min-w-0 leading-tight">
-                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isHomeBandits ? 'text-amber-300' : 'text-gray-200'}`}>
+                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-tight ${isHomeBandits ? 'text-amber-300' : 'text-gray-200'}`}>
                                       {g.home_team_name || '--'}
                                     </span>
                                   </div>
                                 </div>
 
                                 {/* 3. 比分 */}
-                                <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                <div className="flex items-center justify-center gap-1 font-mono text-center">
                                   <span className="font-black text-sm text-white w-5 text-right">
                                     {hasScore && g.home_team_score !== null && g.home_team_score !== undefined ? g.home_team_score : '--'}
                                   </span>
@@ -9188,9 +9188,9 @@ function ExploreContent() {
                                 </div>
 
                                 {/* 4. 客隊：隊名 + Logo (點擊 Logo 跳轉至統計頁) */}
-                                <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
+                                <div className="flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                                   <div className="flex flex-col items-end min-w-0 leading-tight">
-                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-snug ${isAwayBandits ? 'text-amber-300' : 'text-gray-200'}`}>
+                                    <span className={`text-[11.5px] font-bold break-words whitespace-normal leading-tight ${isAwayBandits ? 'text-amber-300' : 'text-gray-200'}`}>
                                       {g.away_team_name || '--'}
                                     </span>
                                   </div>
@@ -9296,9 +9296,9 @@ function ExploreContent() {
                                     </a>
                                   )}
 
-                                  <div className="grid grid-cols-12 gap-1 items-center pr-6">
+                                  <div className="grid grid-cols-[90px_1fr_52px_1fr] sm:grid-cols-[105px_1fr_60px_1fr] gap-1.5 items-center pr-6">
                                     {/* 1. 比賽日期/地點 */}
-                                    <div className="col-span-3 min-w-0 pr-1 text-left leading-tight">
+                                    <div className="min-w-0 pr-1 text-left leading-tight">
                                       <div className="font-mono font-medium text-gray-300 text-[11px]">
                                         {dateDisplay}
                                       </div>
@@ -9315,7 +9315,7 @@ function ExploreContent() {
                                     </div>
 
                                     {/* 2. 主隊：Logo + 隊名 */}
-                                    <div className="col-span-3.5 flex items-center justify-start gap-1.5 min-w-0 pr-1">
+                                    <div className="flex items-center justify-start gap-1.5 min-w-0 pr-1">
                                       {g.home_team_logo_url && (
                                         g.home_team_stats_url_en ? (
                                           <a
@@ -9342,14 +9342,14 @@ function ExploreContent() {
                                         )
                                       )}
                                       <div className="flex flex-col min-w-0 leading-tight">
-                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isHomeBandits ? 'text-amber-300' : 'text-gray-300'}`}>
+                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-tight ${isHomeBandits ? 'text-amber-300' : 'text-gray-300'}`}>
                                           {g.home_team_name || '--'}
                                         </span>
                                       </div>
                                     </div>
 
                                     {/* 3. 比分 */}
-                                    <div className="col-span-2 flex items-center justify-center gap-1 font-mono">
+                                    <div className="flex items-center justify-center gap-1 font-mono text-center">
                                       <span className="font-black text-sm text-white w-5 text-right">
                                         {g.home_team_score !== null && g.home_team_score !== undefined ? g.home_team_score : '--'}
                                       </span>
@@ -9360,9 +9360,9 @@ function ExploreContent() {
                                     </div>
 
                                     {/* 4. 客隊：隊名 + Logo */}
-                                    <div className="col-span-3.5 flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
+                                    <div className="flex items-center justify-end gap-1.5 min-w-0 pl-1 text-right">
                                       <div className="flex flex-col items-end min-w-0 leading-tight">
-                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-snug ${isAwayBandits ? 'text-amber-300' : 'text-gray-300'}`}>
+                                        <span className={`text-[11px] font-bold break-words whitespace-normal leading-tight ${isAwayBandits ? 'text-amber-300' : 'text-gray-300'}`}>
                                           {g.away_team_name || '--'}
                                         </span>
                                       </div>
