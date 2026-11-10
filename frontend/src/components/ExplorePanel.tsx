@@ -1030,7 +1030,8 @@ function ExploreContent() {
   const [flippMerchants, setFlippMerchants] = useState<FlippMerchantData[]>([]);
   const [selectedMerchant, setSelectedMerchant] = useState<string>('');
   const [loadingFlipp, setLoadingFlipp] = useState<boolean>(false);
-  const [flippSearchQuery, setFlippSearchQuery] = useState<string>('');
+  const [merchantSearchQuery, setMerchantSearchQuery] = useState<string>('');
+  const [productSearchQuery, setProductSearchQuery] = useState<string>('');
   const [flippItemSort, setFlippItemSort] = useState<'default' | 'name' | 'price-asc' | 'price-desc'>('default');
 
   // 取得 3-1-1 市政服務請求資料
@@ -6928,6 +6929,19 @@ function ExploreContent() {
 
 {/* ==================== 1.6 購物分頁 (Shopping - 大溫各大超市特惠傳單 Flipp) ==================== */}
       {activeTab === 'shopping' && (() => {
+        // 官方網址修正與對應表
+        const MERCHANT_URL_OVERRIDES: Record<string, string> = {
+          'Chong Lee Market': 'https://chonglee.ca/',
+          "Donald's Market": 'https://donaldsmarkethastings.com/',
+          'Donalds Market': 'https://donaldsmarkethastings.com/',
+          'Foody World': 'https://www.foodyworldrichmond.ca/',
+          "President's Choice": 'https://www.pcoptimum.ca/presidents-choice',
+          'Presidents Choice': 'https://www.pcoptimum.ca/presidents-choice',
+          'Sabzi Mandi': 'https://sabzimandicanada.com/',
+          'SuperValu': 'https://www.coastgrocery.ca/gibsons',
+          'Supervalu': 'https://www.coastgrocery.ca/gibsons',
+        };
+
         // 格式化日期為系統格式 yyyy-MM-dd
         const formatFlippDate = (isoStr?: string | null): string => {
           if (!isoStr) return '';
@@ -6943,11 +6957,11 @@ function ExploreContent() {
           }
         };
 
-        // 搜尋過濾：支援搜尋商戶或商品
-        const q = flippSearchQuery.trim().toLowerCase();
+        // 1. 搜尋分頁 (商店)：僅過濾分頁
+        const mq = merchantSearchQuery.trim().toLowerCase();
         const displayMerchants = flippMerchants.filter(m => {
-          if (!q) return true;
-          return m.merchant.toLowerCase().includes(q) || m.items.some(it => it.name?.toLowerCase().includes(q));
+          if (!mq) return true;
+          return m.merchant.toLowerCase().includes(mq);
         });
 
         const activeMerchant = displayMerchants.find(m => m.merchant === selectedMerchant) 
@@ -6955,18 +6969,19 @@ function ExploreContent() {
           || displayMerchants[0] 
           || flippMerchants[0];
 
+        // 2. 搜尋產品：僅過濾當前商店商品
+        const pq = productSearchQuery.trim().toLowerCase();
+        let itemsList = activeMerchant ? [...activeMerchant.items] : [];
+        if (pq) {
+          itemsList = itemsList.filter(it => it.name?.toLowerCase().includes(pq) || it.brand?.toLowerCase().includes(pq));
+        }
+
         // 價格數值解析器
         const parsePriceNum = (priceStr?: string | null): number => {
           if (!priceStr) return 999999;
           const match = priceStr.match(/(\d+(\.\d+)?)/);
           return match ? parseFloat(match[1]) : 999999;
         };
-
-        // 當前商戶的商品列表與排序
-        let itemsList = activeMerchant ? [...activeMerchant.items] : [];
-        if (q) {
-          itemsList = itemsList.filter(it => it.name?.toLowerCase().includes(q) || it.brand?.toLowerCase().includes(q));
-        }
 
         if (flippItemSort === 'name') {
           itemsList.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
@@ -6980,20 +6995,31 @@ function ExploreContent() {
           ? `${formatFlippDate(activeMerchant.valid_from)} - ${formatFlippDate(activeMerchant.valid_to)}`
           : '';
 
+        const officialUrl = (activeMerchant && MERCHANT_URL_OVERRIDES[activeMerchant.merchant]) || activeMerchant?.website_url;
+
         return (
           <div className="flex flex-col flex-1 min-h-0 gap-2">
-            {/* 子分頁控制列：左側搜尋欄 + 中間 A-Z 商戶按鈕 + 右側重新整理按鈕 */}
+            {/* 子分頁控制列：最左側搜尋分頁欄 + 中間 A-Z 商戶按鈕 + 右側手動更新按鈕 */}
             <div className="flex items-center gap-1.5 pb-2 border-b border-[#262b38] shrink-0">
               {/* 最左方：搜尋分頁輸入欄 (不用太闊) */}
               <div className="relative shrink-0 w-28 sm:w-36">
                 <input
                   type="text"
-                  value={flippSearchQuery}
-                  onChange={(e) => setFlippSearchQuery(e.target.value)}
-                  placeholder="搜尋分頁/商品..."
-                  className="w-full bg-[#121620] border border-[#232b3d] rounded-lg pl-7 pr-2 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-rose-500/60"
+                  value={merchantSearchQuery}
+                  onChange={(e) => setMerchantSearchQuery(e.target.value)}
+                  placeholder="搜尋分頁..."
+                  className="w-full bg-[#121620] border border-[#232b3d] rounded-lg pl-7 pr-5 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-rose-500/60"
                 />
                 <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                {merchantSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setMerchantSearchQuery('')}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-[11px] px-0.5 cursor-pointer"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
 
               {/* 中間：由左至右 A-Z 排序的子分頁切換按鈕 (保留英文商戶名稱) */}
@@ -7004,7 +7030,11 @@ function ExploreContent() {
                     <button
                       key={m.merchant}
                       type="button"
-                      onClick={() => setSelectedMerchant(m.merchant)}
+                      onClick={() => {
+                        setSelectedMerchant(m.merchant);
+                        // 當選擇分頁後，清空分頁搜尋文字 (符合第 5 點要求)
+                        setMerchantSearchQuery('');
+                      }}
                       className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
                         isActive
                           ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-sm shadow-rose-950/40'
@@ -7023,20 +7053,41 @@ function ExploreContent() {
                 onClick={() => fetchFlippFlyers(true)}
                 disabled={loadingFlipp}
                 className="p-1.5 rounded-lg bg-[#151922] border border-[#252c3c] text-gray-400 hover:text-rose-400 hover:bg-[#1c2230] transition-colors shrink-0 cursor-pointer disabled:opacity-50"
-                title="手動即時更新優惠資料"
+                title="手動即時更新特惠傳單"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingFlipp ? 'animate-spin text-rose-400' : ''}`} />
               </button>
             </div>
 
-            {/* 子分頁按鈕下方資訊列：左側特惠數量與排序功能 + 右側貼邊的 valid_from - valid_to 與官網連結圖示按鈕 */}
-            <div className="flex items-center justify-between text-xs px-0.5 shrink-0">
-              {/* 左側：商品數量與排序功能 (名稱/價格) */}
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] text-gray-400">
+            {/* 子分頁按鈕下方資訊列：搜尋產品輸入欄 (在共x件商品左方) + 商品數量與排序 + 右側日期、Flipp傳單按鈕與官網按鈕 */}
+            <div className="flex items-center justify-between text-xs px-0.5 shrink-0 gap-2">
+              {/* 左側：搜尋產品輸入欄 (在「共 x 件商品」左方) + 數量 + 排序 */}
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <div className="relative shrink-0 w-28 sm:w-36">
+                  <input
+                    type="text"
+                    value={productSearchQuery}
+                    onChange={(e) => setProductSearchQuery(e.target.value)}
+                    placeholder="搜尋產品..."
+                    className="w-full bg-[#121620] border border-[#232b3d] rounded-lg pl-6 pr-5 py-1 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-rose-500/60"
+                  />
+                  <Search className="w-3 h-3 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  {productSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setProductSearchQuery('')}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-[11px] px-1 cursor-pointer"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+
+                <span className="text-[11px] text-gray-400 shrink-0">
                   共 <span className="font-mono font-bold text-white">{itemsList.length}</span> 件商品
                 </span>
-                <div className="flex items-center gap-1 bg-[#121620] border border-[#222938] rounded-md px-1.5 py-0.5 text-[10.5px]">
+
+                <div className="flex items-center gap-1 bg-[#121620] border border-[#222938] rounded-md px-1.5 py-0.5 text-[10.5px] shrink-0">
                   <span className="text-gray-500">排序:</span>
                   <select
                     value={flippItemSort}
@@ -7052,20 +7103,32 @@ function ExploreContent() {
                 </div>
               </div>
 
-              {/* 右側貼近界面邊：valid_from - valid_to (yyyy-MM-dd) + 官網連結圖示按鈕 */}
+              {/* 右側貼近界面邊：valid_from - valid_to (yyyy-MM-dd) + Flipp傳單圖示按鈕 + 官網連結圖示按鈕 */}
               {activeMerchant && (
-                <div className="flex items-center gap-1.5 text-right font-mono text-[11px] text-gray-400">
+                <div className="flex items-center gap-1.5 text-right font-mono text-[11px] text-gray-400 shrink-0">
                   {dateRangeStr && (
-                    <span className="text-gray-300">
+                    <span className="text-gray-300 whitespace-nowrap">
                       {dateRangeStr}
                     </span>
                   )}
-                  {activeMerchant.website_url && (
+                  {/* 前往官方網頁圖示按鈕左方加入打開 flipp 對應的 flyer 網頁的圖示按鈕 (Lucide: newspaper) */}
+                  {activeMerchant.flyer_id && (
                     <a
-                      href={activeMerchant.website_url}
+                      href={`https://flipp.com/en-ca/vancouver-bc/flyer/${activeMerchant.flyer_id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-1 rounded text-rose-400 hover:text-white hover:bg-rose-500/20 transition-colors shrink-0"
+                      className="p-1 rounded text-rose-400 hover:text-white hover:bg-rose-500/20 transition-colors shrink-0 cursor-pointer"
+                      title={`開啟 ${activeMerchant.merchant} 於 Flipp 的電子特惠傳單`}
+                    >
+                      <Newspaper className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                  {officialUrl && (
+                    <a
+                      href={officialUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1 rounded text-rose-400 hover:text-white hover:bg-rose-500/20 transition-colors shrink-0 cursor-pointer"
                       title={`前往 ${activeMerchant.merchant} 官方網站`}
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -7075,7 +7138,7 @@ function ExploreContent() {
               )}
             </div>
 
-            {/* 下方產品資料：網格清單列表式顯示 (每列 2 欄，保留英文，null 不顯示) */}
+            {/* 下方產品資料：網格清單列表式顯示 (寬度充足，名稱與日期完整顯示無截斷) */}
             <div className="flex-1 overflow-y-auto pr-0.5 custom-scrollbar">
               {loadingFlipp && flippMerchants.length === 0 ? (
                 <div className="py-16 flex flex-col items-center justify-center text-gray-400 gap-2">
@@ -7085,19 +7148,19 @@ function ExploreContent() {
               ) : itemsList.length === 0 ? (
                 <div className="py-16 flex flex-col items-center justify-center text-gray-500 gap-2 text-xs">
                   <ShoppingBag className="w-8 h-8 text-gray-600" />
-                  <span>{flippSearchQuery ? '查無符合條件的特惠商品' : '該超市暫無特惠商品資料'}</span>
-                  {flippSearchQuery && (
+                  <span>{productSearchQuery ? '查無符合條件的特惠商品' : '該超市暫無特惠商品資料'}</span>
+                  {productSearchQuery && (
                     <button
                       type="button"
-                      onClick={() => setFlippSearchQuery('')}
-                      className="text-rose-400 hover:underline text-[11px]"
+                      onClick={() => setProductSearchQuery('')}
+                      className="text-rose-400 hover:underline text-[11px] cursor-pointer"
                     >
-                      清除搜尋條件
+                      清除產品搜尋
                     </button>
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2">
                   {itemsList.map((item) => {
                     const itemValidRange = (item.valid_from && item.valid_to)
                       ? `${formatFlippDate(item.valid_from)} - ${formatFlippDate(item.valid_to)}`
@@ -7106,10 +7169,10 @@ function ExploreContent() {
                     return (
                       <div
                         key={item.id}
-                        className="bg-[#121620] hover:bg-[#161c29] border border-[#202738] hover:border-rose-500/40 rounded-xl p-2.5 flex gap-2.5 items-center transition-all shadow-sm"
+                        className="bg-[#121620] hover:bg-[#161c29] border border-[#202738] hover:border-rose-500/40 rounded-xl p-2.5 flex gap-3 items-center transition-all shadow-sm"
                       >
                         {/* 左側：圖片 cutout_image_url */}
-                        <div className="w-20 h-20 sm:w-22 sm:h-22 bg-white/5 rounded-lg flex items-center justify-center p-1 shrink-0 overflow-hidden border border-[#232a3a]">
+                        <div className="w-20 h-20 sm:w-22 sm:h-22 bg-white/5 rounded-lg flex items-center justify-center p-1.5 shrink-0 overflow-hidden border border-[#232a3a]">
                           {item.cutout_image_url ? (
                             <img
                               src={item.cutout_image_url}
@@ -7131,9 +7194,9 @@ function ExploreContent() {
                                 {item.brand}
                               </span>
                             )}
-                            {/* 名稱 name */}
+                            {/* 名稱 name (不加 line-clamp，保證完整顯示，自動斷行) */}
                             <span 
-                              className="text-xs font-bold text-gray-100 line-clamp-2 leading-snug break-words" 
+                              className="text-xs sm:text-[12.5px] font-bold text-gray-100 leading-snug break-words whitespace-normal" 
                               title={item.name}
                             >
                               {item.name || '--'}
@@ -7143,16 +7206,16 @@ function ExploreContent() {
                           <div className="flex flex-col min-w-0 mt-1">
                             {/* 價格 price (如為 null 則不顯示) */}
                             {item.price !== null && item.price !== undefined && item.price !== '' && (
-                              <div className="text-sm font-black font-mono text-emerald-400">
+                              <div className="text-sm sm:text-base font-black font-mono text-emerald-400">
                                 {String(item.price).startsWith('$') ? item.price : `$${item.price}`}
                               </div>
                             )}
 
-                            {/* 優惠日期 valid_from - valid_to */}
+                            {/* 優惠日期 valid_from - valid_to (不加 truncate，完整顯示無截斷) */}
                             {itemValidRange && (
-                              <div className="text-[9.5px] text-gray-400 font-mono flex items-center gap-1 mt-0.5">
-                                <Calendar className="w-3 h-3 text-gray-500 shrink-0" />
-                                <span className="truncate">{itemValidRange}</span>
+                              <div className="text-[10px] sm:text-[10.5px] text-gray-400 font-mono flex items-center gap-1.5 mt-0.5 leading-tight">
+                                <Calendar className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+                                <span className="whitespace-normal break-words">{itemValidRange}</span>
                               </div>
                             )}
                           </div>
@@ -11123,9 +11186,6 @@ function ExploreContent() {
           )}
           {activeTab === '311' && (
             <span className="text-[9.5px] text-gray-500">資料來源：City of Vancouver Open Data</span>
-          )}
-          {activeTab === 'shopping' && (
-            <span className="text-[9.5px] text-gray-500">資料來源：Flipp Enterprise Vancouver Supermarket Flyers (每 12 小時自動檢查更新)</span>
           )}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>

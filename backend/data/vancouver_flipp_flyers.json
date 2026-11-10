@@ -1,6 +1,6 @@
 {
   "success": true,
-  "updated_at": "2026-11-10T00:44:15.444Z",
+  "updated_at": "2026-11-09T18:05:56.155942-07:00",
   "postal_code": "V5P1W3",
   "total_merchants": 32,
   "merchants": [
@@ -12,6 +12,7 @@
       "flyer_name": "Indexed Weekly",
       "valid_from": "2026-11-05T00:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://88supermarket.ca",
       "items_count": 126,
       "items": [
         {
@@ -1158,6 +1159,7 @@
       "flyer_name": "Weekly Ad",
       "valid_from": "2026-11-05T03:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.buy-low.com",
       "items_count": 89,
       "items": [
         {
@@ -1971,6 +1973,7 @@
       "flyer_name": "Diwali Low Prices",
       "valid_from": "2026-10-15T03:00:00-04:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://chalofreshco.com",
       "items_count": 37,
       "items": [
         {
@@ -2316,6 +2319,7 @@
       "flyer_name": "November Heartbeet",
       "valid_from": "2026-11-01T00:00:00-04:00",
       "valid_to": "2026-11-30T23:59:59-05:00",
+      "website_url": "https://www.choicesmarkets.com",
       "items_count": 62,
       "items": [
         {
@@ -2886,6 +2890,7 @@
       "flyer_name": "Weekly",
       "valid_from": "2026-11-06T00:00:00-05:00",
       "valid_to": "2026-11-12T23:59:59-05:00",
+      "website_url": "https://chonglee.ca/",
       "items_count": 36,
       "items": [
         {
@@ -3222,6 +3227,7 @@
       "flyer_name": "Costco Grocery",
       "valid_from": "2026-11-09T00:00:00-05:00",
       "valid_to": "2026-11-15T23:59:59-05:00",
+      "website_url": "https://www.costco.ca",
       "items_count": 106,
       "items": [
         {
@@ -4188,6 +4194,7 @@
       "flyer_name": "Indexed Bi-weekly",
       "valid_from": "2026-11-05T00:00:00-05:00",
       "valid_to": "2026-11-18T23:59:59-05:00",
+      "website_url": "https://donaldsmarkethastings.com/",
       "items_count": 44,
       "items": [
         {
@@ -4596,6 +4603,7 @@
       "flyer_name": "Indexed Weekly",
       "valid_from": "2026-11-05T00:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://famousfoods.ca",
       "items_count": 16,
       "items": [
         {
@@ -4752,6 +4760,7 @@
       "flyer_name": "Weekly",
       "valid_from": "2026-11-06T00:00:00-05:00",
       "valid_to": "2026-11-12T23:59:59-05:00",
+      "website_url": "https://www.foodyworldrichmond.ca/",
       "items_count": 106,
       "items": [
         {
@@ -5718,6 +5727,7 @@
       "flyer_name": "FreshCo Weekly eFlyer 11/05 - 11/11",
       "valid_from": "2026-11-05T02:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://freshco.com",
       "items_count": 134,
       "items": [
         {
@@ -6936,6 +6946,7 @@
       "flyer_name": "Weekly Flyer - Valid Thursday, November 05 - Wednesday, November 11",
       "valid_from": "2026-11-05T00:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.freshmart.ca",
       "items_count": 141,
       "items": [
         {
@@ -8217,6 +8228,7 @@
       "flyer_name": "Indexed Weekly",
       "valid_from": "2026-11-06T00:00:00-05:00",
       "valid_to": "2026-11-12T23:59:59-05:00",
+      "website_url": "https://fruiticana.com",
       "items_count": 25,
       "items": [
         {
@@ -8454,6 +8466,7 @@
       "flyer_name": "Indexed Bi-Weekly",
       "valid_from": "2026-11-06T00:00:00-05:00",
       "valid_to": "2026-11-19T23:59:59-05:00",
+      "website_url": "https://greensmarket.ca",
       "items_count": 43,
       "items": [
         {
@@ -8853,6 +8866,7 @@
       "flyer_name": "Weekly Flyer - Valid Thursday, November 05 - Wednesday, November 11",
       "valid_from": "2026-11-05T03:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.loblaws.ca",
       "items_count": 249,
       "items": [
         {
@@ -11106,6 +11120,7 @@
       "flyer_name": "Weekly Flyer",
       "valid_from": "2026-11-05T00:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.mmfoodmarket.com",
       "items_count": 92,
       "items": [
         {
@@ -11946,6 +11961,7 @@
       "flyer_name": "Weekly Ad",
       "valid_from": "2026-11-05T03:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.nestersmarket.com",
       "items_count": 121,
       "items": [
         {
@@ -13047,6 +13063,7 @@
       "flyer_name": "Weekly Flyer - Valid Thursday, November 05 - Wednesday, November 11",
       "valid_from": "2026-11-05T03:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.nofrills.ca",
       "items_count": 277,
       "items": [
         {
@@ -15552,6 +15569,7 @@
       "flyer_name": "Weekly",
       "valid_from": "2026-11-03T00:00:00-05:00",
       "valid_to": "2026-11-09T23:59:59-05:00",
+      "website_url": "https://pommenaturalmarket.com",
       "items_count": 8,
       "items": [
         {
@@ -15636,6 +15654,7 @@
       "flyer_name": "Holiday Insiders Report",
       "valid_from": "2026-11-05T00:00:00-05:00",
       "valid_to": "2027-01-06T23:59:59-05:00",
+      "website_url": "https://www.pcoptimum.ca/presidents-choice",
       "items_count": 143,
       "items": [
         {
@@ -16935,6 +16954,7 @@
       "flyer_name": "Additional Deals",
       "valid_from": "2026-11-05T00:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.pricesmartfoods.com",
       "items_count": 131,
       "items": [
         {
@@ -18126,6 +18146,7 @@
       "flyer_name": "Weekly Flyer - Valid Thursday, November 05 - Wednesday, November 11",
       "valid_from": "2026-11-05T03:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.realcanadiansuperstore.ca",
       "items_count": 562,
       "items": [
         {
@@ -23196,6 +23217,7 @@
       "flyer_name": "Indexed",
       "valid_from": "2026-11-06T00:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://sabzimandicanada.com/",
       "items_count": 24,
       "items": [
         {
@@ -23424,6 +23446,7 @@
       "flyer_name": "Weekly eFlyer 11/05-11/11",
       "valid_from": "2026-11-05T02:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.safeway.ca",
       "items_count": 307,
       "items": [
         {
@@ -26199,6 +26222,7 @@
       "flyer_name": "Flyer",
       "valid_from": "2026-11-05T02:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.saveonfoods.com",
       "items_count": 307,
       "items": [
         {
@@ -28974,6 +28998,7 @@
       "flyer_name": "Subway",
       "valid_from": "2026-11-04T00:00:00-05:00",
       "valid_to": "2026-12-13T23:59:59-05:00",
+      "website_url": "https://www.subway.com",
       "items_count": 14,
       "items": [
         {
@@ -29112,6 +29137,7 @@
       "flyer_name": "Indexed Weekly",
       "valid_from": "2026-11-07T00:00:00-05:00",
       "valid_to": "2026-11-10T23:59:59-05:00",
+      "website_url": "https://supergrocer.ca",
       "items_count": 12,
       "items": [
         {
@@ -29232,6 +29258,7 @@
       "flyer_name": "Weekly Flyer - Valid Thursday, November 05 - Wednesday, November 11",
       "valid_from": "2026-11-05T03:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.coastgrocery.ca/gibsons",
       "items_count": 141,
       "items": [
         {
@@ -30513,6 +30540,7 @@
       "flyer_name": "Weekly Flyer",
       "valid_from": "2026-11-06T00:00:00-05:00",
       "valid_to": "2026-11-12T23:59:59-05:00",
+      "website_url": "https://www.tntsupermarket.com",
       "items_count": 142,
       "items": [
         {
@@ -31803,6 +31831,7 @@
       "flyer_name": "Weekly Flyer",
       "valid_from": "2026-11-05T02:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.urbanfare.com",
       "items_count": 23,
       "items": [
         {
@@ -32022,6 +32051,7 @@
       "flyer_name": "Flyer",
       "valid_from": "2026-11-05T02:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.walmart.ca",
       "items_count": 483,
       "items": [
         {
@@ -36381,6 +36411,7 @@
       "flyer_name": "Flyer - Valid Thursday, October 22 - Wednesday, November 11",
       "valid_from": "2026-10-22T00:00:00-04:00",
       "valid_to": "2026-11-12T02:59:59-05:00",
+      "website_url": "https://www.wholesaleclub.ca",
       "items_count": 168,
       "items": [
         {
@@ -37905,6 +37936,7 @@
       "flyer_name": "Weekly Flyer - Valid Thursday, November 05 - Wednesday, November 11",
       "valid_from": "2026-11-05T03:00:00-05:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
+      "website_url": "https://www.yourindependentgrocer.ca",
       "items_count": 250,
       "items": [
         {

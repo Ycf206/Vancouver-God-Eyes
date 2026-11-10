@@ -40,23 +40,28 @@ MERCHANT_WEBSITES: Dict[str, str] = {
     "PriceSmart foods": "https://www.pricesmartfoods.com",
     "Urban Fare": "https://www.urbanfare.com",
     "Wholesale Club and Club Entrepôt": "https://www.wholesaleclub.ca",
-    "Foody World": "https://foodyworld.com",
+    "Wholesale Club and Club Entrepot": "https://www.wholesaleclub.ca",
+    "Foody World": "https://www.foodyworldrichmond.ca/",
     "88 Supermarket": "https://88supermarket.ca",
-    "Chong Lee Market": "https://chongleemarket.com",
+    "Chong Lee Market": "https://chonglee.ca/",
     "Fruiticana": "https://fruiticana.com",
-    "SuperValu": "https://supervalu.ca",
+    "SuperValu": "https://www.coastgrocery.ca/gibsons",
+    "Supervalu": "https://www.coastgrocery.ca/gibsons",
     "Loblaws": "https://www.loblaws.ca",
     "M&M Food Market": "https://www.mmfoodmarket.com",
     "Your Independent Grocer": "https://www.yourindependentgrocer.ca",
     "Freshmart": "https://www.freshmart.ca",
-    "Donald's Market": "https://donaldsmarket.com",
+    "Donald's Market": "https://donaldsmarkethastings.com/",
+    "Donalds Market": "https://donaldsmarkethastings.com/",
     "Greens Organic and Natural Market": "https://greensmarket.ca",
     "Pomme Produce": "https://pommenaturalmarket.com",
     "Subway": "https://www.subway.com",
     "Super Grocer & Pharmacy": "https://supergrocer.ca",
     "Chalo FreshCo": "https://chalofreshco.com",
     "Famous Foods": "https://famousfoods.ca",
-    "Sabzi Mandi": "https://sabzimandisuperextra.com"
+    "Sabzi Mandi": "https://sabzimandicanada.com/",
+    "President's Choice": "https://www.pcoptimum.ca/presidents-choice",
+    "Presidents Choice": "https://www.pcoptimum.ca/presidents-choice"
 }
 
 def _atomic_write_json(target_path: str, payload: Any) -> None:

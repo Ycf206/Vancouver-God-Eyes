@@ -3,12 +3,12 @@
   "source_url": "https://www.translink.ca/alerts",
   "api_endpoint": "https://getaway.translink.ca/api/allalerts",
   "banner_endpoint": "https://getaway.translink.ca/api/webbanneralerts",
-  "updated_at": "2026-11-09T01:59:19.366371Z",
-  "total": 296,
+  "updated_at": "2026-11-10T00:59:06.881420Z",
+  "total": 334,
   "banners_count": 0,
   "alerts": [
     {
-      "id": "30f7cc39-4e2a-4714-b1c4-b3b991819fcf_skytrain_0",
+      "id": "c678d334-b63b-446f-8cb7-962294e63d7f_skytrain_0",
       "alertId": "454491",
       "is_banner": false,
       "mode": "skytrain",
@@ -27,17 +27,17 @@
       "endTime": null,
       "lastModified": "2025-12-09T02:39:47Z",
       "impacted_stations": [
-        "Braid",
         "Lougheed Town Centre",
-        "King George",
+        "Sapperton",
         "Production Way-University",
-        "Waterfront",
-        "Sapperton"
+        "Braid",
+        "King George",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "450d6315-9ebf-4b76-8c5d-476fb065e5e1_skytrain_1",
+      "id": "4338f57d-7549-4dab-aef3-ab21f8c34035_skytrain_1",
       "alertId": "511077",
       "is_banner": false,
       "mode": "skytrain",
@@ -62,7 +62,7 @@
       "closed": false
     },
     {
-      "id": "9b8e101e-361b-47c8-8e8c-ddf649c5b52a_bus_2",
+      "id": "75a1aaa4-ba5b-4086-9ee7-86124255bbb8_bus_2",
       "alertId": "690281",
       "is_banner": false,
       "mode": "bus",
@@ -84,7 +84,7 @@
       "closed": false
     },
     {
-      "id": "7152c88b-7701-499c-bfcd-4adb2d6acf9c_skytrain_3",
+      "id": "2f89a093-1977-43ac-9f70-6d6b3ccfa105_skytrain_3",
       "alertId": "692353",
       "is_banner": false,
       "mode": "skytrain",
@@ -104,14 +104,14 @@
       "lastModified": "2026-10-29T15:57:57Z",
       "impacted_stations": [
         "Langara-49th Avenue",
-        "Oakridge-41st Avenue",
         "King Edward",
+        "Oakridge-41st Avenue",
         "Oakridge-41st Avenue Station"
       ],
       "closed": false
     },
     {
-      "id": "4894e904-5b17-4c3b-940e-32effca7bcb8_skytrain_4",
+      "id": "8bbf4440-f585-434e-94ba-1a1bb4f3aabb_skytrain_4",
       "alertId": "721752",
       "is_banner": false,
       "mode": "skytrain",
@@ -130,15 +130,15 @@
       "endTime": null,
       "lastModified": "2026-07-08T11:30:00Z",
       "impacted_stations": [
-        "Templeton",
         "Sea Island Centre",
-        "Bridgeport",
-        "YVR-Airport"
+        "YVR-Airport",
+        "Templeton",
+        "Bridgeport"
       ],
       "closed": false
     },
     {
-      "id": "fe99fbab-0c9f-4c71-aa59-3df7bb270cb2_bus_5",
+      "id": "c7670e15-a38c-45b7-838a-958b56863e60_bus_5",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -160,7 +160,7 @@
       "closed": false
     },
     {
-      "id": "fe99fbab-0c9f-4c71-aa59-3df7bb270cb2_bus_6",
+      "id": "c7670e15-a38c-45b7-838a-958b56863e60_bus_6",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -182,7 +182,7 @@
       "closed": false
     },
     {
-      "id": "fe99fbab-0c9f-4c71-aa59-3df7bb270cb2_bus_7",
+      "id": "c7670e15-a38c-45b7-838a-958b56863e60_bus_7",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -204,7 +204,7 @@
       "closed": false
     },
     {
-      "id": "04d83299-ab4c-4d09-8094-3ca36aa1ef90_general_8",
+      "id": "3869dfca-3e27-4aa5-a20b-f56a66501daf_general_8",
       "alertId": "732579",
       "is_banner": false,
       "mode": "general",
@@ -231,7 +231,7 @@
       "closed": false
     },
     {
-      "id": "9d13abf0-1120-4744-aa74-f7ee1bb0a16e_general_9",
+      "id": "b3696d55-6a59-400b-87ce-79aca6b5a0d2_general_9",
       "alertId": "732581",
       "is_banner": false,
       "mode": "general",
@@ -257,7 +257,7 @@
       "closed": false
     },
     {
-      "id": "0c5b1c5a-3426-498f-87ee-fa0e0c0d7733_skytrain_10",
+      "id": "990ed1e9-b232-414d-bd8f-27d94cf8ed0f_skytrain_10",
       "alertId": "732594",
       "is_banner": false,
       "mode": "skytrain",
@@ -276,14 +276,14 @@
       "endTime": null,
       "lastModified": "2026-07-27T11:30:01Z",
       "impacted_stations": [
-        "VCC-Clark",
         "Gilmore",
+        "VCC-Clark",
         "Gilmore Station"
       ],
       "closed": false
     },
     {
-      "id": "f6f09007-617d-46ac-9628-825c8fd4c962_skytrain_11",
+      "id": "7a36ebae-27ad-4600-bc99-fc1af2b9934e_skytrain_11",
       "alertId": "732595",
       "is_banner": false,
       "mode": "skytrain",
@@ -308,7 +308,7 @@
       "closed": false
     },
     {
-      "id": "d65f8dbf-3dce-40b5-a61e-2f6035b14cf8_bus_12",
+      "id": "7af51fc7-c664-4262-94b0-c538add10699_bus_12",
       "alertId": "733912",
       "is_banner": false,
       "mode": "bus",
@@ -332,7 +332,7 @@
       "closed": false
     },
     {
-      "id": "0e77426b-8ba6-467a-9008-5d90ede1d5db_bus_13",
+      "id": "9cea842c-01bf-47a3-ad49-08a74a736864_bus_13",
       "alertId": "733913",
       "is_banner": false,
       "mode": "bus",
@@ -356,7 +356,7 @@
       "closed": false
     },
     {
-      "id": "449f3e2a-6adc-41ca-bcd7-dbfbf08136a6_bus_14",
+      "id": "35494702-8f24-41a5-a009-9c1d35c84bc8_bus_14",
       "alertId": "733914",
       "is_banner": false,
       "mode": "bus",
@@ -375,13 +375,13 @@
       "endTime": null,
       "lastModified": "2026-07-27T11:30:01Z",
       "impacted_stations": [
-        "Broadway-City Hall",
-        "Commercial-Broadway"
+        "Commercial-Broadway",
+        "Broadway-City Hall"
       ],
       "closed": false
     },
     {
-      "id": "1d98f28b-1b9b-4e88-912a-c1b6ddf57eef_bus_15",
+      "id": "2fefa9df-7f1d-482a-9736-be418c7fc705_bus_15",
       "alertId": "733923",
       "is_banner": false,
       "mode": "bus",
@@ -403,7 +403,7 @@
       "closed": false
     },
     {
-      "id": "58a524c9-2230-4603-be9a-a25b4cbd1bcc_bus_16",
+      "id": "d84ca4a7-3646-4119-9991-8ec556a27092_bus_16",
       "alertId": "736002",
       "is_banner": false,
       "mode": "bus",
@@ -422,13 +422,13 @@
       "endTime": null,
       "lastModified": "2026-07-27T11:30:03Z",
       "impacted_stations": [
-        "Coquitlam Central",
-        "Broadway-City Hall"
+        "Broadway-City Hall",
+        "Coquitlam Central"
       ],
       "closed": false
     },
     {
-      "id": "3492ffd4-bacb-46c7-8622-a4f23d7eb7b9_bus_17",
+      "id": "45fa01fa-9415-489a-9eb4-a0e3fd11b9d3_bus_17",
       "alertId": "736003",
       "is_banner": false,
       "mode": "bus",
@@ -450,7 +450,7 @@
       "closed": false
     },
     {
-      "id": "054add61-e048-4395-aa04-928ceffd85f6_skytrain_18",
+      "id": "fc947d94-3d21-470c-8143-3cdd44424fac_skytrain_18",
       "alertId": "736021",
       "is_banner": false,
       "mode": "skytrain",
@@ -469,13 +469,13 @@
       "endTime": null,
       "lastModified": "2026-10-23T04:29:14Z",
       "impacted_stations": [
-        "Waterfront",
-        "Commercial-Broadway"
+        "Commercial-Broadway",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "5b38d0ca-2dc2-400b-a336-7cd39a03e766_bus_19",
+      "id": "0158025c-3dce-47fa-85eb-ad9e62b674c7_bus_19",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -497,7 +497,7 @@
       "closed": false
     },
     {
-      "id": "5b38d0ca-2dc2-400b-a336-7cd39a03e766_bus_20",
+      "id": "0158025c-3dce-47fa-85eb-ad9e62b674c7_bus_20",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -519,7 +519,7 @@
       "closed": false
     },
     {
-      "id": "5b38d0ca-2dc2-400b-a336-7cd39a03e766_bus_21",
+      "id": "0158025c-3dce-47fa-85eb-ad9e62b674c7_bus_21",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -541,7 +541,7 @@
       "closed": false
     },
     {
-      "id": "9d9bcf97-a270-4ffe-b4cf-a6d4142b3987_bus_22",
+      "id": "55b2edfd-1375-497f-8198-2ecc17447acb_bus_22",
       "alertId": "744773",
       "is_banner": false,
       "mode": "bus",
@@ -563,7 +563,7 @@
       "closed": false
     },
     {
-      "id": "f8421f08-68fa-48a6-a940-65915a71d7b1_general_23",
+      "id": "ad19da69-d515-4786-a832-04f4226ab5c8_general_23",
       "alertId": "753796",
       "is_banner": false,
       "mode": "general",
@@ -589,7 +589,7 @@
       "closed": false
     },
     {
-      "id": "bb9a1060-c259-4a28-9134-3a2d8159bc39_bus_24",
+      "id": "faea2798-7ea5-4793-8763-c8b19e099604_bus_24",
       "alertId": "758059",
       "is_banner": false,
       "mode": "bus",
@@ -611,7 +611,7 @@
       "closed": false
     },
     {
-      "id": "f8da86e4-953d-4d05-a7a4-276d2d128dcc_bus_25",
+      "id": "5af0446d-1a51-4aea-b2be-3faa9356d6a0_bus_25",
       "alertId": "760546",
       "is_banner": false,
       "mode": "bus",
@@ -630,13 +630,13 @@
       "endTime": "2026-11-11T19:00:00Z",
       "lastModified": "2026-11-05T08:00:01Z",
       "impacted_stations": [
-        "Gateway",
-        "King George"
+        "King George",
+        "Gateway"
       ],
       "closed": false
     },
     {
-      "id": "cb774d97-b21f-42f4-b0d8-e3cab7f511e1_bus_26",
+      "id": "45c6f616-9ea3-4d32-ad3e-470477af4fa9_bus_26",
       "alertId": "760547",
       "is_banner": false,
       "mode": "bus",
@@ -662,7 +662,7 @@
       "closed": false
     },
     {
-      "id": "d053c0b4-2d2f-477b-bced-eea9a7b63987_bus_27",
+      "id": "a5452ef6-a83c-4935-8633-a47f99d65cfc_bus_27",
       "alertId": "760611",
       "is_banner": false,
       "mode": "bus",
@@ -684,7 +684,7 @@
       "closed": false
     },
     {
-      "id": "338ab260-e4fc-4a59-8207-d4f42b004f90_bus_28",
+      "id": "787a445e-d765-4231-bf24-14ace7e659e5_bus_28",
       "alertId": "760620",
       "is_banner": false,
       "mode": "bus",
@@ -706,7 +706,7 @@
       "closed": false
     },
     {
-      "id": "2aec51c3-4c40-4d75-92e6-e25175bfda5f_bus_29",
+      "id": "cd022735-6116-4fe7-b03a-44dbf22ae5c7_bus_29",
       "alertId": "760648",
       "is_banner": false,
       "mode": "bus",
@@ -728,7 +728,7 @@
       "closed": false
     },
     {
-      "id": "2a4b3be1-25b4-41f5-8d53-ae5c0dca8f4d_bus_30",
+      "id": "cfae616c-6419-4d17-a4c2-ddfd56003e5c_bus_30",
       "alertId": "760649",
       "is_banner": false,
       "mode": "bus",
@@ -750,7 +750,7 @@
       "closed": false
     },
     {
-      "id": "400c72f0-c18c-47a3-950b-1bb8a862a3c2_bus_31",
+      "id": "bb413b63-031a-477f-a771-0b1fb6ddc969_bus_31",
       "alertId": "760709",
       "is_banner": false,
       "mode": "bus",
@@ -775,7 +775,7 @@
       "closed": false
     },
     {
-      "id": "923c43f0-b0b5-40da-b5da-4e38f2659111_bus_32",
+      "id": "0c8d6ac6-5ebb-40e8-bc99-6a06ed47e792_bus_32",
       "alertId": "760917",
       "is_banner": false,
       "mode": "bus",
@@ -797,7 +797,7 @@
       "closed": false
     },
     {
-      "id": "923c43f0-b0b5-40da-b5da-4e38f2659111_bus_33",
+      "id": "0c8d6ac6-5ebb-40e8-bc99-6a06ed47e792_bus_33",
       "alertId": "760917",
       "is_banner": false,
       "mode": "bus",
@@ -819,7 +819,7 @@
       "closed": false
     },
     {
-      "id": "fe8f0910-812a-4ffb-9795-1cdb196776f6_bus_34",
+      "id": "6c56ae5a-af35-457d-851a-1db4771bd27a_bus_34",
       "alertId": "761074",
       "is_banner": false,
       "mode": "bus",
@@ -843,7 +843,7 @@
       "closed": false
     },
     {
-      "id": "59e6116c-890c-43ed-882e-8817168c578b_bus_35",
+      "id": "f628b3ee-1d92-48e8-a8e8-c3ea5a6bc090_bus_35",
       "alertId": "761093",
       "is_banner": false,
       "mode": "bus",
@@ -867,7 +867,7 @@
       "closed": false
     },
     {
-      "id": "28c56a09-7926-4299-bb74-6d03a402c072_bus_36",
+      "id": "db9a12eb-d2f9-4462-a8d5-1c95f07e52f5_bus_36",
       "alertId": "761094",
       "is_banner": false,
       "mode": "bus",
@@ -886,13 +886,13 @@
       "endTime": "2026-11-11T20:00:00Z",
       "lastModified": "2026-11-05T08:00:01Z",
       "impacted_stations": [
-        "Granville",
-        "Bridgeport"
+        "Bridgeport",
+        "Granville"
       ],
       "closed": false
     },
     {
-      "id": "a7c9dee7-396e-4546-96b6-c43492858ea2_bus_37",
+      "id": "13d7bbdc-7581-40f2-8af3-27a33f29ef01_bus_37",
       "alertId": "761095",
       "is_banner": false,
       "mode": "bus",
@@ -916,7 +916,7 @@
       "closed": false
     },
     {
-      "id": "beed6e23-05a5-4196-8a07-f863b8f819a4_bus_38",
+      "id": "044069c4-02b4-4278-9af9-6b6fa15da595_bus_38",
       "alertId": "761096",
       "is_banner": false,
       "mode": "bus",
@@ -941,7 +941,7 @@
       "closed": false
     },
     {
-      "id": "5b64cdd9-d426-4734-bd93-87fe6be79fdb_bus_39",
+      "id": "20362d2f-e38c-4601-9710-56081802200b_bus_39",
       "alertId": "761389",
       "is_banner": false,
       "mode": "bus",
@@ -965,7 +965,7 @@
       "closed": false
     },
     {
-      "id": "83c8953e-140c-4175-8b6d-3fceadc5365e_bus_40",
+      "id": "ed44d0ec-4490-4768-bb42-fa06e093b5af_bus_40",
       "alertId": "761406",
       "is_banner": false,
       "mode": "bus",
@@ -989,7 +989,7 @@
       "closed": false
     },
     {
-      "id": "c82583bc-8d38-4e90-9866-91162389b8a5_bus_41",
+      "id": "7a41f0b7-0205-4590-82a0-b64c92882df4_bus_41",
       "alertId": "761414",
       "is_banner": false,
       "mode": "bus",
@@ -1014,7 +1014,7 @@
       "closed": false
     },
     {
-      "id": "83d636eb-ac2b-4b36-af39-589fe34411ff_bus_42",
+      "id": "44f2c15e-0fae-4181-89cc-8298aa7d6535_bus_42",
       "alertId": "761417",
       "is_banner": false,
       "mode": "bus",
@@ -1038,7 +1038,7 @@
       "closed": false
     },
     {
-      "id": "471520b9-1530-4295-bf50-13f644fd6143_bus_43",
+      "id": "98a1b74c-561c-4252-8625-b5599ac88403_bus_43",
       "alertId": "761482",
       "is_banner": false,
       "mode": "bus",
@@ -1060,7 +1060,7 @@
       "closed": false
     },
     {
-      "id": "018f1841-37cb-4135-9212-7361ff50ed9a_bus_44",
+      "id": "34289c60-1ee4-4388-b47b-968232d643f9_bus_44",
       "alertId": "761488",
       "is_banner": false,
       "mode": "bus",
@@ -1082,7 +1082,7 @@
       "closed": false
     },
     {
-      "id": "c00e8885-4635-45e8-88c4-ff733824038d_bus_45",
+      "id": "647014f4-30f1-4666-b667-9f9b396b7b87_bus_45",
       "alertId": "761489",
       "is_banner": false,
       "mode": "bus",
@@ -1104,7 +1104,7 @@
       "closed": false
     },
     {
-      "id": "9e7b5eed-3fa2-445f-b80e-048815c06dba_bus_46",
+      "id": "fd56613e-262b-4fdf-8882-daba9054f71d_bus_46",
       "alertId": "761490",
       "is_banner": false,
       "mode": "bus",
@@ -1126,7 +1126,7 @@
       "closed": false
     },
     {
-      "id": "6385115e-7f10-42b6-9a12-1bba4aaa8bd5_bus_47",
+      "id": "47f0cf6f-e2bc-4c56-9002-d33ef78ce27f_bus_47",
       "alertId": "761491",
       "is_banner": false,
       "mode": "bus",
@@ -1148,7 +1148,7 @@
       "closed": false
     },
     {
-      "id": "c4f679f9-bf53-416f-a936-41f598e016cc_bus_48",
+      "id": "68f38cb3-9ec3-4bf1-ac0f-038afb0cfe36_bus_48",
       "alertId": "761572",
       "is_banner": false,
       "mode": "bus",
@@ -1170,7 +1170,7 @@
       "closed": false
     },
     {
-      "id": "3f5db0a4-0c78-44f4-856d-438b6ef8b40b_bus_49",
+      "id": "799502b7-97a8-4e89-a439-e3e8a5023f96_bus_49",
       "alertId": "761576",
       "is_banner": false,
       "mode": "bus",
@@ -1192,7 +1192,7 @@
       "closed": false
     },
     {
-      "id": "2b373f62-c056-4a7c-88b9-da6ac9e4fdef_bus_50",
+      "id": "aaa6eea8-37ec-4251-bf7a-7a8af4d4c3f1_bus_50",
       "alertId": "761792",
       "is_banner": false,
       "mode": "bus",
@@ -1216,7 +1216,7 @@
       "closed": false
     },
     {
-      "id": "8d30e7fb-51a9-4f44-a79b-643e7279cb8a_bus_51",
+      "id": "6bc21aa9-40e6-439a-83b3-e0cb4f7e7f01_bus_51",
       "alertId": "761793",
       "is_banner": false,
       "mode": "bus",
@@ -1238,7 +1238,7 @@
       "closed": false
     },
     {
-      "id": "c9346cca-7cde-41aa-86c6-03f81da8f972_general_52",
+      "id": "cd420463-aefe-4750-a8c3-891348cfcdef_general_52",
       "alertId": "762251",
       "is_banner": false,
       "mode": "general",
@@ -1257,15 +1257,15 @@
       "endTime": null,
       "lastModified": "2026-10-27T11:30:02Z",
       "impacted_stations": [
-        "Waterfront",
         "Surrey Central",
+        "Waterfront",
         "King George",
         "King George Station"
       ],
       "closed": false
     },
     {
-      "id": "652ca2f2-3c6b-45e7-a9c2-f170206c6cc4_bus_53",
+      "id": "275ca0ad-5aa8-4685-ad5d-31b43c4aff00_bus_53",
       "alertId": "762705",
       "is_banner": false,
       "mode": "bus",
@@ -1287,7 +1287,7 @@
       "closed": false
     },
     {
-      "id": "8132acf2-577d-4522-9952-31487131424d_bus_54",
+      "id": "34fbba7f-b665-41b6-a5f7-2e56ac66f89b_bus_54",
       "alertId": "762706",
       "is_banner": false,
       "mode": "bus",
@@ -1309,7 +1309,7 @@
       "closed": false
     },
     {
-      "id": "bb2dae9e-8498-4c9d-86c0-ec8c6b7bd611_bus_55",
+      "id": "9614be1f-fe7f-4fb0-b6b0-1101243eb6fa_bus_55",
       "alertId": "762884",
       "is_banner": false,
       "mode": "bus",
@@ -1331,7 +1331,7 @@
       "closed": false
     },
     {
-      "id": "bb2dae9e-8498-4c9d-86c0-ec8c6b7bd611_bus_56",
+      "id": "9614be1f-fe7f-4fb0-b6b0-1101243eb6fa_bus_56",
       "alertId": "762884",
       "is_banner": false,
       "mode": "bus",
@@ -1353,7 +1353,7 @@
       "closed": false
     },
     {
-      "id": "2f410aae-d23c-47de-bc95-6fc8aa8c2cb1_bus_57",
+      "id": "d0a28e82-9db8-4694-8722-88b26197c4a9_bus_57",
       "alertId": "762894",
       "is_banner": false,
       "mode": "bus",
@@ -1378,29 +1378,7 @@
       "closed": false
     },
     {
-      "id": "b860193e-7ac2-41f1-ab1b-c9d289b32bf0_bus_58",
-      "alertId": "762906",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "17",
-      "routeLongName": "Oak",
-      "effect": "INFORMATIONAL",
-      "effect_zh": "營運警報",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Informational alert for route 17 Downtown",
-      "header": "Stop 50743 Northbound Oak St @ W 67 Ave will be in service beginning Mon, Oct 26.",
-      "description": "",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-10-26T11:30:00Z",
-      "endTime": null,
-      "lastModified": "2026-11-02T12:30:01Z",
-      "impacted_stations": [],
-      "closed": false
-    },
-    {
-      "id": "49b1d1e9-4235-4ab7-b40e-ad9787fd5552_bus_59",
+      "id": "8155abb9-c701-4c75-857e-9a287f75d8ed_bus_58",
       "alertId": "762925",
       "is_banner": false,
       "mode": "bus",
@@ -1422,7 +1400,7 @@
       "closed": false
     },
     {
-      "id": "49b1d1e9-4235-4ab7-b40e-ad9787fd5552_bus_60",
+      "id": "8155abb9-c701-4c75-857e-9a287f75d8ed_bus_59",
       "alertId": "762925",
       "is_banner": false,
       "mode": "bus",
@@ -1444,7 +1422,7 @@
       "closed": false
     },
     {
-      "id": "c36115ab-63eb-4051-9aca-ca249d854beb_bus_61",
+      "id": "f3646deb-6f6e-45ee-90b3-f2622b8836a2_bus_60",
       "alertId": "762935",
       "is_banner": false,
       "mode": "bus",
@@ -1466,7 +1444,7 @@
       "closed": false
     },
     {
-      "id": "d8e90d94-2c2a-46cd-9f3e-18fced39a0d5_bus_62",
+      "id": "86ad052a-e189-4df7-ab40-a293f750159a_bus_61",
       "alertId": "763024",
       "is_banner": false,
       "mode": "bus",
@@ -1483,12 +1461,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-10-20T11:30:00Z",
       "endTime": "2026-11-10T12:00:00Z",
-      "lastModified": "2026-11-04T08:00:01Z",
+      "lastModified": "2026-11-09T08:00:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "389be6bd-d5bf-4b6b-bd26-723ed46e51ad_bus_63",
+      "id": "a5058943-85ad-4aae-b443-380c8059e304_bus_62",
       "alertId": "763377",
       "is_banner": false,
       "mode": "bus",
@@ -1503,14 +1481,14 @@
       "header": "Stop 59121 Eastbound Steveston Hwy @ Trimaran Gate is temporarily closed from Mon Oct 19 to Fri Nov 13 (weekdays only) from 7:00 AM to 5:30 PM daily due to construction.",
       "description": "Affected routes:\r\n407",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T14:00:00Z",
+      "startTime": "2026-11-10T14:00:00Z",
       "endTime": "2026-11-13T00:30:00Z",
-      "lastModified": "2026-11-08T08:00:01Z",
+      "lastModified": "2026-11-10T00:45:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "d1903467-bf4b-4d43-817a-3a132b95cd63_bus_64",
+      "id": "9827b3d3-a9cf-4d61-b4e2-86e46266e473_bus_63",
       "alertId": "763705",
       "is_banner": false,
       "mode": "bus",
@@ -1532,7 +1510,7 @@
       "closed": false
     },
     {
-      "id": "9a4321fa-00db-451d-8074-d53afa20b5ac_bus_65",
+      "id": "f148080b-f3c4-49b7-bbef-52efccea5b50_bus_64",
       "alertId": "763756",
       "is_banner": false,
       "mode": "bus",
@@ -1554,7 +1532,7 @@
       "closed": false
     },
     {
-      "id": "ab988e69-240b-4231-906e-6d7661e7b2ca_bus_66",
+      "id": "eb39e0ac-e136-41b4-91f5-876630d8e148_bus_65",
       "alertId": "763836",
       "is_banner": false,
       "mode": "bus",
@@ -1578,7 +1556,7 @@
       "closed": false
     },
     {
-      "id": "00dc8710-fdf4-49ce-8392-720a3ccf6a94_bus_67",
+      "id": "239aec36-d642-4046-8adc-debb89f26570_bus_66",
       "alertId": "763908",
       "is_banner": false,
       "mode": "bus",
@@ -1602,7 +1580,7 @@
       "closed": false
     },
     {
-      "id": "65dd1b9d-876c-48e0-a64d-0c6d04da7ac7_bus_68",
+      "id": "a88e9e75-e12b-41db-9294-4b2c75c48793_bus_67",
       "alertId": "763915",
       "is_banner": false,
       "mode": "bus",
@@ -1624,7 +1602,7 @@
       "closed": false
     },
     {
-      "id": "beaf7dbf-f151-45d4-ac00-15ffac34d855_bus_69",
+      "id": "247376d8-3896-465c-914d-2b4ddf9e80c1_bus_68",
       "alertId": "763918",
       "is_banner": false,
       "mode": "bus",
@@ -1648,7 +1626,7 @@
       "closed": false
     },
     {
-      "id": "198f54b4-2480-4037-94cb-6bab6f362d7b_bus_70",
+      "id": "81af34a4-67ca-46bb-a4df-b2b7fcf7726f_bus_69",
       "alertId": "763921",
       "is_banner": false,
       "mode": "bus",
@@ -1672,7 +1650,7 @@
       "closed": false
     },
     {
-      "id": "ff60c5f7-36aa-4a2a-a435-981f26e9f9b4_bus_71",
+      "id": "47c24ed9-f4a8-4ef9-8f1b-aca1abf0fd9a_bus_70",
       "alertId": "763983",
       "is_banner": false,
       "mode": "bus",
@@ -1694,7 +1672,7 @@
       "closed": false
     },
     {
-      "id": "9a69816a-6e26-4219-9d36-b5b6c3bef279_bus_72",
+      "id": "849f8344-6927-4918-9ea7-8f44c04be361_bus_71",
       "alertId": "763984",
       "is_banner": false,
       "mode": "bus",
@@ -1716,7 +1694,7 @@
       "closed": false
     },
     {
-      "id": "30ab8d61-ada0-4861-bae1-8445c1f2dcec_bus_73",
+      "id": "6dae5bcd-72db-4517-8e3b-1c5cdde0b26f_bus_72",
       "alertId": "764111",
       "is_banner": false,
       "mode": "bus",
@@ -1738,7 +1716,7 @@
       "closed": false
     },
     {
-      "id": "081a232b-9c37-4308-b850-8c2e1447da3c_bus_74",
+      "id": "91e03000-4311-4228-8f7e-c078ae8f7a59_bus_73",
       "alertId": "764166",
       "is_banner": false,
       "mode": "bus",
@@ -1762,7 +1740,7 @@
       "closed": false
     },
     {
-      "id": "453c8b00-a44e-4c63-8900-2965bf724016_bus_75",
+      "id": "3f8e2d17-5023-416e-992c-9ad3fd318883_bus_74",
       "alertId": "764167",
       "is_banner": false,
       "mode": "bus",
@@ -1786,7 +1764,7 @@
       "closed": false
     },
     {
-      "id": "453fa71a-1e1a-47a3-8679-624d1ea59b33_bus_76",
+      "id": "c6f99281-c8cf-4edc-8a73-4bdab399e8d7_bus_75",
       "alertId": "764368",
       "is_banner": false,
       "mode": "bus",
@@ -1808,7 +1786,7 @@
       "closed": false
     },
     {
-      "id": "e5ca4104-0240-42cb-96a8-452c3c087511_bus_77",
+      "id": "52fef370-209f-462e-a6c9-67d76aa273d3_bus_76",
       "alertId": "764371",
       "is_banner": false,
       "mode": "bus",
@@ -1830,7 +1808,7 @@
       "closed": false
     },
     {
-      "id": "6ead6764-0603-495c-aa6b-cba451602ee3_bus_78",
+      "id": "6366260a-5e97-4f9d-95a6-51d06e6cd00b_bus_77",
       "alertId": "764372",
       "is_banner": false,
       "mode": "bus",
@@ -1854,7 +1832,7 @@
       "closed": false
     },
     {
-      "id": "c079cc0d-8550-4491-bb82-5e0c7afbb407_bus_79",
+      "id": "d679ff9f-d534-4afd-9184-0cb9ff965272_bus_78",
       "alertId": "764373",
       "is_banner": false,
       "mode": "bus",
@@ -1878,7 +1856,7 @@
       "closed": false
     },
     {
-      "id": "e78ac04f-10f2-41c4-b524-16b182cf2e36_bus_80",
+      "id": "0b373036-ecd2-4aff-b9dd-023918225dd7_bus_79",
       "alertId": "764381",
       "is_banner": false,
       "mode": "bus",
@@ -1900,7 +1878,7 @@
       "closed": false
     },
     {
-      "id": "9f9f23bc-9006-4099-8ace-bd151435cd98_bus_81",
+      "id": "43c1fa03-78ea-4f8a-b51d-6edff6c40f24_bus_80",
       "alertId": "764382",
       "is_banner": false,
       "mode": "bus",
@@ -1922,7 +1900,7 @@
       "closed": false
     },
     {
-      "id": "004234cb-a500-4fa8-9a95-cf7d695f4b3d_bus_82",
+      "id": "9837913d-6bb2-47e6-af48-97b428ae3230_bus_81",
       "alertId": "764390",
       "is_banner": false,
       "mode": "bus",
@@ -1944,7 +1922,7 @@
       "closed": false
     },
     {
-      "id": "4ed94018-973e-4087-845b-433fdc54e1d8_bus_83",
+      "id": "03946857-cc9e-46e0-9e7f-7358f62336c0_bus_82",
       "alertId": "764391",
       "is_banner": false,
       "mode": "bus",
@@ -1966,7 +1944,7 @@
       "closed": false
     },
     {
-      "id": "7feeb670-fd18-45ce-b8e2-284b0a577e36_bus_84",
+      "id": "aabdd4cf-a18d-4505-b724-c5e7c4064f3a_bus_83",
       "alertId": "764480",
       "is_banner": false,
       "mode": "bus",
@@ -1991,7 +1969,7 @@
       "closed": false
     },
     {
-      "id": "690b73c7-57d8-4d89-8b51-72e1c83550b2_bus_85",
+      "id": "fd7c4d90-ac42-4e63-b60c-da4d0f940b66_bus_84",
       "alertId": "764506",
       "is_banner": false,
       "mode": "bus",
@@ -2015,7 +1993,7 @@
       "closed": false
     },
     {
-      "id": "115a5616-2e34-4f7b-b2e8-674de3b66c01_bus_86",
+      "id": "0e13d07a-a62a-495d-8120-82b4be3b8300_bus_85",
       "alertId": "764508",
       "is_banner": false,
       "mode": "bus",
@@ -2039,7 +2017,7 @@
       "closed": false
     },
     {
-      "id": "c10421ef-54f5-4231-8b58-33bf0ec7fc39_bus_87",
+      "id": "884f9659-3625-4d9b-8433-21a328c3bf3c_bus_86",
       "alertId": "764553",
       "is_banner": false,
       "mode": "bus",
@@ -2061,7 +2039,7 @@
       "closed": false
     },
     {
-      "id": "a73b89a2-7941-4d78-879e-cda9416f698b_bus_88",
+      "id": "d2aab2f8-08a3-4971-bada-75fc3eb550c0_bus_87",
       "alertId": "764569",
       "is_banner": false,
       "mode": "bus",
@@ -2086,7 +2064,7 @@
       "closed": false
     },
     {
-      "id": "6b2ac865-03e0-47f7-88e9-8eb7c0253e5f_bus_89",
+      "id": "e255e21a-5562-4e16-a01e-fb61bf5d85e0_bus_88",
       "alertId": "764576",
       "is_banner": false,
       "mode": "bus",
@@ -2111,7 +2089,7 @@
       "closed": false
     },
     {
-      "id": "89fc3593-26d1-438e-b175-d51b73891a59_general_90",
+      "id": "fea86d07-df62-444b-8b34-52505b177efa_general_89",
       "alertId": "764978",
       "is_banner": false,
       "mode": "general",
@@ -2130,65 +2108,15 @@
       "endTime": null,
       "lastModified": "2026-11-03T11:00:00Z",
       "impacted_stations": [
-        "Gilmore",
-        "Metrotown",
         "Patterson",
+        "Metrotown",
+        "Gilmore",
         "Patterson Station"
       ],
       "closed": false
     },
     {
-      "id": "e73dc397-232d-4a38-abc4-83afad47fbf3_bus_91",
-      "alertId": "765083",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "25",
-      "routeLongName": "King Edward",
-      "effect": "INFORMATIONAL",
-      "effect_zh": "營運警報",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Informational alert for route 25 Brentwood Station",
-      "header": "Stop 51525 Eastbound King Edward Ave @ Knight St will be back in service beginning Monday October 26.",
-      "description": "",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-10-26T11:30:00Z",
-      "endTime": null,
-      "lastModified": "2026-11-02T12:30:01Z",
-      "impacted_stations": [
-        "King Edward",
-        "Brentwood Town Centre"
-      ],
-      "closed": false
-    },
-    {
-      "id": "af6395a2-e59a-46ad-8c3e-2559c1c5e45a_bus_92",
-      "alertId": "765084",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "25",
-      "routeLongName": "King Edward",
-      "effect": "INFORMATIONAL",
-      "effect_zh": "營運警報",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Informational alert for route 25 Brentwood Station",
-      "header": "25 Brentwood detour via King Edward, Knight, Kingsway will return to regular route via King Edward, Kingsway beginning Monday October 26.",
-      "description": "",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-10-26T11:30:00Z",
-      "endTime": null,
-      "lastModified": "2026-11-02T12:30:01Z",
-      "impacted_stations": [
-        "King Edward",
-        "Brentwood Town Centre"
-      ],
-      "closed": false
-    },
-    {
-      "id": "ff0760c0-72b7-48e3-9759-9ee74548bd0c_bus_93",
+      "id": "c7a5dc3b-d656-4c88-9c98-7ed2441b6334_bus_90",
       "alertId": "765089",
       "is_banner": false,
       "mode": "bus",
@@ -2210,7 +2138,7 @@
       "closed": false
     },
     {
-      "id": "ff0760c0-72b7-48e3-9759-9ee74548bd0c_bus_94",
+      "id": "c7a5dc3b-d656-4c88-9c98-7ed2441b6334_bus_91",
       "alertId": "765089",
       "is_banner": false,
       "mode": "bus",
@@ -2232,7 +2160,7 @@
       "closed": false
     },
     {
-      "id": "ff0760c0-72b7-48e3-9759-9ee74548bd0c_bus_95",
+      "id": "c7a5dc3b-d656-4c88-9c98-7ed2441b6334_bus_92",
       "alertId": "765089",
       "is_banner": false,
       "mode": "bus",
@@ -2254,7 +2182,7 @@
       "closed": false
     },
     {
-      "id": "1e08dc43-ac2c-401e-b3d1-ec0416728f22_bus_96",
+      "id": "327df757-9afb-43ce-8f4d-42fea183e329_bus_93",
       "alertId": "765331",
       "is_banner": false,
       "mode": "bus",
@@ -2276,7 +2204,7 @@
       "closed": false
     },
     {
-      "id": "40c34eba-f296-432f-9281-3f9359e910b4_bus_97",
+      "id": "354cfa20-00b4-4d97-b115-d3debcf16c94_bus_94",
       "alertId": "765929",
       "is_banner": false,
       "mode": "bus",
@@ -2298,7 +2226,7 @@
       "closed": false
     },
     {
-      "id": "9bf07f86-e247-4961-9da2-4c59718eff45_bus_98",
+      "id": "7556465e-fd2e-4ac9-b5bb-ca4e713b9d0f_bus_95",
       "alertId": "765964",
       "is_banner": false,
       "mode": "bus",
@@ -2317,14 +2245,14 @@
       "endTime": "2026-11-11T20:00:00Z",
       "lastModified": "2026-11-05T08:00:02Z",
       "impacted_stations": [
+        "Surrey Central",
         "New Westminster",
-        "Columbia",
-        "Surrey Central"
+        "Columbia"
       ],
       "closed": false
     },
     {
-      "id": "22c03171-b2f5-4dd2-897b-c542ba846a69_bus_99",
+      "id": "92ef5812-b500-418e-b060-3a9dc000dad8_bus_96",
       "alertId": "765966",
       "is_banner": false,
       "mode": "bus",
@@ -2343,13 +2271,13 @@
       "endTime": "2026-11-11T20:00:00Z",
       "lastModified": "2026-11-05T08:00:02Z",
       "impacted_stations": [
-        "New Westminster",
-        "Surrey Central"
+        "Surrey Central",
+        "New Westminster"
       ],
       "closed": false
     },
     {
-      "id": "c719ceee-e082-4b10-9c97-e1b1c2d7fd29_bus_100",
+      "id": "9fd079fc-0b5d-45b4-ba7f-9bd9da119fde_bus_97",
       "alertId": "765977",
       "is_banner": false,
       "mode": "bus",
@@ -2373,7 +2301,7 @@
       "closed": false
     },
     {
-      "id": "73c64986-c4b9-4373-9722-bff145254cdc_bus_101",
+      "id": "387459aa-e9d9-4978-87ac-29fda1438b85_bus_98",
       "alertId": "765980",
       "is_banner": false,
       "mode": "bus",
@@ -2398,7 +2326,7 @@
       "closed": false
     },
     {
-      "id": "99d8a287-5995-4c76-bffb-1c621e90f14d_bus_102",
+      "id": "66e4ea46-e042-4ec9-a2ef-95b6a7c7ea70_bus_99",
       "alertId": "766002",
       "is_banner": false,
       "mode": "bus",
@@ -2420,7 +2348,7 @@
       "closed": false
     },
     {
-      "id": "9fe68472-c3ee-4b9f-8cfa-d9cc226de6eb_bus_103",
+      "id": "a9e4f678-9c61-4c5d-8d6e-73ba3f9ebb20_bus_100",
       "alertId": "766006",
       "is_banner": false,
       "mode": "bus",
@@ -2442,7 +2370,7 @@
       "closed": false
     },
     {
-      "id": "863efb4a-5001-4ae0-93f2-3f67a7fa167c_bus_104",
+      "id": "603e1fc9-1d26-43de-a0ba-025ae7930563_bus_101",
       "alertId": "766008",
       "is_banner": false,
       "mode": "bus",
@@ -2464,7 +2392,7 @@
       "closed": false
     },
     {
-      "id": "9adcf937-954f-4eb4-a772-c52a87b294cc_bus_105",
+      "id": "134f6f94-379c-492b-9854-298f43ce65fe_bus_102",
       "alertId": "766009",
       "is_banner": false,
       "mode": "bus",
@@ -2488,7 +2416,7 @@
       "closed": false
     },
     {
-      "id": "af89f7b9-f272-43c5-abdf-38c03a5df975_bus_106",
+      "id": "14d0c6a8-d6c3-4114-ba90-41ccfd724cb2_bus_103",
       "alertId": "766145",
       "is_banner": false,
       "mode": "bus",
@@ -2510,7 +2438,7 @@
       "closed": false
     },
     {
-      "id": "d0306481-ebbd-4dba-9c8c-cda53d816570_bus_107",
+      "id": "f7e87b4d-ae6c-40d5-8f50-f861bd227413_bus_104",
       "alertId": "766203",
       "is_banner": false,
       "mode": "bus",
@@ -2527,12 +2455,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-10-28T15:00:00Z",
       "endTime": "2026-11-10T23:00:00Z",
-      "lastModified": "2026-11-04T08:00:01Z",
+      "lastModified": "2026-11-09T08:00:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "013028af-e50b-42ae-8691-d2950b80a9ee_bus_108",
+      "id": "567b30bc-007e-4050-a139-3f78a902a471_bus_105",
       "alertId": "766219",
       "is_banner": false,
       "mode": "bus",
@@ -2554,7 +2482,7 @@
       "closed": false
     },
     {
-      "id": "c31d81dd-c1cf-4569-a813-457cd04d7ccb_bus_109",
+      "id": "f426b1e2-2fc3-4ab5-82ac-747e08c0c3ba_bus_106",
       "alertId": "766220",
       "is_banner": false,
       "mode": "bus",
@@ -2578,7 +2506,7 @@
       "closed": false
     },
     {
-      "id": "abee1a23-7219-41e8-afa8-87c9f4423984_bus_110",
+      "id": "371f1f75-2c90-49e5-837d-a4e498bee346_bus_107",
       "alertId": "766221",
       "is_banner": false,
       "mode": "bus",
@@ -2600,7 +2528,7 @@
       "closed": false
     },
     {
-      "id": "33055911-a2ae-4040-a547-aefe635fb127_bus_111",
+      "id": "bcb6ace5-8a62-4bd9-a6af-dfd836d41cec_bus_108",
       "alertId": "766223",
       "is_banner": false,
       "mode": "bus",
@@ -2622,7 +2550,7 @@
       "closed": false
     },
     {
-      "id": "d4947d78-ccb7-4c56-ad51-72c25100f64e_bus_112",
+      "id": "8bf36779-e76b-4cf2-8efe-71c39304829c_bus_109",
       "alertId": "766224",
       "is_banner": false,
       "mode": "bus",
@@ -2644,7 +2572,7 @@
       "closed": false
     },
     {
-      "id": "b20c6940-f4c3-412d-9b07-e7169257bddd_bus_113",
+      "id": "6527c2dd-832c-4e1d-9140-b28148875954_bus_110",
       "alertId": "766225",
       "is_banner": false,
       "mode": "bus",
@@ -2666,7 +2594,7 @@
       "closed": false
     },
     {
-      "id": "df7ef4bc-3b83-49cf-bc04-af1f2f1f9236_bus_114",
+      "id": "66ee9302-e476-40fb-a625-12401a9458ff_bus_111",
       "alertId": "766227",
       "is_banner": false,
       "mode": "bus",
@@ -2688,7 +2616,7 @@
       "closed": false
     },
     {
-      "id": "271c249e-c0f0-425e-a77a-e9a1beba6339_bus_115",
+      "id": "6e206146-1b4d-4229-b3c1-d43580fe6822_bus_112",
       "alertId": "766228",
       "is_banner": false,
       "mode": "bus",
@@ -2710,7 +2638,7 @@
       "closed": false
     },
     {
-      "id": "79f7da30-83da-42a5-a140-b47fad60ee73_bus_116",
+      "id": "013acad2-a8ea-4252-b7af-05c9f3aca033_bus_113",
       "alertId": "766230",
       "is_banner": false,
       "mode": "bus",
@@ -2734,7 +2662,7 @@
       "closed": false
     },
     {
-      "id": "8bc2dd6c-00e7-464d-b6be-c52761fad91f_bus_117",
+      "id": "3e024670-79be-41d2-902b-7df7dfc97e4b_bus_114",
       "alertId": "766234",
       "is_banner": false,
       "mode": "bus",
@@ -2758,7 +2686,7 @@
       "closed": false
     },
     {
-      "id": "b4fecdc6-f487-4d6e-91ee-315f1480f3e1_bus_118",
+      "id": "9c49ad51-4453-4d2a-b32c-ec5b1ceef6dc_bus_115",
       "alertId": "766236",
       "is_banner": false,
       "mode": "bus",
@@ -2780,7 +2708,7 @@
       "closed": false
     },
     {
-      "id": "8ae83d15-2b5d-41d0-8a33-be29313f0ee2_bus_119",
+      "id": "cc6dcd8a-184f-4a54-8c40-be114ebce80a_bus_116",
       "alertId": "766293",
       "is_banner": false,
       "mode": "bus",
@@ -2802,7 +2730,7 @@
       "closed": false
     },
     {
-      "id": "8ff9f760-eb99-45df-9c5f-36fefd374a23_bus_120",
+      "id": "aa82f170-3132-44b7-bdd6-e98e8857b506_bus_117",
       "alertId": "766304",
       "is_banner": false,
       "mode": "bus",
@@ -2824,7 +2752,7 @@
       "closed": false
     },
     {
-      "id": "8ff9f760-eb99-45df-9c5f-36fefd374a23_bus_121",
+      "id": "aa82f170-3132-44b7-bdd6-e98e8857b506_bus_118",
       "alertId": "766304",
       "is_banner": false,
       "mode": "bus",
@@ -2846,7 +2774,7 @@
       "closed": false
     },
     {
-      "id": "8ff9f760-eb99-45df-9c5f-36fefd374a23_bus_122",
+      "id": "aa82f170-3132-44b7-bdd6-e98e8857b506_bus_119",
       "alertId": "766304",
       "is_banner": false,
       "mode": "bus",
@@ -2868,7 +2796,7 @@
       "closed": false
     },
     {
-      "id": "8ff9f760-eb99-45df-9c5f-36fefd374a23_bus_123",
+      "id": "aa82f170-3132-44b7-bdd6-e98e8857b506_bus_120",
       "alertId": "766304",
       "is_banner": false,
       "mode": "bus",
@@ -2890,7 +2818,7 @@
       "closed": false
     },
     {
-      "id": "2ae82b7e-a214-4f10-8690-718ef857793d_bus_124",
+      "id": "ad718979-bc83-43f5-910e-0cf197f7ebf0_bus_121",
       "alertId": "766315",
       "is_banner": false,
       "mode": "bus",
@@ -2912,7 +2840,7 @@
       "closed": false
     },
     {
-      "id": "7e0d20dc-2a4a-4b78-b8c3-126b794840bd_bus_125",
+      "id": "9af415f0-1678-427c-9a30-dbd6c79ec71f_bus_122",
       "alertId": "766316",
       "is_banner": false,
       "mode": "bus",
@@ -2934,7 +2862,7 @@
       "closed": false
     },
     {
-      "id": "57ebe78f-3bf6-4690-b328-032159e0dfb2_bus_126",
+      "id": "4eeb79f1-8670-4a3d-9090-09ae60478ae3_bus_123",
       "alertId": "766411",
       "is_banner": false,
       "mode": "bus",
@@ -2956,7 +2884,7 @@
       "closed": false
     },
     {
-      "id": "87213b1f-d92a-4724-bb40-848e71132729_bus_127",
+      "id": "30ca0372-0b48-47b8-89e6-cecf25133cc7_bus_124",
       "alertId": "766412",
       "is_banner": false,
       "mode": "bus",
@@ -2978,7 +2906,7 @@
       "closed": false
     },
     {
-      "id": "867bd82e-0575-48b1-95da-fb938b256917_bus_128",
+      "id": "cf732806-4039-487e-b078-383ddf98ad04_bus_125",
       "alertId": "766414",
       "is_banner": false,
       "mode": "bus",
@@ -3002,7 +2930,7 @@
       "closed": false
     },
     {
-      "id": "7c470e3b-d487-41ad-baed-aaaf2869dffd_bus_129",
+      "id": "5c86c2a5-de6c-40da-b6f5-751f3a805693_bus_126",
       "alertId": "766745",
       "is_banner": false,
       "mode": "bus",
@@ -3024,7 +2952,7 @@
       "closed": false
     },
     {
-      "id": "819408a0-3123-4db2-84a2-3d5662307530_bus_130",
+      "id": "6eacaf69-4d41-42e9-bbc1-325bfcfa3912_bus_127",
       "alertId": "766753",
       "is_banner": false,
       "mode": "bus",
@@ -3046,7 +2974,7 @@
       "closed": false
     },
     {
-      "id": "80fe4338-a315-4b5a-abf1-d3fd028fd930_bus_131",
+      "id": "905762c7-f85e-4c79-be02-08bdf2454593_bus_128",
       "alertId": "766972",
       "is_banner": false,
       "mode": "bus",
@@ -3063,12 +2991,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-11-21T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:01Z",
+      "lastModified": "2026-11-09T14:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "80fe4338-a315-4b5a-abf1-d3fd028fd930_bus_132",
+      "id": "905762c7-f85e-4c79-be02-08bdf2454593_bus_129",
       "alertId": "766972",
       "is_banner": false,
       "mode": "bus",
@@ -3085,12 +3013,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-11-21T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:01Z",
+      "lastModified": "2026-11-09T14:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "80fe4338-a315-4b5a-abf1-d3fd028fd930_bus_133",
+      "id": "905762c7-f85e-4c79-be02-08bdf2454593_bus_130",
       "alertId": "766972",
       "is_banner": false,
       "mode": "bus",
@@ -3107,12 +3035,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-11-21T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:01Z",
+      "lastModified": "2026-11-09T14:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "80fe4338-a315-4b5a-abf1-d3fd028fd930_bus_134",
+      "id": "905762c7-f85e-4c79-be02-08bdf2454593_bus_131",
       "alertId": "766972",
       "is_banner": false,
       "mode": "bus",
@@ -3129,12 +3057,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-11-21T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:01Z",
+      "lastModified": "2026-11-09T14:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "75bd7780-36f2-43bf-9426-14b825982826_bus_135",
+      "id": "1ebfd36a-16ed-4553-af34-e9ed9f69ef30_bus_132",
       "alertId": "766986",
       "is_banner": false,
       "mode": "bus",
@@ -3151,12 +3079,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "75bd7780-36f2-43bf-9426-14b825982826_bus_136",
+      "id": "1ebfd36a-16ed-4553-af34-e9ed9f69ef30_bus_133",
       "alertId": "766986",
       "is_banner": false,
       "mode": "bus",
@@ -3173,12 +3101,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "a6200472-d04f-49b8-8b3e-489f5e35a52b_bus_137",
+      "id": "dd6e177c-2eeb-4cd9-89eb-c3e7b8615336_bus_134",
       "alertId": "767008",
       "is_banner": false,
       "mode": "bus",
@@ -3195,14 +3123,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [
         "King George"
       ],
       "closed": false
     },
     {
-      "id": "a6200472-d04f-49b8-8b3e-489f5e35a52b_bus_138",
+      "id": "dd6e177c-2eeb-4cd9-89eb-c3e7b8615336_bus_135",
       "alertId": "767008",
       "is_banner": false,
       "mode": "bus",
@@ -3219,14 +3147,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [
         "King George"
       ],
       "closed": false
     },
     {
-      "id": "a6200472-d04f-49b8-8b3e-489f5e35a52b_bus_139",
+      "id": "dd6e177c-2eeb-4cd9-89eb-c3e7b8615336_bus_136",
       "alertId": "767008",
       "is_banner": false,
       "mode": "bus",
@@ -3243,14 +3171,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [
         "King George"
       ],
       "closed": false
     },
     {
-      "id": "07fab85e-0522-4367-8b76-0e9b50519d4b_bus_140",
+      "id": "2a5783c4-a543-45f6-8a4a-7d75ed6182cb_bus_137",
       "alertId": "767010",
       "is_banner": false,
       "mode": "bus",
@@ -3267,14 +3195,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [
         "King George"
       ],
       "closed": false
     },
     {
-      "id": "50d035ca-36b0-44e5-a0b6-965f99b48917_bus_141",
+      "id": "874dafca-b70c-42d6-b789-59b69f18eac0_bus_138",
       "alertId": "767022",
       "is_banner": false,
       "mode": "bus",
@@ -3299,7 +3227,7 @@
       "closed": false
     },
     {
-      "id": "6d317e03-6d9b-4c20-b880-e81f2bf09206_bus_142",
+      "id": "d79e0c39-7e87-43c2-a195-f07e56469a1b_bus_139",
       "alertId": "767024",
       "is_banner": false,
       "mode": "bus",
@@ -3316,14 +3244,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [
         "Renfrew"
       ],
       "closed": false
     },
     {
-      "id": "9417c8be-b8db-45f5-82f6-fce5333dac24_bus_143",
+      "id": "db812a55-8fbc-4d22-a077-339c1aa1fa2d_bus_140",
       "alertId": "767027",
       "is_banner": false,
       "mode": "bus",
@@ -3340,12 +3268,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "9417c8be-b8db-45f5-82f6-fce5333dac24_bus_144",
+      "id": "db812a55-8fbc-4d22-a077-339c1aa1fa2d_bus_141",
       "alertId": "767027",
       "is_banner": false,
       "mode": "bus",
@@ -3362,12 +3290,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-02T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-02T12:00:01Z",
+      "lastModified": "2026-11-09T12:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "b810f0b0-0651-4150-8352-879c93d42105_bus_145",
+      "id": "a3b90b52-874b-4158-aa0a-b43ff32686ae_bus_142",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3391,7 +3319,7 @@
       "closed": false
     },
     {
-      "id": "b810f0b0-0651-4150-8352-879c93d42105_bus_146",
+      "id": "a3b90b52-874b-4158-aa0a-b43ff32686ae_bus_143",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3415,7 +3343,7 @@
       "closed": false
     },
     {
-      "id": "b810f0b0-0651-4150-8352-879c93d42105_bus_147",
+      "id": "a3b90b52-874b-4158-aa0a-b43ff32686ae_bus_144",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3439,7 +3367,7 @@
       "closed": false
     },
     {
-      "id": "b810f0b0-0651-4150-8352-879c93d42105_bus_148",
+      "id": "a3b90b52-874b-4158-aa0a-b43ff32686ae_bus_145",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3463,7 +3391,7 @@
       "closed": false
     },
     {
-      "id": "b810f0b0-0651-4150-8352-879c93d42105_bus_149",
+      "id": "a3b90b52-874b-4158-aa0a-b43ff32686ae_bus_146",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3487,7 +3415,7 @@
       "closed": false
     },
     {
-      "id": "b810f0b0-0651-4150-8352-879c93d42105_bus_150",
+      "id": "a3b90b52-874b-4158-aa0a-b43ff32686ae_bus_147",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3511,7 +3439,7 @@
       "closed": false
     },
     {
-      "id": "8a17d32b-ce52-45d3-a3a2-920d6575fb1c_bus_151",
+      "id": "b70730c4-9931-4383-9308-cbfc488aaf85_bus_148",
       "alertId": "767242",
       "is_banner": false,
       "mode": "bus",
@@ -3535,7 +3463,7 @@
       "closed": false
     },
     {
-      "id": "86d3a0f4-8223-4fee-a96b-bce5422dd2ec_bus_152",
+      "id": "e0d54c16-5a97-4708-9dc7-b5c8ba3185c5_bus_149",
       "alertId": "767341",
       "is_banner": false,
       "mode": "bus",
@@ -3560,7 +3488,7 @@
       "closed": false
     },
     {
-      "id": "c063e04c-443c-4a76-a696-885265864a94_bus_153",
+      "id": "31bcb6c8-113a-4205-a049-1bf3f7409267_bus_150",
       "alertId": "767363",
       "is_banner": false,
       "mode": "bus",
@@ -3582,7 +3510,7 @@
       "closed": false
     },
     {
-      "id": "708dd36b-8a12-4107-afa5-3fad896ba22e_bus_154",
+      "id": "e7514098-f517-4eb3-9118-33f3c62fcff3_bus_151",
       "alertId": "767391",
       "is_banner": false,
       "mode": "bus",
@@ -3604,7 +3532,7 @@
       "closed": false
     },
     {
-      "id": "f1e9aef0-a435-46f5-abe2-33098c84d9be_bus_155",
+      "id": "f896b44d-855a-4064-b28d-5d16091c7434_bus_152",
       "alertId": "767574",
       "is_banner": false,
       "mode": "bus",
@@ -3621,7 +3549,7 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T12:00:02Z",
       "impacted_stations": [
         "Lougheed Town Centre",
         "Coquitlam Central"
@@ -3629,7 +3557,7 @@
       "closed": false
     },
     {
-      "id": "0ec3168a-4d7a-4186-bb5d-dd311fd0dabc_bus_156",
+      "id": "e1f8f8f5-08db-4936-8582-74d7eb59fae4_bus_153",
       "alertId": "767596",
       "is_banner": false,
       "mode": "bus",
@@ -3646,7 +3574,7 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T12:00:02Z",
       "impacted_stations": [
         "Coquitlam Central",
         "Burquitlam"
@@ -3654,7 +3582,7 @@
       "closed": false
     },
     {
-      "id": "c948178c-d706-4675-938e-d7bd7daebf0b_bus_157",
+      "id": "8cfbbd50-cc67-4e22-b5d0-0955b99ac8a3_bus_154",
       "alertId": "767606",
       "is_banner": false,
       "mode": "bus",
@@ -3671,7 +3599,7 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T12:00:02Z",
       "impacted_stations": [
         "Braid",
         "Coquitlam Central"
@@ -3679,7 +3607,7 @@
       "closed": false
     },
     {
-      "id": "35af23b8-ad1f-4ca2-a21f-08b440ab71ad_bus_158",
+      "id": "554e2eef-64a0-4259-8095-dc491f84f0bb_bus_155",
       "alertId": "768124",
       "is_banner": false,
       "mode": "bus",
@@ -3703,7 +3631,7 @@
       "closed": false
     },
     {
-      "id": "5bcfd227-3314-4ee8-b84a-1500cef0913b_bus_159",
+      "id": "1495103c-c224-48b1-80d7-0a8f55c44c32_bus_156",
       "alertId": "768129",
       "is_banner": false,
       "mode": "bus",
@@ -3727,7 +3655,7 @@
       "closed": false
     },
     {
-      "id": "147ecbd4-e582-497f-ab5f-3d93ecab4525_bus_160",
+      "id": "8bd374f1-3e3e-4c0a-ae0d-c55e64a339aa_bus_157",
       "alertId": "768217",
       "is_banner": false,
       "mode": "bus",
@@ -3742,36 +3670,14 @@
       "header": "Stop 51452 Westbound Canada Way @ 4800 Block is temporarily closed until Fri Nov 13 (weekdays only) from 9:00 AM to 5:00 PM daily due to construction.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T16:00:00Z",
+      "startTime": "2026-11-10T16:00:00Z",
       "endTime": "2026-11-14T00:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-10T00:15:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "c47a62e8-3ad9-4942-aa26-70a11ed76b9a_bus_161",
-      "alertId": "768247",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "404",
-      "routeLongName": "Brighouse Station/Four Road",
-      "effect": "STOP_CLOSURE",
-      "effect_zh": "站點暫停",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Stop 56683 Northbound No. 4 Rd @ 7400 Block closed",
-      "header": "Stop 56683 Northbound No. 4 Rd @ 7400 Block is temporarily closed from 8:00 AM to 4:00 PM on Mon Nov 9 due to construction.",
-      "description": "",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T15:00:00Z",
-      "endTime": "2026-11-09T23:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
-      "impacted_stations": [],
-      "closed": false
-    },
-    {
-      "id": "e2df23d3-7b61-4ee6-9235-c728240c3ab6_bus_162",
+      "id": "d0ef42ae-6dc4-4279-9ae4-2085554583e1_bus_158",
       "alertId": "768256",
       "is_banner": false,
       "mode": "bus",
@@ -3786,62 +3692,14 @@
       "header": "Stop 54188 Northbound Lynn Valley Rd @ Dempsey Rd is temporarily closed from Mon Nov 9 to Fri Nov 13 from 6:00 AM to 4:00 PM (daily) due to construction.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T13:00:00Z",
+      "startTime": "2026-11-10T13:00:00Z",
       "endTime": "2026-11-13T23:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T23:15:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "2ac38793-6d2b-4a6a-8ccb-56e7c717716c_bus_163",
-      "alertId": "768258",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "10",
-      "routeLongName": "Granville",
-      "effect": "STOP_CLOSURE",
-      "effect_zh": "站點暫停",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Stop 61462 Southbound Granville St @ W 12 Ave closed",
-      "header": "Stop 61462 Southbound Granville St @ W 12 Ave is temporarily closed from 10:00 AM to 2:00 PM on Mon Nov 9 due to construction.",
-      "description": "",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T17:00:00Z",
-      "endTime": "2026-11-09T21:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
-      "impacted_stations": [
-        "Granville"
-      ],
-      "closed": false
-    },
-    {
-      "id": "a278bea8-a4b2-40cb-a5ee-8ff54a36b292_bus_164",
-      "alertId": "768265",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "16",
-      "routeLongName": "29th Avenue Station/Arbutus",
-      "effect": "STOP_CLOSURE",
-      "effect_zh": "站點暫停",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Stop 61517 Westbound W 12 Ave @ Granville St closed",
-      "header": "Stop 61517 Westbound W 12 Ave @ Granville St is temporarily closed from 10:00 AM to 2:00 PM on Mon Nov 9 due to construction.",
-      "description": "",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T17:00:00Z",
-      "endTime": "2026-11-09T21:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
-      "impacted_stations": [
-        "Granville"
-      ],
-      "closed": false
-    },
-    {
-      "id": "e450c7f9-e064-43e9-ac2e-3aca431ece7c_bus_165",
+      "id": "65b6b1fb-9fd9-4977-af2f-ebd88d38d309_bus_159",
       "alertId": "768267",
       "is_banner": false,
       "mode": "bus",
@@ -3858,12 +3716,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T13:00:00Z",
       "endTime": "2026-11-11T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T13:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "e450c7f9-e064-43e9-ac2e-3aca431ece7c_bus_166",
+      "id": "65b6b1fb-9fd9-4977-af2f-ebd88d38d309_bus_160",
       "alertId": "768267",
       "is_banner": false,
       "mode": "bus",
@@ -3880,12 +3738,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T13:00:00Z",
       "endTime": "2026-11-11T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T13:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "e450c7f9-e064-43e9-ac2e-3aca431ece7c_bus_167",
+      "id": "65b6b1fb-9fd9-4977-af2f-ebd88d38d309_bus_161",
       "alertId": "768267",
       "is_banner": false,
       "mode": "bus",
@@ -3902,12 +3760,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T13:00:00Z",
       "endTime": "2026-11-11T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T13:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "c32bbfef-a4bb-46e2-bf9e-a6c29b03fde7_bus_168",
+      "id": "1fef99dd-373e-4a6e-bdef-6da839f315d0_bus_162",
       "alertId": "768270",
       "is_banner": false,
       "mode": "bus",
@@ -3924,12 +3782,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-12-01T02:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T14:30:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "04db7932-b748-4f49-b80e-39ef9d18d6d1_bus_169",
+      "id": "f1536562-aa6c-4e22-afcf-11112fdb8396_bus_163",
       "alertId": "768272",
       "is_banner": false,
       "mode": "bus",
@@ -3944,14 +3802,14 @@
       "header": "Stop 50754 Northbound Oak St @ W 41 Ave has temporarily moved 165 metres north Mon Nov 9 to Fri Nov 13 (excluding Nov 11) from 9:30 AM to 3:00 PM due to construction.",
       "description": "\n\r\nExcluding Wed Nov 11.",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T16:30:00Z",
+      "startTime": "2026-11-10T16:30:00Z",
       "endTime": "2026-11-13T22:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T22:15:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "3a5e033b-ee5e-44ec-8e3c-5d707b91abb6_bus_170",
+      "id": "c54d6cf4-7f98-422b-9554-902cd7655d19_bus_164",
       "alertId": "768320",
       "is_banner": false,
       "mode": "bus",
@@ -3968,14 +3826,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-11-14T02:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T14:30:02Z",
       "impacted_stations": [
         "Patterson"
       ],
       "closed": false
     },
     {
-      "id": "5b01f406-a925-4df7-a216-f895cb8dd28e_bus_171",
+      "id": "46b6349b-f54e-498e-97c4-67a324e96756_bus_165",
       "alertId": "768372",
       "is_banner": false,
       "mode": "bus",
@@ -3997,7 +3855,7 @@
       "closed": false
     },
     {
-      "id": "66316f48-d1dd-458d-94f1-447e6802e64b_bus_172",
+      "id": "b2d5e172-c3dd-486d-849f-1ee245944e86_bus_166",
       "alertId": "768393",
       "is_banner": false,
       "mode": "bus",
@@ -4014,12 +3872,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-11T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:01Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "afccac88-bbc5-4658-b339-328a2523e857_bus_173",
+      "id": "12689eda-0759-491c-adbf-3bd04cec4c87_bus_167",
       "alertId": "768399",
       "is_banner": false,
       "mode": "bus",
@@ -4036,12 +3894,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-16T04:30:00Z",
       "endTime": "2026-11-16T06:00:00Z",
-      "lastModified": "2026-11-08T19:00:02Z",
+      "lastModified": "2026-11-09T08:00:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "13362ced-abc0-4961-a0ec-3cfa51357fe0_bus_174",
+      "id": "6f516359-d3c4-450d-bfc2-2ff99afbce52_bus_168",
       "alertId": "768429",
       "is_banner": false,
       "mode": "bus",
@@ -4058,12 +3916,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T15:00:00Z",
       "endTime": "2026-11-11T01:00:00Z",
-      "lastModified": "2026-11-04T08:00:02Z",
+      "lastModified": "2026-11-09T08:00:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "473e073c-cab7-4259-ab14-0c5203664175_bus_175",
+      "id": "b497adfb-b240-44e5-a09e-12034a228b6a_bus_169",
       "alertId": "768481",
       "is_banner": false,
       "mode": "bus",
@@ -4087,31 +3945,7 @@
       "closed": false
     },
     {
-      "id": "e9bfb912-31ac-44f2-a8a0-7805a6fe08f0_bus_176",
-      "alertId": "768505",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "109",
-      "routeLongName": "New West Station/Lougheed Station",
-      "effect": "STOP_CLOSURE",
-      "effect_zh": "站點暫停",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Stop 59345 Southbound E Columbia St @ 600 Block closed",
-      "header": "Stop 59345 Southbound E Columbia St @ 600 Block is temporarily closed from Thu Nov 5 to Mon Nov 9 from 9:00 AM to 3:00 PM (weekdays only) due to construction.",
-      "description": "",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T16:00:00Z",
-      "endTime": "2026-11-09T22:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
-      "impacted_stations": [
-        "Columbia"
-      ],
-      "closed": false
-    },
-    {
-      "id": "259cbad1-a023-4466-895f-3842a3eba612_bus_177",
+      "id": "6dde42d3-2c85-4c9a-b5e9-524db29e0506_bus_170",
       "alertId": "768554",
       "is_banner": false,
       "mode": "bus",
@@ -4128,12 +3962,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T03:00:00Z",
       "endTime": "2026-11-14T13:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T08:00:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "18e16307-58b3-4867-ba77-dd67ccf6c2ac_bus_178",
+      "id": "25b4b030-d718-4db5-ab85-0d9d91e7095f_bus_171",
       "alertId": "768599",
       "is_banner": false,
       "mode": "bus",
@@ -4157,7 +3991,7 @@
       "closed": false
     },
     {
-      "id": "069b0f13-1c9e-4989-9d39-4bb703f17d7a_bus_179",
+      "id": "0ec78e1d-1722-404d-9884-d4377ed3ad35_bus_172",
       "alertId": "768674",
       "is_banner": false,
       "mode": "bus",
@@ -4183,7 +4017,7 @@
       "closed": false
     },
     {
-      "id": "2dc48a45-61bc-4ab5-916f-f9ba9da8bcb3_bus_180",
+      "id": "4b10f4ce-a3b2-4f92-b7f9-879a134a2436_bus_173",
       "alertId": "768682",
       "is_banner": false,
       "mode": "bus",
@@ -4209,7 +4043,7 @@
       "closed": false
     },
     {
-      "id": "0420fe25-c40d-4539-b60a-dc319e0d349e_bus_181",
+      "id": "ca1a3011-ea55-4e95-b499-bfe4ae6640f7_bus_174",
       "alertId": "768729",
       "is_banner": false,
       "mode": "bus",
@@ -4235,7 +4069,7 @@
       "closed": false
     },
     {
-      "id": "dbe1d60b-187f-49d1-ba17-7f4e183b99ac_bus_182",
+      "id": "c8b4524b-ac02-4852-b925-c223f1786b37_bus_175",
       "alertId": "768732",
       "is_banner": false,
       "mode": "bus",
@@ -4262,7 +4096,7 @@
       "closed": false
     },
     {
-      "id": "960e22b8-88a6-4206-9bde-255d9a71accd_bus_183",
+      "id": "9b26a880-ce48-48be-b0de-faaad7273149_bus_176",
       "alertId": "768745",
       "is_banner": false,
       "mode": "bus",
@@ -4286,7 +4120,7 @@
       "closed": false
     },
     {
-      "id": "96824bdf-bc62-474e-acb7-ed5093ee65b1_bus_184",
+      "id": "ca329ae6-96ad-401a-b530-c0057e1884a5_bus_177",
       "alertId": "768746",
       "is_banner": false,
       "mode": "bus",
@@ -4310,7 +4144,7 @@
       "closed": false
     },
     {
-      "id": "ea836843-b773-4e2a-b03d-4dd5b994225b_bus_185",
+      "id": "d5db6362-3e68-4d9d-a47e-ff3eae848314_bus_178",
       "alertId": "768753",
       "is_banner": false,
       "mode": "bus",
@@ -4335,7 +4169,7 @@
       "closed": false
     },
     {
-      "id": "61b63bc3-72eb-46d0-951d-e40180c98db9_bus_186",
+      "id": "85ced126-1c8a-4af5-98d1-f93858a993e9_bus_179",
       "alertId": "768757",
       "is_banner": false,
       "mode": "bus",
@@ -4361,7 +4195,7 @@
       "closed": false
     },
     {
-      "id": "945c5764-9aa5-468a-816b-b1974a35c823_bus_187",
+      "id": "e430a169-3aeb-425f-9ad2-8777c5c1e85d_bus_180",
       "alertId": "768759",
       "is_banner": false,
       "mode": "bus",
@@ -4383,7 +4217,7 @@
       "closed": false
     },
     {
-      "id": "fd4413af-70ac-448f-aff3-ef81dcb748aa_bus_188",
+      "id": "a8cefce9-0833-4728-bef1-ec5241d40717_bus_181",
       "alertId": "768760",
       "is_banner": false,
       "mode": "bus",
@@ -4409,7 +4243,7 @@
       "closed": false
     },
     {
-      "id": "de69fc9a-23b0-4be4-8feb-f32d52740220_bus_189",
+      "id": "a138c723-eedb-4077-aebd-e8653816d2c6_bus_182",
       "alertId": "768761",
       "is_banner": false,
       "mode": "bus",
@@ -4428,14 +4262,14 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-05T08:00:02Z",
       "impacted_stations": [
-        "Columbia",
         "Burrard",
+        "Columbia",
         "Granville"
       ],
       "closed": false
     },
     {
-      "id": "65f5f6ca-2b72-4ff3-8679-4f2fc778e904_bus_190",
+      "id": "6e7b32c3-edef-4e7f-9639-6ca6a3a33dff_bus_183",
       "alertId": "768763",
       "is_banner": false,
       "mode": "bus",
@@ -4460,7 +4294,7 @@
       "closed": false
     },
     {
-      "id": "394bb0b6-31f3-46cb-81e9-b93e74daefd4_bus_191",
+      "id": "97ef4dff-5666-4a0e-a5a0-b4978107fa25_bus_184",
       "alertId": "768764",
       "is_banner": false,
       "mode": "bus",
@@ -4485,36 +4319,7 @@
       "closed": false
     },
     {
-      "id": "6c8a294c-33bd-46b9-88a9-48d6dcdce0cd_skytrain_192",
-      "alertId": "768769",
-      "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
-      "routeId": "992",
-      "routeLongName": "Expo Line",
-      "effect": "PLATFORM_CHANGE",
-      "effect_zh": "月台更換",
-      "critical": false,
-      "advisory": false,
-      "alertText": "SkyTrain Expo Line is single tracking on Sun Nov 8 starting at 9:30 PM",
-      "header": "Expo Line LIM Rail Replacement: SkyTrain service between Waterfront and Commercial-Broadway stations will be impacted on Sun Nov 8 from 9:30 PM to end of service. Customers should allow for 20 minutes extra trip time. ",
-      "description": "\n\r\nSkyTrain service to the downtown Vancouver stations (Waterfront, Burrard, Granville, and Stadium-Chinatown) will be reduced while essential track maintenance takes place.\r\n\nPlease board trains from platform 1 at Waterfront Station, Burrard Station and Granville Station; platform 2 is closed.\r\n\nCheck digital screens at station entrances for platform changes. Customers should board the first available train toward their destination and transfer if needed.   \r\n\nSome trains will dwell longer than normal at Main Street-Science World.\r\nAllow 20 minutes extra travel time for Expo Line trips to, from or through downtown Vancouver stations.\r\n",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T04:30:00Z",
-      "endTime": "2026-11-09T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:01Z",
-      "impacted_stations": [
-        "Waterfront",
-        "Main Street-Science World",
-        "Stadium-Chinatown",
-        "Burrard",
-        "Granville",
-        "Commercial-Broadway"
-      ],
-      "closed": false
-    },
-    {
-      "id": "8d0e481f-0983-42ce-b047-0241c05db0cb_bus_193",
+      "id": "611a0cb5-ee03-484c-9916-b2fa5e030e3f_bus_185",
       "alertId": "768931",
       "is_banner": false,
       "mode": "bus",
@@ -4536,7 +4341,7 @@
       "closed": false
     },
     {
-      "id": "b518e48c-a64e-4225-9a85-6c4121a2219f_bus_194",
+      "id": "711d8bc4-5388-4c95-bf09-875f44f0ea1f_bus_186",
       "alertId": "768932",
       "is_banner": false,
       "mode": "bus",
@@ -4553,12 +4358,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-11-22T02:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T14:30:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "b518e48c-a64e-4225-9a85-6c4121a2219f_bus_195",
+      "id": "711d8bc4-5388-4c95-bf09-875f44f0ea1f_bus_187",
       "alertId": "768932",
       "is_banner": false,
       "mode": "bus",
@@ -4575,12 +4380,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-11-22T02:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T14:30:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "ff2fd9d7-17d9-4ab8-a6d7-e563cb89878e_bus_196",
+      "id": "5d563156-3c77-4154-ba86-4615e7c075d4_bus_188",
       "alertId": "768942",
       "is_banner": false,
       "mode": "bus",
@@ -4604,7 +4409,7 @@
       "closed": false
     },
     {
-      "id": "f167ac35-35c0-436e-915c-f8d3d92f1a67_bus_197",
+      "id": "b7869278-b096-41ea-986e-5b7c071f506b_bus_189",
       "alertId": "768943",
       "is_banner": false,
       "mode": "bus",
@@ -4628,7 +4433,7 @@
       "closed": false
     },
     {
-      "id": "f3b92ad5-7220-41f5-b287-24768c44e756_general_198",
+      "id": "7868fcde-05f7-4173-b58d-086115d9fb24_general_190",
       "alertId": "769018",
       "is_banner": false,
       "mode": "general",
@@ -4650,7 +4455,7 @@
       "closed": false
     },
     {
-      "id": "8a35323d-1a74-4845-99fc-2a7c78838080_bus_199",
+      "id": "1600e75e-b352-45cd-a3a1-4ba9050e94a6_bus_191",
       "alertId": "769044",
       "is_banner": false,
       "mode": "bus",
@@ -4674,7 +4479,7 @@
       "closed": false
     },
     {
-      "id": "b0e003d6-9776-4f76-b791-b5a9e10e7117_bus_200",
+      "id": "67f04e0b-6b98-405f-be13-c1c01ea6c5de_bus_192",
       "alertId": "769047",
       "is_banner": false,
       "mode": "bus",
@@ -4698,7 +4503,7 @@
       "closed": false
     },
     {
-      "id": "1dec8a5d-a6b1-4d60-bc6d-1296c4521af7_bus_201",
+      "id": "7533b0b8-6763-4677-8ba3-28520a144e2a_bus_193",
       "alertId": "769060",
       "is_banner": false,
       "mode": "bus",
@@ -4715,14 +4520,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-12T11:30:00Z",
       "endTime": "2026-11-13T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:01Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [
         "Burrard"
       ],
       "closed": false
     },
     {
-      "id": "1dec8a5d-a6b1-4d60-bc6d-1296c4521af7_bus_202",
+      "id": "7533b0b8-6763-4677-8ba3-28520a144e2a_bus_194",
       "alertId": "769060",
       "is_banner": false,
       "mode": "bus",
@@ -4739,14 +4544,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-12T11:30:00Z",
       "endTime": "2026-11-13T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:01Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [
         "Burrard"
       ],
       "closed": false
     },
     {
-      "id": "1dec8a5d-a6b1-4d60-bc6d-1296c4521af7_bus_203",
+      "id": "7533b0b8-6763-4677-8ba3-28520a144e2a_bus_195",
       "alertId": "769060",
       "is_banner": false,
       "mode": "bus",
@@ -4763,14 +4568,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-12T11:30:00Z",
       "endTime": "2026-11-13T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:01Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [
         "Burrard"
       ],
       "closed": false
     },
     {
-      "id": "5e0ed8d4-5515-4a5d-8a2c-bddf1c81a3f2_bus_204",
+      "id": "5b3c46c8-ae04-4693-a50e-e7e5c911b305_bus_196",
       "alertId": "769062",
       "is_banner": false,
       "mode": "bus",
@@ -4794,7 +4599,7 @@
       "closed": false
     },
     {
-      "id": "5e0ed8d4-5515-4a5d-8a2c-bddf1c81a3f2_bus_205",
+      "id": "5b3c46c8-ae04-4693-a50e-e7e5c911b305_bus_197",
       "alertId": "769062",
       "is_banner": false,
       "mode": "bus",
@@ -4818,7 +4623,7 @@
       "closed": false
     },
     {
-      "id": "5e0ed8d4-5515-4a5d-8a2c-bddf1c81a3f2_bus_206",
+      "id": "5b3c46c8-ae04-4693-a50e-e7e5c911b305_bus_198",
       "alertId": "769062",
       "is_banner": false,
       "mode": "bus",
@@ -4842,7 +4647,7 @@
       "closed": false
     },
     {
-      "id": "5e0ed8d4-5515-4a5d-8a2c-bddf1c81a3f2_bus_207",
+      "id": "5b3c46c8-ae04-4693-a50e-e7e5c911b305_bus_199",
       "alertId": "769062",
       "is_banner": false,
       "mode": "bus",
@@ -4866,7 +4671,7 @@
       "closed": false
     },
     {
-      "id": "2f941d44-0f5c-4e34-9c68-78b740360994_bus_208",
+      "id": "fea40379-561c-4b3f-982b-e13b91f81d93_bus_200",
       "alertId": "769063",
       "is_banner": false,
       "mode": "bus",
@@ -4888,7 +4693,7 @@
       "closed": false
     },
     {
-      "id": "2f941d44-0f5c-4e34-9c68-78b740360994_bus_209",
+      "id": "fea40379-561c-4b3f-982b-e13b91f81d93_bus_201",
       "alertId": "769063",
       "is_banner": false,
       "mode": "bus",
@@ -4910,7 +4715,7 @@
       "closed": false
     },
     {
-      "id": "2f941d44-0f5c-4e34-9c68-78b740360994_bus_210",
+      "id": "fea40379-561c-4b3f-982b-e13b91f81d93_bus_202",
       "alertId": "769063",
       "is_banner": false,
       "mode": "bus",
@@ -4932,7 +4737,7 @@
       "closed": false
     },
     {
-      "id": "b07c9cbf-2c21-473a-a8d8-3ad7d3ce61ce_bus_211",
+      "id": "264da287-5a00-48f7-86c2-f9a5042e22e7_bus_203",
       "alertId": "769081",
       "is_banner": false,
       "mode": "bus",
@@ -4956,7 +4761,7 @@
       "closed": false
     },
     {
-      "id": "67ca7352-e64c-4170-84f7-32f94480c296_bus_212",
+      "id": "e4a82a65-3688-4bec-9930-8ea8fc836af8_bus_204",
       "alertId": "769082",
       "is_banner": false,
       "mode": "bus",
@@ -4981,7 +4786,7 @@
       "closed": false
     },
     {
-      "id": "9a9a7f0e-2723-4cfe-986e-be94180eec5d_bus_213",
+      "id": "f896607b-edb8-4406-ab3e-84813c41d97a_bus_205",
       "alertId": "769083",
       "is_banner": false,
       "mode": "bus",
@@ -5006,7 +4811,7 @@
       "closed": false
     },
     {
-      "id": "5d8b9b11-85ad-408e-b1d1-e8446dddfae5_bus_214",
+      "id": "05c01103-a6a5-49c4-a6f3-801d4cc10890_bus_206",
       "alertId": "769084",
       "is_banner": false,
       "mode": "bus",
@@ -5030,7 +4835,7 @@
       "closed": false
     },
     {
-      "id": "7771b61d-3f7c-422a-9c45-b0ee781c1363_bus_215",
+      "id": "17f3ea7c-2fd4-4fa7-be14-5e7ed99cc1d2_bus_207",
       "alertId": "769178",
       "is_banner": false,
       "mode": "bus",
@@ -5042,17 +4847,17 @@
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60380 Southbound Lonsdale Ave @ W 3rd St has moved",
-      "header": "Stop 60380 Southbound Lonsdale Ave @ W 3rd St has temporarily moved north to Stop 54159 from Mon Nov 9 to Fri Nov 20 from 9:00 AM to 3:00 PM, daily due to construction.",
+      "header": "Update 6:40 AM: Stop 60380 Southbound Lonsdale Ave @ W 3rd St has temporarily moved north to Stop 54159 from Mon Nov 9 to Fri Nov 20 from 9:00 AM to 3:00 PM, daily on weekdays only, due to construction.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T16:00:00Z",
+      "startTime": "2026-11-10T16:00:00Z",
       "endTime": "2026-11-20T22:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T22:15:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "7141538f-d387-43da-a73a-580e8925f3e3_bus_216",
+      "id": "b5255947-a8f8-4e51-aff7-8c5c913fa421_bus_208",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -5069,12 +4874,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "7141538f-d387-43da-a73a-580e8925f3e3_bus_217",
+      "id": "b5255947-a8f8-4e51-aff7-8c5c913fa421_bus_209",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -5091,12 +4896,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "7141538f-d387-43da-a73a-580e8925f3e3_bus_218",
+      "id": "b5255947-a8f8-4e51-aff7-8c5c913fa421_bus_210",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -5113,12 +4918,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "7141538f-d387-43da-a73a-580e8925f3e3_bus_219",
+      "id": "b5255947-a8f8-4e51-aff7-8c5c913fa421_bus_211",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -5135,12 +4940,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "7141538f-d387-43da-a73a-580e8925f3e3_bus_220",
+      "id": "b5255947-a8f8-4e51-aff7-8c5c913fa421_bus_212",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -5157,12 +4962,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "7141538f-d387-43da-a73a-580e8925f3e3_bus_221",
+      "id": "b5255947-a8f8-4e51-aff7-8c5c913fa421_bus_213",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -5179,12 +4984,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "7141538f-d387-43da-a73a-580e8925f3e3_bus_222",
+      "id": "b5255947-a8f8-4e51-aff7-8c5c913fa421_bus_214",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -5201,12 +5006,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "711c3850-3e1a-401d-8a50-af52e185dab1_bus_223",
+      "id": "11320f7f-4eb3-42a8-ab8b-c4f0348f398d_bus_215",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5223,12 +5028,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "711c3850-3e1a-401d-8a50-af52e185dab1_bus_224",
+      "id": "11320f7f-4eb3-42a8-ab8b-c4f0348f398d_bus_216",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5245,12 +5050,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "711c3850-3e1a-401d-8a50-af52e185dab1_bus_225",
+      "id": "11320f7f-4eb3-42a8-ab8b-c4f0348f398d_bus_217",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5267,12 +5072,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "711c3850-3e1a-401d-8a50-af52e185dab1_bus_226",
+      "id": "11320f7f-4eb3-42a8-ab8b-c4f0348f398d_bus_218",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5289,12 +5094,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "711c3850-3e1a-401d-8a50-af52e185dab1_bus_227",
+      "id": "11320f7f-4eb3-42a8-ab8b-c4f0348f398d_bus_219",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5311,12 +5116,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "711c3850-3e1a-401d-8a50-af52e185dab1_bus_228",
+      "id": "11320f7f-4eb3-42a8-ab8b-c4f0348f398d_bus_220",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5333,12 +5138,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "711c3850-3e1a-401d-8a50-af52e185dab1_bus_229",
+      "id": "11320f7f-4eb3-42a8-ab8b-c4f0348f398d_bus_221",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5355,12 +5160,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T01:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "385e7857-04e3-42ce-b348-f90a1df9983a_bus_230",
+      "id": "cd86b7f2-8ae8-422f-a70a-03399eab2b34_bus_222",
       "alertId": "769225",
       "is_banner": false,
       "mode": "bus",
@@ -5382,7 +5187,7 @@
       "closed": false
     },
     {
-      "id": "385e7857-04e3-42ce-b348-f90a1df9983a_bus_231",
+      "id": "cd86b7f2-8ae8-422f-a70a-03399eab2b34_bus_223",
       "alertId": "769225",
       "is_banner": false,
       "mode": "bus",
@@ -5404,7 +5209,7 @@
       "closed": false
     },
     {
-      "id": "385e7857-04e3-42ce-b348-f90a1df9983a_bus_232",
+      "id": "cd86b7f2-8ae8-422f-a70a-03399eab2b34_bus_224",
       "alertId": "769225",
       "is_banner": false,
       "mode": "bus",
@@ -5426,7 +5231,7 @@
       "closed": false
     },
     {
-      "id": "cd976b42-c637-41e4-9072-dd87af0fcfd4_bus_233",
+      "id": "600ca7f5-6b9e-4151-a1e1-9adc08595a6f_bus_225",
       "alertId": "769234",
       "is_banner": false,
       "mode": "bus",
@@ -5450,7 +5255,7 @@
       "closed": false
     },
     {
-      "id": "9039530a-c76d-4e7e-b3bc-a81abb41af28_bus_234",
+      "id": "acef53ca-1a40-4544-b0ff-3756aca0ab0c_bus_226",
       "alertId": "769238",
       "is_banner": false,
       "mode": "bus",
@@ -5472,7 +5277,7 @@
       "closed": false
     },
     {
-      "id": "9039530a-c76d-4e7e-b3bc-a81abb41af28_bus_235",
+      "id": "acef53ca-1a40-4544-b0ff-3756aca0ab0c_bus_227",
       "alertId": "769238",
       "is_banner": false,
       "mode": "bus",
@@ -5494,7 +5299,7 @@
       "closed": false
     },
     {
-      "id": "5e23263a-866d-4bc8-af70-c9f6d96acee2_bus_236",
+      "id": "a57925cf-c49e-4802-81e5-8f1fc90276bb_bus_228",
       "alertId": "769273",
       "is_banner": false,
       "mode": "bus",
@@ -5511,14 +5316,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T11:30:00Z",
       "endTime": null,
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T12:00:02Z",
       "impacted_stations": [
         "Metrotown"
       ],
       "closed": false
     },
     {
-      "id": "ad418bd8-7955-4dde-91be-f211783d3da1_bus_237",
+      "id": "6ff24840-e4c0-4602-a166-c16644967c0a_bus_229",
       "alertId": "769301",
       "is_banner": false,
       "mode": "bus",
@@ -5540,97 +5345,36 @@
       "closed": false
     },
     {
-      "id": "a11093da-a231-4383-85fc-5f992a6fc7f7_bus_238",
-      "alertId": "769324",
+      "id": "8060db92-020d-4d6e-b9e1-61542ff2a5de_skytrain_230",
+      "alertId": "769344",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "228",
-      "routeLongName": "Grand Blvd",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
+      "mode": "skytrain",
+      "mode_name": "天車",
+      "routeId": "992",
+      "routeLongName": "Expo Line",
+      "effect": "PLATFORM_CHANGE",
+      "effect_zh": "月台更換",
       "critical": false,
       "advisory": false,
-      "alertText": "228 Lynn Valley detour",
-      "header": "228 Lynn Valley detour from 7:00 AM to 5:00 PM on Mon Nov 9. Regular route to Grand Blvd E and 11 St, then via 11 St, Sutherland Ave, 14 St, Grand Blvd, then resume regular route.",
-      "description": "\n\r\nAffected stops:\r\n54176 Northbound Grand Blvd East @ E 11 St\r\n60476 Northbound Grand Blvd East @ E 13 St",
+      "alertText": "SkyTrain Expo Line is single tracking on Mon Nov 9 starting at 10:30 PM",
+      "header": "Expo Line Track Maintenance Mon, Nov 9, from10:30 PM until the end of service. Trains will single-track in both directions between Royal Oak Station and Edmonds Station. Platform 1 will be closed; please board trains from Platform 2 at both stations. ",
+      "description": "\n\r\nExpo Line trains will operate Waterfront <-> King George/Production Way, stopping at Royal Oak platform 2 and Edmonds platform 2 in both directions. Additional short-turn trains will operate Waterfront <-> Metrotown and Edmonds <-> King George / Production Way. \r\n\nSome trains will dwell longer than normal at Metrotown and 22nd Street Stations.\r\n\nTrips through Royal Oak Station will be delayed, with the worst affected trips taking approximately 15 minutes longer than normal.",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T14:00:00Z",
-      "endTime": "2026-11-10T00:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
-      "impacted_stations": [],
-      "closed": false
-    },
-    {
-      "id": "52dc38b6-fe7d-4ed1-b4b0-9dd495a9428d_bus_239",
-      "alertId": "769325",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "228",
-      "routeLongName": "Grand Blvd",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
-      "critical": false,
-      "advisory": false,
-      "alertText": "228 Lonsdale Quay detour",
-      "header": "228 Lonsdale Quay detour from 7:00 AM to 5:00 PM on Mon Nov 9. Regular route to Grand Blvd E and 14 St, then 14 St, Sutherland Ave, 11 St, Grand Blvd, then resume regular route.",
-      "description": "\n\r\nAffected stops:\r\n54020 Southbound Grand Blvd East @ E 15 St\r\n54778 Westbound E 15 St @ Grand Blvd East\r\n54021 Southbound Grand Blvd East @ E 13 St",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T14:00:00Z",
-      "endTime": "2026-11-10T00:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "startTime": "2026-11-10T05:30:00Z",
+      "endTime": "2026-11-10T11:00:00Z",
+      "lastModified": "2026-11-09T17:00:02Z",
       "impacted_stations": [
-        "Lonsdale Quay"
+        "22nd Street",
+        "Edmonds",
+        "Royal Oak",
+        "Metrotown",
+        "King George",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "dc756117-275d-4d0b-81d4-f593be2d0ca8_bus_240",
-      "alertId": "769327",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "181",
-      "routeLongName": "Moody Centre Station/Ioco",
-      "effect": "STOP_CLOSURE",
-      "effect_zh": "站點暫停",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Stop 53255 Eastbound Ioco Rd @ Alderside Rd closed",
-      "header": "Stop 53255 Eastbound Ioco Rd @ Alderside Rd is temporarily closed from 9:00 AM to 3:00 PM on Mon Nov 9 due to construction.",
-      "description": "Affected routes:\r\n181",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T16:00:00Z",
-      "endTime": "2026-11-09T22:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
-      "impacted_stations": [],
-      "closed": false
-    },
-    {
-      "id": "06225795-5aa2-4e65-9cc0-eb40b0e0eb49_bus_241",
-      "alertId": "769328",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "181",
-      "routeLongName": "Moody Centre Station/Ioco",
-      "effect": "STOP_CLOSURE",
-      "effect_zh": "站點暫停",
-      "critical": false,
-      "advisory": false,
-      "alertText": "Stop 53237 Westbound Ioco Rd @ April Rd closed",
-      "header": "Stop 53237 Westbound Ioco Rd @ April Rd is temporarily closed from 9:00 AM to 3:00 PM on Mon Nov 9 due to construction.",
-      "description": "Affected routes:\r\n181",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T16:00:00Z",
-      "endTime": "2026-11-09T22:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
-      "impacted_stations": [],
-      "closed": false
-    },
-    {
-      "id": "3dc10af3-452c-44c5-abc9-539d6649d1d9_bus_242",
+      "id": "1daa0a5c-dcf6-433e-a3eb-a1d300c7cd67_bus_231",
       "alertId": "769360",
       "is_banner": false,
       "mode": "bus",
@@ -5652,7 +5396,7 @@
       "closed": false
     },
     {
-      "id": "d56d3370-71c4-46d9-931a-2d2cc3a88e48_bus_243",
+      "id": "c6df9e01-2757-4d27-8f07-64e2dd53f9dd_bus_232",
       "alertId": "769366",
       "is_banner": false,
       "mode": "bus",
@@ -5674,7 +5418,7 @@
       "closed": false
     },
     {
-      "id": "c3431b6f-aa04-494a-bf97-7af961645059_bus_244",
+      "id": "c00571f0-b058-43ab-9cf4-81d05ff1fb2b_bus_233",
       "alertId": "769435",
       "is_banner": false,
       "mode": "bus",
@@ -5686,17 +5430,17 @@
       "critical": false,
       "advisory": false,
       "alertText": "4 Downtown/Powell detour",
-      "header": "4 Downtown detour from Thu Nov 12 to Sun Nov 15 8:00 PM to end of service (nightly). Regular route to W Cordova and Richards St, then Richards St, to temporary terminus at Hastings St due to road block.",
+      "header": "Update-Extended: 4 Downtown detour from Thu Nov 12 to Sun Nov 22 8:00 PM to end of service (nightly). Regular route to W Cordova and Richards St, then Richards St, to temporary terminus at Hastings St due to road block.",
       "description": "\n\r\nAffected stops:\r\n50036 Eastbound W Cordova St @ Homer St\r\n50410 Southbound Cambie St @ W Hastings St",
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-13T03:00:00Z",
-      "endTime": "2026-11-16T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:01Z",
+      "endTime": "2026-11-23T11:00:00Z",
+      "lastModified": "2026-11-09T18:13:13Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "221a623e-073f-4f0d-abae-1888ab5468a3_bus_245",
+      "id": "3b3b953c-c362-4f64-aa8c-4fe8e6298605_bus_234",
       "alertId": "769436",
       "is_banner": false,
       "mode": "bus",
@@ -5708,17 +5452,83 @@
       "critical": false,
       "advisory": false,
       "alertText": "4 UBC Exchange detour",
-      "header": "4 UBC Exchange detour from Thu Nov 12 to Sun Nov 15 from 8:00 PM to end of service (nightly). From temporary terminus at Richards and Hastings St, then continue Richards, W Pender St, then resume regular route due to road block.",
+      "header": "Update-Extended: 4 UBC Exchange detour from Thu Nov 12 to Sun Nov 22 from 8:00 PM to end of service (nightly). From temporary terminus at Richards and Hastings St, then continue Richards, W Pender St, then resume regular route due to road block.",
       "description": "\n\r\nAffected stops:\r\n50410 Southbound Cambie St @ W Hastings St\r\n61520 Westbound W Pender St @ Hamilton St",
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-13T03:00:00Z",
-      "endTime": "2026-11-16T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "endTime": "2026-11-23T11:00:00Z",
+      "lastModified": "2026-11-09T18:27:53Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "d5b33d4b-6bda-4838-89f1-25720b78e540_bus_246",
+      "id": "e682d4ae-ecb5-4434-a773-14f393a68505_bus_235",
+      "alertId": "769444",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "129",
+      "routeLongName": "Patterson Station/Holdom Station",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 51844 Eastbound Hastings St @ Alpha closed",
+      "header": "Stop 51844 Eastbound Hastings St @ Alpha is temporarily closed from 8:30 AM to 2:30 PM on Mon Nov 16 due to construction.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-16T15:30:00Z",
+      "endTime": "2026-11-16T21:30:00Z",
+      "lastModified": "2026-11-09T22:00:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "e682d4ae-ecb5-4434-a773-14f393a68505_bus_236",
+      "alertId": "769444",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "160",
+      "routeLongName": "Port Coquitlam Station/Kootenay Loop",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 51844 Eastbound Hastings St @ Alpha closed",
+      "header": "Stop 51844 Eastbound Hastings St @ Alpha is temporarily closed from 8:30 AM to 2:30 PM on Mon Nov 16 due to construction.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-16T15:30:00Z",
+      "endTime": "2026-11-16T21:30:00Z",
+      "lastModified": "2026-11-09T22:00:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "e682d4ae-ecb5-4434-a773-14f393a68505_bus_237",
+      "alertId": "769444",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "132",
+      "routeLongName": "Capitol Hill/Hastings @ Gilmore",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 51844 Eastbound Hastings St @ Alpha closed",
+      "header": "Stop 51844 Eastbound Hastings St @ Alpha is temporarily closed from 8:30 AM to 2:30 PM on Mon Nov 16 due to construction.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-16T15:30:00Z",
+      "endTime": "2026-11-16T21:30:00Z",
+      "lastModified": "2026-11-09T22:00:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "d53e0970-1bef-49f2-96bb-17a33c1e0b50_bus_238",
       "alertId": "769462",
       "is_banner": false,
       "mode": "bus",
@@ -5744,7 +5554,7 @@
       "closed": false
     },
     {
-      "id": "4aa6c1ea-0397-4dd9-83c8-5987d9a054db_general_247",
+      "id": "c521e6de-c2aa-4e2b-8865-c82abf65d66b_general_239",
       "alertId": "769477",
       "is_banner": false,
       "mode": "general",
@@ -5770,7 +5580,7 @@
       "closed": false
     },
     {
-      "id": "26ebd734-bc87-4a83-aa0d-3435dd29ded7_skytrain_248",
+      "id": "554d0d4e-6b35-49d5-b579-b0933d299d95_skytrain_240",
       "alertId": "769478",
       "is_banner": false,
       "mode": "skytrain",
@@ -5795,7 +5605,7 @@
       "closed": false
     },
     {
-      "id": "e2b65636-ab9d-4e0f-adfe-b20187dc4267_skytrain_249",
+      "id": "52016c78-9e19-4a86-bce5-2466f2cc9599_skytrain_241",
       "alertId": "769479",
       "is_banner": false,
       "mode": "skytrain",
@@ -5820,7 +5630,7 @@
       "closed": false
     },
     {
-      "id": "a9ae145c-1f54-445a-9640-d6d72bab5856_skytrain_250",
+      "id": "21129071-ab43-40b1-952b-78b405c1b6eb_skytrain_242",
       "alertId": "769481",
       "is_banner": false,
       "mode": "skytrain",
@@ -5845,7 +5655,7 @@
       "closed": false
     },
     {
-      "id": "7caee54a-68a4-4320-b8ef-977f89eec2f9_bus_251",
+      "id": "49abf208-1e2e-467c-98a8-b68864f86fcc_bus_243",
       "alertId": "769506",
       "is_banner": false,
       "mode": "bus",
@@ -5867,7 +5677,7 @@
       "closed": false
     },
     {
-      "id": "4e63930a-ca74-4fbb-89ad-c8c8e8dc10fd_bus_252",
+      "id": "c29440f0-96c1-412f-b018-e2945573dd44_bus_244",
       "alertId": "769534",
       "is_banner": false,
       "mode": "bus",
@@ -5884,12 +5694,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T14:00:00Z",
       "endTime": "2026-11-10T22:30:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T14:30:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "4aa228c9-9a8e-4123-bfb1-1a2abddc5e56_bus_253",
+      "id": "88072642-c26d-4d4f-85d6-35b8b45bc06c_bus_245",
       "alertId": "769537",
       "is_banner": false,
       "mode": "bus",
@@ -5904,16 +5714,16 @@
       "header": "Stop 50840 Northbound Fraser St @ E King Edward Ave is temporarily closed Mon Nov 9 & Tue Nov 10 from 7:00 AM to 3:30 PM daily due to construction.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T14:00:00Z",
+      "startTime": "2026-11-10T14:00:00Z",
       "endTime": "2026-11-10T22:30:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T22:45:01Z",
       "impacted_stations": [
         "King Edward"
       ],
       "closed": false
     },
     {
-      "id": "4aa228c9-9a8e-4123-bfb1-1a2abddc5e56_bus_254",
+      "id": "88072642-c26d-4d4f-85d6-35b8b45bc06c_bus_246",
       "alertId": "769537",
       "is_banner": false,
       "mode": "bus",
@@ -5928,16 +5738,16 @@
       "header": "Stop 50840 Northbound Fraser St @ E King Edward Ave is temporarily closed Mon Nov 9 & Tue Nov 10 from 7:00 AM to 3:30 PM daily due to construction.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T14:00:00Z",
+      "startTime": "2026-11-10T14:00:00Z",
       "endTime": "2026-11-10T22:30:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T22:45:01Z",
       "impacted_stations": [
         "King Edward"
       ],
       "closed": false
     },
     {
-      "id": "42ecadc0-ff99-4b45-b483-fff8e3465cc4_bus_255",
+      "id": "cda4c03d-0a66-451b-8ac6-4be8d62d8829_bus_247",
       "alertId": "769554",
       "is_banner": false,
       "mode": "bus",
@@ -5954,14 +5764,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-14T11:00:00Z",
-      "lastModified": "2026-11-07T08:00:02Z",
+      "lastModified": "2026-11-09T08:00:02Z",
       "impacted_stations": [
         "Rupert"
       ],
       "closed": false
     },
     {
-      "id": "f24816f2-742e-4b62-948c-f7853778931d_bus_256",
+      "id": "1d5ed5f9-f5e2-412d-83ab-fd85b24cfa05_bus_248",
       "alertId": "769556",
       "is_banner": false,
       "mode": "bus",
@@ -5978,14 +5788,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-14T11:00:00Z",
-      "lastModified": "2026-11-07T08:00:02Z",
+      "lastModified": "2026-11-09T08:00:02Z",
       "impacted_stations": [
         "Renfrew"
       ],
       "closed": false
     },
     {
-      "id": "cd3f9935-145c-4a25-a684-c3ddc16412c4_bus_257",
+      "id": "6158923f-03dd-4383-ba43-2ccbf014d712_bus_249",
       "alertId": "769561",
       "is_banner": false,
       "mode": "bus",
@@ -6002,14 +5812,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-14T11:00:00Z",
-      "lastModified": "2026-11-07T08:00:02Z",
+      "lastModified": "2026-11-09T08:00:02Z",
       "impacted_stations": [
         "Renfrew"
       ],
       "closed": false
     },
     {
-      "id": "c38dfd0a-c8e2-4b50-8c69-41b1ca6186c9_bus_258",
+      "id": "ada8030d-f618-45d1-b415-8efa222ca5e0_bus_250",
       "alertId": "769590",
       "is_banner": false,
       "mode": "bus",
@@ -6031,7 +5841,7 @@
       "closed": false
     },
     {
-      "id": "b4304854-a587-4e8c-a7b9-bea5884e5925_bus_259",
+      "id": "5f7eb38b-628d-4116-aff8-ed118efbc991_bus_251",
       "alertId": "769592",
       "is_banner": false,
       "mode": "bus",
@@ -6043,17 +5853,17 @@
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53349 Eastbound Spuraway Ave @ Pinnacle St closed",
-      "header": "Update 12:25 PM - Stop 53349 Eastbound Spuraway Ave @ Pinnacle St is temporarily closed from Mon Nov 9 to Fri Nov 13 from 9:00 AM to 8:00 PM daily due to construction.",
+      "header": "Update 6:30 AM : Stop 53349 Eastbound Spuraway Ave @ Pinnacle St is temporarily closed from Mon Nov 9 to Fri Nov 13 from 9:00 AM to 8:00 PM daily (Excluding Nov 11) due to construction.",
       "description": "Affected routes:\r\n151",
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T16:00:00Z",
       "endTime": "2026-11-14T03:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T16:30:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "071ca597-10fa-42ce-8def-44dce154c29c_bus_260",
+      "id": "153dc784-a7ac-4e40-abb3-4c13edad7176_bus_252",
       "alertId": "769594",
       "is_banner": false,
       "mode": "bus",
@@ -6065,17 +5875,17 @@
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53364 Westbound Spuraway Ave @ Pinnacle St closed",
-      "header": "Update 12:24 PM - Stop 53364 Westbound Spuraway Ave @ Pinnacle St is temporarily closed from Mon Nov 9 to Fri Nov 13 from 9:00 AM to 8:00 PM daily due to construction.",
-      "description": "Affected routes:\r\n151",
+      "header": "Update 6:30AM: Stop 53364 Westbound Spuraway Ave @ Pinnacle St is temporarily closed from Mon Nov 9 to Fri Nov 13 from 9:00 AM to 8:00 PM daily (Excluding Nov 11) due to construction.",
+      "description": "",
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T16:00:00Z",
       "endTime": "2026-11-14T03:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T16:30:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "f07516e4-835e-4255-b157-0d3c65304929_bus_261",
+      "id": "85419c80-d82b-4a1a-9ab9-d28cdaf34a6c_bus_253",
       "alertId": "769599",
       "is_banner": false,
       "mode": "bus",
@@ -6092,12 +5902,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-14T11:30:00Z",
       "endTime": "2026-11-15T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "15be9edc-7c53-4865-9c1c-b9265ee2a2cf_bus_262",
+      "id": "20c805ea-84f3-4ef3-b218-cd596d5a818b_bus_254",
       "alertId": "769600",
       "is_banner": false,
       "mode": "bus",
@@ -6114,14 +5924,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-14T11:30:00Z",
       "endTime": "2026-11-15T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [
         "Nanaimo"
       ],
       "closed": false
     },
     {
-      "id": "bb8c08c0-82f2-4a19-9c74-59453d49b8e8_bus_263",
+      "id": "1d4c665c-1e0a-41a8-9d4e-d62cb2ffee8f_bus_255",
       "alertId": "769603",
       "is_banner": false,
       "mode": "bus",
@@ -6143,7 +5953,7 @@
       "closed": false
     },
     {
-      "id": "8fb8d277-cd7c-4260-818b-8b882d9e00d5_bus_264",
+      "id": "9ec7b8fc-6d83-4849-9e18-82801a8236ef_bus_256",
       "alertId": "769604",
       "is_banner": false,
       "mode": "bus",
@@ -6160,12 +5970,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-14T11:30:00Z",
       "endTime": "2026-11-15T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "1528c5d3-a78f-457e-a073-5ed8573a050f_bus_265",
+      "id": "89e41354-36f2-43f3-8ea8-3224fc05809f_bus_257",
       "alertId": "769605",
       "is_banner": false,
       "mode": "bus",
@@ -6182,12 +5992,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-14T11:30:00Z",
       "endTime": "2026-11-15T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "aff7b09d-c01f-426e-b79e-12890fbfaaa1_bus_266",
+      "id": "a588f006-2c6b-44a8-b00c-ab6d8e273838_bus_258",
       "alertId": "769608",
       "is_banner": false,
       "mode": "bus",
@@ -6204,12 +6014,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-14T11:30:00Z",
       "endTime": "2026-11-15T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "3d5f58fe-bb27-4d2a-9223-d402db8eabba_bus_267",
+      "id": "e1d3f41a-8d02-487f-ae39-0b94095b5a45_bus_259",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6226,12 +6036,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-12T11:00:00Z",
-      "lastModified": "2026-11-06T20:57:50Z",
+      "lastModified": "2026-11-09T08:00:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "3d5f58fe-bb27-4d2a-9223-d402db8eabba_bus_268",
+      "id": "e1d3f41a-8d02-487f-ae39-0b94095b5a45_bus_260",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6248,12 +6058,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-12T11:00:00Z",
-      "lastModified": "2026-11-06T20:57:50Z",
+      "lastModified": "2026-11-09T08:00:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "3d5f58fe-bb27-4d2a-9223-d402db8eabba_bus_269",
+      "id": "e1d3f41a-8d02-487f-ae39-0b94095b5a45_bus_261",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6270,12 +6080,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-12T11:00:00Z",
-      "lastModified": "2026-11-06T20:57:50Z",
+      "lastModified": "2026-11-09T08:00:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "3d5f58fe-bb27-4d2a-9223-d402db8eabba_bus_270",
+      "id": "e1d3f41a-8d02-487f-ae39-0b94095b5a45_bus_262",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6292,12 +6102,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-12T11:00:00Z",
-      "lastModified": "2026-11-06T20:57:50Z",
+      "lastModified": "2026-11-09T08:00:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "3d5f58fe-bb27-4d2a-9223-d402db8eabba_bus_271",
+      "id": "e1d3f41a-8d02-487f-ae39-0b94095b5a45_bus_263",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6314,12 +6124,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T11:30:00Z",
       "endTime": "2026-11-12T11:00:00Z",
-      "lastModified": "2026-11-06T20:57:50Z",
+      "lastModified": "2026-11-09T08:00:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "8f6e9055-ae15-43bb-8f0b-a1f46cd85f7e_skytrain_272",
+      "id": "a66f07f0-ebb3-4674-88fd-59d1dba987bc_skytrain_264",
       "alertId": "769640",
       "is_banner": false,
       "mode": "skytrain",
@@ -6336,7 +6146,7 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-10T23:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [
         "Waterfront",
         "Waterfront Station"
@@ -6344,7 +6154,7 @@
       "closed": false
     },
     {
-      "id": "2bcec686-75cf-436a-981a-da7a4b55006d_skytrain_273",
+      "id": "43a3b797-0d7a-449f-afc7-c236c88e5fab_skytrain_265",
       "alertId": "769641",
       "is_banner": false,
       "mode": "skytrain",
@@ -6361,7 +6171,7 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-12T23:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [
         "Nanaimo",
         "Waterfront",
@@ -6370,7 +6180,7 @@
       "closed": false
     },
     {
-      "id": "5a26efc2-7f49-4a3c-9a7f-472d84934cac_general_274",
+      "id": "bd5e793b-f205-4bbc-a626-de31fd7a9160_general_266",
       "alertId": "769643",
       "is_banner": false,
       "mode": "general",
@@ -6387,7 +6197,7 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-09T15:00:00Z",
       "endTime": "2026-11-10T23:00:00Z",
-      "lastModified": "2026-11-08T08:00:02Z",
+      "lastModified": "2026-11-09T15:30:01Z",
       "impacted_stations": [
         "Lougheed Town Centre",
         "VCC-Clark",
@@ -6396,7 +6206,7 @@
       "closed": false
     },
     {
-      "id": "d2520d88-cddd-44d1-be98-8678ac49959b_bus_275",
+      "id": "bdd52ae2-eee2-4cb9-8bbb-dd3618c7ebd5_bus_267",
       "alertId": "769678",
       "is_banner": false,
       "mode": "bus",
@@ -6418,7 +6228,7 @@
       "closed": false
     },
     {
-      "id": "d3cf72e9-4ebf-4253-b4a1-04ff614dd841_bus_276",
+      "id": "efa04faf-e73d-43a8-b824-10c46aef85d2_bus_268",
       "alertId": "769681",
       "is_banner": false,
       "mode": "bus",
@@ -6440,34 +6250,7 @@
       "closed": false
     },
     {
-      "id": "08b20e5f-d14c-41d9-8ad5-9942c66544c6_skytrain_277",
-      "alertId": "769690",
-      "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
-      "routeId": "980",
-      "routeLongName": "Canada Line",
-      "effect": "PLATFORM_CHANGE",
-      "effect_zh": "月台更換",
-      "critical": false,
-      "advisory": false,
-      "alertText": "SkyTrain Canada Line is single tracking on Sun Nov 8 starting at 11:00 PM",
-      "header": "Canada Line Track Maintenance on Sun Nov 8 from 11:00 PM until the end of service. Trains will single-track in both directions between Bridgeport Station and Richmond-Brighouse Station. Please allow extra travel time.",
-      "description": "\nThe last outbound trains will depart stations approx 5 minutes later than normal time\r\n\nThe effective headways during this work are: \r\n\nWaterfront Station - Bridgeport Station - 10 minutes \r\nBridgeport Station - Richmond-Brighouse Station - 20 minutes \r\nBridgeport Station - YVR Airport Station - 20 minutes\r\n",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T06:00:00Z",
-      "endTime": "2026-11-09T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
-      "impacted_stations": [
-        "Richmond-Brighouse",
-        "Waterfront",
-        "Bridgeport",
-        "YVR-Airport"
-      ],
-      "closed": false
-    },
-    {
-      "id": "67b49316-59db-4940-98ec-533fac397a93_skytrain_278",
+      "id": "56df2c25-adac-4a08-b247-80999f476418_skytrain_269",
       "alertId": "769691",
       "is_banner": false,
       "mode": "skytrain",
@@ -6484,17 +6267,17 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T04:00:00Z",
       "endTime": "2026-11-10T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [
-        "Richmond-Brighouse",
         "Waterfront",
-        "Bridgeport",
-        "YVR-Airport"
+        "Richmond-Brighouse",
+        "YVR-Airport",
+        "Bridgeport"
       ],
       "closed": false
     },
     {
-      "id": "9f44c585-8743-4c76-b359-6658a48558f4_skytrain_279",
+      "id": "0c45fbbb-071f-4a36-ae55-a1d1d73a914c_skytrain_270",
       "alertId": "769692",
       "is_banner": false,
       "mode": "skytrain",
@@ -6511,17 +6294,17 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-11T04:00:00Z",
       "endTime": "2026-11-11T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [
-        "Richmond-Brighouse",
         "Waterfront",
-        "Bridgeport",
-        "YVR-Airport"
+        "Richmond-Brighouse",
+        "YVR-Airport",
+        "Bridgeport"
       ],
       "closed": false
     },
     {
-      "id": "6925278d-df22-4ec9-bc3f-fe15e6faa069_skytrain_280",
+      "id": "7b66b0f8-3e26-4e6d-a5c8-3c718c91bc54_skytrain_271",
       "alertId": "769693",
       "is_banner": false,
       "mode": "skytrain",
@@ -6538,570 +6321,1697 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-13T04:00:00Z",
       "endTime": "2026-11-13T11:00:00Z",
-      "lastModified": "2026-11-08T12:31:02Z",
+      "lastModified": "2026-11-09T12:31:01Z",
       "impacted_stations": [
-        "Richmond-Brighouse",
         "Waterfront",
-        "Bridgeport",
-        "YVR-Airport"
+        "Richmond-Brighouse",
+        "YVR-Airport",
+        "Bridgeport"
       ],
       "closed": false
     },
     {
-      "id": "a7059bc4-704e-4a77-a2e3-7f6b33238415_bus_281",
-      "alertId": "770023",
+      "id": "f84e8405-3dc1-444a-b576-88373223128c_skytrain_272",
+      "alertId": "769721",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "49",
-      "routeLongName": "49th Avenue",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
+      "mode": "skytrain",
+      "mode_name": "天車",
+      "routeId": "992",
+      "routeLongName": "Expo Line",
+      "effect": "PLATFORM_CHANGE",
+      "effect_zh": "月台更換",
       "critical": false,
       "advisory": false,
-      "alertText": "49 Metrotown Station detour",
-      "header": "49 Metrotown Station detour beginning at 4:00 PM. Regular route to Imperial at Boundary, then Boundary, Kingsway, Willingdon, Central, resume regular route due to motor vehicle accident.",
-      "description": "\n\r\nAffected stops:\r\n51993 Eastbound Imperial St @ Boundary Rd\r\n51994 Eastbound Imperial St @ Mandy Ave\r\n59607 Northbound Willingdon Extension @ Imperial St\r\n51998 Northbound Willingdon Ave @ Maywood St",
+      "alertText": "SkyTrain Expo Line is single tracking on Tue Nov 10 starting at 9:30 PM",
+      "header": "Expo Line Track Maintenance Tue, Nov 10, from 9:30 PM until the end of service. Trains will single-track in both directions between Royal Oak Station and Edmonds Station. Platform 1 will be closed; please board trains from Platform 2 at both stations. ",
+      "description": "\n\r\nExpo Line trains will operate Waterfront <-> King George/Production Way, stopping at Royal Oak platform 2 and Edmonds platform 2 in both directions. Additional short-turn trains will operate Waterfront <-> Metrotown and Edmonds <-> King George / Production Way. \r\n\nSome trains will dwell longer than normal at Metrotown and 22nd Street Stations.\r\n\nTrips through Royal Oak Station will be delayed, with the worst affected trips taking approximately 15 minutes longer than normal.",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:05:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:35:01Z",
+      "startTime": "2026-11-11T04:30:00Z",
+      "endTime": "2026-11-11T11:00:00Z",
+      "lastModified": "2026-11-09T17:13:49Z",
       "impacted_stations": [
-        "Metrotown"
+        "22nd Street",
+        "Edmonds",
+        "Royal Oak",
+        "Metrotown",
+        "King George",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "1938bdd9-00c1-439b-be14-8623a00a0f08_bus_282",
-      "alertId": "770024",
+      "id": "f6ad09d1-81d3-46c8-a3dd-5fe14fcf2bc6_bus_273",
+      "alertId": "770013",
       "is_banner": false,
       "mode": "bus",
       "mode_name": "巴士",
-      "routeId": "430",
-      "routeLongName": "Metrotown Station/Brighouse Station",
+      "routeId": "250",
+      "routeLongName": "Horseshoe Bay/Dundarave/Vancouver",
       "effect": "DETOUR",
       "effect_zh": "路線改道",
       "critical": false,
       "advisory": false,
-      "alertText": "430 Metrotown Station detour",
-      "header": "430 Metrotown Station detour beginning at 4:00 PM. Regular route to Imperial at Boundary, then Boundary, Kingsway, Willingdon, Central, resume regular route due to motor vehicle accident.",
+      "alertText": "250 Dundarave/Horseshoe Bay detour",
+      "header": "250 Dundarave/Horseshoe Bay detour from 9:45 AM to 12:00 PM on Wed Nov 11. Regular route to Marine & 17th, then via 17th, Bellevue, 21st, Marine, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54614 Westbound Marine Dr @ 18 St\r\n54615 Westbound Marine Dr @ 19 St\r\n54616 Westbound Marine Dr @ 20 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T16:45:00Z",
+      "endTime": "2026-11-11T19:00:00Z",
+      "lastModified": "2026-11-10T00:06:15Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "29bd9568-77a7-44f1-9bd0-5cf53922b86c_bus_274",
+      "alertId": "770014",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "253",
+      "routeLongName": "Caulfeild/Vancouver/Park Royal",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "253 Caulfeild detour",
+      "header": "253 Caulfeild detour from 9:45 AM to 12:00 PM on Wed Nov 11. Regular route to Marine & 17th, then via 17th, Bellevue, 21st, Marine, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54614 Westbound Marine Dr @ 18 St\r\n54615 Westbound Marine Dr @ 19 St\r\n54616 Westbound Marine Dr @ 20 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T16:45:00Z",
+      "endTime": "2026-11-11T19:00:00Z",
+      "lastModified": "2026-11-10T00:09:21Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "fc2b8f69-21ea-40fb-9d6e-780988ce66e1_bus_275",
+      "alertId": "770015",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "255",
+      "routeLongName": "Dundarave/Capilano University",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "255 Dundarave detour",
+      "header": "255 Dundarave detour from 9:45 AM to 12:00 PM on Wed Nov 11. Regular route to Marine & 17th, then via 17th, Bellevue, 21st, Marine, resume regular route.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54614 Westbound Marine Dr @ 18 St\r\n54615 Westbound Marine Dr @ 19 St\r\n54616 Westbound Marine Dr @ 20 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T16:45:00Z",
+      "endTime": "2026-11-11T19:00:00Z",
+      "lastModified": "2026-11-10T00:10:19Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "ad15a219-0c46-4749-855d-475787406a42_bus_276",
+      "alertId": "770019",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "256",
+      "routeLongName": "Whitby Estate/Park Royal/Spuraway",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "256 Whitby Estates detour",
+      "header": "256 Whitby Estates detour from 9:45 AM to 12:00 PM on Wed Nov 11. Regular route to Marine & 17th, then via 17th, Bellevue, 21st, Marine, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54614 Westbound Marine Dr @ 18 St\r\n54615 Westbound Marine Dr @ 19 St\r\n54616 Westbound Marine Dr @ 20 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T16:45:00Z",
+      "endTime": "2026-11-11T19:00:00Z",
+      "lastModified": "2026-11-10T00:11:14Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "126ca98e-aee8-4524-9d42-18edff612096_bus_277",
+      "alertId": "770020",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "250",
+      "routeLongName": "Horseshoe Bay/Dundarave/Vancouver",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "250 Vancouver detour",
+      "header": "250 Vancouver detour from 9:45 AM to 12:00 PM on Wed Nov 11. Regular route to Marine & 21st, then via 21st, Bellevue, 17th, Marine, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54596 Eastbound Marine Dr @ 21 St\r\n54597 Eastbound Marine Dr @ 20 St\r\n54598 Eastbound Marine Dr @ 19 St\r\n54599 Eastbound Marine Dr @ 18 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T16:45:00Z",
+      "endTime": "2026-11-11T19:00:00Z",
+      "lastModified": "2026-11-10T00:12:06Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "3f85d7d0-5645-4a0b-9a5a-d21e3c5fd9e4_bus_278",
+      "alertId": "770021",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "253",
+      "routeLongName": "Caulfeild/Vancouver/Park Royal",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "253 Park Royal/Vancouver detour",
+      "header": "253 Park Royal/Vancouver detour from 9:45 AM to 12:00 PM on Wed Nov 11. Regular route to Marine & 21st, then via 21st, Bellevue, 17th, Marine, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54596 Eastbound Marine Dr @ 21 St\r\n54597 Eastbound Marine Dr @ 20 St\r\n54598 Eastbound Marine Dr @ 19 St\r\n54599 Eastbound Marine Dr @ 18 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T16:45:00Z",
+      "endTime": "2026-11-11T19:00:00Z",
+      "lastModified": "2026-11-10T00:13:19Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "aae8a4b2-57da-486e-9b6e-6ee4851c699c_bus_279",
+      "alertId": "770022",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "255",
+      "routeLongName": "Dundarave/Capilano University",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "255 Capilano University detour",
+      "header": "255 Capilano University detour from 9:45 AM to 12:00 PM on Wed Nov 11. Regular route to Marine & 21st, then via 21st, Bellevue, 17th, Marine, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54596 Eastbound Marine Dr @ 21 St\r\n54597 Eastbound Marine Dr @ 20 St\r\n54598 Eastbound Marine Dr @ 19 St\r\n54599 Eastbound Marine Dr @ 18 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T16:45:00Z",
+      "endTime": "2026-11-11T19:00:00Z",
+      "lastModified": "2026-11-10T00:14:27Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "97975a0e-a6c9-4a36-83e2-fab9862c2846_bus_280",
+      "alertId": "770041",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "256",
+      "routeLongName": "Whitby Estate/Park Royal/Spuraway",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "256 Park Royal detour",
+      "header": "256 Park Royal detour from 9:45 AM to 12:00 PM on Wed Nov 11. Regular route to Marine & 21st, then via 21st, Bellevue, 17th, Marine, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54596 Eastbound Marine Dr @ 21 St\r\n54597 Eastbound Marine Dr @ 20 St\r\n54598 Eastbound Marine Dr @ 19 St\r\n54599 Eastbound Marine Dr @ 18 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T16:45:00Z",
+      "endTime": "2026-11-11T19:00:00Z",
+      "lastModified": "2026-11-10T00:15:45Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "9fd20113-98dc-4649-9446-dd029e13c1a1_bus_281",
+      "alertId": "770052",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "255",
+      "routeLongName": "Dundarave/Capilano University",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "255 Capilano University detour",
+      "header": "255 Capilano University detour from 7:50 AM to 2:00 PM on Wed Nov 11. Regular route to 3rd St & Lonsdale, continue 3rd St, St Georges, 15th St, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day \r\n\nAffected stops:\r\n54143 Northbound Lonsdale Ave @ E 4th St\r\n54145 Northbound Lonsdale Ave @ E 8th St\r\n54146 Northbound Lonsdale Ave @ E 13 St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T14:50:00Z",
+      "endTime": "2026-11-11T21:00:00Z",
+      "lastModified": "2026-11-10T00:03:26Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "28db4440-7444-4fb0-855f-0021a08b3fc8_bus_282",
+      "alertId": "770053",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "255",
+      "routeLongName": "Dundarave/Capilano University",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "255 Dundarave detour",
+      "header": "255 Dundarave detour from 7:50 AM to 2:00 PM on Wed Nov 11. Regular route to 15th St & St Georges, St Georges, 3rd St, resume regular route due to special event.",
+      "description": "\n\r\nRemembrance Day\r\n\nAffected stops:\r\n54254 Southbound Lonsdale Ave @ W 15 St\r\n54155 Southbound Lonsdale Ave @ W 13 St\r\n58166 Southbound Lonsdale Ave @ W Keith Rd\r\n54158 Southbound Lonsdale Ave @ W 5th St",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-11T14:50:00Z",
+      "endTime": "2026-11-11T21:00:00Z",
+      "lastModified": "2026-11-10T00:04:14Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "697aad36-dcc1-47a7-9b15-c27c8d350c45_bus_283",
+      "alertId": "770079",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "25",
+      "routeLongName": "King Edward",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 51521 Eastbound E King Edward Ave @ Fraser St closed",
+      "header": "Stop 51521 Eastbound E King Edward Ave @ Fraser St is temporarily closed Mon Nov 9 and Tue Nov 10 from 7:00 AM to 3:30 PM, daily. due to construction.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:06:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:36:01Z",
+      "startTime": "2026-11-10T14:00:00Z",
+      "endTime": "2026-11-10T22:30:00Z",
+      "lastModified": "2026-11-09T22:45:01Z",
       "impacted_stations": [
-        "Metrotown"
+        "King Edward"
       ],
       "closed": false
     },
     {
-      "id": "df678a19-a20f-4bea-9a37-9fbd9b7afbda_bus_283",
-      "alertId": "770026",
+      "id": "77be0303-ee22-44d3-8eb4-a63a2fb269c6_bus_284",
+      "alertId": "770133",
       "is_banner": false,
       "mode": "bus",
       "mode_name": "巴士",
-      "routeId": "430",
-      "routeLongName": "Metrotown Station/Brighouse Station",
+      "routeId": "19",
+      "routeLongName": "Kingsway",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 51370 Eastbound W Pender St @ Nicola St closed",
+      "header": "Stop 51370 Eastbound W Pender St @ Nicola St is temporarily closed from Tue Nov 10 to Mon Nov 16 from 9:00 AM to 3:00 PM (weekdays only) due to construction.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T16:00:00Z",
+      "endTime": "2026-11-16T22:00:00Z",
+      "lastModified": "2026-11-09T16:18:34Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "9ae0f2b6-3db3-4f40-82c9-67864ae8dbab_bus_285",
+      "alertId": "770153",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "733",
+      "routeLongName": "Rock Ridge/Haney Place",
       "effect": "DETOUR",
       "effect_zh": "路線改道",
       "critical": false,
       "advisory": false,
-      "alertText": "430 Brighouse Station detour",
-      "header": "430 Brighouse Station detour beginning at 4:00 PM. From Metrotown Station, via Central, Imperial, resume regular route due to motor vehicle accident.",
-      "description": "\n\r\nAffected stops:\r\n59606 Southbound Willingdon Ave @ Maywood St",
+      "alertText": "733 Rock Ridge detour",
+      "header": "733 Rock Ridge detour from 7:00 AM to 9:00 PM on Tue Nov 17. Regular route to 225 St and North Ave then via North Ave, 224 St, Lougheed Hwy, 226 St and then resume regular route due to road block. No stops missed. ",
+      "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:08:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:38:01Z",
+      "startTime": "2026-11-17T14:00:00Z",
+      "endTime": "2026-11-18T04:00:00Z",
+      "lastModified": "2026-11-09T18:03:56Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "1c06a86e-a342-4cb0-b6ae-7107cafb5731_bus_286",
+      "alertId": "770154",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "741",
+      "routeLongName": "Anderson Creek/Haney Place",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "741 Anderson Creek detour",
+      "header": "741 Anderson Creek detour from 7:00 AM to 9:00 PM on Tue Nov 17. Regular route to 225 St and North Ave then via North Ave, 224 St, Lougheed Hwy, 226 St and then resume regular route due to road block. No stops missed.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-17T14:00:00Z",
+      "endTime": "2026-11-18T04:00:00Z",
+      "lastModified": "2026-11-09T18:08:39Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "706cb430-ecb5-47d0-85bc-aeef48a1bdcb_skytrain_287",
+      "alertId": "770165",
+      "is_banner": false,
+      "mode": "skytrain",
+      "mode_name": "天車",
+      "routeId": "",
+      "routeLongName": "",
+      "effect": "ESCALATORS",
+      "effect_zh": "電扶梯暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "SkyTrain Expo Line escalator alert at King George Station @ Platform 1",
+      "header": "The up escalator at King George SkyTrain Station to Platform 1 is temporarily out of service Nov 9 & 10 due to repairs.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T20:21:00Z",
+      "endTime": "2026-11-11T12:00:00Z",
+      "lastModified": "2026-11-09T22:50:39Z",
       "impacted_stations": [
-        "Richmond-Brighouse",
-        "Metrotown"
+        "King George",
+        "King George Station"
       ],
       "closed": false
     },
     {
-      "id": "e97a9f34-6b3b-454c-a8e5-daacddefb108_bus_284",
-      "alertId": "770028",
+      "id": "dcb95681-b84e-4777-9075-1bbd4eb8014f_skytrain_288",
+      "alertId": "770209",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "116",
-      "routeLongName": "North Fraser Way",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
+      "mode": "skytrain",
+      "mode_name": "天車",
+      "routeId": "",
+      "routeLongName": "",
+      "effect": "ESCALATORS",
+      "effect_zh": "電扶梯暫停",
       "critical": false,
       "advisory": false,
-      "alertText": "116 Metrotown Station detour",
-      "header": "116 Metrotown Station detour beginning at 4:10 PM. Regular route to Sussex at Imperial, then Imperial, Central to Metrotown Station due to road block.",
-      "description": "\n\r\nAffected stops:\r\n52003 Westbound Imperial St @ McKay Ave\r\n59607 Northbound Willingdon Extension @ Imperial St\r\n51998 Northbound Willingdon Ave @ Maywood St\r\n51163 Eastbound Central Blvd @ Willingdon Ave",
+      "alertText": "SkyTrain Expo Line escalator alert at Joyce-Collingwood Station",
+      "header": "The up escalator at Joyce-Collingwood SkyTrain Station from the west side Compass vending machine level to the platform level is temporarily out of service from Tue Nov 10, 8am to Wed Nov 11, 4pm due to maintenance.",
+      "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:13:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:43:01Z",
+      "startTime": "2026-11-10T16:00:00Z",
+      "endTime": "2026-11-12T00:00:00Z",
+      "lastModified": "2026-11-09T22:06:46Z",
       "impacted_stations": [
-        "Metrotown"
+        "Joyce-Collingwood",
+        "Joyce-Collingwood Station"
       ],
       "closed": false
     },
     {
-      "id": "39554da6-b4c9-4c6e-92e1-136aa76bd2c3_bus_285",
-      "alertId": "770031",
+      "id": "efb59c8e-e070-401d-afc0-11faecd3ba3f_skytrain_289",
+      "alertId": "770220",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "146",
-      "routeLongName": "Metrotown Station/Suncrest",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
+      "mode": "skytrain",
+      "mode_name": "天車",
+      "routeId": "",
+      "routeLongName": "",
+      "effect": "ESCALATORS",
+      "effect_zh": "電扶梯暫停",
       "critical": false,
       "advisory": false,
-      "alertText": "146 Suncrest detour",
-      "header": "146 Suncrest detour beginning at 4:10 PM. From Metrotown Station, via Central, Imperial, Patterson, resume regular route due to road block.",
-      "description": "\n\r\nAffected stops:\r\n59606 Southbound Willingdon Ave @ Maywood St",
+      "alertText": "SkyTrain Expo Line escalator alert at Metrotown Station",
+      "header": "The down escalator at Metrotown SkyTrain Station East Station House from the platform level to Telford Ave is temporarily out of service from Tue Nov 10, 8am to Wed Nov 11, 4pm due to maintenance.",
+      "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:15:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:45:01Z",
+      "startTime": "2026-11-10T16:00:00Z",
+      "endTime": "2026-11-12T00:00:00Z",
+      "lastModified": "2026-11-09T22:25:50Z",
       "impacted_stations": [
         "Metrotown",
-        "Patterson"
+        "Metrotown Station"
       ],
       "closed": false
     },
     {
-      "id": "c819735f-8890-4e33-8112-1decf49f8d13_bus_286",
-      "alertId": "770032",
+      "id": "1c7c5b1b-5299-4115-9b76-7f1fd5930ab2_skytrain_290",
+      "alertId": "770221",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "147",
-      "routeLongName": "Metrotown Station/Edmonds Station",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
+      "mode": "skytrain",
+      "mode_name": "天車",
+      "routeId": "",
+      "routeLongName": "",
+      "effect": "ESCALATORS",
+      "effect_zh": "電扶梯暫停",
       "critical": false,
       "advisory": false,
-      "alertText": "147 Edmonds Station detour",
-      "header": "147 Edmonds Station detour beginning at 4:10 PM. From Metrotown Station, via Central, Imperial, Patterson, resume regular route due to road block.",
-      "description": "\n\r\nAffected stops:\r\n59606 Southbound Willingdon Ave @ Maywood St",
+      "alertText": "SkyTrain Millennium Line escalator alert at Inlet Centre Station",
+      "header": "The up escalator at Inlet Centre SkyTrain Station from the Barnet Hwy North Side entrance to the VCC-Clark bound platform (1) is temporarily out of service from Tue Nov 10, 8am to Fri Nov 13, 4pm due to maintenance.",
+      "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:16:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:46:01Z",
+      "startTime": "2026-11-10T16:00:00Z",
+      "endTime": "2026-11-14T00:00:00Z",
+      "lastModified": "2026-11-09T22:34:33Z",
       "impacted_stations": [
-        "Edmonds",
-        "Metrotown",
-        "Patterson"
+        "Inlet Centre",
+        "VCC-Clark",
+        "Inlet Centre Station"
       ],
       "closed": false
     },
     {
-      "id": "59c1adbb-72a3-4b74-8386-12b6d13e3356_bus_287",
-      "alertId": "770034",
+      "id": "a630884a-5623-41dc-88f0-87da98cb97e2_general_293",
+      "alertId": "770233",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "146",
-      "routeLongName": "Metrotown Station/Suncrest",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
+      "mode": "general",
+      "mode_name": "大眾運輸",
+      "routeId": "",
+      "routeLongName": "",
+      "effect": "ESCALATORS",
+      "effect_zh": "電扶梯暫停",
       "critical": false,
       "advisory": false,
-      "alertText": "146 Metrotown Station detour",
-      "header": "146 Metrotown Station detour beginning at 4:16 PM. Regular route to Patterson at Imperial, then Imperial, Central into Metrotown Station due to road block.",
-      "description": "\n\r\nAffected stops:\r\n59607 Northbound Willingdon Extension @ Imperial St\r\n51998 Northbound Willingdon Ave @ Maywood St\r\n51163 Eastbound Central Blvd @ Willingdon Ave",
+      "alertText": "SkyTrain Expo Line escalator alert at Waterfront Station",
+      "header": "The up escalator at Expo Line Waterfront SkyTrain Station from the platform to the concourse & SeaBus Skywalk is temporarily out of service starting Nov 9 until further notice, due to repairs.",
+      "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:18:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:48:01Z",
+      "startTime": "2026-11-09T22:54:00Z",
+      "endTime": null,
+      "lastModified": "2026-11-09T23:24:02Z",
       "impacted_stations": [
-        "Metrotown",
-        "Patterson"
+        "Waterfront",
+        "Waterfront Station"
       ],
       "closed": false
     },
     {
-      "id": "8675ca7a-4817-4a33-a2e9-c1eb6eb1bb67_bus_288",
-      "alertId": "770035",
+      "id": "abb2bf8a-644f-463c-ade9-d7a84290ec1c_bus_294",
+      "alertId": "770235",
       "is_banner": false,
       "mode": "bus",
       "mode_name": "巴士",
-      "routeId": "147",
-      "routeLongName": "Metrotown Station/Edmonds Station",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
-      "critical": false,
-      "advisory": false,
-      "alertText": "147 Metrotown Station detour",
-      "header": "147 Metrotown Station detour beginning at 4:16 PM. Regular route to Patterson at Imperial, then Imperial, Central into Metrotown Station due to road block.",
-      "description": "\n\r\nAffected stops:\r\n59607 Northbound Willingdon Extension @ Imperial St\r\n51998 Northbound Willingdon Ave @ Maywood St\r\n51163 Eastbound Central Blvd @ Willingdon Ave",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:20:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:50:01Z",
-      "impacted_stations": [
-        "Metrotown",
-        "Patterson"
-      ],
-      "closed": false
-    },
-    {
-      "id": "1c3dc66e-607d-4bff-8d6e-d843b575a051_bus_289",
-      "alertId": "770037",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "31",
-      "routeLongName": "Metrotown Station/River District",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
-      "critical": false,
-      "advisory": false,
-      "alertText": "31 Metrotown Station detour",
-      "header": "31 Metrotown Station detour beginning at 4:23 PM. Regular route to Imperial at Patterson, then Imperial, Central to Metrotown Station due to road block.",
-      "description": "\n\r\nAffected stops:\r\n59607 Northbound Willingdon Extension @ Imperial St\r\n51998 Northbound Willingdon Ave @ Maywood St\r\n51163 Eastbound Central Blvd @ Willingdon Ave",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:24:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:54:01Z",
-      "impacted_stations": [
-        "Metrotown",
-        "Patterson"
-      ],
-      "closed": false
-    },
-    {
-      "id": "e18e634c-4b96-4ab3-8d94-eb49ec965e96_bus_290",
-      "alertId": "770038",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "31",
-      "routeLongName": "Metrotown Station/River District",
-      "effect": "DETOUR",
-      "effect_zh": "路線改道",
-      "critical": false,
-      "advisory": false,
-      "alertText": "31 River District detour",
-      "header": "31 River District detour beginning at 4:20 PM. From Metrotown Station, via Central, Imperial, resume regular route due to road block.",
-      "description": "\n\r\nAffected stops:\r\n59606 Southbound Willingdon Ave @ Maywood St",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-08T23:25:00Z",
-      "endTime": "2026-11-09T03:58:18Z",
-      "lastModified": "2026-11-08T23:55:01Z",
-      "impacted_stations": [
-        "Metrotown"
-      ],
-      "closed": false
-    },
-    {
-      "id": "16e68963-20da-4d6c-b544-d438a4982ecf_bus_291",
-      "alertId": "770048",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "503",
-      "routeLongName": "Fraser Hwy Express",
+      "routeId": "14",
+      "routeLongName": "Hastings/UBC Exchange",
       "effect": "CANCELLATION",
       "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
-      "alertText": "503 Surrey Central Station trip cancelled",
-      "header": "503 Surrey Central Station trip leaving Northbound 272 St @ Fraser Hwy at 4:22 pm is cancelled today due to operational issue.",
+      "alertText": "14 Downtown/Hastings trip cancelled",
+      "header": "14 Hastings trip leaving UBC Exchange @ Bay 10 at 4:31 pm is cancelled today due to operational issue. Resume W 5 Ave and Granville St.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T00:25:00Z",
-      "endTime": "2026-11-09T02:00:00Z",
-      "lastModified": "2026-11-09T00:55:02Z",
+      "startTime": "2026-11-09T23:31:00Z",
+      "endTime": "2026-11-10T01:52:00Z",
+      "lastModified": "2026-11-10T00:08:24Z",
+      "impacted_stations": [
+        "Granville"
+      ],
+      "closed": false
+    },
+    {
+      "id": "0917f7e4-ec9a-4f3a-afe6-8fb11a4bd64b_bus_295",
+      "alertId": "770241",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "119",
+      "routeLongName": "Kingsway",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "119 Edmonds Station trip cancelled",
+      "header": "119 Edmonds Station trip leaving Metrotown Station @ Bay 6 at 4:41 pm is cancelled today due to operational issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:41:00Z",
+      "endTime": "2026-11-10T01:06:00Z",
+      "lastModified": "2026-11-10T00:11:02Z",
+      "impacted_stations": [
+        "Edmonds",
+        "Metrotown"
+      ],
+      "closed": false
+    },
+    {
+      "id": "6c0ecb95-ece2-4f06-8224-cd4abc65ea18_bus_296",
+      "alertId": "770242",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "119",
+      "routeLongName": "Kingsway",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "119 Metrotown Station trip cancelled",
+      "header": "119 Metrotown Station trip leaving Edmonds Station @ Bay 3 at 5:12 pm is cancelled today due to operational issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:12:00Z",
+      "endTime": "2026-11-10T01:40:00Z",
+      "lastModified": "2026-11-10T00:42:02Z",
+      "impacted_stations": [
+        "Edmonds",
+        "Metrotown"
+      ],
+      "closed": false
+    },
+    {
+      "id": "b852297f-0881-4b15-a8dd-80ea50125992_bus_297",
+      "alertId": "770243",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "119",
+      "routeLongName": "Kingsway",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "119 Edmonds Station trip cancelled",
+      "header": "119 Edmonds Station trip leaving Metrotown Station @ Bay 6 at 5:46 pm is cancelled today due to operational issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:46:00Z",
+      "endTime": "2026-11-10T02:10:00Z",
+      "lastModified": "2026-11-09T23:13:05Z",
+      "impacted_stations": [
+        "Edmonds",
+        "Metrotown"
+      ],
+      "closed": false
+    },
+    {
+      "id": "7fdfe7fa-705d-45fc-a012-99d3f2f7ac4a_bus_298",
+      "alertId": "770244",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "144",
+      "routeLongName": "SFU Exchange/Metrotown Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "144 SFU Exchange trip cancelled",
+      "header": "144 SFU Exchange trip leaving Metrotown Station @ Bay 5 at 4:14 pm is cancelled today due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:14:00Z",
+      "endTime": "2026-11-10T01:16:00Z",
+      "lastModified": "2026-11-09T23:44:02Z",
+      "impacted_stations": [
+        "Metrotown"
+      ],
+      "closed": false
+    },
+    {
+      "id": "b96800b3-55b3-46aa-847d-e8bc290cf3c9_bus_299",
+      "alertId": "770245",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "791",
+      "routeLongName": "Haney Place/Braid Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "791 Braid Station trip cancelled",
+      "header": "UPDATE 5:13 PM: 791 Braid Station trip leaving Haney Place @ Bay 3 at 4:15 pm is cancelled today due to mechanical issue. Resume Mary Hill Bypass and Broadway.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:15:00Z",
+      "endTime": "2026-11-10T01:23:00Z",
+      "lastModified": "2026-11-10T00:13:37Z",
+      "impacted_stations": [
+        "Braid"
+      ],
+      "closed": false
+    },
+    {
+      "id": "8cdc3583-7631-4eb3-a916-4932e06d6634_bus_300",
+      "alertId": "770246",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "562",
+      "routeLongName": "Langley Centre/Walnut Grove",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "562 Walnut Grove trip cancelled",
+      "header": "562 Walnut Grove trip leaving Langley Centre @ Bay 6 at 5:02 pm is cancelled today due to operational issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:02:00Z",
+      "endTime": "2026-11-10T01:44:00Z",
+      "lastModified": "2026-11-10T00:32:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "f2cff1c1-bfdd-41df-ad3a-1c353e6a8f68_bus_301",
+      "alertId": "770247",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "562",
+      "routeLongName": "Langley Centre/Walnut Grove",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "562 Langley Centre trip cancelled",
+      "header": "562 Langley Centre trip leaving Carvolth Exchange @ Bay 11 at 5:50 pm is cancelled today due to operational issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:50:00Z",
+      "endTime": "2026-11-10T02:32:00Z",
+      "lastModified": "2026-11-09T23:23:35Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "7d2519db-1230-4c94-a277-ad7c8031ee7f_bus_302",
+      "alertId": "770248",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "16",
+      "routeLongName": "29th Avenue Station/Arbutus",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "16 Arbutus trip cancelled",
+      "header": "UPDATE: 16 Arbutus trip leaving 29th Avenue Station @ Bay 3 at 4:30 pm is cancelled today due to mechanical issue. Resume from Hastings St and Kaslo St.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:30:00Z",
+      "endTime": "2026-11-10T02:05:00Z",
+      "lastModified": "2026-11-10T00:00:02Z",
+      "impacted_stations": [
+        "29th Avenue"
+      ],
+      "closed": false
+    },
+    {
+      "id": "4cf62e55-6a19-4a91-94fd-204ae94f86b4_bus_303",
+      "alertId": "770249",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "123",
+      "routeLongName": "Canada Way",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "123 Brentwood Station trip cancelled",
+      "header": "123 Brentwood Station trip leaving New Westminster Station @ Bay 4 at 4:16 pm is cancelled today due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:29:00Z",
+      "endTime": "2026-11-10T01:04:00Z",
+      "lastModified": "2026-11-09T23:59:02Z",
+      "impacted_stations": [
+        "Brentwood Town Centre",
+        "New Westminster"
+      ],
+      "closed": false
+    },
+    {
+      "id": "b3490420-4fd7-47ce-b823-e4cdd5ce24ec_bus_304",
+      "alertId": "770251",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "10",
+      "routeLongName": "Granville",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "10 Marine Drive Station trip cancelled",
+      "header": "UPDATE 4:55 PM: 10 Marine Drive Station trip leaving Southbound Richards St @ W Cordova St at 4:36 pm is cancelled today due to operational issue. No longer resuming.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:36:00Z",
+      "endTime": "2026-11-10T01:29:00Z",
+      "lastModified": "2026-11-10T00:06:02Z",
+      "impacted_stations": [
+        "Marine Drive"
+      ],
+      "closed": false
+    },
+    {
+      "id": "5d71dbf6-7d4f-4703-8ce7-93a954cb6f60_bus_305",
+      "alertId": "770252",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "502",
+      "routeLongName": "Fraser Hwy",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "502 Langley Centre trip cancelled",
+      "header": "502 Langley Centre trip leaving Surrey Central Station @ Bay 9 at 4:55 pm is cancelled today due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:55:00Z",
+      "endTime": "2026-11-10T02:18:00Z",
+      "lastModified": "2026-11-10T00:25:02Z",
       "impacted_stations": [
         "Surrey Central"
       ],
       "closed": false
     },
     {
-      "id": "f754cd09-2a5a-4a01-92d0-08f05f5cbb0e_bus_292",
-      "alertId": "770050",
+      "id": "c836ebe9-5f48-491e-99e7-e7dfb36ea070_bus_306",
+      "alertId": "770254",
       "is_banner": false,
       "mode": "bus",
       "mode_name": "巴士",
-      "routeId": "351",
-      "routeLongName": "White Rock Centre/Bridgeport Station",
+      "routeId": "214",
+      "routeLongName": "Blueridge/Phibbs Exchange/Burrard Station",
       "effect": "CANCELLATION",
       "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
-      "alertText": "351 Bridgeport Station trip cancelled",
-      "header": "351 Bridgeport Station trip leaving Eastbound North Bluff Rd @ Anderson St at 5:50 pm is cancelled today due to operational issue.",
+      "alertText": "214 Blueridge trip cancelled",
+      "header": "214 Blueridge trip leaving Burrard Station @ Bay 2 at 4:39 pm is cancelled today due to on-board incident.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T00:50:00Z",
-      "endTime": "2026-11-09T02:38:00Z",
-      "lastModified": "2026-11-09T01:20:02Z",
+      "startTime": "2026-11-09T23:39:00Z",
+      "endTime": "2026-11-10T01:34:00Z",
+      "lastModified": "2026-11-10T00:09:02Z",
       "impacted_stations": [
-        "Bridgeport"
+        "Burrard"
       ],
       "closed": false
     },
     {
-      "id": "bbdad7f7-e15a-4f8b-92cd-94d21b5fab99_bus_293",
-      "alertId": "770054",
+      "id": "8ad8b577-b5b7-47e4-852c-6739fe331278_bus_307",
+      "alertId": "770256",
       "is_banner": false,
       "mode": "bus",
       "mode_name": "巴士",
-      "routeId": "151",
-      "routeLongName": "Como Lake Ave",
+      "routeId": "R4",
+      "routeLongName": "41st Avenue",
       "effect": "CANCELLATION",
       "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
-      "alertText": "151 Coquitlam Central Station trip cancelled",
-      "header": "151 Coquitlam Central Station trip leaving Burquitlam Station @ Bay 3 at 5:55 pm is cancelled today due to mechanical issue.",
+      "alertText": "R4 Joyce Station trip cancelled",
+      "header": "R4 Joyce Station trip leaving UBC Exchange @ Bay 4 at 4:24 pm is cancelled today due to mechanical issue. Resume W 41 and Oak.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T00:59:00Z",
-      "endTime": "2026-11-09T02:15:00Z",
-      "lastModified": "2026-11-09T01:29:02Z",
+      "startTime": "2026-11-09T23:43:00Z",
+      "endTime": "2026-11-10T01:26:00Z",
+      "lastModified": "2026-11-10T00:13:02Z",
       "impacted_stations": [
-        "Coquitlam Central",
-        "Burquitlam"
+        "Joyce-Collingwood"
       ],
       "closed": false
     },
     {
-      "id": "4f5ef914-62db-49d0-93a1-f89cf34f6ef3_bus_294",
-      "alertId": "770055",
+      "id": "3f85187b-9b4e-4bf2-9ff5-a7c0a977fc28_bus_308",
+      "alertId": "770257",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "501",
+      "routeLongName": "Langley Centre/Surrey Central Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "501 Surrey Central Station trip cancelled",
+      "header": "501 Surrey Central Station trip leaving Langley Centre @ Bay 3 at 3:58 pm is cancelled today from Carvolth Exchange due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:44:00Z",
+      "endTime": "2026-11-10T01:24:00Z",
+      "lastModified": "2026-11-10T00:14:02Z",
+      "impacted_stations": [
+        "Surrey Central"
+      ],
+      "closed": false
+    },
+    {
+      "id": "c4d49bf5-633b-4bae-bfe1-833559e5d58f_bus_309",
+      "alertId": "770258",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "430",
+      "routeLongName": "Metrotown Station/Brighouse Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "430 Metrotown Station trip cancelled",
+      "header": "UPDATE 5:09 PM: 430 Metrotown Station trip leaving Richmond-Brighouse Station @ Bay 3 at 4:25 pm is cancelled today due to mechanical issue. Resume from E 49 and Knight.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-09T23:48:00Z",
+      "endTime": "2026-11-10T01:39:00Z",
+      "lastModified": "2026-11-10T00:18:02Z",
+      "impacted_stations": [
+        "Metrotown",
+        "Richmond-Brighouse"
+      ],
+      "closed": false
+    },
+    {
+      "id": "631b2d83-0cba-4667-b116-7c81e0d3ef99_bus_310",
+      "alertId": "770259",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "123",
+      "routeLongName": "Canada Way",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "123 New Westminster Station trip cancelled",
+      "header": "UPDATE: 123 New Westminster Station trip leaving Brentwood Station @ Bay 7 at 5:17 pm is cancelled today due to mechanical issue. Resume from Canada Way and Ledger Ave.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:17:00Z",
+      "endTime": "2026-11-10T02:02:00Z",
+      "lastModified": "2026-11-10T00:47:02Z",
+      "impacted_stations": [
+        "Brentwood Town Centre",
+        "New Westminster"
+      ],
+      "closed": false
+    },
+    {
+      "id": "b449e483-0d5c-4365-b81c-45bc90038312_bus_311",
+      "alertId": "770260",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "325",
+      "routeLongName": "140 Street",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "325 Newton Exchange trip cancelled",
+      "header": "325 Newton Exchange trip leaving Surrey Central Station @ Bay 7 at 5:28 pm is cancelled today due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:28:00Z",
+      "endTime": "2026-11-10T02:00:00Z",
+      "lastModified": "2026-11-10T00:58:02Z",
+      "impacted_stations": [
+        "Surrey Central"
+      ],
+      "closed": false
+    },
+    {
+      "id": "96db0184-7e58-44c4-8a92-c2e904ebdc24_bus_312",
+      "alertId": "770261",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "144",
+      "routeLongName": "SFU Exchange/Metrotown Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "144 Metrotown Station trip cancelled",
+      "header": "UPDATE: 144 Metrotown Station trip leaving SFU Transit Exchange @ Bay 4 at 5:24 pm is cancelled today due to mechanical issue. Resume from Bus Loop at Burnaby City Hall.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:24:00Z",
+      "endTime": "2026-11-10T02:27:00Z",
+      "lastModified": "2026-11-10T00:57:37Z",
+      "impacted_stations": [
+        "Metrotown"
+      ],
+      "closed": false
+    },
+    {
+      "id": "69105a56-3e79-43f9-9da0-ddf3c03e1223_bus_313",
+      "alertId": "770262",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "144",
+      "routeLongName": "SFU Exchange/Metrotown Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "144 Metrotown Station trip cancelled",
+      "header": "144 Metrotown Station trip leaving SFU Transit Exchange @ Bay 4 at 5:24 pm is cancelled today due to mechanical issue. Resume from Sperling Station.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:24:00Z",
+      "endTime": "2026-11-10T02:27:00Z",
+      "lastModified": "2026-11-10T00:54:02Z",
+      "impacted_stations": [
+        "Metrotown",
+        "Sperling-Burnaby Lake"
+      ],
+      "closed": false
+    },
+    {
+      "id": "ca5ede2d-1bde-47dd-acca-2d051207fafd_bus_314",
+      "alertId": "770263",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "595",
+      "routeLongName": "208 Street",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "595 Maple Meadows Station/Dewdney Trunk Rd trip cancelled",
+      "header": "595 Dewdney Trunk Rd trip leaving Langley Centre @ Bay 4 at 5:20 pm is cancelled today due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:24:00Z",
+      "endTime": "2026-11-10T02:13:00Z",
+      "lastModified": "2026-11-10T00:54:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "c1f72005-8495-47b9-9709-690cb0f71b8a_bus_315",
+      "alertId": "770264",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "3",
+      "routeLongName": "Main",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 50182 Northbound Main St @ National Ave closed",
+      "header": "Stop 50182 Northbound Main St @ National Ave is temporarily closed from Sat Nov 14 to Sun Nov 29 from 7:00 AM to 7:00 PM (weekends only) due to construction. ",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-14T14:00:00Z",
+      "endTime": "2026-11-30T02:00:00Z",
+      "lastModified": "2026-11-10T00:28:53Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "c1f72005-8495-47b9-9709-690cb0f71b8a_bus_316",
+      "alertId": "770264",
       "is_banner": false,
       "mode": "bus",
       "mode_name": "巴士",
       "routeId": "8",
       "routeLongName": "Fraser",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 50182 Northbound Main St @ National Ave closed",
+      "header": "Stop 50182 Northbound Main St @ National Ave is temporarily closed from Sat Nov 14 to Sun Nov 29 from 7:00 AM to 7:00 PM (weekends only) due to construction. ",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-14T14:00:00Z",
+      "endTime": "2026-11-30T02:00:00Z",
+      "lastModified": "2026-11-10T00:28:53Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "c1f72005-8495-47b9-9709-690cb0f71b8a_bus_317",
+      "alertId": "770264",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "19",
+      "routeLongName": "Kingsway",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 50182 Northbound Main St @ National Ave closed",
+      "header": "Stop 50182 Northbound Main St @ National Ave is temporarily closed from Sat Nov 14 to Sun Nov 29 from 7:00 AM to 7:00 PM (weekends only) due to construction. ",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-14T14:00:00Z",
+      "endTime": "2026-11-30T02:00:00Z",
+      "lastModified": "2026-11-10T00:28:53Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "c1f72005-8495-47b9-9709-690cb0f71b8a_bus_318",
+      "alertId": "770264",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "22",
+      "routeLongName": "Knight",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 50182 Northbound Main St @ National Ave closed",
+      "header": "Stop 50182 Northbound Main St @ National Ave is temporarily closed from Sat Nov 14 to Sun Nov 29 from 7:00 AM to 7:00 PM (weekends only) due to construction. ",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-14T14:00:00Z",
+      "endTime": "2026-11-30T02:00:00Z",
+      "lastModified": "2026-11-10T00:28:53Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "c1f72005-8495-47b9-9709-690cb0f71b8a_bus_319",
+      "alertId": "770264",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "N19",
+      "routeLongName": "Kingsway",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 50182 Northbound Main St @ National Ave closed",
+      "header": "Stop 50182 Northbound Main St @ National Ave is temporarily closed from Sat Nov 14 to Sun Nov 29 from 7:00 AM to 7:00 PM (weekends only) due to construction. ",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-14T14:00:00Z",
+      "endTime": "2026-11-30T02:00:00Z",
+      "lastModified": "2026-11-10T00:28:53Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "c1f72005-8495-47b9-9709-690cb0f71b8a_bus_320",
+      "alertId": "770264",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "N8",
+      "routeLongName": "Fraser",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 50182 Northbound Main St @ National Ave closed",
+      "header": "Stop 50182 Northbound Main St @ National Ave is temporarily closed from Sat Nov 14 to Sun Nov 29 from 7:00 AM to 7:00 PM (weekends only) due to construction. ",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-14T14:00:00Z",
+      "endTime": "2026-11-30T02:00:00Z",
+      "lastModified": "2026-11-10T00:28:53Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "ea77c0d8-3c6d-47b5-bd13-c5f867db2287_bus_321",
+      "alertId": "770265",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "595",
+      "routeLongName": "208 Street",
       "effect": "CANCELLATION",
       "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
-      "alertText": "8 SE Marine Drive trip cancelled",
-      "header": "8 SE Marine Drive trip leaving Waterfront Station @ Bay 3 at 5:33 pm is cancelled today due to mechanical issue.",
+      "alertText": "595 Langley Centre trip cancelled",
+      "header": "595 Langley Centre trip leaving Southbound 203 St @ Lougheed Hwy at 6:24 pm is cancelled today due to mechanical issue.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T01:04:00Z",
-      "endTime": "2026-11-09T02:15:00Z",
-      "lastModified": "2026-11-09T01:34:02Z",
+      "startTime": "2026-11-10T01:24:00Z",
+      "endTime": "2026-11-10T03:04:00Z",
+      "lastModified": "2026-11-10T00:24:54Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "67f4ddd8-db65-4b9a-9260-7516ac093016_bus_322",
+      "alertId": "770266",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "130",
+      "routeLongName": "Willingdon",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "130 Metrotown Station trip cancelled",
+      "header": "130 Metrotown Station trip leaving Kootenay Loop @ Bay 8 at 5:20 pm is cancelled today due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:27:00Z",
+      "endTime": "2026-11-10T01:57:00Z",
+      "lastModified": "2026-11-10T00:57:02Z",
       "impacted_stations": [
-        "Marine Drive",
-        "Waterfront"
+        "Metrotown"
       ],
       "closed": false
     },
     {
-      "id": "15119394-42a4-4165-b8fb-ac1039cc9b45_bus_295",
-      "alertId": "770056",
+      "id": "7ce4fc15-aef3-4c02-a131-a0d8ac7b9135_bus_323",
+      "alertId": "770267",
       "is_banner": false,
       "mode": "bus",
       "mode_name": "巴士",
-      "routeId": "531",
-      "routeLongName": "White Rock Centre/Willowbrook",
+      "routeId": "321",
+      "routeLongName": "King George Blvd",
       "effect": "CANCELLATION",
       "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
-      "alertText": "531 White Rock Centre trip cancelled",
-      "header": "531 White Rock Centre trip leaving Northbound 198 St @ 64 Ave at 6:54 pm is cancelled today due to traffic. Resume Langley Centre",
+      "alertText": "321 Surrey Central Station/Scott Road Station trip cancelled",
+      "header": "321 Scott Road Station trip leaving Westbound Thrift Ave @ Johnston Rd at 4:38 pm is cancelled today from Newton Exchange due to mechanical issue.",
       "description": "",
       "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-09T01:54:00Z",
-      "endTime": "2026-11-09T03:44:00Z",
-      "lastModified": "2026-11-09T01:36:19Z",
+      "startTime": "2026-11-10T00:28:00Z",
+      "endTime": "2026-11-10T02:00:00Z",
+      "lastModified": "2026-11-10T00:58:02Z",
+      "impacted_stations": [
+        "Surrey Central",
+        "Scott Road"
+      ],
+      "closed": false
+    },
+    {
+      "id": "54cd5a84-03b0-4a28-b4b5-5900db6e3f20_bus_324",
+      "alertId": "770268",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "16",
+      "routeLongName": "29th Avenue Station/Arbutus",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 51112 Eastbound W 51 Ave @ Arbutus St closed",
+      "header": "Stop 51112 Eastbound W 51 Ave @ Arbutus St is temporarily closed from 9:30 AM to 3:00 PM on Tue Nov 17 due to construction.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-17T16:30:00Z",
+      "endTime": "2026-11-17T22:00:00Z",
+      "lastModified": "2026-11-10T00:31:43Z",
       "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "16603516-571b-4578-9ae4-e31c1af9130e_bus_325",
+      "alertId": "770269",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "16",
+      "routeLongName": "29th Avenue Station/Arbutus",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 51016 Northbound West Blvd @ W 51 Ave closed",
+      "header": "Stop 51016 Northbound West Blvd @ W 51 Ave is temporarily closed from 9:30 AM to 3:00 PM on Tue Nov 17 due to construction.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-17T16:30:00Z",
+      "endTime": "2026-11-17T22:00:00Z",
+      "lastModified": "2026-11-10T00:37:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "b1a2f972-aad0-4f98-b2b7-73c0b1eb21dc_bus_326",
+      "alertId": "770270",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "406",
+      "routeLongName": "Railway Ave",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "406 Brighouse Station trip cancelled",
+      "header": "406 Brighouse Station trip leaving Steveston Exchange @ Bay 3 at 5:32 pm is cancelled today due to traffic. Resume from Williams Rd and Fortune Ave.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:36:00Z",
+      "endTime": "2026-11-10T01:57:00Z",
+      "lastModified": "2026-11-10T00:37:16Z",
+      "impacted_stations": [
+        "Richmond-Brighouse"
+      ],
+      "closed": false
+    },
+    {
+      "id": "a8fb784d-041d-4cda-9ba4-afc93814fc33_bus_327",
+      "alertId": "770271",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "123",
+      "routeLongName": "Canada Way",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "123 Brentwood Station trip cancelled",
+      "header": "123 Brentwood Station trip leaving New Westminster Station @ Bay 4 at 5:16 pm is cancelled today due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:39:00Z",
+      "endTime": "2026-11-10T02:00:00Z",
+      "lastModified": "2026-11-10T00:39:53Z",
+      "impacted_stations": [
+        "Brentwood Town Centre",
+        "New Westminster"
+      ],
+      "closed": false
+    },
+    {
+      "id": "4bfd91f8-f426-4b62-ae7c-5ca847353ed2_bus_328",
+      "alertId": "770272",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "249",
+      "routeLongName": "Lonsdale Quay/Delbrook",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 54426 Northbound Chesterfield Ave @ W 1st St closed",
+      "header": "Stop 54426 Northbound Chesterfield Ave @ W 1st St is temporarily closed from Mon Nov 16 to Tue Nov 17 from 8:00 AM to 4:00 PM daily due to construction.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-16T15:00:00Z",
+      "endTime": "2026-11-17T23:00:00Z",
+      "lastModified": "2026-11-10T00:40:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "4bfd91f8-f426-4b62-ae7c-5ca847353ed2_bus_329",
+      "alertId": "770272",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "N24",
+      "routeLongName": "Downtown/Lynn Valley",
+      "effect": "STOP_CLOSURE",
+      "effect_zh": "站點暫停",
+      "critical": false,
+      "advisory": false,
+      "alertText": "Stop 54426 Northbound Chesterfield Ave @ W 1st St closed",
+      "header": "Stop 54426 Northbound Chesterfield Ave @ W 1st St is temporarily closed from Mon Nov 16 to Tue Nov 17 from 8:00 AM to 4:00 PM daily due to construction.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-16T15:00:00Z",
+      "endTime": "2026-11-17T23:00:00Z",
+      "lastModified": "2026-11-10T00:40:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "2011ccb8-a14e-4ccf-bd3c-02d6aacaa6d5_bus_330",
+      "alertId": "770273",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "249",
+      "routeLongName": "Lonsdale Quay/Delbrook",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "249 Lonsdale Quay trip cancelled",
+      "header": "249 Lonsdale Quay trip leaving Eastbound Montroyal Blvd @ Glencanyon Dr at 5:17 pm is cancelled today from Bewicke Ave and W 14 St due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:40:00Z",
+      "endTime": "2026-11-10T01:39:00Z",
+      "lastModified": "2026-11-10T00:40:51Z",
+      "impacted_stations": [
+        "Lonsdale Quay"
+      ],
+      "closed": false
+    },
+    {
+      "id": "88616b34-8057-4e61-9f2f-831b386b971b_bus_331",
+      "alertId": "770274",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "320",
+      "routeLongName": "Langley/Fleetwood/Surrey Central Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "320 Fleetwood/Langley Centre trip cancelled",
+      "header": "320 Langley Centre trip leaving Surrey Central Station @ Bay 5 at 5:23 pm is cancelled today due to on-board incident.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:42:00Z",
+      "endTime": "2026-11-10T02:41:00Z",
+      "lastModified": "2026-11-10T00:42:54Z",
+      "impacted_stations": [
+        "Surrey Central"
+      ],
+      "closed": false
+    },
+    {
+      "id": "66b5cab5-c745-4023-88bd-43d70e82e0be_bus_332",
+      "alertId": "770275",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "229",
+      "routeLongName": "Lonsdale Ave",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "229 Lynn Valley trip cancelled",
+      "header": "229 Lynn Valley trip leaving Lonsdale Quay @ Bay 1 at 5:44 pm is cancelled today due to mechanical issue. Resume from E 29 St and Lonsdale Ave.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:44:00Z",
+      "endTime": "2026-11-10T02:11:00Z",
+      "lastModified": "2026-11-10T00:44:23Z",
+      "impacted_stations": [
+        "Lonsdale Quay"
+      ],
+      "closed": false
+    },
+    {
+      "id": "d55afe07-6ebc-404f-ab54-0e081a11e2f0_bus_333",
+      "alertId": "770276",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "123",
+      "routeLongName": "Canada Way",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "123 New Westminster Station trip cancelled",
+      "header": "123 New Westminster Station trip leaving Brentwood Station @ Bay 7 at 6:10 pm is cancelled today due to mechanical issue. Resume from Canada Way and Ledger Ave.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T01:10:00Z",
+      "endTime": "2026-11-10T02:48:00Z",
+      "lastModified": "2026-11-10T00:48:48Z",
+      "impacted_stations": [
+        "Brentwood Town Centre",
+        "New Westminster"
+      ],
+      "closed": false
+    },
+    {
+      "id": "25395363-b338-4038-a713-a8ea47ee89c5_bus_334",
+      "alertId": "770277",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "160",
+      "routeLongName": "Port Coquitlam Station/Kootenay Loop",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "160 Port Coquitlam Station trip cancelled",
+      "header": "160 Port Coquitlam Station trip leaving Kootenay Loop @ Bay 2 at 5:32 pm is cancelled today due to mechanical issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:53:00Z",
+      "endTime": "2026-11-10T02:51:00Z",
+      "lastModified": "2026-11-10T00:54:02Z",
+      "impacted_stations": [],
+      "closed": false
+    },
+    {
+      "id": "89a96ffc-745c-42dd-ab7a-541060e7c351_bus_335",
+      "alertId": "770278",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "R4",
+      "routeLongName": "41st Avenue",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "R4 Joyce Station trip cancelled",
+      "header": "R4 Joyce Station trip leaving UBC Exchange @ Bay 4 at 5:55 pm is cancelled today due to operational issue. Resume from W 16 Ave and Wesbrook Mall.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T00:55:00Z",
+      "endTime": "2026-11-10T02:48:00Z",
+      "lastModified": "2026-11-10T00:55:51Z",
+      "impacted_stations": [
+        "Joyce-Collingwood"
+      ],
       "closed": false
     }
   ],
   "station_alerts_map": {
     "Waterfront": {
       "critical": false,
-      "count": 8,
+      "count": 7,
       "alert_ids": [
-        "450d6315-9ebf-4b76-8c5d-476fb065e5e1_skytrain_1",
-        "054add61-e048-4395-aa04-928ceffd85f6_skytrain_18",
-        "8f6e9055-ae15-43bb-8f0b-a1f46cd85f7e_skytrain_272",
-        "2bcec686-75cf-436a-981a-da7a4b55006d_skytrain_273",
-        "08b20e5f-d14c-41d9-8ad5-9942c66544c6_skytrain_277",
-        "67b49316-59db-4940-98ec-533fac397a93_skytrain_278",
-        "9f44c585-8743-4c76-b359-6658a48558f4_skytrain_279",
-        "6925278d-df22-4ec9-bc3f-fe15e6faa069_skytrain_280"
+        "4338f57d-7549-4dab-aef3-ab21f8c34035_skytrain_1",
+        "fc947d94-3d21-470c-8143-3cdd44424fac_skytrain_18",
+        "a66f07f0-ebb3-4674-88fd-59d1dba987bc_skytrain_264",
+        "43a3b797-0d7a-449f-afc7-c236c88e5fab_skytrain_265",
+        "56df2c25-adac-4a08-b247-80999f476418_skytrain_269",
+        "0c45fbbb-071f-4a36-ae55-a1d1d73a914c_skytrain_270",
+        "7b66b0f8-3e26-4e6d-a5c8-3c718c91bc54_skytrain_271"
       ]
     },
     "Granville": {
       "critical": false,
       "count": 2,
       "alert_ids": [
-        "450d6315-9ebf-4b76-8c5d-476fb065e5e1_skytrain_1",
-        "a9ae145c-1f54-445a-9640-d6d72bab5856_skytrain_250"
+        "4338f57d-7549-4dab-aef3-ab21f8c34035_skytrain_1",
+        "21129071-ab43-40b1-952b-78b405c1b6eb_skytrain_242"
       ]
     },
     "Langara-49th Avenue": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "7152c88b-7701-499c-bfcd-4adb2d6acf9c_skytrain_3"
-      ]
-    },
-    "Oakridge-41st Avenue": {
-      "critical": false,
-      "count": 1,
-      "alert_ids": [
-        "7152c88b-7701-499c-bfcd-4adb2d6acf9c_skytrain_3"
+        "2f89a093-1977-43ac-9f70-6d6b3ccfa105_skytrain_3"
       ]
     },
     "King Edward": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "7152c88b-7701-499c-bfcd-4adb2d6acf9c_skytrain_3"
+        "2f89a093-1977-43ac-9f70-6d6b3ccfa105_skytrain_3"
+      ]
+    },
+    "Oakridge-41st Avenue": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "2f89a093-1977-43ac-9f70-6d6b3ccfa105_skytrain_3"
       ]
     },
     "Oakridge-41st Avenue Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "7152c88b-7701-499c-bfcd-4adb2d6acf9c_skytrain_3"
-      ]
-    },
-    "Templeton": {
-      "critical": false,
-      "count": 1,
-      "alert_ids": [
-        "4894e904-5b17-4c3b-940e-32effca7bcb8_skytrain_4"
+        "2f89a093-1977-43ac-9f70-6d6b3ccfa105_skytrain_3"
       ]
     },
     "Sea Island Centre": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "4894e904-5b17-4c3b-940e-32effca7bcb8_skytrain_4"
-      ]
-    },
-    "Bridgeport": {
-      "critical": false,
-      "count": 5,
-      "alert_ids": [
-        "4894e904-5b17-4c3b-940e-32effca7bcb8_skytrain_4",
-        "08b20e5f-d14c-41d9-8ad5-9942c66544c6_skytrain_277",
-        "67b49316-59db-4940-98ec-533fac397a93_skytrain_278",
-        "9f44c585-8743-4c76-b359-6658a48558f4_skytrain_279",
-        "6925278d-df22-4ec9-bc3f-fe15e6faa069_skytrain_280"
+        "8bbf4440-f585-434e-94ba-1a1bb4f3aabb_skytrain_4"
       ]
     },
     "YVR-Airport": {
       "critical": false,
-      "count": 5,
+      "count": 4,
       "alert_ids": [
-        "4894e904-5b17-4c3b-940e-32effca7bcb8_skytrain_4",
-        "08b20e5f-d14c-41d9-8ad5-9942c66544c6_skytrain_277",
-        "67b49316-59db-4940-98ec-533fac397a93_skytrain_278",
-        "9f44c585-8743-4c76-b359-6658a48558f4_skytrain_279",
-        "6925278d-df22-4ec9-bc3f-fe15e6faa069_skytrain_280"
+        "8bbf4440-f585-434e-94ba-1a1bb4f3aabb_skytrain_4",
+        "56df2c25-adac-4a08-b247-80999f476418_skytrain_269",
+        "0c45fbbb-071f-4a36-ae55-a1d1d73a914c_skytrain_270",
+        "7b66b0f8-3e26-4e6d-a5c8-3c718c91bc54_skytrain_271"
       ]
     },
-    "VCC-Clark": {
+    "Templeton": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "0c5b1c5a-3426-498f-87ee-fa0e0c0d7733_skytrain_10"
+        "8bbf4440-f585-434e-94ba-1a1bb4f3aabb_skytrain_4"
+      ]
+    },
+    "Bridgeport": {
+      "critical": false,
+      "count": 4,
+      "alert_ids": [
+        "8bbf4440-f585-434e-94ba-1a1bb4f3aabb_skytrain_4",
+        "56df2c25-adac-4a08-b247-80999f476418_skytrain_269",
+        "0c45fbbb-071f-4a36-ae55-a1d1d73a914c_skytrain_270",
+        "7b66b0f8-3e26-4e6d-a5c8-3c718c91bc54_skytrain_271"
       ]
     },
     "Gilmore": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "0c5b1c5a-3426-498f-87ee-fa0e0c0d7733_skytrain_10"
+        "990ed1e9-b232-414d-bd8f-27d94cf8ed0f_skytrain_10"
+      ]
+    },
+    "VCC-Clark": {
+      "critical": false,
+      "count": 2,
+      "alert_ids": [
+        "990ed1e9-b232-414d-bd8f-27d94cf8ed0f_skytrain_10",
+        "1c7c5b1b-5299-4115-9b76-7f1fd5930ab2_skytrain_290"
       ]
     },
     "Gilmore Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "0c5b1c5a-3426-498f-87ee-fa0e0c0d7733_skytrain_10"
+        "990ed1e9-b232-414d-bd8f-27d94cf8ed0f_skytrain_10"
       ]
     },
     "Production Way-University": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "f6f09007-617d-46ac-9628-825c8fd4c962_skytrain_11"
+        "7a36ebae-27ad-4600-bc99-fc1af2b9934e_skytrain_11"
       ]
     },
     "Production Way-University Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "f6f09007-617d-46ac-9628-825c8fd4c962_skytrain_11"
+        "7a36ebae-27ad-4600-bc99-fc1af2b9934e_skytrain_11"
       ]
     },
     "Commercial-Broadway": {
       "critical": false,
       "count": 2,
       "alert_ids": [
-        "054add61-e048-4395-aa04-928ceffd85f6_skytrain_18",
-        "e2b65636-ab9d-4e0f-adfe-b20187dc4267_skytrain_249"
+        "fc947d94-3d21-470c-8143-3cdd44424fac_skytrain_18",
+        "52016c78-9e19-4a86-bce5-2466f2cc9599_skytrain_241"
       ]
     },
     "Metrotown": {
       "critical": false,
-      "count": 1,
+      "count": 2,
       "alert_ids": [
-        "26ebd734-bc87-4a83-aa0d-3435dd29ded7_skytrain_248"
+        "554d0d4e-6b35-49d5-b579-b0933d299d95_skytrain_240",
+        "efb59c8e-e070-401d-afc0-11faecd3ba3f_skytrain_289"
       ]
     },
     "Metrotown Station": {
       "critical": false,
-      "count": 1,
+      "count": 2,
       "alert_ids": [
-        "26ebd734-bc87-4a83-aa0d-3435dd29ded7_skytrain_248"
+        "554d0d4e-6b35-49d5-b579-b0933d299d95_skytrain_240",
+        "efb59c8e-e070-401d-afc0-11faecd3ba3f_skytrain_289"
       ]
     },
     "Commercial-Broadway Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "e2b65636-ab9d-4e0f-adfe-b20187dc4267_skytrain_249"
+        "52016c78-9e19-4a86-bce5-2466f2cc9599_skytrain_241"
       ]
     },
     "Granville Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "a9ae145c-1f54-445a-9640-d6d72bab5856_skytrain_250"
+        "21129071-ab43-40b1-952b-78b405c1b6eb_skytrain_242"
       ]
     },
     "Waterfront Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "8f6e9055-ae15-43bb-8f0b-a1f46cd85f7e_skytrain_272"
+        "a66f07f0-ebb3-4674-88fd-59d1dba987bc_skytrain_264"
       ]
     },
     "Nanaimo": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "2bcec686-75cf-436a-981a-da7a4b55006d_skytrain_273"
+        "43a3b797-0d7a-449f-afc7-c236c88e5fab_skytrain_265"
       ]
     },
     "Nanaimo Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "2bcec686-75cf-436a-981a-da7a4b55006d_skytrain_273"
+        "43a3b797-0d7a-449f-afc7-c236c88e5fab_skytrain_265"
       ]
     },
     "Richmond-Brighouse": {
       "critical": false,
-      "count": 4,
+      "count": 3,
       "alert_ids": [
-        "08b20e5f-d14c-41d9-8ad5-9942c66544c6_skytrain_277",
-        "67b49316-59db-4940-98ec-533fac397a93_skytrain_278",
-        "9f44c585-8743-4c76-b359-6658a48558f4_skytrain_279",
-        "6925278d-df22-4ec9-bc3f-fe15e6faa069_skytrain_280"
+        "56df2c25-adac-4a08-b247-80999f476418_skytrain_269",
+        "0c45fbbb-071f-4a36-ae55-a1d1d73a914c_skytrain_270",
+        "7b66b0f8-3e26-4e6d-a5c8-3c718c91bc54_skytrain_271"
+      ]
+    },
+    "King George": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "706cb430-ecb5-47d0-85bc-aeef48a1bdcb_skytrain_287"
+      ]
+    },
+    "King George Station": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "706cb430-ecb5-47d0-85bc-aeef48a1bdcb_skytrain_287"
+      ]
+    },
+    "Joyce-Collingwood": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "dcb95681-b84e-4777-9075-1bbd4eb8014f_skytrain_288"
+      ]
+    },
+    "Joyce-Collingwood Station": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "dcb95681-b84e-4777-9075-1bbd4eb8014f_skytrain_288"
+      ]
+    },
+    "Inlet Centre": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "1c7c5b1b-5299-4115-9b76-7f1fd5930ab2_skytrain_290"
+      ]
+    },
+    "Inlet Centre Station": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "1c7c5b1b-5299-4115-9b76-7f1fd5930ab2_skytrain_290"
       ]
     }
   }
