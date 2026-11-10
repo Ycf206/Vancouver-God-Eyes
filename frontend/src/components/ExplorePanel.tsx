@@ -1030,8 +1030,7 @@ function ExploreContent() {
   const [flippMerchants, setFlippMerchants] = useState<FlippMerchantData[]>([]);
   const [selectedMerchant, setSelectedMerchant] = useState<string>('');
   const [loadingFlipp, setLoadingFlipp] = useState<boolean>(false);
-  const [merchantSearchQuery, setMerchantSearchQuery] = useState<string>('');
-  const [productSearchQuery, setProductSearchQuery] = useState<string>('');
+  const [flippSearchQuery, setFlippSearchQuery] = useState<string>('');
   const [flippItemSort, setFlippItemSort] = useState<'default' | 'name' | 'price-asc' | 'price-desc'>('default');
 
   // 取得 3-1-1 市政服務請求資料
@@ -6957,11 +6956,11 @@ function ExploreContent() {
           }
         };
 
-        // 1. 搜尋分頁 (商店)：僅過濾分頁
-        const mq = merchantSearchQuery.trim().toLowerCase();
+        // 搜尋過濾：支援搜尋商戶或商品
+        const q = flippSearchQuery.trim().toLowerCase();
         const displayMerchants = flippMerchants.filter(m => {
-          if (!mq) return true;
-          return m.merchant.toLowerCase().includes(mq);
+          if (!q) return true;
+          return m.merchant.toLowerCase().includes(q) || m.items.some(it => it.name?.toLowerCase().includes(q));
         });
 
         const activeMerchant = displayMerchants.find(m => m.merchant === selectedMerchant) 
@@ -6969,11 +6968,10 @@ function ExploreContent() {
           || displayMerchants[0] 
           || flippMerchants[0];
 
-        // 2. 搜尋產品：僅過濾當前商店商品
-        const pq = productSearchQuery.trim().toLowerCase();
+        // 當前商戶的商品列表與排序
         let itemsList = activeMerchant ? [...activeMerchant.items] : [];
-        if (pq) {
-          itemsList = itemsList.filter(it => it.name?.toLowerCase().includes(pq) || it.brand?.toLowerCase().includes(pq));
+        if (q) {
+          itemsList = itemsList.filter(it => it.name?.toLowerCase().includes(q) || it.brand?.toLowerCase().includes(q));
         }
 
         // 價格數值解析器
@@ -6999,22 +6997,22 @@ function ExploreContent() {
 
         return (
           <div className="flex flex-col flex-1 min-h-0 gap-2">
-            {/* 子分頁控制列：最左側搜尋分頁欄 + 中間 A-Z 商戶按鈕 + 右側手動更新按鈕 */}
+            {/* 子分頁控制列：左側單一搜尋分頁及商品輸入欄 + 中間 A-Z 商戶按鈕 + 右側手動更新按鈕 */}
             <div className="flex items-center gap-1.5 pb-2 border-b border-[#262b38] shrink-0">
-              {/* 最左方：搜尋分頁輸入欄 (不用太闊) */}
+              {/* 最左方：搜尋分頁及商品輸入欄 */}
               <div className="relative shrink-0 w-28 sm:w-36">
                 <input
                   type="text"
-                  value={merchantSearchQuery}
-                  onChange={(e) => setMerchantSearchQuery(e.target.value)}
-                  placeholder="搜尋分頁..."
+                  value={flippSearchQuery}
+                  onChange={(e) => setFlippSearchQuery(e.target.value)}
+                  placeholder="搜尋分頁/商品..."
                   className="w-full bg-[#121620] border border-[#232b3d] rounded-lg pl-7 pr-5 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-rose-500/60"
                 />
                 <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                {merchantSearchQuery && (
+                {flippSearchQuery && (
                   <button
                     type="button"
-                    onClick={() => setMerchantSearchQuery('')}
+                    onClick={() => setFlippSearchQuery('')}
                     className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-[11px] px-0.5 cursor-pointer"
                   >
                     ×
@@ -7032,8 +7030,8 @@ function ExploreContent() {
                       type="button"
                       onClick={() => {
                         setSelectedMerchant(m.merchant);
-                        // 當選擇分頁後，清空分頁搜尋文字 (符合第 5 點要求)
-                        setMerchantSearchQuery('');
+                        // 當搜查時選擇分頁後，清空搜尋欄現有的文字 (符合第 1 點要求)
+                        setFlippSearchQuery('');
                       }}
                       className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
                         isActive
@@ -7059,51 +7057,25 @@ function ExploreContent() {
               </button>
             </div>
 
-            {/* 子分頁按鈕下方資訊列：搜尋產品輸入欄 (在共x件商品左方) + 商品數量與排序 + 右側日期、Flipp傳單按鈕與官網按鈕 */}
-            <div className="flex items-center justify-between text-xs px-0.5 shrink-0 gap-2">
-              {/* 左側：搜尋產品輸入欄 (在「共 x 件商品」左方) + 數量 + 排序 */}
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <div className="relative shrink-0 w-28 sm:w-36">
-                  <input
-                    type="text"
-                    value={productSearchQuery}
-                    onChange={(e) => setProductSearchQuery(e.target.value)}
-                    placeholder="搜尋產品..."
-                    className="w-full bg-[#121620] border border-[#232b3d] rounded-lg pl-6 pr-5 py-1 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-rose-500/60"
-                  />
-                  <Search className="w-3 h-3 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  {productSearchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setProductSearchQuery('')}
-                      className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-[11px] px-1 cursor-pointer"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-
-                <span className="text-[11px] text-gray-400 shrink-0">
-                  共 <span className="font-mono font-bold text-white">{itemsList.length}</span> 件商品
-                </span>
-
-                <div className="flex items-center gap-1 bg-[#121620] border border-[#222938] rounded-md px-1.5 py-0.5 text-[10.5px] shrink-0">
-                  <span className="text-gray-500">排序:</span>
-                  <select
-                    value={flippItemSort}
-                    onChange={(e) => setFlippItemSort(e.target.value as any)}
-                    className="bg-transparent text-gray-300 cursor-pointer focus:outline-none"
-                    title="商品排序"
-                  >
-                    <option value="default" className="bg-[#121620]">預設</option>
-                    <option value="name" className="bg-[#121620]">名稱 (A-Z)</option>
-                    <option value="price-asc" className="bg-[#121620]">價格：低至高</option>
-                    <option value="price-desc" className="bg-[#121620]">價格：高至低</option>
-                  </select>
-                </div>
+            {/* 子分頁按鈕下方資訊列：左方貼近邊位排序 + 右側日期、Flipp傳單按鈕與官網連結按鈕 */}
+            <div className="flex items-center justify-between text-xs px-0.5 shrink-0">
+              {/* 左方貼近邊位：排序功能 (符合第 3 點要求) */}
+              <div className="flex items-center gap-1 bg-[#121620] border border-[#222938] rounded-md px-2 py-0.5 text-[10.5px] shrink-0">
+                <span className="text-gray-400">排序:</span>
+                <select
+                  value={flippItemSort}
+                  onChange={(e) => setFlippItemSort(e.target.value as any)}
+                  className="bg-transparent text-gray-200 cursor-pointer focus:outline-none"
+                  title="商品排序"
+                >
+                  <option value="default" className="bg-[#121620]">預設</option>
+                  <option value="name" className="bg-[#121620]">名稱 (A-Z)</option>
+                  <option value="price-asc" className="bg-[#121620]">價格：低至高</option>
+                  <option value="price-desc" className="bg-[#121620]">價格：高至低</option>
+                </select>
               </div>
 
-              {/* 右側貼近界面邊：valid_from - valid_to (yyyy-MM-dd) + Flipp傳單圖示按鈕 + 官網連結圖示按鈕 */}
+              {/* 右側貼近邊位：valid_from - valid_to (yyyy-MM-dd) + Flipp 傳單按鈕 + 官網按鈕 */}
               {activeMerchant && (
                 <div className="flex items-center gap-1.5 text-right font-mono text-[11px] text-gray-400 shrink-0">
                   {dateRangeStr && (
@@ -7148,14 +7120,14 @@ function ExploreContent() {
               ) : itemsList.length === 0 ? (
                 <div className="py-16 flex flex-col items-center justify-center text-gray-500 gap-2 text-xs">
                   <ShoppingBag className="w-8 h-8 text-gray-600" />
-                  <span>{productSearchQuery ? '查無符合條件的特惠商品' : '該超市暫無特惠商品資料'}</span>
-                  {productSearchQuery && (
+                  <span>{flippSearchQuery ? '查無符合條件的特惠商品' : '該超市暫無特惠商品資料'}</span>
+                  {flippSearchQuery && (
                     <button
                       type="button"
-                      onClick={() => setProductSearchQuery('')}
+                      onClick={() => setFlippSearchQuery('')}
                       className="text-rose-400 hover:underline text-[11px] cursor-pointer"
                     >
-                      清除產品搜尋
+                      清除搜尋條件
                     </button>
                   )}
                 </div>
@@ -11187,6 +11159,17 @@ function ExploreContent() {
           {activeTab === '311' && (
             <span className="text-[9.5px] text-gray-500">資料來源：City of Vancouver Open Data</span>
           )}
+          {activeTab === 'shopping' && (() => {
+            const currentMerchant = flippMerchants.find(m => m.merchant === selectedMerchant) || flippMerchants[0];
+            const q = flippSearchQuery.trim().toLowerCase();
+            let count = currentMerchant ? currentMerchant.items.length : 0;
+            if (q && currentMerchant) {
+              count = currentMerchant.items.filter(it => it.name?.toLowerCase().includes(q) || it.brand?.toLowerCase().includes(q)).length;
+            }
+            return (
+              <span>共 {count} 件商品</span>
+            );
+          })()}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>
           )}

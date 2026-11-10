@@ -1,6 +1,6 @@
 {
-  "_cache_timestamp": 1794273470.4175053,
-  "updated_at": "2026-11-10 01:17 UTC",
+  "_cache_timestamp": 1794278741.9879394,
+  "updated_at": "2026-11-10 02:45 UTC",
   "update_frequency": "每 1 日更新 (Daily)",
   "count": 3,
   "resorts": [
@@ -33,12 +33,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Mon",
-        "date": "09.11.2026",
-        "temp_min": "-5",
-        "temp_max": "1",
-        "condition": "cloudy",
-        "weather_text": "Am Montag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen -5 bis 1 Grad."
+        "day": "Tue",
+        "date": "10.11.2026",
+        "temp_min": "-3",
+        "temp_max": "3",
+        "condition": "fair",
+        "weather_text": "Am Dienstag scheint die Sonne, begleitet von wenigen Wolken. Die Temperaturen erreichen -3 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -71,12 +71,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Mon",
-        "date": "09.11.2026",
-        "temp_min": "-5",
-        "temp_max": "1",
-        "condition": "cloudy",
-        "weather_text": "Am Montag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen -5 bis 1 Grad."
+        "day": "Tue",
+        "date": "10.11.2026",
+        "temp_min": "-3",
+        "temp_max": "3",
+        "condition": "fair",
+        "weather_text": "Am Dienstag scheint die Sonne, begleitet von wenigen Wolken. Die Temperaturen erreichen -3 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -109,12 +109,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Mon",
-        "date": "09.11.2026",
-        "temp_min": "-5",
-        "temp_max": "1",
-        "condition": "cloudy",
-        "weather_text": "Am Montag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen -5 bis 1 Grad."
+        "day": "Tue",
+        "date": "10.11.2026",
+        "temp_min": "-3",
+        "temp_max": "3",
+        "condition": "fair",
+        "weather_text": "Am Dienstag scheint die Sonne, begleitet von wenigen Wolken. Die Temperaturen erreichen -3 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     }
