@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
-  CandlestickChart,
+  ChartNoAxesCombined,
   Newspaper,
   PiggyBank,
   Search,
@@ -86,6 +86,13 @@ export interface StockQuoteData {
   }>;
 }
 
+export interface StockSuggestionItem {
+  symbol: string;
+  name: string;
+  exchange: string;
+  type: string;
+}
+
 const DEFAULT_TFSA_ITEMS: TfsaStockItem[] = [
   { id: '1', symbol: 'TSLA', targetPercent: 30, shares: 150, avgPrice: 33.862, currentPrice: 34.81, buyPrice: 34.81, buyShares: 0 },
   { id: '2', symbol: 'SPCX', targetPercent: 25, shares: 100, avgPrice: 19.5995, currentPrice: 23.91, buyPrice: 23.91, buyShares: 0 },
@@ -109,6 +116,75 @@ export function FinanceTab() {
   const [stockData, setStockData] = useState<StockQuoteData | null>(null);
   const [stockError, setStockError] = useState<string>('');
 
+  // 搜尋建議狀態
+  const [suggestions, setSuggestions] = useState<StockSuggestionItem[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  // 點擊外部關閉搜尋建議
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // 輸入時即時抓取搜尋建議 (Debounce 250ms)
+  useEffect(() => {
+    const q = stockSymbolInput.trim();
+    if (!q || q.length < 1) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setLoadingSuggestions(true);
+      try {
+        const res = await fetch(`/api/finance/search?q=${encodeURIComponent(q)}`);
+        const json = await res.json();
+        if (json.success && Array.isArray(json.suggestions)) {
+          setSuggestions(json.suggestions);
+          if (json.suggestions.length > 0) {
+            setShowSuggestions(true);
+          }
+        } else {
+          setSuggestions([]);
+        }
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setLoadingSuggestions(false);
+      }
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [stockSymbolInput]);
+
+  // 週期智慧聯動（避免 Yahoo Finance 422 錯誤：1m 週期僅支援 7 天以內範圍）
+  const handleIntervalChange = (newInterval: string) => {
+    setInterval(newInterval);
+    if (newInterval === '1m' && ['1mo', '3mo', '6mo', '1y', '5y', 'max'].includes(range)) {
+      setRange('5d');
+    } else if (['2m', '5m', '15m', '30m'].includes(newInterval) && ['3mo', '6mo', '1y', '5y', 'max'].includes(range)) {
+      setRange('1mo');
+    }
+  };
+
+  // 時間範圍智慧聯動（避免大範圍選到過短的分鐘週期）
+  const handleRangeChange = (newRange: string) => {
+    setRange(newRange);
+    if (['1mo', '3mo', '6mo', '1y', '5y', 'max'].includes(newRange) && interval === '1m') {
+      setInterval('1d');
+    } else if (['3mo', '6mo', '1y', '5y', 'max'].includes(newRange) && ['2m', '5m', '15m', '30m'].includes(interval)) {
+      setInterval('1d');
+    }
+  };
+
   // 查詢股票資料
   const fetchStockData = useCallback(async (sym?: string) => {
     const targetSymbol = (sym || stockSymbolInput).trim().toUpperCase();
@@ -116,6 +192,7 @@ export function FinanceTab() {
 
     setLoadingStock(true);
     setStockError('');
+    setShowSuggestions(false);
 
     try {
       const params = new URLSearchParams();
@@ -127,6 +204,10 @@ export function FinanceTab() {
         const p1 = Math.floor(new Date(startDate).getTime() / 1000);
         const p2 = Math.floor(new Date(endDate).getTime() / 1000) + 86400; // 涵蓋當日整天
         if (!isNaN(p1) && !isNaN(p2) && p2 > p1) {
+          // 自訂日期跨度超過 7 天且選取 1m，自動校正為 1d 避免 422
+          if (interval === '1m' && (p2 - p1) > 7 * 86400) {
+            params.set('interval', '1d');
+          }
           params.set('period1', String(p1));
           params.set('period2', String(p2));
         } else {
@@ -353,7 +434,7 @@ export function FinanceTab() {
               : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
           }`}
         >
-          <CandlestickChart className="w-3.5 h-3.5" />
+          <ChartNoAxesCombined className="w-3.5 h-3.5" />
           <span>股票搜尋</span>
         </button>
 
@@ -391,116 +472,158 @@ export function FinanceTab() {
         <div className="flex flex-col flex-1 min-h-0 gap-2 overflow-y-auto pr-0.5 custom-scrollbar">
           {/* 搜尋控制與參數列 */}
           <div className="p-3 bg-[#121622] rounded-xl border border-[#222938] flex flex-col gap-2.5 shrink-0">
-            {/* 代號輸入欄與查詢按鈕 */}
+            {/* 代號輸入欄（支援即時搜尋建議）與查詢圖示按鈕 */}
             <div className="flex items-center gap-2">
-              <div className="relative flex-1">
+              <div className="relative flex-1" ref={searchContainerRef}>
                 <input
                   type="text"
                   value={stockSymbolInput}
-                  onChange={(e) => setStockSymbolInput(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') fetchStockData(); }}
-                  placeholder="輸入股票代號 (如: TSLA, RY.TO, NVDA, TSLA.NE)..."
-                  className="w-full bg-[#0d1017] border border-[#262e3d] rounded-lg pl-8 pr-3 py-2 text-xs text-white placeholder-gray-500 uppercase font-mono font-bold focus:outline-none focus:border-emerald-500"
+                  onChange={(e) => {
+                    setStockSymbolInput(e.target.value);
+                    if (e.target.value.trim().length > 0) {
+                      setShowSuggestions(true);
+                    }
+                  }}
+                  onFocus={() => {
+                    if (suggestions.length > 0) setShowSuggestions(true);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setShowSuggestions(false);
+                      fetchStockData();
+                    } else if (e.key === 'Escape') {
+                      setShowSuggestions(false);
+                    }
+                  }}
+                  placeholder="輸入股票代號或名稱 (如: TSLA, RY.TO, NVDA)..."
+                  className="w-full bg-[#0d1017] border border-[#262e3d] rounded-lg pl-8 pr-8 py-2 text-xs text-white placeholder-gray-500 uppercase font-mono font-bold focus:outline-none focus:border-emerald-500"
                 />
-                <Search className="w-4 h-4 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                {loadingSuggestions && (
+                  <RefreshCw className="w-3.5 h-3.5 text-emerald-400 animate-spin absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                )}
+
+                {/* 搜尋結果建議下拉選單 */}
+                {showSuggestions && suggestions.length > 0 && (
+                  <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-[#10141f]/95 backdrop-blur-md border border-[#2a3449] rounded-xl shadow-2xl overflow-hidden divide-y divide-[#1b2233] max-h-64 overflow-y-auto custom-scrollbar">
+                    {suggestions.map((item) => (
+                      <button
+                        key={`${item.symbol}_${item.exchange}`}
+                        type="button"
+                        onClick={() => {
+                          setStockSymbolInput(item.symbol);
+                          setShowSuggestions(false);
+                          fetchStockData(item.symbol);
+                        }}
+                        className="w-full px-3 py-2 text-left hover:bg-emerald-500/15 flex items-center justify-between gap-2 transition-colors cursor-pointer group"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="font-mono font-bold text-xs text-emerald-400 group-hover:text-emerald-300 shrink-0">
+                            {item.symbol}
+                          </span>
+                          <span className="text-[11px] text-gray-300 truncate group-hover:text-white">
+                            {item.name}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {item.exchange && (
+                            <span className="text-[9.5px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-gray-400 border border-white/10">
+                              {item.exchange}
+                            </span>
+                          )}
+                          {item.type && (
+                            <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
+                              {item.type}
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
+              {/* 查詢報價圖示按鈕 */}
               <button
                 type="button"
-                onClick={() => fetchStockData()}
+                onClick={() => {
+                  setShowSuggestions(false);
+                  fetchStockData();
+                }}
                 disabled={loadingStock}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm"
+                title="查詢報價"
+                className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg transition-all flex items-center justify-center shrink-0 cursor-pointer shadow-sm active:scale-95"
               >
-                {loadingStock ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
-                <span>查詢報價</span>
+                {loadingStock ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               </button>
             </div>
 
-            {/* 快速熱門股票標籤 */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 custom-scrollbar text-[11px]">
-              <span className="text-gray-400 shrink-0">熱門:</span>
-              {['TSLA', 'RY.TO', 'TSLA.NE', 'NVDA', 'AAPL', 'MSFT', 'BMO.TO', 'TD.TO'].map((sym) => (
-                <button
-                  key={sym}
-                  type="button"
-                  onClick={() => {
-                    setStockSymbolInput(sym);
-                    fetchStockData(sym);
-                  }}
-                  className={`px-2 py-0.5 rounded font-mono font-medium border transition-colors cursor-pointer shrink-0 ${
-                    stockSymbolInput === sym
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
-                      : 'bg-[#181d2a] text-gray-400 hover:text-white border-[#273042]'
-                  }`}
-                >
-                  {sym}
-                </button>
-              ))}
-            </div>
-
-            {/* 參數選擇區塊 (interval, range, period1, period2, includePrePost) */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-[#1e2535] text-xs">
-              {/* interval: K線時間週期 */}
-              <div className="flex flex-col gap-1">
-                <span className="text-[10.5px] text-gray-400 font-medium">K線週期 (interval)</span>
-                <select
-                  value={interval}
-                  onChange={(e) => setInterval(e.target.value)}
-                  className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500"
-                >
-                  {['1m', '2m', '5m', '15m', '30m', '60m', '1d', '1wk', '1mo'].map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* range: 查詢時間範圍 */}
-              <div className="flex flex-col gap-1">
-                <span className="text-[10.5px] text-gray-400 font-medium">時間範圍 (range)</span>
-                <select
-                  value={range}
-                  onChange={(e) => setRange(e.target.value)}
-                  className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500"
-                >
-                  {['1d', '5d', '1mo', '3mo', '6mo', '1y', '5y', 'max'].map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* period1: 起始日期 */}
-              <div className="flex flex-col gap-1">
-                <span className="text-[10.5px] text-gray-400 font-medium">起始時間 (period1)</span>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2 py-1 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-
-              {/* period2: 結束日期 */}
-              <div className="flex flex-col gap-1">
-                <span className="text-[10.5px] text-gray-400 font-medium">結束時間 (period2)</span>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2 py-1 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-
-              {/* includePrePost: 勾選格 */}
-              <div className="flex flex-col justify-end pb-1.5">
-                <label className="flex items-center gap-1.5 cursor-pointer text-gray-300 hover:text-white select-none">
+            {/* 條件設定區塊：第一行 (起始日期, 結束日期) / 第二行 (週期, 時間範圍, 包含盤前/盤後) */}
+            <div className="flex flex-col gap-2 pt-2 border-t border-[#1e2535] text-xs">
+              {/* 第一行: 起始日期, 結束日期 */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10.5px] text-gray-400 font-medium">起始日期</span>
                   <input
-                    type="checkbox"
-                    checked={includePrePost}
-                    onChange={(e) => setIncludePrePost(e.target.checked)}
-                    className="w-3.5 h-3.5 accent-emerald-500 rounded bg-[#0e121a] border-gray-600 cursor-pointer"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full"
                   />
-                  <span className="text-[11px]">包含盤前盤後</span>
-                </label>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10.5px] text-gray-400 font-medium">結束日期</span>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full"
+                  />
+                </div>
+              </div>
+
+              {/* 第二行: 週期, 時間範圍, 包含盤前/盤後 */}
+              <div className="grid grid-cols-[1fr_1fr_auto] gap-2 items-end">
+                {/* 週期 */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10.5px] text-gray-400 font-medium">週期</span>
+                  <select
+                    value={interval}
+                    onChange={(e) => handleIntervalChange(e.target.value)}
+                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full"
+                  >
+                    {['1m', '2m', '5m', '15m', '30m', '60m', '1d', '1wk', '1mo'].map(opt => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 時間範圍 */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10.5px] text-gray-400 font-medium">時間範圍</span>
+                  <select
+                    value={range}
+                    onChange={(e) => handleRangeChange(e.target.value)}
+                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full"
+                  >
+                    {['1d', '5d', '1mo', '3mo', '6mo', '1y', '5y', 'max'].map(opt => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 包含盤前/盤後 */}
+                <div className="flex items-center pb-2 px-1">
+                  <label className="flex items-center gap-1.5 cursor-pointer text-gray-300 hover:text-white select-none whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={includePrePost}
+                      onChange={(e) => setIncludePrePost(e.target.checked)}
+                      className="w-3.5 h-3.5 accent-emerald-500 rounded bg-[#0e121a] border-gray-600 cursor-pointer"
+                    />
+                    <span className="text-[11px]">包含盤前/盤後</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>

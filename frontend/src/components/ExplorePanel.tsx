@@ -13,7 +13,7 @@ import { Landmark,
   PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle,
   Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
   Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy, Ticket,
-  CircleChevronLeft, CircleChevronRight, Globe, BarChart2, CandlestickChart
+  CircleChevronLeft, CircleChevronRight, Globe, BarChart2, ChartNoAxesCombined
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
@@ -4169,7 +4169,7 @@ function ExploreContent() {
   const tabInfoMap: Record<string, { label: string; icon: any; color: string }> = {
     weather: { label: '天氣資訊', icon: CloudSun, color: 'text-sky-400' },
     news: { label: '新聞快訊', icon: Newspaper, color: 'text-amber-400' },
-    finance: { label: '財經資訊', icon: CandlestickChart, color: 'text-emerald-400' },
+    finance: { label: '財經資訊', icon: ChartNoAxesCombined, color: 'text-emerald-400' },
     events: { label: '活動情報', icon: CalendarDays, color: 'text-purple-400' },
     sports: { label: '體育賽事', icon: SportShoeIcon, color: 'text-blue-400' },
     beach: { label: '海灘水質', icon: Parasol, color: 'text-teal-300' },

@@ -2,17 +2,45 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+function getFriendlyErrorMessage(status: number, rawText: string, interval: string, range: string): string {
+  try {
+    const json = JSON.parse(rawText);
+    const desc = json?.chart?.error?.description || '';
+    if (desc) {
+      if (desc.includes('data not available for range')) {
+        return `「${interval}」K線週期不支援目前選取的「${range}」時間範圍（分鐘級數據如 1m 僅支援 7 天以內範圍）。請縮小時間範圍或將週期改為「1d」。`;
+      }
+      return `Yahoo Finance: ${desc}`;
+    }
+  } catch {}
+
+  if (status === 422) {
+    return `K線週期「${interval}」與時間範圍「${range}」不相容。請縮小時間範圍或選擇較大週期（如 1d）。`;
+  }
+  if (status === 404) {
+    return '查無此股票代號之報價數據，請確認代號是否正確。';
+  }
+  return `Yahoo Finance API 回傳錯誤 (${status})`;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const symbol = searchParams.get('symbol')?.trim().toUpperCase();
-  const interval = searchParams.get('interval')?.trim() || '1d';
-  const range = searchParams.get('range')?.trim() || '1mo';
+  let interval = searchParams.get('interval')?.trim() || '1d';
+  let range = searchParams.get('range')?.trim() || '1mo';
   const period1 = searchParams.get('period1')?.trim();
   const period2 = searchParams.get('period2')?.trim();
   const includePrePost = searchParams.get('includePrePost') === 'true';
 
   if (!symbol) {
     return NextResponse.json({ success: false, error: '請輸入股票代號 (如 TSLA, RY.TO)' }, { status: 400 });
+  }
+
+  // 預防性檢查：避免 Yahoo Finance 422 Unprocessable Entity
+  if (interval === '1m' && !period1 && ['1mo', '3mo', '6mo', '1y', '5y', 'max'].includes(range)) {
+    range = '5d';
+  } else if (['2m', '5m', '15m', '30m'].includes(interval) && !period1 && ['3mo', '6mo', '1y', '5y', 'max'].includes(range)) {
+    range = '1mo';
   }
 
   try {
@@ -30,7 +58,7 @@ export async function GET(request: Request) {
 
     const apiUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${params.toString()}`;
 
-    const res = await fetch(apiUrl, {
+    let res = await fetch(apiUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'application/json'
@@ -40,9 +68,10 @@ export async function GET(request: Request) {
 
     if (!res.ok) {
       const errorText = await res.text().catch(() => '');
+      const friendlyMsg = getFriendlyErrorMessage(res.status, errorText, interval, range);
       return NextResponse.json({
         success: false,
-        error: `Yahoo Finance API 回傳錯誤 (${res.status}): ${errorText.slice(0, 100)}`
+        error: friendlyMsg
       }, { status: res.status });
     }
 

@@ -28,7 +28,7 @@ import {
   Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy,
-  TowerControl, CalendarClock, CandlestickChart
+  TowerControl, CalendarClock, ChartNoAxesCombined
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -17543,7 +17543,7 @@ export default function AppMap() {
                 {[
                   { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
                   { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
-                  { id: 'finance', label: '財經', icon: CandlestickChart, color: 'text-emerald-400' },
+                  { id: 'finance', label: '財經', icon: ChartNoAxesCombined, color: 'text-emerald-400' },
                   { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
                   { id: 'sports', label: '體育', icon: SportShoeIcon, color: 'text-blue-400' },
                   { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
@@ -17568,7 +17568,7 @@ export default function AppMap() {
               {[
                 { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
                 { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
-                { id: 'finance', label: '財經', icon: CandlestickChart, color: 'text-emerald-400' },
+                { id: 'finance', label: '財經', icon: ChartNoAxesCombined, color: 'text-emerald-400' },
                 { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
                 { id: 'sports', label: '體育', icon: SportShoeIcon, color: 'text-blue-400' },
                 { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
@@ -17663,7 +17663,7 @@ export default function AppMap() {
           {[
             { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
             { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
-            { id: 'finance', label: '財經', icon: CandlestickChart, color: 'text-emerald-400' },
+            { id: 'finance', label: '財經', icon: ChartNoAxesCombined, color: 'text-emerald-400' },
             { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
             { id: 'sports', label: '體育', icon: SportShoeIcon, color: 'text-blue-400' },
             { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
