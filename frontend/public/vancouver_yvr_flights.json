@@ -1,9 +1,9 @@
 {
   "success": true,
   "query_date": "2026-11-09",
-  "updated_at": "2026-11-09T19:52:17.524944-07:00",
+  "updated_at": "2026-11-09T19:53:19.305442-07:00",
   "counts": {
-    "arrivals": 131,
+    "arrivals": 130,
     "departures": 93
   },
   "arrivals": [
@@ -224,34 +224,6 @@
         49.193889
       ],
       "remote_coords": null
-    },
-    {
-      "id": "4022519070",
-      "flight_number": "WS321",
-      "airline": "WestJet",
-      "carrier": "WS",
-      "type": "A",
-      "range": "D",
-      "city": "Edmonton",
-      "airport_code": "YEG",
-      "scheduled_time": "2026-11-09T17:05:00",
-      "estimated_time": "2026-11-09T16:52:00",
-      "origin_departure_time": "2026-11-09T15:28:00",
-      "dest_arrival_time": "2026-11-09T16:52:00",
-      "desk_from": "",
-      "desk_to": "",
-      "gate": "B17",
-      "carousel": "1",
-      "status": "Arrived",
-      "aircraft_type": "7M8",
-      "yvr_coords": [
-        -123.184444,
-        49.193889
-      ],
-      "remote_coords": [
-        -113.5797,
-        53.3097
-      ]
     },
     {
       "id": "4022223670",
@@ -5074,7 +5046,7 @@
       "desk_to": "008",
       "gate": "B26",
       "carousel": "",
-      "status": "Boarding",
+      "status": "Final Call",
       "aircraft_type": "73H",
       "yvr_coords": [
         -123.184444,
@@ -5130,7 +5102,7 @@
       "desk_to": "034",
       "gate": "B17",
       "carousel": "",
-      "status": "Pre-Boarding",
+      "status": "Boarding",
       "aircraft_type": "7M8",
       "yvr_coords": [
         -123.184444,
