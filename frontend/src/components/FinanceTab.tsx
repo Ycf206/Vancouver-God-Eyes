@@ -120,6 +120,9 @@ export function FinanceTab() {
       if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
         setShowSuggestions(false);
       }
+      if (tfsaSearchContainerRef.current && !tfsaSearchContainerRef.current.contains(e.target as Node)) {
+        setShowTfsaSuggestions(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -272,10 +275,59 @@ export function FinanceTab() {
     return () => document.removeEventListener('click', handleCloseActionMenu);
   }, []);
 
-  // 新增股票輸入欄位
+  // 新增股票輸入欄位與搜尋建議狀態
   const [newSymbol, setNewSymbol] = useState<string>('');
   const [newShares, setNewShares] = useState<string>('');
   const [newAvgPrice, setNewAvgPrice] = useState<string>('');
+  const [tfsaSuggestions, setTfsaSuggestions] = useState<StockSuggestionItem[]>([]);
+  const [showTfsaSuggestions, setShowTfsaSuggestions] = useState<boolean>(false);
+  const [loadingTfsaSuggestions, setLoadingTfsaSuggestions] = useState<boolean>(false);
+  const tfsaSearchContainerRef = useRef<HTMLDivElement>(null);
+
+  // TFSA 股票代號輸入即時搜尋建議 (Debounce 250ms)
+  useEffect(() => {
+    const q = newSymbol.trim();
+    if (!q || q.length < 1) {
+      setTfsaSuggestions([]);
+      setShowTfsaSuggestions(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setLoadingTfsaSuggestions(true);
+      try {
+        const res = await fetch(`/api/finance/search?q=${encodeURIComponent(q)}`);
+        const json = await res.json();
+        if (json.success && Array.isArray(json.suggestions)) {
+          setTfsaSuggestions(json.suggestions);
+          if (json.suggestions.length > 0) {
+            setShowTfsaSuggestions(true);
+          }
+        } else {
+          setTfsaSuggestions([]);
+        }
+      } catch {
+        setTfsaSuggestions([]);
+      } finally {
+        setLoadingTfsaSuggestions(false);
+      }
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [newSymbol]);
+
+  // 選擇 TFSA 股票建議
+  const handleSelectTfsaSuggestion = (sym: string) => {
+    setNewSymbol(sym);
+    setShowTfsaSuggestions(false);
+    fetch(`/api/finance/stock?symbol=${encodeURIComponent(sym)}&range=1d&interval=1d`)
+      .then(r => r.json())
+      .then(json => {
+        if (json.success && json.data?.regularMarketPrice && !newAvgPrice) {
+          setNewAvgPrice(json.data.regularMarketPrice.toFixed(2));
+        }
+      }).catch(() => {});
+  };
 
   // LocalStorage 持久化 (若無存儲則維持空資料)
   useEffect(() => {
@@ -715,11 +767,11 @@ export function FinanceTab() {
                 const midP = (minP + maxP) / 2;
 
                 const svgW = 600;
-                const svgH = 180;
+                const svgH = 200;
                 const padLeft = 12;
-                const padRight = 64; // 數字顯示區域
-                const padTop = 18;
-                const padBottom = 24;
+                const padRight = 76; // 數字顯示區域 (適度加寬讓大字體價格不擁擠)
+                const padTop = 20;
+                const padBottom = 28;
                 const plotW = svgW - padLeft - padRight;
                 const plotH = svgH - padTop - padBottom;
 
@@ -753,7 +805,7 @@ export function FinanceTab() {
                     <div className="flex items-center justify-between text-[11px] text-gray-400">
                       <span>走勢圖表 ({range} / {interval})</span>
                       <span className="font-mono text-gray-400">
-                        最低: <span className="text-gray-300 font-bold">${minP.toFixed(2)}</span> / 最高: <span className="text-gray-300 font-bold">${maxP.toFixed(2)}</span>
+                        最低: <span className="text-gray-200 font-bold">${minP.toFixed(2)}</span> / 最高: <span className="text-gray-200 font-bold">${maxP.toFixed(2)}</span>
                       </span>
                     </div>
 
@@ -804,7 +856,7 @@ export function FinanceTab() {
 
                       <svg
                         viewBox={`0 0 ${svgW} ${svgH}`}
-                        className="w-full h-40 sm:h-48 overflow-visible cursor-crosshair touch-none"
+                        className="w-full h-44 sm:h-52 overflow-visible cursor-crosshair touch-none"
                         onPointerMove={handlePointerMove}
                         onPointerLeave={() => setChartHoverIndex(null)}
                       >
@@ -815,27 +867,27 @@ export function FinanceTab() {
                           </linearGradient>
                         </defs>
 
-                        {/* 橫向參考水平網格線與價格數字標籤 */}
+                        {/* 橫向參考水平網格線與清晰價格數字標籤 (放大至 12px 粗體) */}
                         <line x1={padLeft} y1={padTop} x2={padLeft + plotW} y2={padTop} stroke="#1f2738" strokeDasharray="3 3" />
-                        <text x={padLeft + plotW + 6} y={padTop + 3.5} fill="#94a3b8" fontSize="9.5" fontFamily="monospace">
+                        <text x={padLeft + plotW + 8} y={padTop + 4} fill="#e2e8f0" fontSize="12" fontWeight="bold" fontFamily="monospace">
                           ${maxP.toFixed(2)}
                         </text>
 
                         <line x1={padLeft} y1={padTop + plotH / 2} x2={padLeft + plotW} y2={padTop + plotH / 2} stroke="#1f2738" strokeDasharray="3 3" />
-                        <text x={padLeft + plotW + 6} y={padTop + plotH / 2 + 3.5} fill="#64748b" fontSize="9.5" fontFamily="monospace">
+                        <text x={padLeft + plotW + 8} y={padTop + plotH / 2 + 4} fill="#cbd5e1" fontSize="12" fontWeight="bold" fontFamily="monospace">
                           ${midP.toFixed(2)}
                         </text>
 
                         <line x1={padLeft} y1={padTop + plotH} x2={padLeft + plotW} y2={padTop + plotH} stroke="#1f2738" strokeDasharray="3 3" />
-                        <text x={padLeft + plotW + 6} y={padTop + plotH + 3.5} fill="#94a3b8" fontSize="9.5" fontFamily="monospace">
+                        <text x={padLeft + plotW + 8} y={padTop + plotH + 4} fill="#e2e8f0" fontSize="12" fontWeight="bold" fontFamily="monospace">
                           ${minP.toFixed(2)}
                         </text>
 
-                        {/* 底部時間刻度 */}
-                        <text x={padLeft} y={svgH - 6} fill="#64748b" fontSize="9" fontFamily="monospace">
+                        {/* 底部 X 軸時間刻度 (放大至 11px 粗體) */}
+                        <text x={padLeft} y={svgH - 8} fill="#cbd5e1" fontSize="11" fontWeight="600" fontFamily="monospace">
                           {formatDateTime(pts[0].time * 1000, timeFormat, timeZone)}
                         </text>
-                        <text x={padLeft + plotW} y={svgH - 6} textAnchor="end" fill="#64748b" fontSize="9" fontFamily="monospace">
+                        <text x={padLeft + plotW} y={svgH - 8} textAnchor="end" fill="#cbd5e1" fontSize="11" fontWeight="600" fontFamily="monospace">
                           {formatDateTime(pts[pts.length - 1].time * 1000, timeFormat, timeZone)}
                         </text>
 
@@ -874,21 +926,21 @@ export function FinanceTab() {
                               stroke="#ffffff"
                               strokeWidth="2"
                             />
-                            {/* 右側 Y 軸高亮價格徽章 */}
+                            {/* 右側 Y 軸高亮價格徽章 (加寬加高呈現 12px 粗體) */}
                             <rect
                               x={padLeft + plotW + 4}
-                              y={hovered.y - 8}
-                              width="56"
-                              height="16"
+                              y={hovered.y - 10}
+                              width="68"
+                              height="20"
                               rx="4"
                               fill="#0284c7"
                             />
                             <text
-                              x={padLeft + plotW + 32}
-                              y={hovered.y + 3.5}
+                              x={padLeft + plotW + 38}
+                              y={hovered.y + 4}
                               textAnchor="middle"
                               fill="#ffffff"
-                              fontSize="9.5"
+                              fontSize="12"
                               fontWeight="bold"
                               fontFamily="monospace"
                             >
@@ -930,10 +982,10 @@ export function FinanceTab() {
                 type="button"
                 onClick={() => fetchNews()}
                 disabled={loadingNews}
-                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1 shrink-0 cursor-pointer shadow-sm"
+                title="搜尋財經新聞"
+                className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg transition-all flex items-center justify-center shrink-0 cursor-pointer shadow-sm active:scale-95"
               >
-                {loadingNews ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-                <span>搜尋</span>
+                {loadingNews ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               </button>
             </div>
 
@@ -1126,42 +1178,101 @@ export function FinanceTab() {
             </div>
           </div>
 
-          {/* 2. 新增股票區塊 (放置於限額設定下方，加號圖示按鈕) */}
-          <div className="bg-[#121622] rounded-xl border border-[#222938] p-3 flex flex-wrap items-center gap-2 shadow-sm">
-            <span className="text-xs font-bold text-gray-300 mr-1 shrink-0">新增股票:</span>
-            <input
-              type="text"
-              placeholder="代號 (如: AAPL)"
-              value={newSymbol}
-              onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleAddStock(); }}
-              className="w-28 sm:w-36 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono uppercase focus:outline-none focus:border-blue-500"
-            />
-            <input
-              type="number"
-              placeholder="數量 (持倉股數)"
-              value={newShares}
-              onChange={(e) => setNewShares(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleAddStock(); }}
-              className="w-28 sm:w-36 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
-            />
-            <input
-              type="number"
-              step="0.01"
-              placeholder="均價 ($)"
-              value={newAvgPrice}
-              onChange={(e) => setNewAvgPrice(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleAddStock(); }}
-              className="w-28 sm:w-36 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
-            />
-            <button
-              type="button"
-              onClick={handleAddStock}
-              title="新增股票"
-              className="w-8 h-8 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all flex items-center justify-center cursor-pointer shadow-sm active:scale-95 shrink-0"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
+          {/* 2. 新增股票區塊 (單行排列，最右側為加號圖示按鈕，代號支援搜尋建議，數量與均價較窄) */}
+          <div className="bg-[#121622] rounded-xl border border-[#222938] p-2.5 sm:p-3 shadow-sm">
+            <div className="flex items-center gap-2 w-full">
+              {/* 股票代號輸入欄 (彈性較寬，支援即時搜尋建議) */}
+              <div className="relative flex-1 min-w-[110px]" ref={tfsaSearchContainerRef}>
+                <input
+                  type="text"
+                  placeholder="代號 (如: AAPL, RY.TO)"
+                  value={newSymbol}
+                  onChange={(e) => {
+                    setNewSymbol(e.target.value.toUpperCase());
+                    if (e.target.value.trim().length > 0) {
+                      setShowTfsaSuggestions(true);
+                    }
+                  }}
+                  onFocus={() => {
+                    if (tfsaSuggestions.length > 0) setShowTfsaSuggestions(true);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setShowTfsaSuggestions(false);
+                      handleAddStock();
+                    } else if (e.key === 'Escape') {
+                      setShowTfsaSuggestions(false);
+                    }
+                  }}
+                  className="w-full bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold uppercase focus:outline-none focus:border-blue-500"
+                />
+                {loadingTfsaSuggestions && (
+                  <RefreshCw className="w-3.5 h-3.5 text-blue-400 animate-spin absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                )}
+
+                {/* TFSA 股票搜尋建議下拉選單 */}
+                {showTfsaSuggestions && tfsaSuggestions.length > 0 && (
+                  <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-[#10141f]/95 backdrop-blur-md border border-[#2a3449] rounded-xl shadow-2xl overflow-hidden divide-y divide-[#1b2233] max-h-60 overflow-y-auto custom-scrollbar">
+                    {tfsaSuggestions.map((item) => (
+                      <button
+                        key={`tfsa_sug_${item.symbol}_${item.exchange}`}
+                        type="button"
+                        onClick={() => handleSelectTfsaSuggestion(item.symbol)}
+                        className="w-full px-3 py-2 text-left hover:bg-blue-500/15 flex items-center justify-between gap-2 transition-colors cursor-pointer group"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="font-mono font-bold text-xs text-blue-400 group-hover:text-blue-300 shrink-0">
+                            {item.symbol}
+                          </span>
+                          <span className="text-[11px] text-gray-300 truncate group-hover:text-white">
+                            {item.name}
+                          </span>
+                        </div>
+                        {item.exchange && (
+                          <span className="text-[9.5px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-gray-400 border border-white/10 shrink-0">
+                            {item.exchange}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 數量輸入欄 (較窄) */}
+              <input
+                type="number"
+                placeholder="數量"
+                value={newShares}
+                onChange={(e) => setNewShares(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleAddStock(); }}
+                className="w-20 sm:w-24 bg-[#0e121a] border border-[#252e40] rounded-lg px-2 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500 shrink-0 text-center"
+              />
+
+              {/* 均價輸入欄 (較窄) */}
+              <input
+                type="number"
+                step="0.01"
+                placeholder="均價 ($)"
+                value={newAvgPrice}
+                onChange={(e) => setNewAvgPrice(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleAddStock(); }}
+                className="w-20 sm:w-24 bg-[#0e121a] border border-[#252e40] rounded-lg px-2 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500 shrink-0 text-center"
+              />
+
+              {/* 最右側新增圖示按鈕 */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowTfsaSuggestions(false);
+                  handleAddStock();
+                }}
+                title="新增股票"
+                className="w-8 h-8 sm:w-9 sm:h-9 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all flex items-center justify-center cursor-pointer shadow-sm active:scale-95 shrink-0 ml-auto"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* 3. 投資配置管理卡片 (卡片分行佈局，免橫向捲動) */}

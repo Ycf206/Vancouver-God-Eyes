@@ -3,12 +3,12 @@
   "source_url": "https://www.translink.ca/alerts",
   "api_endpoint": "https://getaway.translink.ca/api/allalerts",
   "banner_endpoint": "https://getaway.translink.ca/api/webbanneralerts",
-  "updated_at": "2026-11-10T12:44:40.547954Z",
-  "total": 320,
+  "updated_at": "2026-11-10T13:16:36.470038Z",
+  "total": 322,
   "banners_count": 0,
   "alerts": [
     {
-      "id": "8b8e769a-2bac-45ff-b13a-81c1e07218d8_skytrain_0",
+      "id": "08bb4fb6-3707-4135-98ca-200a71d319bb_skytrain_0",
       "alertId": "454491",
       "is_banner": false,
       "mode": "skytrain",
@@ -27,17 +27,17 @@
       "endTime": null,
       "lastModified": "2025-12-09T02:39:47Z",
       "impacted_stations": [
+        "Lougheed Town Centre",
         "Production Way-University",
         "King George",
         "Braid",
         "Waterfront",
-        "Sapperton",
-        "Lougheed Town Centre"
+        "Sapperton"
       ],
       "closed": false
     },
     {
-      "id": "17fc86f1-77c2-4923-a976-07aa1b17e290_skytrain_1",
+      "id": "32b248bb-61af-4fb7-b0e7-c37a067bee0b_skytrain_1",
       "alertId": "511077",
       "is_banner": false,
       "mode": "skytrain",
@@ -56,13 +56,13 @@
       "endTime": null,
       "lastModified": "2025-04-05T07:48:19Z",
       "impacted_stations": [
-        "Waterfront",
-        "Granville"
+        "Granville",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "4e10225f-8b5c-4d11-b89f-2731f3bed93b_bus_2",
+      "id": "17ff72f5-77e2-4847-b263-9bde40997dfd_bus_2",
       "alertId": "690281",
       "is_banner": false,
       "mode": "bus",
@@ -84,7 +84,7 @@
       "closed": false
     },
     {
-      "id": "53ca05fd-7e4f-47d8-83c5-ba6751183f64_skytrain_3",
+      "id": "b156aa4f-5abc-4341-89e1-61eb6cf3f116_skytrain_3",
       "alertId": "692353",
       "is_banner": false,
       "mode": "skytrain",
@@ -103,15 +103,15 @@
       "endTime": null,
       "lastModified": "2026-10-29T15:57:57Z",
       "impacted_stations": [
-        "Oakridge-41st Avenue",
         "King Edward",
         "Langara-49th Avenue",
+        "Oakridge-41st Avenue",
         "Oakridge-41st Avenue Station"
       ],
       "closed": false
     },
     {
-      "id": "1b3e88b7-dc75-49a4-9d13-cb1aafa67493_skytrain_4",
+      "id": "2422bef5-597a-4053-a41f-01186926f65b_skytrain_4",
       "alertId": "721752",
       "is_banner": false,
       "mode": "skytrain",
@@ -130,15 +130,15 @@
       "endTime": null,
       "lastModified": "2026-07-08T11:30:00Z",
       "impacted_stations": [
-        "Templeton",
-        "Bridgeport",
         "YVR-Airport",
-        "Sea Island Centre"
+        "Sea Island Centre",
+        "Bridgeport",
+        "Templeton"
       ],
       "closed": false
     },
     {
-      "id": "3396c8af-08a2-466c-aa1f-1e66752ce291_bus_5",
+      "id": "c9a65f95-1c5f-4680-ada7-64ac7b7650ab_bus_5",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -160,7 +160,7 @@
       "closed": false
     },
     {
-      "id": "3396c8af-08a2-466c-aa1f-1e66752ce291_bus_6",
+      "id": "c9a65f95-1c5f-4680-ada7-64ac7b7650ab_bus_6",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -182,7 +182,7 @@
       "closed": false
     },
     {
-      "id": "3396c8af-08a2-466c-aa1f-1e66752ce291_bus_7",
+      "id": "c9a65f95-1c5f-4680-ada7-64ac7b7650ab_bus_7",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -204,7 +204,7 @@
       "closed": false
     },
     {
-      "id": "4fba3f1a-f111-4b45-b2b0-8c345cc033e9_general_8",
+      "id": "fb8500c1-d6de-4a99-b98b-462a9b87e41c_general_8",
       "alertId": "732579",
       "is_banner": false,
       "mode": "general",
@@ -223,15 +223,15 @@
       "endTime": null,
       "lastModified": "2026-07-28T11:30:00Z",
       "impacted_stations": [
-        "Granville",
         "Burrard",
+        "Granville",
         "Stadium-Chinatown",
         "Burrard Station"
       ],
       "closed": false
     },
     {
-      "id": "bd8c509b-69b8-48ac-b8e2-7646204c6c7a_general_9",
+      "id": "9340a5fd-0916-4cd7-b4a4-599e7cbb4a3d_general_9",
       "alertId": "732581",
       "is_banner": false,
       "mode": "general",
@@ -250,14 +250,14 @@
       "endTime": null,
       "lastModified": "2026-08-04T11:30:01Z",
       "impacted_stations": [
-        "Royal Oak",
         "Edmonds",
+        "Royal Oak",
         "Royal Oak Station"
       ],
       "closed": false
     },
     {
-      "id": "d8da9d4d-e713-4010-96f1-ded705de7aac_skytrain_10",
+      "id": "1ab392ce-2144-4880-9da4-7df011cacb9c_skytrain_10",
       "alertId": "732594",
       "is_banner": false,
       "mode": "skytrain",
@@ -276,14 +276,14 @@
       "endTime": null,
       "lastModified": "2026-07-27T11:30:01Z",
       "impacted_stations": [
-        "Gilmore",
         "VCC-Clark",
+        "Gilmore",
         "Gilmore Station"
       ],
       "closed": false
     },
     {
-      "id": "b35b39b3-0355-4a4d-978e-186bb6380805_skytrain_11",
+      "id": "98bd7ccc-4bc4-4d92-bc78-69d6438ff748_skytrain_11",
       "alertId": "732595",
       "is_banner": false,
       "mode": "skytrain",
@@ -308,7 +308,7 @@
       "closed": false
     },
     {
-      "id": "a8401090-90d5-4144-b76f-1d4d0ffb9b4f_bus_12",
+      "id": "c7b2e2e5-c43c-45b9-8497-700c55e54e1f_bus_12",
       "alertId": "733912",
       "is_banner": false,
       "mode": "bus",
@@ -332,7 +332,7 @@
       "closed": false
     },
     {
-      "id": "0305b1c2-8ac1-451d-9514-2b88f64ecbe8_bus_13",
+      "id": "ccf1d93e-93dd-4de4-947f-ebd13e34c773_bus_13",
       "alertId": "733913",
       "is_banner": false,
       "mode": "bus",
@@ -356,7 +356,7 @@
       "closed": false
     },
     {
-      "id": "7247c46d-2539-4454-a72c-556453a26591_bus_14",
+      "id": "0c279b91-095a-4b33-8df8-8ff79ebbe47c_bus_14",
       "alertId": "733914",
       "is_banner": false,
       "mode": "bus",
@@ -375,13 +375,13 @@
       "endTime": null,
       "lastModified": "2026-07-27T11:30:01Z",
       "impacted_stations": [
-        "Commercial-Broadway",
-        "Broadway-City Hall"
+        "Broadway-City Hall",
+        "Commercial-Broadway"
       ],
       "closed": false
     },
     {
-      "id": "0d163809-766a-4f8d-b365-3b759bcb0858_bus_15",
+      "id": "0ba43e62-6962-436b-8437-31b1f3900823_bus_15",
       "alertId": "733923",
       "is_banner": false,
       "mode": "bus",
@@ -403,7 +403,7 @@
       "closed": false
     },
     {
-      "id": "5edf84c1-945f-45a8-b59f-65681150da6a_bus_16",
+      "id": "4cce8a96-46a1-44c7-95f2-f7799eee6f83_bus_16",
       "alertId": "736002",
       "is_banner": false,
       "mode": "bus",
@@ -428,7 +428,7 @@
       "closed": false
     },
     {
-      "id": "55ab2de7-b543-43c0-9f74-3d7d0126fc01_bus_17",
+      "id": "55a04538-8ac4-4686-944a-716b79224a5a_bus_17",
       "alertId": "736003",
       "is_banner": false,
       "mode": "bus",
@@ -450,7 +450,7 @@
       "closed": false
     },
     {
-      "id": "0653ec4b-507b-423b-a3f9-69f483f70425_skytrain_18",
+      "id": "9df11c0c-349e-4d22-854a-c446acf8de23_skytrain_18",
       "alertId": "736021",
       "is_banner": false,
       "mode": "skytrain",
@@ -469,13 +469,13 @@
       "endTime": null,
       "lastModified": "2026-10-23T04:29:14Z",
       "impacted_stations": [
-        "Waterfront",
-        "Commercial-Broadway"
+        "Commercial-Broadway",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "b73e98b9-f911-4595-8430-ef3a4f9c7506_bus_19",
+      "id": "ed1a1812-b9cb-49b7-a8c4-7b4d3861a2ee_bus_19",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -497,7 +497,7 @@
       "closed": false
     },
     {
-      "id": "b73e98b9-f911-4595-8430-ef3a4f9c7506_bus_20",
+      "id": "ed1a1812-b9cb-49b7-a8c4-7b4d3861a2ee_bus_20",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -519,7 +519,7 @@
       "closed": false
     },
     {
-      "id": "b73e98b9-f911-4595-8430-ef3a4f9c7506_bus_21",
+      "id": "ed1a1812-b9cb-49b7-a8c4-7b4d3861a2ee_bus_21",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -541,7 +541,7 @@
       "closed": false
     },
     {
-      "id": "1995a19e-dd0c-413b-8c4a-587437ce31db_bus_22",
+      "id": "be02ffd8-0ace-4df7-b885-56485f0dac8f_bus_22",
       "alertId": "744773",
       "is_banner": false,
       "mode": "bus",
@@ -563,7 +563,7 @@
       "closed": false
     },
     {
-      "id": "9605d57f-9a15-4f32-8526-d1fffb29a5d5_general_23",
+      "id": "3329741e-d82a-4fe2-a3b3-c5fae79acd72_general_23",
       "alertId": "753796",
       "is_banner": false,
       "mode": "general",
@@ -582,14 +582,14 @@
       "endTime": null,
       "lastModified": "2026-10-06T11:30:02Z",
       "impacted_stations": [
-        "Joyce-Collingwood",
         "29th Avenue",
+        "Joyce-Collingwood",
         "29th Avenue Station"
       ],
       "closed": false
     },
     {
-      "id": "c130a838-0984-404c-9377-43385762b91c_bus_24",
+      "id": "6370afb4-cdf7-4597-b541-ba3a99eff14e_bus_24",
       "alertId": "758059",
       "is_banner": false,
       "mode": "bus",
@@ -611,7 +611,7 @@
       "closed": false
     },
     {
-      "id": "a48df3e7-3eb6-4359-a40b-a5e4470e7c95_bus_25",
+      "id": "004a0b3f-a353-4b1a-90e6-193f6d5310e9_bus_25",
       "alertId": "760546",
       "is_banner": false,
       "mode": "bus",
@@ -636,7 +636,7 @@
       "closed": false
     },
     {
-      "id": "7e6a3a9c-fc88-475e-b106-c96a4db4e026_bus_26",
+      "id": "2829c85b-94e4-43f9-a379-b11ea936b7a4_bus_26",
       "alertId": "760547",
       "is_banner": false,
       "mode": "bus",
@@ -662,7 +662,7 @@
       "closed": false
     },
     {
-      "id": "c1142618-f53e-4795-a98b-c89f5a76a268_bus_27",
+      "id": "b2a864b2-586d-4ddc-a4d0-1e1643908335_bus_27",
       "alertId": "760611",
       "is_banner": false,
       "mode": "bus",
@@ -684,7 +684,7 @@
       "closed": false
     },
     {
-      "id": "1ef6f9b5-dffc-4ce3-9e6d-c3d7bd8bb0cc_bus_28",
+      "id": "25057773-a463-4805-a12e-dc098e9e318d_bus_28",
       "alertId": "760620",
       "is_banner": false,
       "mode": "bus",
@@ -706,7 +706,7 @@
       "closed": false
     },
     {
-      "id": "8eb0bdd7-5597-4515-ad53-863095c7e75a_bus_29",
+      "id": "8e57bf10-72bc-4949-9cfb-da75f968542d_bus_29",
       "alertId": "760648",
       "is_banner": false,
       "mode": "bus",
@@ -728,7 +728,7 @@
       "closed": false
     },
     {
-      "id": "532a6bfd-ce4d-45b8-bdf7-a44d6979f8f0_bus_30",
+      "id": "5f4c69c4-c6fe-488d-83d8-e20d01920bd2_bus_30",
       "alertId": "760649",
       "is_banner": false,
       "mode": "bus",
@@ -750,7 +750,7 @@
       "closed": false
     },
     {
-      "id": "444eacba-ff3c-42ed-8a0d-fde086e478cb_bus_31",
+      "id": "60a63c9d-2414-4be9-94ba-7c840b2f6018_bus_31",
       "alertId": "760709",
       "is_banner": false,
       "mode": "bus",
@@ -775,7 +775,7 @@
       "closed": false
     },
     {
-      "id": "22584b52-fe5d-4931-8552-b2739191ff40_bus_32",
+      "id": "d9954ebc-1bef-4bdb-ad24-c54c81c47dcb_bus_32",
       "alertId": "760917",
       "is_banner": false,
       "mode": "bus",
@@ -797,7 +797,7 @@
       "closed": false
     },
     {
-      "id": "22584b52-fe5d-4931-8552-b2739191ff40_bus_33",
+      "id": "d9954ebc-1bef-4bdb-ad24-c54c81c47dcb_bus_33",
       "alertId": "760917",
       "is_banner": false,
       "mode": "bus",
@@ -819,7 +819,7 @@
       "closed": false
     },
     {
-      "id": "12bcaa34-3ac0-464a-8c3b-603e3d90f1be_bus_34",
+      "id": "2430fd3b-627a-41e8-b895-cbaf669b9599_bus_34",
       "alertId": "761074",
       "is_banner": false,
       "mode": "bus",
@@ -843,7 +843,7 @@
       "closed": false
     },
     {
-      "id": "ecc07787-b627-465a-969e-d9572dbc1040_bus_35",
+      "id": "cc421fcd-e7e1-4303-b049-8b6794f93bf3_bus_35",
       "alertId": "761093",
       "is_banner": false,
       "mode": "bus",
@@ -867,7 +867,7 @@
       "closed": false
     },
     {
-      "id": "4f102257-3b93-4238-95f2-ed9274dd8181_bus_36",
+      "id": "2f4c6f11-7c97-4ca0-aa76-4b38f2b759b9_bus_36",
       "alertId": "761094",
       "is_banner": false,
       "mode": "bus",
@@ -892,7 +892,7 @@
       "closed": false
     },
     {
-      "id": "909a9073-d457-4c81-9b30-8be21b91d121_bus_37",
+      "id": "a94cde14-124f-49f0-bc2c-4aded33234a9_bus_37",
       "alertId": "761095",
       "is_banner": false,
       "mode": "bus",
@@ -916,7 +916,7 @@
       "closed": false
     },
     {
-      "id": "abbe892e-cd9d-47e7-a662-7303362cb79c_bus_38",
+      "id": "bdb7127e-c6ff-4294-a633-3e9d1db7d8a1_bus_38",
       "alertId": "761096",
       "is_banner": false,
       "mode": "bus",
@@ -941,7 +941,7 @@
       "closed": false
     },
     {
-      "id": "d455cd67-cea5-4ac5-9604-1b325d09ec91_bus_39",
+      "id": "6535a4dc-b89b-43c8-9b16-885c467dd0ba_bus_39",
       "alertId": "761389",
       "is_banner": false,
       "mode": "bus",
@@ -965,7 +965,7 @@
       "closed": false
     },
     {
-      "id": "f66861ea-b884-42a8-81b5-61374c738196_bus_40",
+      "id": "1a9ad3ef-9dbc-45e1-96bb-2ed23cd41671_bus_40",
       "alertId": "761406",
       "is_banner": false,
       "mode": "bus",
@@ -989,7 +989,7 @@
       "closed": false
     },
     {
-      "id": "ed008edc-c634-4c8e-a4b3-5c855cd433a0_bus_41",
+      "id": "a4e71d7e-79b4-4945-aeda-9735cee0f38e_bus_41",
       "alertId": "761414",
       "is_banner": false,
       "mode": "bus",
@@ -1014,7 +1014,7 @@
       "closed": false
     },
     {
-      "id": "f9cfcd9e-35c3-4386-a405-bcc25d5e4692_bus_42",
+      "id": "7adb5966-6acb-498f-a638-eb647cf38026_bus_42",
       "alertId": "761417",
       "is_banner": false,
       "mode": "bus",
@@ -1038,7 +1038,7 @@
       "closed": false
     },
     {
-      "id": "89153ef8-c6e3-48c0-9063-18e094af0be9_bus_43",
+      "id": "78882079-b83a-409e-a652-04f095885d71_bus_43",
       "alertId": "761482",
       "is_banner": false,
       "mode": "bus",
@@ -1060,7 +1060,7 @@
       "closed": false
     },
     {
-      "id": "17de8832-2966-433d-8d2c-975f513f0a3a_bus_44",
+      "id": "c87c1160-ccbe-4af0-b59f-b8e9c6598786_bus_44",
       "alertId": "761488",
       "is_banner": false,
       "mode": "bus",
@@ -1082,7 +1082,7 @@
       "closed": false
     },
     {
-      "id": "e9068159-20b1-4a77-8653-6bf8ed6f67b2_bus_45",
+      "id": "28b55b13-5bcb-41cf-8683-cc99f46f6b70_bus_45",
       "alertId": "761489",
       "is_banner": false,
       "mode": "bus",
@@ -1104,7 +1104,7 @@
       "closed": false
     },
     {
-      "id": "0e0d3ebf-a4cd-4623-9927-1d6b7adc87e5_bus_46",
+      "id": "498290c4-9da2-42a3-b027-2f73644f4477_bus_46",
       "alertId": "761490",
       "is_banner": false,
       "mode": "bus",
@@ -1126,7 +1126,7 @@
       "closed": false
     },
     {
-      "id": "9b4b087a-24ad-4575-91f4-0559c334cddb_bus_47",
+      "id": "c4df1ce5-8e1e-4084-ac68-7c1353aa7bc7_bus_47",
       "alertId": "761491",
       "is_banner": false,
       "mode": "bus",
@@ -1148,7 +1148,7 @@
       "closed": false
     },
     {
-      "id": "8da9c8a9-5ead-4307-a1c9-c7a05289e7b5_bus_48",
+      "id": "95a7dfea-9ebc-4c96-8eaf-0578fb388402_bus_48",
       "alertId": "761572",
       "is_banner": false,
       "mode": "bus",
@@ -1170,7 +1170,7 @@
       "closed": false
     },
     {
-      "id": "14350cca-0f54-4895-8c15-04b792a68d45_bus_49",
+      "id": "7c26d461-8716-4e66-8fba-e1b1465c4ede_bus_49",
       "alertId": "761576",
       "is_banner": false,
       "mode": "bus",
@@ -1192,7 +1192,7 @@
       "closed": false
     },
     {
-      "id": "4ce9c6b7-eb8d-4b4c-b957-6185c4df578e_bus_50",
+      "id": "4858be0a-18e9-4a22-8897-f0feddd3aba9_bus_50",
       "alertId": "761792",
       "is_banner": false,
       "mode": "bus",
@@ -1216,7 +1216,7 @@
       "closed": false
     },
     {
-      "id": "ce72cf85-1428-4407-bf62-a6570a5aaf45_bus_51",
+      "id": "755a0eb3-4df7-402b-8c9b-2c5e4b64e40a_bus_51",
       "alertId": "761793",
       "is_banner": false,
       "mode": "bus",
@@ -1238,7 +1238,7 @@
       "closed": false
     },
     {
-      "id": "9754cc3b-757e-4313-98b8-15161986291a_general_52",
+      "id": "814f3ebd-c43b-4dd0-a683-acc53979e832_general_52",
       "alertId": "762251",
       "is_banner": false,
       "mode": "general",
@@ -1257,15 +1257,15 @@
       "endTime": null,
       "lastModified": "2026-10-27T11:30:02Z",
       "impacted_stations": [
-        "Waterfront",
         "Surrey Central",
         "King George",
+        "Waterfront",
         "King George Station"
       ],
       "closed": false
     },
     {
-      "id": "63b22295-dc30-4ad2-8c4e-0c24d6d8151b_bus_53",
+      "id": "37b36065-0cb1-4e74-b0a0-1a8c8288d304_bus_53",
       "alertId": "762705",
       "is_banner": false,
       "mode": "bus",
@@ -1287,7 +1287,7 @@
       "closed": false
     },
     {
-      "id": "0598adfb-6578-4929-9e7c-232356c04c45_bus_54",
+      "id": "27bf303e-cf92-442c-962d-651e2738fd96_bus_54",
       "alertId": "762706",
       "is_banner": false,
       "mode": "bus",
@@ -1309,7 +1309,7 @@
       "closed": false
     },
     {
-      "id": "3987e9d4-61ae-4485-a282-f919fcb33026_bus_55",
+      "id": "52ea13af-8086-4541-9d75-f0e00fd96cb5_bus_55",
       "alertId": "762884",
       "is_banner": false,
       "mode": "bus",
@@ -1331,7 +1331,7 @@
       "closed": false
     },
     {
-      "id": "3987e9d4-61ae-4485-a282-f919fcb33026_bus_56",
+      "id": "52ea13af-8086-4541-9d75-f0e00fd96cb5_bus_56",
       "alertId": "762884",
       "is_banner": false,
       "mode": "bus",
@@ -1353,7 +1353,7 @@
       "closed": false
     },
     {
-      "id": "3fbc49a3-3050-410d-acf9-92d216cc7c13_bus_57",
+      "id": "6fde34e8-3aa4-48e6-afc8-e70ce724c917_bus_57",
       "alertId": "762894",
       "is_banner": false,
       "mode": "bus",
@@ -1372,13 +1372,13 @@
       "endTime": null,
       "lastModified": "2026-10-25T03:09:01Z",
       "impacted_stations": [
-        "Waterfront",
-        "Marine Drive"
+        "Marine Drive",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "29b93b7a-46f4-4008-abf2-46e7dafe3876_bus_58",
+      "id": "121da863-5b97-4bef-9cc2-e39263b4e91d_bus_58",
       "alertId": "762925",
       "is_banner": false,
       "mode": "bus",
@@ -1400,7 +1400,7 @@
       "closed": false
     },
     {
-      "id": "29b93b7a-46f4-4008-abf2-46e7dafe3876_bus_59",
+      "id": "121da863-5b97-4bef-9cc2-e39263b4e91d_bus_59",
       "alertId": "762925",
       "is_banner": false,
       "mode": "bus",
@@ -1422,7 +1422,7 @@
       "closed": false
     },
     {
-      "id": "cc755de3-6dd2-45c2-9160-da5135e8a4a2_bus_60",
+      "id": "82e82b1e-0565-4abf-bbfb-875e049de7dc_bus_60",
       "alertId": "762935",
       "is_banner": false,
       "mode": "bus",
@@ -1444,7 +1444,7 @@
       "closed": false
     },
     {
-      "id": "35a9f628-e99e-4188-9681-e5297d020e5f_bus_61",
+      "id": "cc339d0b-7974-462b-8de8-493dbb31c1bf_bus_61",
       "alertId": "763377",
       "is_banner": false,
       "mode": "bus",
@@ -1466,7 +1466,7 @@
       "closed": false
     },
     {
-      "id": "58c1fe44-d15f-42a8-88d2-3210308c1e70_bus_62",
+      "id": "5e53f855-6476-48e3-8662-cd9547be120e_bus_62",
       "alertId": "763705",
       "is_banner": false,
       "mode": "bus",
@@ -1488,7 +1488,7 @@
       "closed": false
     },
     {
-      "id": "c0a314d3-41a6-4a3e-98a6-b33ff102d414_bus_63",
+      "id": "6e95ba90-06ce-434d-8c83-d1203ba395d9_bus_63",
       "alertId": "763756",
       "is_banner": false,
       "mode": "bus",
@@ -1510,7 +1510,7 @@
       "closed": false
     },
     {
-      "id": "ea1583d6-97ad-4a9a-b709-62a91d95d66a_bus_64",
+      "id": "eaca3322-0cbb-4c13-8ac4-79be300f2292_bus_64",
       "alertId": "763836",
       "is_banner": false,
       "mode": "bus",
@@ -1534,7 +1534,7 @@
       "closed": false
     },
     {
-      "id": "73b9ac38-a4b4-4214-a72a-aefde58cdf4e_bus_65",
+      "id": "d74c5389-9d8a-4922-9c5e-80ac6e44cf8c_bus_65",
       "alertId": "763908",
       "is_banner": false,
       "mode": "bus",
@@ -1558,7 +1558,7 @@
       "closed": false
     },
     {
-      "id": "24537e92-35ce-4c91-b4f4-66e5fcb65bc0_bus_66",
+      "id": "b5e30851-9408-4291-a913-e0a7ccb5880c_bus_66",
       "alertId": "763915",
       "is_banner": false,
       "mode": "bus",
@@ -1580,7 +1580,7 @@
       "closed": false
     },
     {
-      "id": "619f050c-9d93-4b74-a361-51397049308c_bus_67",
+      "id": "f077aad5-7d92-4da2-a5ca-9061d8c3a1bc_bus_67",
       "alertId": "763918",
       "is_banner": false,
       "mode": "bus",
@@ -1604,7 +1604,7 @@
       "closed": false
     },
     {
-      "id": "4ffe3252-76a0-43d6-93b6-e4f476927f06_bus_68",
+      "id": "a451e7b5-3694-45eb-9b4a-17a63c2362e1_bus_68",
       "alertId": "763921",
       "is_banner": false,
       "mode": "bus",
@@ -1628,7 +1628,7 @@
       "closed": false
     },
     {
-      "id": "5fce7a3a-0f43-4ae7-9ac3-e9e53377903d_bus_69",
+      "id": "326e64ec-a874-4f46-ae94-df67ef7e525f_bus_69",
       "alertId": "763983",
       "is_banner": false,
       "mode": "bus",
@@ -1650,7 +1650,7 @@
       "closed": false
     },
     {
-      "id": "8b489c3f-9248-4b8e-98f0-8fd5d0be92ba_bus_70",
+      "id": "76cebec5-1947-4ceb-98d8-a98ef16d1952_bus_70",
       "alertId": "763984",
       "is_banner": false,
       "mode": "bus",
@@ -1672,7 +1672,7 @@
       "closed": false
     },
     {
-      "id": "a0b91093-d003-40ff-9c02-bd93a8f606ff_bus_71",
+      "id": "3542008b-fe94-436d-b6ab-7eed5b1a210f_bus_71",
       "alertId": "764111",
       "is_banner": false,
       "mode": "bus",
@@ -1694,7 +1694,7 @@
       "closed": false
     },
     {
-      "id": "754abbb2-06ef-456a-bf8c-654f243cf587_bus_72",
+      "id": "f5a1c52d-048c-4c66-8e7e-b7c7e85efb71_bus_72",
       "alertId": "764166",
       "is_banner": false,
       "mode": "bus",
@@ -1718,7 +1718,7 @@
       "closed": false
     },
     {
-      "id": "b42b418f-4004-4a32-b2d0-8faa12fb2961_bus_73",
+      "id": "40aa7dd5-eccd-44b8-9b70-e9693766788f_bus_73",
       "alertId": "764167",
       "is_banner": false,
       "mode": "bus",
@@ -1742,7 +1742,7 @@
       "closed": false
     },
     {
-      "id": "a15f5497-2a64-47d8-b9ec-ca0c89ff9671_bus_74",
+      "id": "7876f98d-5e3a-4fdf-962a-eb86127ee032_bus_74",
       "alertId": "764368",
       "is_banner": false,
       "mode": "bus",
@@ -1764,7 +1764,7 @@
       "closed": false
     },
     {
-      "id": "dce52dd4-d8e9-4914-bc4a-c7be641a1d31_bus_75",
+      "id": "18541b9a-ccbf-4b38-bd32-3c9ae10783af_bus_75",
       "alertId": "764371",
       "is_banner": false,
       "mode": "bus",
@@ -1786,7 +1786,7 @@
       "closed": false
     },
     {
-      "id": "c3fe4092-3c89-4a6c-986a-18c7471bb2c5_bus_76",
+      "id": "17d3cf50-636f-4976-a867-02dff0a06189_bus_76",
       "alertId": "764372",
       "is_banner": false,
       "mode": "bus",
@@ -1810,7 +1810,7 @@
       "closed": false
     },
     {
-      "id": "429b76de-3fa6-4d07-bdb9-83838a86c367_bus_77",
+      "id": "5357faba-447f-4c63-a13e-a99a38c52034_bus_77",
       "alertId": "764373",
       "is_banner": false,
       "mode": "bus",
@@ -1834,7 +1834,7 @@
       "closed": false
     },
     {
-      "id": "da17621c-76c6-4734-a9ac-7898634babcf_bus_78",
+      "id": "5564cc54-ff15-4d04-95fa-cfd5f9a22d1e_bus_78",
       "alertId": "764381",
       "is_banner": false,
       "mode": "bus",
@@ -1856,7 +1856,7 @@
       "closed": false
     },
     {
-      "id": "1668be15-c99b-4c38-a528-ecd24d5dfdce_bus_79",
+      "id": "3c3b5222-accf-4c6b-b724-e4e7ac7c52d4_bus_79",
       "alertId": "764382",
       "is_banner": false,
       "mode": "bus",
@@ -1878,7 +1878,7 @@
       "closed": false
     },
     {
-      "id": "434cf822-b24c-4a4a-9f76-fb83b950b4d9_bus_80",
+      "id": "1aa5437d-a0a5-4830-af44-ab9ecb835cb7_bus_80",
       "alertId": "764390",
       "is_banner": false,
       "mode": "bus",
@@ -1900,7 +1900,7 @@
       "closed": false
     },
     {
-      "id": "054fd011-c807-4f34-b357-d112948fe7bb_bus_81",
+      "id": "ea9a5460-ff14-4239-a73f-971ada6be372_bus_81",
       "alertId": "764391",
       "is_banner": false,
       "mode": "bus",
@@ -1922,7 +1922,7 @@
       "closed": false
     },
     {
-      "id": "4cdc25af-2fb3-4d0f-9c73-582b27edcfc0_bus_82",
+      "id": "ab2d1ebb-2eb9-49c5-8e74-df3bdc13b9a9_bus_82",
       "alertId": "764480",
       "is_banner": false,
       "mode": "bus",
@@ -1947,7 +1947,7 @@
       "closed": false
     },
     {
-      "id": "09b6f83e-ce4d-46c2-b8a6-373ec941bb33_bus_83",
+      "id": "0cb996b1-acd7-472a-ba62-5cad51c869e1_bus_83",
       "alertId": "764506",
       "is_banner": false,
       "mode": "bus",
@@ -1971,7 +1971,7 @@
       "closed": false
     },
     {
-      "id": "8b7030ba-9f1b-49c2-b9fc-4a19d5d7a407_bus_84",
+      "id": "d76e0413-09d1-41b7-9d03-ff4728d92bdc_bus_84",
       "alertId": "764508",
       "is_banner": false,
       "mode": "bus",
@@ -1995,7 +1995,7 @@
       "closed": false
     },
     {
-      "id": "703a610e-6498-4d2b-b0e7-43d05b92c99e_bus_85",
+      "id": "7309c909-157c-45d2-8122-348677dbbf9e_bus_85",
       "alertId": "764553",
       "is_banner": false,
       "mode": "bus",
@@ -2017,7 +2017,7 @@
       "closed": false
     },
     {
-      "id": "f5ccfeaf-789b-48e9-8a78-a00e2a6560b9_bus_86",
+      "id": "86c25a93-e444-4082-888c-c065126700bb_bus_86",
       "alertId": "764569",
       "is_banner": false,
       "mode": "bus",
@@ -2042,7 +2042,7 @@
       "closed": false
     },
     {
-      "id": "23759b42-95cb-4e62-8da8-f33ac446d44c_bus_87",
+      "id": "5a476bd6-94fe-4921-aa74-7dd98f1f821f_bus_87",
       "alertId": "764576",
       "is_banner": false,
       "mode": "bus",
@@ -2067,7 +2067,7 @@
       "closed": false
     },
     {
-      "id": "d0f427d3-ef02-4283-a370-5b24008a1c46_general_88",
+      "id": "87609d3d-5db1-4c9b-ac4c-4e1bcdfdb25f_general_88",
       "alertId": "764978",
       "is_banner": false,
       "mode": "general",
@@ -2086,15 +2086,15 @@
       "endTime": null,
       "lastModified": "2026-11-10T11:30:01Z",
       "impacted_stations": [
-        "Gilmore",
-        "Metrotown",
         "Patterson",
+        "Metrotown",
+        "Gilmore",
         "Patterson Station"
       ],
       "closed": false
     },
     {
-      "id": "fb563c61-7ca4-4c92-9672-fb1f142d693e_bus_89",
+      "id": "8fb81c09-eeb0-4f77-a9e4-3365cbb130a7_bus_89",
       "alertId": "765089",
       "is_banner": false,
       "mode": "bus",
@@ -2116,7 +2116,7 @@
       "closed": false
     },
     {
-      "id": "fb563c61-7ca4-4c92-9672-fb1f142d693e_bus_90",
+      "id": "8fb81c09-eeb0-4f77-a9e4-3365cbb130a7_bus_90",
       "alertId": "765089",
       "is_banner": false,
       "mode": "bus",
@@ -2138,7 +2138,7 @@
       "closed": false
     },
     {
-      "id": "fb563c61-7ca4-4c92-9672-fb1f142d693e_bus_91",
+      "id": "8fb81c09-eeb0-4f77-a9e4-3365cbb130a7_bus_91",
       "alertId": "765089",
       "is_banner": false,
       "mode": "bus",
@@ -2160,7 +2160,7 @@
       "closed": false
     },
     {
-      "id": "71ae7a4c-cce4-4339-a625-2f614cc31738_bus_92",
+      "id": "403d067d-2a84-40e5-bed1-d6d72e1db1ce_bus_92",
       "alertId": "765331",
       "is_banner": false,
       "mode": "bus",
@@ -2182,7 +2182,7 @@
       "closed": false
     },
     {
-      "id": "230c1e43-6258-43e9-a9f0-a49884db84f5_bus_93",
+      "id": "d1ae9886-cdeb-40db-8c21-6e13bd11608d_bus_93",
       "alertId": "765929",
       "is_banner": false,
       "mode": "bus",
@@ -2204,7 +2204,7 @@
       "closed": false
     },
     {
-      "id": "374a3cbf-ec0a-4311-9f7c-e3682c631d80_bus_94",
+      "id": "89e4c181-5a0a-4df7-b415-843ee8265c4f_bus_94",
       "alertId": "765964",
       "is_banner": false,
       "mode": "bus",
@@ -2230,7 +2230,7 @@
       "closed": false
     },
     {
-      "id": "45a59d4a-1402-402a-b10c-303c9d796d87_bus_95",
+      "id": "6854e341-12ab-44af-af7b-9d2c7d74257b_bus_95",
       "alertId": "765966",
       "is_banner": false,
       "mode": "bus",
@@ -2255,7 +2255,7 @@
       "closed": false
     },
     {
-      "id": "fb73c9e6-1bba-4aba-986e-fccd6006f29d_bus_96",
+      "id": "90557b78-0952-4a5a-9534-f62359f3b51b_bus_96",
       "alertId": "765977",
       "is_banner": false,
       "mode": "bus",
@@ -2279,7 +2279,7 @@
       "closed": false
     },
     {
-      "id": "faa0ea26-a5e6-4950-b248-e0fc6a991297_bus_97",
+      "id": "e12814f3-f225-4621-9614-b95b6ed56550_bus_97",
       "alertId": "765980",
       "is_banner": false,
       "mode": "bus",
@@ -2304,7 +2304,7 @@
       "closed": false
     },
     {
-      "id": "ec33d28d-3046-4897-853f-7329ad661dfb_bus_98",
+      "id": "1f21811a-4be4-47c5-923a-8dc5465ae34e_bus_98",
       "alertId": "766002",
       "is_banner": false,
       "mode": "bus",
@@ -2326,7 +2326,7 @@
       "closed": false
     },
     {
-      "id": "e284ecf7-ec6d-4348-a230-3304d3cce9f9_bus_99",
+      "id": "f6296f62-35ed-4cdd-8078-8a29b8519648_bus_99",
       "alertId": "766006",
       "is_banner": false,
       "mode": "bus",
@@ -2348,7 +2348,7 @@
       "closed": false
     },
     {
-      "id": "286f0ee3-92bd-465d-ac24-18a46b66108e_bus_100",
+      "id": "c7fcf9bd-ed3f-4a31-94a7-598fa95a0d2c_bus_100",
       "alertId": "766008",
       "is_banner": false,
       "mode": "bus",
@@ -2370,7 +2370,7 @@
       "closed": false
     },
     {
-      "id": "6fd35179-ce89-4a68-988b-0ac1b32bb1fa_bus_101",
+      "id": "85975a78-e774-4e23-b4c5-149cf0f1eafa_bus_101",
       "alertId": "766009",
       "is_banner": false,
       "mode": "bus",
@@ -2394,7 +2394,7 @@
       "closed": false
     },
     {
-      "id": "3d7098be-1b17-4dbb-ba94-037c7fecccfc_bus_102",
+      "id": "94366b96-9e99-4cf2-9975-57b076158a04_bus_102",
       "alertId": "766145",
       "is_banner": false,
       "mode": "bus",
@@ -2416,7 +2416,7 @@
       "closed": false
     },
     {
-      "id": "a54f6306-9d54-4b4c-956a-2cadb3cf829c_bus_103",
+      "id": "72bd382f-dfe4-436c-89ca-1b52fef8dbd1_bus_103",
       "alertId": "766203",
       "is_banner": false,
       "mode": "bus",
@@ -2438,7 +2438,7 @@
       "closed": false
     },
     {
-      "id": "817d4206-0f2d-44d2-aeb3-1d83be6c818d_bus_104",
+      "id": "1eb17cc4-b2b5-421f-a3de-203e9723dc31_bus_104",
       "alertId": "766219",
       "is_banner": false,
       "mode": "bus",
@@ -2460,7 +2460,7 @@
       "closed": false
     },
     {
-      "id": "7f49afff-1b55-4434-860b-78d812259aa8_bus_105",
+      "id": "32928832-3d55-42be-bf8c-26ee2545e066_bus_105",
       "alertId": "766220",
       "is_banner": false,
       "mode": "bus",
@@ -2484,7 +2484,7 @@
       "closed": false
     },
     {
-      "id": "52dd9ce1-2e43-4677-98ef-f7ff257915b6_bus_106",
+      "id": "3931d0fa-0c21-4d12-bafb-1dfecbe26bee_bus_106",
       "alertId": "766221",
       "is_banner": false,
       "mode": "bus",
@@ -2506,7 +2506,7 @@
       "closed": false
     },
     {
-      "id": "488e4bb9-da0a-4357-8db3-0300b86f134f_bus_107",
+      "id": "ace0c6bd-9700-4502-87a5-6e9532620720_bus_107",
       "alertId": "766223",
       "is_banner": false,
       "mode": "bus",
@@ -2528,7 +2528,7 @@
       "closed": false
     },
     {
-      "id": "14b611c1-9163-4fe8-95c8-fdca20e2942c_bus_108",
+      "id": "213b6fb5-1369-493e-9d12-8edf43c8e6be_bus_108",
       "alertId": "766224",
       "is_banner": false,
       "mode": "bus",
@@ -2550,7 +2550,7 @@
       "closed": false
     },
     {
-      "id": "80347c50-de9c-4a57-a78d-a63d12d8f9f2_bus_109",
+      "id": "641ad974-ad26-46e4-acdd-c73e693731d0_bus_109",
       "alertId": "766225",
       "is_banner": false,
       "mode": "bus",
@@ -2572,7 +2572,7 @@
       "closed": false
     },
     {
-      "id": "ebc8fafb-9377-446f-a7c1-dc969432422d_bus_110",
+      "id": "32beef1a-fa95-4c3b-80af-5832f1c141ed_bus_110",
       "alertId": "766227",
       "is_banner": false,
       "mode": "bus",
@@ -2594,7 +2594,7 @@
       "closed": false
     },
     {
-      "id": "b9e3ccf9-8f4c-46aa-aed0-c8a0767649b1_bus_111",
+      "id": "50264721-be75-4ee8-8a10-77d3bccdd4d0_bus_111",
       "alertId": "766228",
       "is_banner": false,
       "mode": "bus",
@@ -2616,7 +2616,7 @@
       "closed": false
     },
     {
-      "id": "29a66f31-baa7-408c-a967-64b8c12ab48a_bus_112",
+      "id": "281da186-7ccb-4a1b-8236-4b98a13b3a84_bus_112",
       "alertId": "766230",
       "is_banner": false,
       "mode": "bus",
@@ -2640,7 +2640,7 @@
       "closed": false
     },
     {
-      "id": "b96c7aba-4052-48ee-b444-411f69319441_bus_113",
+      "id": "e794be14-5e52-45e8-aea6-041ecfd6458a_bus_113",
       "alertId": "766234",
       "is_banner": false,
       "mode": "bus",
@@ -2664,7 +2664,7 @@
       "closed": false
     },
     {
-      "id": "faef581a-f967-4e11-8f8c-5ffb9d98c026_bus_114",
+      "id": "1cc8f528-71b9-40f4-b0ef-54e2149e8af3_bus_114",
       "alertId": "766236",
       "is_banner": false,
       "mode": "bus",
@@ -2686,7 +2686,7 @@
       "closed": false
     },
     {
-      "id": "7652c9af-ff0f-4059-8208-25eb45b792cb_bus_115",
+      "id": "e586d599-7e82-4e6b-8506-c726df1ef990_bus_115",
       "alertId": "766293",
       "is_banner": false,
       "mode": "bus",
@@ -2708,7 +2708,7 @@
       "closed": false
     },
     {
-      "id": "7edcc010-08e8-476c-b4ba-806735fb369e_bus_116",
+      "id": "582fec61-4403-48e2-9e6d-5294f469d30a_bus_116",
       "alertId": "766304",
       "is_banner": false,
       "mode": "bus",
@@ -2730,7 +2730,7 @@
       "closed": false
     },
     {
-      "id": "7edcc010-08e8-476c-b4ba-806735fb369e_bus_117",
+      "id": "582fec61-4403-48e2-9e6d-5294f469d30a_bus_117",
       "alertId": "766304",
       "is_banner": false,
       "mode": "bus",
@@ -2752,7 +2752,7 @@
       "closed": false
     },
     {
-      "id": "7edcc010-08e8-476c-b4ba-806735fb369e_bus_118",
+      "id": "582fec61-4403-48e2-9e6d-5294f469d30a_bus_118",
       "alertId": "766304",
       "is_banner": false,
       "mode": "bus",
@@ -2774,7 +2774,7 @@
       "closed": false
     },
     {
-      "id": "7edcc010-08e8-476c-b4ba-806735fb369e_bus_119",
+      "id": "582fec61-4403-48e2-9e6d-5294f469d30a_bus_119",
       "alertId": "766304",
       "is_banner": false,
       "mode": "bus",
@@ -2796,7 +2796,7 @@
       "closed": false
     },
     {
-      "id": "923fa53e-fa87-4802-bdd6-884439a73e72_bus_120",
+      "id": "b095a761-e81e-4eaa-b6bb-9bd4b9e7a6f2_bus_120",
       "alertId": "766315",
       "is_banner": false,
       "mode": "bus",
@@ -2818,7 +2818,7 @@
       "closed": false
     },
     {
-      "id": "321854cb-8611-4771-9f50-bb6ac69f16bc_bus_121",
+      "id": "8d6cf175-1b0b-4f27-b005-f30cc22b9bdd_bus_121",
       "alertId": "766316",
       "is_banner": false,
       "mode": "bus",
@@ -2840,7 +2840,7 @@
       "closed": false
     },
     {
-      "id": "5e3ff326-be37-454c-89df-387ace44188e_bus_122",
+      "id": "434231d9-95e5-4be8-ab4b-486e44573646_bus_122",
       "alertId": "766411",
       "is_banner": false,
       "mode": "bus",
@@ -2862,7 +2862,7 @@
       "closed": false
     },
     {
-      "id": "614d8dfe-455a-4bc6-8c57-ca3afefa59bb_bus_123",
+      "id": "1e3bdcf1-788e-4266-973b-bb051ff54c8f_bus_123",
       "alertId": "766412",
       "is_banner": false,
       "mode": "bus",
@@ -2884,7 +2884,7 @@
       "closed": false
     },
     {
-      "id": "bd616b58-0282-4ea3-822e-b52710524457_bus_124",
+      "id": "f5f1fae1-750c-4455-acee-30cb28e0e454_bus_124",
       "alertId": "766414",
       "is_banner": false,
       "mode": "bus",
@@ -2908,7 +2908,7 @@
       "closed": false
     },
     {
-      "id": "fa280e9c-2767-4ab1-bf76-9ba484e4df3e_bus_125",
+      "id": "8bb3a231-b92d-421b-9120-9a08bf84f207_bus_125",
       "alertId": "766745",
       "is_banner": false,
       "mode": "bus",
@@ -2930,7 +2930,7 @@
       "closed": false
     },
     {
-      "id": "2a153203-c9e9-4b6b-91d0-5e3dd251d6c2_bus_126",
+      "id": "f12f4d90-fd2f-403a-9fcc-6ac986f9eedb_bus_126",
       "alertId": "766753",
       "is_banner": false,
       "mode": "bus",
@@ -2952,7 +2952,7 @@
       "closed": false
     },
     {
-      "id": "7b88cdcd-73a1-4cc0-91ae-774d89b33b9e_bus_127",
+      "id": "090797f7-395d-4abd-80b3-515bfd91c5a8_bus_127",
       "alertId": "766972",
       "is_banner": false,
       "mode": "bus",
@@ -2974,7 +2974,7 @@
       "closed": false
     },
     {
-      "id": "7b88cdcd-73a1-4cc0-91ae-774d89b33b9e_bus_128",
+      "id": "090797f7-395d-4abd-80b3-515bfd91c5a8_bus_128",
       "alertId": "766972",
       "is_banner": false,
       "mode": "bus",
@@ -2996,7 +2996,7 @@
       "closed": false
     },
     {
-      "id": "7b88cdcd-73a1-4cc0-91ae-774d89b33b9e_bus_129",
+      "id": "090797f7-395d-4abd-80b3-515bfd91c5a8_bus_129",
       "alertId": "766972",
       "is_banner": false,
       "mode": "bus",
@@ -3018,7 +3018,7 @@
       "closed": false
     },
     {
-      "id": "7b88cdcd-73a1-4cc0-91ae-774d89b33b9e_bus_130",
+      "id": "090797f7-395d-4abd-80b3-515bfd91c5a8_bus_130",
       "alertId": "766972",
       "is_banner": false,
       "mode": "bus",
@@ -3040,7 +3040,7 @@
       "closed": false
     },
     {
-      "id": "67372ae1-37f6-4e8f-9230-cff2a1737608_bus_131",
+      "id": "c0a2145d-17fc-4261-bbea-9b7d8f89af8a_bus_131",
       "alertId": "766986",
       "is_banner": false,
       "mode": "bus",
@@ -3062,7 +3062,7 @@
       "closed": false
     },
     {
-      "id": "67372ae1-37f6-4e8f-9230-cff2a1737608_bus_132",
+      "id": "c0a2145d-17fc-4261-bbea-9b7d8f89af8a_bus_132",
       "alertId": "766986",
       "is_banner": false,
       "mode": "bus",
@@ -3084,7 +3084,7 @@
       "closed": false
     },
     {
-      "id": "8d11bc4a-5a0f-4756-85ae-68d17c941938_bus_133",
+      "id": "842d6923-b397-4d9d-b67e-b23ba737c9c5_bus_133",
       "alertId": "767008",
       "is_banner": false,
       "mode": "bus",
@@ -3108,7 +3108,7 @@
       "closed": false
     },
     {
-      "id": "8d11bc4a-5a0f-4756-85ae-68d17c941938_bus_134",
+      "id": "842d6923-b397-4d9d-b67e-b23ba737c9c5_bus_134",
       "alertId": "767008",
       "is_banner": false,
       "mode": "bus",
@@ -3132,7 +3132,7 @@
       "closed": false
     },
     {
-      "id": "8d11bc4a-5a0f-4756-85ae-68d17c941938_bus_135",
+      "id": "842d6923-b397-4d9d-b67e-b23ba737c9c5_bus_135",
       "alertId": "767008",
       "is_banner": false,
       "mode": "bus",
@@ -3156,7 +3156,7 @@
       "closed": false
     },
     {
-      "id": "0316171d-dd12-49f1-a43a-a97e7c77c90a_bus_136",
+      "id": "f03046b8-c899-45a9-b414-fa99cc11ae33_bus_136",
       "alertId": "767010",
       "is_banner": false,
       "mode": "bus",
@@ -3180,7 +3180,7 @@
       "closed": false
     },
     {
-      "id": "c0460775-a617-44ac-a55b-23744ddc2cce_bus_137",
+      "id": "36750c22-af18-4e3e-9acd-c7e30d1dfb3c_bus_137",
       "alertId": "767022",
       "is_banner": false,
       "mode": "bus",
@@ -3199,13 +3199,13 @@
       "endTime": "2026-11-16T11:30:00Z",
       "lastModified": "2026-11-10T08:00:03Z",
       "impacted_stations": [
-        "Marine Drive",
-        "22nd Street"
+        "22nd Street",
+        "Marine Drive"
       ],
       "closed": false
     },
     {
-      "id": "e1c798ee-8860-4fee-aadb-fdd110c9b8b0_bus_138",
+      "id": "6cd68c62-e907-44af-9fa3-d628342fdea2_bus_138",
       "alertId": "767024",
       "is_banner": false,
       "mode": "bus",
@@ -3229,7 +3229,7 @@
       "closed": false
     },
     {
-      "id": "43cd8dd2-5548-4567-a42c-d2262e8e9c35_bus_139",
+      "id": "32fb8bfa-6f5b-4c03-9988-385c2f12d0a5_bus_139",
       "alertId": "767027",
       "is_banner": false,
       "mode": "bus",
@@ -3251,7 +3251,7 @@
       "closed": false
     },
     {
-      "id": "43cd8dd2-5548-4567-a42c-d2262e8e9c35_bus_140",
+      "id": "32fb8bfa-6f5b-4c03-9988-385c2f12d0a5_bus_140",
       "alertId": "767027",
       "is_banner": false,
       "mode": "bus",
@@ -3273,7 +3273,7 @@
       "closed": false
     },
     {
-      "id": "46488cd4-edc8-458e-8344-c766bcf4e7fb_bus_141",
+      "id": "d16efa7f-b73a-4452-b1d4-626e55e5f835_bus_141",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3297,7 +3297,7 @@
       "closed": false
     },
     {
-      "id": "46488cd4-edc8-458e-8344-c766bcf4e7fb_bus_142",
+      "id": "d16efa7f-b73a-4452-b1d4-626e55e5f835_bus_142",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3321,7 +3321,7 @@
       "closed": false
     },
     {
-      "id": "46488cd4-edc8-458e-8344-c766bcf4e7fb_bus_143",
+      "id": "d16efa7f-b73a-4452-b1d4-626e55e5f835_bus_143",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3345,7 +3345,7 @@
       "closed": false
     },
     {
-      "id": "46488cd4-edc8-458e-8344-c766bcf4e7fb_bus_144",
+      "id": "d16efa7f-b73a-4452-b1d4-626e55e5f835_bus_144",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3369,7 +3369,7 @@
       "closed": false
     },
     {
-      "id": "46488cd4-edc8-458e-8344-c766bcf4e7fb_bus_145",
+      "id": "d16efa7f-b73a-4452-b1d4-626e55e5f835_bus_145",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3393,7 +3393,7 @@
       "closed": false
     },
     {
-      "id": "46488cd4-edc8-458e-8344-c766bcf4e7fb_bus_146",
+      "id": "d16efa7f-b73a-4452-b1d4-626e55e5f835_bus_146",
       "alertId": "767047",
       "is_banner": false,
       "mode": "bus",
@@ -3417,7 +3417,7 @@
       "closed": false
     },
     {
-      "id": "d2562341-b295-4056-9a33-635338142798_bus_147",
+      "id": "40670392-8414-440d-8b29-a732b5cb5f9c_bus_147",
       "alertId": "767242",
       "is_banner": false,
       "mode": "bus",
@@ -3441,7 +3441,7 @@
       "closed": false
     },
     {
-      "id": "5e1811ae-0286-4913-8ddd-0f8e1633d124_bus_148",
+      "id": "6f219b46-3129-4d8c-84d7-052c529d7dfc_bus_148",
       "alertId": "767341",
       "is_banner": false,
       "mode": "bus",
@@ -3466,7 +3466,7 @@
       "closed": false
     },
     {
-      "id": "1a81f274-42a1-4309-95c6-c029dd8748f8_bus_149",
+      "id": "3749a6ad-9f6c-4f8e-ac73-8b8a2f935c76_bus_149",
       "alertId": "767363",
       "is_banner": false,
       "mode": "bus",
@@ -3488,7 +3488,7 @@
       "closed": false
     },
     {
-      "id": "5b6443a4-507b-4e0c-bfa7-333175693740_bus_150",
+      "id": "8e94cd4b-34a1-4af0-b4a4-b99ac927eec1_bus_150",
       "alertId": "767391",
       "is_banner": false,
       "mode": "bus",
@@ -3510,7 +3510,7 @@
       "closed": false
     },
     {
-      "id": "4bea995a-5aa8-45bf-9236-18fe98bf27ac_bus_151",
+      "id": "3b4b12bb-4ee1-45b7-91ac-6ee8bf5d265e_bus_151",
       "alertId": "767574",
       "is_banner": false,
       "mode": "bus",
@@ -3535,7 +3535,7 @@
       "closed": false
     },
     {
-      "id": "97d19f1b-a705-412d-94ca-da4c999ed83c_bus_152",
+      "id": "7b97c498-02f8-4ddb-8418-70773bec36ac_bus_152",
       "alertId": "767596",
       "is_banner": false,
       "mode": "bus",
@@ -3560,7 +3560,7 @@
       "closed": false
     },
     {
-      "id": "40f37666-79e7-4d16-8385-d8892356d4e6_bus_153",
+      "id": "ed95e2be-51c8-43c1-bcd8-bcb702ae28e0_bus_153",
       "alertId": "767606",
       "is_banner": false,
       "mode": "bus",
@@ -3585,7 +3585,7 @@
       "closed": false
     },
     {
-      "id": "f8564c58-f4b2-40b8-b0ba-c4d8a90385ec_bus_154",
+      "id": "9e4907d3-80e7-4b3c-beb4-4b6d865990ef_bus_154",
       "alertId": "768124",
       "is_banner": false,
       "mode": "bus",
@@ -3609,7 +3609,7 @@
       "closed": false
     },
     {
-      "id": "8d435d73-3877-4d2c-8c16-5eded8b14130_bus_155",
+      "id": "f7d05c1f-279a-45c0-9bc0-deab43c34bee_bus_155",
       "alertId": "768129",
       "is_banner": false,
       "mode": "bus",
@@ -3633,7 +3633,7 @@
       "closed": false
     },
     {
-      "id": "43793afa-467c-47d4-adb8-fd959ed71a88_bus_156",
+      "id": "eecd0e34-d4aa-465b-b43a-b938c7903dd0_bus_156",
       "alertId": "768217",
       "is_banner": false,
       "mode": "bus",
@@ -3655,7 +3655,7 @@
       "closed": false
     },
     {
-      "id": "8fbc16db-63d6-41cd-9117-81cbb6999fb9_bus_157",
+      "id": "ba6953c8-f049-44b8-80d7-e154e2174231_bus_157",
       "alertId": "768256",
       "is_banner": false,
       "mode": "bus",
@@ -3677,7 +3677,7 @@
       "closed": false
     },
     {
-      "id": "7db66a60-e885-4114-aa0c-519aa3ef3be3_bus_158",
+      "id": "5eeaa688-9ec4-40f1-9d27-9ac571d8aad8_bus_158",
       "alertId": "768267",
       "is_banner": false,
       "mode": "bus",
@@ -3699,7 +3699,7 @@
       "closed": false
     },
     {
-      "id": "7db66a60-e885-4114-aa0c-519aa3ef3be3_bus_159",
+      "id": "5eeaa688-9ec4-40f1-9d27-9ac571d8aad8_bus_159",
       "alertId": "768267",
       "is_banner": false,
       "mode": "bus",
@@ -3721,7 +3721,7 @@
       "closed": false
     },
     {
-      "id": "7db66a60-e885-4114-aa0c-519aa3ef3be3_bus_160",
+      "id": "5eeaa688-9ec4-40f1-9d27-9ac571d8aad8_bus_160",
       "alertId": "768267",
       "is_banner": false,
       "mode": "bus",
@@ -3743,7 +3743,7 @@
       "closed": false
     },
     {
-      "id": "84133aa7-1ff1-4e29-bcc4-f70eede09020_bus_161",
+      "id": "d2daa81f-38b4-465c-a195-a485d74286a2_bus_161",
       "alertId": "768270",
       "is_banner": false,
       "mode": "bus",
@@ -3765,7 +3765,7 @@
       "closed": false
     },
     {
-      "id": "8208b24c-d490-40d1-9dd4-7170039e3279_bus_162",
+      "id": "71e00469-2c45-44b4-a9fa-3aebae6d670c_bus_162",
       "alertId": "768272",
       "is_banner": false,
       "mode": "bus",
@@ -3787,7 +3787,7 @@
       "closed": false
     },
     {
-      "id": "2ee77d7a-8bfc-411a-91cb-b5ede2451ba6_bus_163",
+      "id": "a692cc69-6691-4341-a66d-fc0ac2a99825_bus_163",
       "alertId": "768320",
       "is_banner": false,
       "mode": "bus",
@@ -3811,7 +3811,7 @@
       "closed": false
     },
     {
-      "id": "3417531a-9935-40b9-b8a2-623f661a1f35_bus_164",
+      "id": "8dff924a-31e9-4183-b8f5-500cb1bac0e8_bus_164",
       "alertId": "768372",
       "is_banner": false,
       "mode": "bus",
@@ -3833,7 +3833,7 @@
       "closed": false
     },
     {
-      "id": "74d98f61-9427-4021-b05d-f7fd39a34a06_bus_165",
+      "id": "1669d54e-a2be-4b75-b470-127414b1b84a_bus_165",
       "alertId": "768393",
       "is_banner": false,
       "mode": "bus",
@@ -3855,7 +3855,7 @@
       "closed": false
     },
     {
-      "id": "dffc13cd-7366-4de7-b200-76393c6a502e_bus_166",
+      "id": "0a659064-3feb-4f82-a6ff-2c2d0810ab1e_bus_166",
       "alertId": "768399",
       "is_banner": false,
       "mode": "bus",
@@ -3877,7 +3877,7 @@
       "closed": false
     },
     {
-      "id": "2fd2b645-b8cd-4667-9fef-44963ae6caaf_bus_167",
+      "id": "475474a1-f9a1-48c5-951f-a1281e6eb30e_bus_167",
       "alertId": "768429",
       "is_banner": false,
       "mode": "bus",
@@ -3899,7 +3899,7 @@
       "closed": false
     },
     {
-      "id": "32798ccf-c86e-49f3-8e22-cc70f2c920cf_bus_168",
+      "id": "51fac0ab-1d0b-42da-bcc5-ae8e5b4fedf8_bus_168",
       "alertId": "768481",
       "is_banner": false,
       "mode": "bus",
@@ -3923,7 +3923,7 @@
       "closed": false
     },
     {
-      "id": "c68d7f75-69aa-4976-899a-b2098a5491d2_bus_169",
+      "id": "3b44d4fb-ed80-435e-b614-ace2ed45a34a_bus_169",
       "alertId": "768554",
       "is_banner": false,
       "mode": "bus",
@@ -3945,7 +3945,7 @@
       "closed": false
     },
     {
-      "id": "ea059d98-62f9-44cd-a127-dc9fa1777cdf_bus_170",
+      "id": "2f0ac5e0-97eb-422b-978c-122ffb1477e7_bus_170",
       "alertId": "768599",
       "is_banner": false,
       "mode": "bus",
@@ -3969,7 +3969,7 @@
       "closed": false
     },
     {
-      "id": "2fe64905-497b-4a32-b7df-6adfe62c56b6_bus_171",
+      "id": "6a8efbb0-90b5-4def-ad41-8dacbf446e95_bus_171",
       "alertId": "768674",
       "is_banner": false,
       "mode": "bus",
@@ -3988,14 +3988,14 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:03Z",
       "impacted_stations": [
-        "Waterfront",
+        "Marine Drive",
         "Columbia",
-        "Marine Drive"
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "17f3bc23-d089-4b27-ab52-19846f6edad1_bus_172",
+      "id": "f787fca4-f3f8-4402-b510-e201bcb61bc4_bus_172",
       "alertId": "768682",
       "is_banner": false,
       "mode": "bus",
@@ -4014,14 +4014,14 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:03Z",
       "impacted_stations": [
-        "Waterfront",
+        "Marine Drive",
         "Columbia",
-        "Marine Drive"
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "3b80837e-875e-423f-97a5-01bc07247261_bus_173",
+      "id": "36bfec89-f700-41f2-81d4-d33b7c6a402d_bus_173",
       "alertId": "768729",
       "is_banner": false,
       "mode": "bus",
@@ -4040,14 +4040,14 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:03Z",
       "impacted_stations": [
-        "Waterfront",
         "Columbia",
-        "Granville"
+        "Granville",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "56fc5186-8697-4208-b5e5-c51e97355f73_bus_174",
+      "id": "7336c0b8-5508-4ef7-b7f9-a221d67ff122_bus_174",
       "alertId": "768732",
       "is_banner": false,
       "mode": "bus",
@@ -4066,15 +4066,15 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:03Z",
       "impacted_stations": [
-        "Waterfront",
         "Columbia",
         "Granville",
+        "Waterfront",
         "Nanaimo"
       ],
       "closed": false
     },
     {
-      "id": "2825cbaf-60ef-4c0c-94a0-51a1c9ba1311_bus_175",
+      "id": "3fecdb82-b26b-4e43-8427-73ba7a728b6b_bus_175",
       "alertId": "768745",
       "is_banner": false,
       "mode": "bus",
@@ -4098,7 +4098,7 @@
       "closed": false
     },
     {
-      "id": "ddd81a01-ccac-4a12-9362-74fc2ad51db5_bus_176",
+      "id": "fb70d96e-04f0-4d14-ab66-58c8c9740130_bus_176",
       "alertId": "768746",
       "is_banner": false,
       "mode": "bus",
@@ -4122,7 +4122,7 @@
       "closed": false
     },
     {
-      "id": "f1202fc9-c6ac-489a-b866-b1c677b0605f_bus_177",
+      "id": "703cfde0-fd22-4d0a-9056-1a4ca1fdf94c_bus_177",
       "alertId": "768753",
       "is_banner": false,
       "mode": "bus",
@@ -4141,13 +4141,13 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:03Z",
       "impacted_stations": [
-        "Granville",
-        "Columbia"
+        "Columbia",
+        "Granville"
       ],
       "closed": false
     },
     {
-      "id": "5b0a41f3-29f9-4c35-9d78-cbdcfc03fffb_bus_178",
+      "id": "30714d92-293d-438d-a758-d292e0ded218_bus_178",
       "alertId": "768757",
       "is_banner": false,
       "mode": "bus",
@@ -4166,14 +4166,14 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:03Z",
       "impacted_stations": [
-        "Granville",
         "29th Avenue",
-        "Columbia"
+        "Columbia",
+        "Granville"
       ],
       "closed": false
     },
     {
-      "id": "ecb4187b-b0f7-4790-b12d-904b965dc131_bus_179",
+      "id": "768c2212-34f0-4669-8c58-33ea0a71d3cd_bus_179",
       "alertId": "768759",
       "is_banner": false,
       "mode": "bus",
@@ -4195,7 +4195,7 @@
       "closed": false
     },
     {
-      "id": "c36b8b32-0a50-4630-945c-774456157936_bus_180",
+      "id": "09cc0d0a-7f5e-40f8-988a-f714fdb2cf2f_bus_180",
       "alertId": "768760",
       "is_banner": false,
       "mode": "bus",
@@ -4214,14 +4214,14 @@
       "endTime": "2026-11-11T20:30:00Z",
       "lastModified": "2026-11-10T08:00:04Z",
       "impacted_stations": [
-        "Granville",
         "Columbia",
+        "Granville",
         "Marine Drive"
       ],
       "closed": false
     },
     {
-      "id": "06bc9d6d-3daa-4048-a3d4-2326a501dce4_bus_181",
+      "id": "f8b6dd52-2630-4273-a753-e67741bfa5db_bus_181",
       "alertId": "768761",
       "is_banner": false,
       "mode": "bus",
@@ -4240,14 +4240,14 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:04Z",
       "impacted_stations": [
-        "Granville",
         "Burrard",
+        "Granville",
         "Columbia"
       ],
       "closed": false
     },
     {
-      "id": "520d8f71-1941-4acc-bf8e-f717d95d4fb5_bus_182",
+      "id": "a23c7616-8214-40b3-8f4c-d41dfdc73695_bus_182",
       "alertId": "768763",
       "is_banner": false,
       "mode": "bus",
@@ -4266,13 +4266,13 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:04Z",
       "impacted_stations": [
-        "Waterfront",
-        "Granville"
+        "Granville",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "cc8a73a0-343d-46ec-adfc-c31cf3d792d6_bus_183",
+      "id": "212abefc-ae85-402d-974c-b184750c4405_bus_183",
       "alertId": "768764",
       "is_banner": false,
       "mode": "bus",
@@ -4291,13 +4291,13 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:04Z",
       "impacted_stations": [
-        "Granville",
-        "Burrard"
+        "Burrard",
+        "Granville"
       ],
       "closed": false
     },
     {
-      "id": "ca9b2ab2-4ff0-4853-8d2e-b8109966305d_bus_184",
+      "id": "045c143e-0ba4-4e81-960c-75d69d226695_bus_184",
       "alertId": "768931",
       "is_banner": false,
       "mode": "bus",
@@ -4319,7 +4319,7 @@
       "closed": false
     },
     {
-      "id": "3e698b9f-3b85-4205-b2c6-771fea5fc7a4_bus_185",
+      "id": "de1f97ef-1fc8-4907-952c-447b177987d4_bus_185",
       "alertId": "768932",
       "is_banner": false,
       "mode": "bus",
@@ -4341,7 +4341,7 @@
       "closed": false
     },
     {
-      "id": "3e698b9f-3b85-4205-b2c6-771fea5fc7a4_bus_186",
+      "id": "de1f97ef-1fc8-4907-952c-447b177987d4_bus_186",
       "alertId": "768932",
       "is_banner": false,
       "mode": "bus",
@@ -4363,7 +4363,7 @@
       "closed": false
     },
     {
-      "id": "ec718fcc-0de6-43c2-8cdb-ce16bef344c3_bus_187",
+      "id": "f9749f71-2fa1-48be-9f0f-87e2b755c633_bus_187",
       "alertId": "768942",
       "is_banner": false,
       "mode": "bus",
@@ -4387,7 +4387,7 @@
       "closed": false
     },
     {
-      "id": "cfaa7de5-a8f3-4d20-93c2-61e81a43323d_bus_188",
+      "id": "a85db038-ed2a-4cb5-9e4f-01cbd9c9566f_bus_188",
       "alertId": "768943",
       "is_banner": false,
       "mode": "bus",
@@ -4411,7 +4411,7 @@
       "closed": false
     },
     {
-      "id": "ebcb0b7b-7af7-45de-909c-f0107052d7fd_general_189",
+      "id": "f3874488-90da-47bb-a41f-27a14244bb46_general_189",
       "alertId": "769018",
       "is_banner": false,
       "mode": "general",
@@ -4433,7 +4433,7 @@
       "closed": false
     },
     {
-      "id": "a5c68510-5302-4730-a1a2-3414105a2ceb_bus_190",
+      "id": "68a9cf99-37ae-4b20-a1e8-3226404dc6ac_bus_190",
       "alertId": "769044",
       "is_banner": false,
       "mode": "bus",
@@ -4457,7 +4457,7 @@
       "closed": false
     },
     {
-      "id": "2e84ad9d-04f1-4e52-806a-e3f076ddd2b3_bus_191",
+      "id": "71da63e9-efc1-472f-8200-e86b985698e6_bus_191",
       "alertId": "769047",
       "is_banner": false,
       "mode": "bus",
@@ -4481,7 +4481,7 @@
       "closed": false
     },
     {
-      "id": "142f71a9-d52b-4e3b-8409-6c67d6721024_bus_192",
+      "id": "3a8faa97-bcd9-4186-b06c-5a832c5e6f63_bus_192",
       "alertId": "769060",
       "is_banner": false,
       "mode": "bus",
@@ -4505,7 +4505,7 @@
       "closed": false
     },
     {
-      "id": "142f71a9-d52b-4e3b-8409-6c67d6721024_bus_193",
+      "id": "3a8faa97-bcd9-4186-b06c-5a832c5e6f63_bus_193",
       "alertId": "769060",
       "is_banner": false,
       "mode": "bus",
@@ -4529,7 +4529,7 @@
       "closed": false
     },
     {
-      "id": "142f71a9-d52b-4e3b-8409-6c67d6721024_bus_194",
+      "id": "3a8faa97-bcd9-4186-b06c-5a832c5e6f63_bus_194",
       "alertId": "769060",
       "is_banner": false,
       "mode": "bus",
@@ -4553,7 +4553,7 @@
       "closed": false
     },
     {
-      "id": "8c6ddf28-e0d5-44fd-bf2f-c583f04af08b_bus_195",
+      "id": "f2b0a722-f4ef-487d-be46-60a77e4b4a35_bus_195",
       "alertId": "769062",
       "is_banner": false,
       "mode": "bus",
@@ -4577,7 +4577,7 @@
       "closed": false
     },
     {
-      "id": "8c6ddf28-e0d5-44fd-bf2f-c583f04af08b_bus_196",
+      "id": "f2b0a722-f4ef-487d-be46-60a77e4b4a35_bus_196",
       "alertId": "769062",
       "is_banner": false,
       "mode": "bus",
@@ -4601,7 +4601,7 @@
       "closed": false
     },
     {
-      "id": "8c6ddf28-e0d5-44fd-bf2f-c583f04af08b_bus_197",
+      "id": "f2b0a722-f4ef-487d-be46-60a77e4b4a35_bus_197",
       "alertId": "769062",
       "is_banner": false,
       "mode": "bus",
@@ -4625,7 +4625,7 @@
       "closed": false
     },
     {
-      "id": "8c6ddf28-e0d5-44fd-bf2f-c583f04af08b_bus_198",
+      "id": "f2b0a722-f4ef-487d-be46-60a77e4b4a35_bus_198",
       "alertId": "769062",
       "is_banner": false,
       "mode": "bus",
@@ -4649,7 +4649,7 @@
       "closed": false
     },
     {
-      "id": "9f73ae36-8e3a-4388-ae71-30a1ae45d29b_bus_199",
+      "id": "4746c68e-e5fb-4711-961a-6c84d893d656_bus_199",
       "alertId": "769063",
       "is_banner": false,
       "mode": "bus",
@@ -4671,7 +4671,7 @@
       "closed": false
     },
     {
-      "id": "9f73ae36-8e3a-4388-ae71-30a1ae45d29b_bus_200",
+      "id": "4746c68e-e5fb-4711-961a-6c84d893d656_bus_200",
       "alertId": "769063",
       "is_banner": false,
       "mode": "bus",
@@ -4693,7 +4693,7 @@
       "closed": false
     },
     {
-      "id": "9f73ae36-8e3a-4388-ae71-30a1ae45d29b_bus_201",
+      "id": "4746c68e-e5fb-4711-961a-6c84d893d656_bus_201",
       "alertId": "769063",
       "is_banner": false,
       "mode": "bus",
@@ -4715,7 +4715,7 @@
       "closed": false
     },
     {
-      "id": "263a8e69-db5f-4da7-ba54-9e3855ed18f2_bus_202",
+      "id": "d2632c27-de9e-4521-b5e1-e5df65641826_bus_202",
       "alertId": "769081",
       "is_banner": false,
       "mode": "bus",
@@ -4739,7 +4739,7 @@
       "closed": false
     },
     {
-      "id": "df99a911-fefc-4563-b1f7-193ac8cccd0d_bus_203",
+      "id": "3500f9a4-e478-49d3-9d7b-929de035c48d_bus_203",
       "alertId": "769082",
       "is_banner": false,
       "mode": "bus",
@@ -4758,13 +4758,13 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:04Z",
       "impacted_stations": [
-        "Waterfront",
-        "Granville"
+        "Granville",
+        "Waterfront"
       ],
       "closed": false
     },
     {
-      "id": "7a94308c-a282-483c-b30b-02782d1e6e25_bus_204",
+      "id": "6beba364-691e-4a1e-88e0-77598d163bb0_bus_204",
       "alertId": "769083",
       "is_banner": false,
       "mode": "bus",
@@ -4789,7 +4789,7 @@
       "closed": false
     },
     {
-      "id": "75f9b09a-7bfb-4269-a2fb-c7942b1e20f7_bus_205",
+      "id": "b4ea10bf-d9f9-4737-bf00-f82e481bc666_bus_205",
       "alertId": "769084",
       "is_banner": false,
       "mode": "bus",
@@ -4813,7 +4813,7 @@
       "closed": false
     },
     {
-      "id": "f0bfb037-8efd-4852-a618-b267c8e224c4_bus_206",
+      "id": "7c95cc0f-f672-4619-a9df-36530628eb8b_bus_206",
       "alertId": "769178",
       "is_banner": false,
       "mode": "bus",
@@ -4835,7 +4835,7 @@
       "closed": false
     },
     {
-      "id": "75d0011a-c334-48f1-b12a-0a68478891e1_bus_207",
+      "id": "d230c177-c720-420b-a30f-947baa738b67_bus_207",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -4857,7 +4857,7 @@
       "closed": false
     },
     {
-      "id": "75d0011a-c334-48f1-b12a-0a68478891e1_bus_208",
+      "id": "d230c177-c720-420b-a30f-947baa738b67_bus_208",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -4879,7 +4879,7 @@
       "closed": false
     },
     {
-      "id": "75d0011a-c334-48f1-b12a-0a68478891e1_bus_209",
+      "id": "d230c177-c720-420b-a30f-947baa738b67_bus_209",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -4901,7 +4901,7 @@
       "closed": false
     },
     {
-      "id": "75d0011a-c334-48f1-b12a-0a68478891e1_bus_210",
+      "id": "d230c177-c720-420b-a30f-947baa738b67_bus_210",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -4923,7 +4923,7 @@
       "closed": false
     },
     {
-      "id": "75d0011a-c334-48f1-b12a-0a68478891e1_bus_211",
+      "id": "d230c177-c720-420b-a30f-947baa738b67_bus_211",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -4945,7 +4945,7 @@
       "closed": false
     },
     {
-      "id": "75d0011a-c334-48f1-b12a-0a68478891e1_bus_212",
+      "id": "d230c177-c720-420b-a30f-947baa738b67_bus_212",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -4967,7 +4967,7 @@
       "closed": false
     },
     {
-      "id": "75d0011a-c334-48f1-b12a-0a68478891e1_bus_213",
+      "id": "d230c177-c720-420b-a30f-947baa738b67_bus_213",
       "alertId": "769192",
       "is_banner": false,
       "mode": "bus",
@@ -4989,7 +4989,7 @@
       "closed": false
     },
     {
-      "id": "c8969fed-30d8-40fd-b05d-0fba5d1b51ac_bus_214",
+      "id": "c99ca62f-34e4-4f71-98c6-e5ef8637ea33_bus_214",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5011,7 +5011,7 @@
       "closed": false
     },
     {
-      "id": "c8969fed-30d8-40fd-b05d-0fba5d1b51ac_bus_215",
+      "id": "c99ca62f-34e4-4f71-98c6-e5ef8637ea33_bus_215",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5033,7 +5033,7 @@
       "closed": false
     },
     {
-      "id": "c8969fed-30d8-40fd-b05d-0fba5d1b51ac_bus_216",
+      "id": "c99ca62f-34e4-4f71-98c6-e5ef8637ea33_bus_216",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5055,7 +5055,7 @@
       "closed": false
     },
     {
-      "id": "c8969fed-30d8-40fd-b05d-0fba5d1b51ac_bus_217",
+      "id": "c99ca62f-34e4-4f71-98c6-e5ef8637ea33_bus_217",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5077,7 +5077,7 @@
       "closed": false
     },
     {
-      "id": "c8969fed-30d8-40fd-b05d-0fba5d1b51ac_bus_218",
+      "id": "c99ca62f-34e4-4f71-98c6-e5ef8637ea33_bus_218",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5099,7 +5099,7 @@
       "closed": false
     },
     {
-      "id": "c8969fed-30d8-40fd-b05d-0fba5d1b51ac_bus_219",
+      "id": "c99ca62f-34e4-4f71-98c6-e5ef8637ea33_bus_219",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5121,7 +5121,7 @@
       "closed": false
     },
     {
-      "id": "c8969fed-30d8-40fd-b05d-0fba5d1b51ac_bus_220",
+      "id": "c99ca62f-34e4-4f71-98c6-e5ef8637ea33_bus_220",
       "alertId": "769193",
       "is_banner": false,
       "mode": "bus",
@@ -5143,7 +5143,7 @@
       "closed": false
     },
     {
-      "id": "c1d33e2d-4fb5-4bbd-be4f-71c2edc0a16c_bus_221",
+      "id": "a98d9a27-93e5-48c2-9a7b-8b70d9eb37da_bus_221",
       "alertId": "769225",
       "is_banner": false,
       "mode": "bus",
@@ -5165,7 +5165,7 @@
       "closed": false
     },
     {
-      "id": "c1d33e2d-4fb5-4bbd-be4f-71c2edc0a16c_bus_222",
+      "id": "a98d9a27-93e5-48c2-9a7b-8b70d9eb37da_bus_222",
       "alertId": "769225",
       "is_banner": false,
       "mode": "bus",
@@ -5187,7 +5187,7 @@
       "closed": false
     },
     {
-      "id": "c1d33e2d-4fb5-4bbd-be4f-71c2edc0a16c_bus_223",
+      "id": "a98d9a27-93e5-48c2-9a7b-8b70d9eb37da_bus_223",
       "alertId": "769225",
       "is_banner": false,
       "mode": "bus",
@@ -5209,7 +5209,7 @@
       "closed": false
     },
     {
-      "id": "a32696ec-f448-4041-a284-90296279116c_bus_224",
+      "id": "37b9ebe2-48ee-4378-8419-d830dcfcc8c2_bus_224",
       "alertId": "769234",
       "is_banner": false,
       "mode": "bus",
@@ -5233,7 +5233,7 @@
       "closed": false
     },
     {
-      "id": "c34a778e-32fd-4096-80ff-4f53be5884e6_bus_225",
+      "id": "13797c58-7fc8-4f0e-83b7-bd39e38fd1e2_bus_225",
       "alertId": "769238",
       "is_banner": false,
       "mode": "bus",
@@ -5255,7 +5255,7 @@
       "closed": false
     },
     {
-      "id": "c34a778e-32fd-4096-80ff-4f53be5884e6_bus_226",
+      "id": "13797c58-7fc8-4f0e-83b7-bd39e38fd1e2_bus_226",
       "alertId": "769238",
       "is_banner": false,
       "mode": "bus",
@@ -5277,7 +5277,7 @@
       "closed": false
     },
     {
-      "id": "1f1a7ad7-15b0-4ec4-b86f-8f781f33aa3d_bus_227",
+      "id": "e3981c38-7ae2-4256-b253-28516329917e_bus_227",
       "alertId": "769273",
       "is_banner": false,
       "mode": "bus",
@@ -5301,7 +5301,7 @@
       "closed": false
     },
     {
-      "id": "df1996da-3d88-4b00-9f75-4d4ad2591dc8_bus_228",
+      "id": "0c90645d-a815-4877-87a7-dc75552604bf_bus_228",
       "alertId": "769301",
       "is_banner": false,
       "mode": "bus",
@@ -5323,7 +5323,7 @@
       "closed": false
     },
     {
-      "id": "df39a038-1ab6-4f6e-a1c3-babb5a53e6f1_bus_229",
+      "id": "435fc1d5-d451-49ef-a22a-c290e9c34063_bus_229",
       "alertId": "769360",
       "is_banner": false,
       "mode": "bus",
@@ -5345,7 +5345,7 @@
       "closed": false
     },
     {
-      "id": "d9ff969b-dfba-4c76-a729-404ebcd06966_bus_230",
+      "id": "f62996d1-2476-475d-a41f-51071a35bc00_bus_230",
       "alertId": "769366",
       "is_banner": false,
       "mode": "bus",
@@ -5367,7 +5367,7 @@
       "closed": false
     },
     {
-      "id": "4cbd6af1-5432-44fa-a288-283149dcb5e0_bus_231",
+      "id": "5f58f57c-2767-4e11-b9ea-100b494eb32c_bus_231",
       "alertId": "769435",
       "is_banner": false,
       "mode": "bus",
@@ -5389,7 +5389,7 @@
       "closed": false
     },
     {
-      "id": "9da27380-d23a-4bc8-921d-b2319c5bb620_bus_232",
+      "id": "b22d073f-0ff0-493c-9210-558fe2ae0909_bus_232",
       "alertId": "769436",
       "is_banner": false,
       "mode": "bus",
@@ -5411,7 +5411,7 @@
       "closed": false
     },
     {
-      "id": "dbec5365-cd4a-4e9a-a21d-36cec4499baa_bus_233",
+      "id": "1abd8b44-f225-46fe-8884-325608ecceaf_bus_233",
       "alertId": "769444",
       "is_banner": false,
       "mode": "bus",
@@ -5433,7 +5433,7 @@
       "closed": false
     },
     {
-      "id": "dbec5365-cd4a-4e9a-a21d-36cec4499baa_bus_234",
+      "id": "1abd8b44-f225-46fe-8884-325608ecceaf_bus_234",
       "alertId": "769444",
       "is_banner": false,
       "mode": "bus",
@@ -5455,7 +5455,7 @@
       "closed": false
     },
     {
-      "id": "dbec5365-cd4a-4e9a-a21d-36cec4499baa_bus_235",
+      "id": "1abd8b44-f225-46fe-8884-325608ecceaf_bus_235",
       "alertId": "769444",
       "is_banner": false,
       "mode": "bus",
@@ -5477,7 +5477,7 @@
       "closed": false
     },
     {
-      "id": "e94a2b0c-6377-4435-b050-6bd873b9d7cc_bus_236",
+      "id": "1ff92a17-9fd1-4757-9eaa-1a2b3accdba5_bus_236",
       "alertId": "769462",
       "is_banner": false,
       "mode": "bus",
@@ -5496,14 +5496,14 @@
       "endTime": "2026-11-11T19:30:00Z",
       "lastModified": "2026-11-10T08:00:04Z",
       "impacted_stations": [
-        "Granville",
         "Burrard",
+        "Granville",
         "Marine Drive"
       ],
       "closed": false
     },
     {
-      "id": "cb432b59-2811-4b34-a925-d7aba4ad6095_general_237",
+      "id": "e063eb3a-6b1a-4932-90f8-ee7c96aedc28_general_237",
       "alertId": "769477",
       "is_banner": false,
       "mode": "general",
@@ -5522,14 +5522,14 @@
       "endTime": null,
       "lastModified": "2026-11-06T12:56:02Z",
       "impacted_stations": [
-        "Lougheed Town Centre",
         "VCC-Clark",
+        "Lougheed Town Centre",
         "Lougheed Town Centre Station"
       ],
       "closed": false
     },
     {
-      "id": "d0f3cad5-4590-43f2-ab90-e1c483bd1fed_skytrain_238",
+      "id": "254c0997-424b-4494-a338-dbca62a43faf_skytrain_238",
       "alertId": "769478",
       "is_banner": false,
       "mode": "skytrain",
@@ -5554,7 +5554,7 @@
       "closed": false
     },
     {
-      "id": "3e30b0cc-0ea3-46f7-b3d2-a3dba1075e7c_skytrain_239",
+      "id": "39574fdc-00bb-4cca-990b-0b0e89ea8d80_skytrain_239",
       "alertId": "769479",
       "is_banner": false,
       "mode": "skytrain",
@@ -5579,7 +5579,7 @@
       "closed": false
     },
     {
-      "id": "c8b38e38-6f14-4e6d-8268-631d0669045b_skytrain_240",
+      "id": "ef6ccafe-1c9b-4484-ad19-3f2478cb0417_skytrain_240",
       "alertId": "769481",
       "is_banner": false,
       "mode": "skytrain",
@@ -5604,7 +5604,7 @@
       "closed": false
     },
     {
-      "id": "7142a29d-44fd-4d8a-8e42-2a197934344a_bus_241",
+      "id": "97daa065-bf11-409c-ab45-55d8b0bd3460_bus_241",
       "alertId": "769506",
       "is_banner": false,
       "mode": "bus",
@@ -5626,7 +5626,7 @@
       "closed": false
     },
     {
-      "id": "819fe9fe-7f5b-4884-b9c0-0c8d0a876396_bus_242",
+      "id": "6993fcfe-a926-46ff-b62b-9a2ed86b378b_bus_242",
       "alertId": "769534",
       "is_banner": false,
       "mode": "bus",
@@ -5648,7 +5648,7 @@
       "closed": false
     },
     {
-      "id": "7dd448c7-54d5-403f-8a47-3778f855ee50_bus_243",
+      "id": "045d2e05-0320-40d8-b702-239ced62f398_bus_243",
       "alertId": "769537",
       "is_banner": false,
       "mode": "bus",
@@ -5672,7 +5672,7 @@
       "closed": false
     },
     {
-      "id": "7dd448c7-54d5-403f-8a47-3778f855ee50_bus_244",
+      "id": "045d2e05-0320-40d8-b702-239ced62f398_bus_244",
       "alertId": "769537",
       "is_banner": false,
       "mode": "bus",
@@ -5696,7 +5696,7 @@
       "closed": false
     },
     {
-      "id": "2157c1be-f952-4cd3-82cb-a5a616878712_bus_245",
+      "id": "02f57da7-1e8f-48c3-aff0-abb2075af359_bus_245",
       "alertId": "769554",
       "is_banner": false,
       "mode": "bus",
@@ -5720,7 +5720,7 @@
       "closed": false
     },
     {
-      "id": "4a9336cd-8960-49eb-ae5e-ad88dcc7cfa2_bus_246",
+      "id": "71d43905-a581-48ca-901e-a830e6343719_bus_246",
       "alertId": "769556",
       "is_banner": false,
       "mode": "bus",
@@ -5744,7 +5744,7 @@
       "closed": false
     },
     {
-      "id": "19282177-b09d-4743-b64d-162dca886578_bus_247",
+      "id": "714f024f-30d4-4090-bf4c-fb353d45c093_bus_247",
       "alertId": "769561",
       "is_banner": false,
       "mode": "bus",
@@ -5768,7 +5768,7 @@
       "closed": false
     },
     {
-      "id": "ecbafe63-0c70-4cd0-8a8d-f6c34a73373d_bus_248",
+      "id": "681262ef-a2b9-47af-9954-edb6d8dd5759_bus_248",
       "alertId": "769590",
       "is_banner": false,
       "mode": "bus",
@@ -5790,7 +5790,7 @@
       "closed": false
     },
     {
-      "id": "0c001861-198e-4e78-84f8-76466ee970f8_bus_249",
+      "id": "91a9cc2b-a15a-45b2-8949-83defcc79d12_bus_249",
       "alertId": "769592",
       "is_banner": false,
       "mode": "bus",
@@ -5812,7 +5812,7 @@
       "closed": false
     },
     {
-      "id": "f0b007e4-c5cd-4d86-b8ed-eb39318b4541_bus_250",
+      "id": "c3d98092-2886-447a-a39d-5fbf8fb2cc39_bus_250",
       "alertId": "769594",
       "is_banner": false,
       "mode": "bus",
@@ -5834,7 +5834,7 @@
       "closed": false
     },
     {
-      "id": "710bdacb-6178-44e9-a8ac-1e82068afd77_bus_251",
+      "id": "ae5f21e8-cbe9-4c3d-a22f-f70464a16300_bus_251",
       "alertId": "769599",
       "is_banner": false,
       "mode": "bus",
@@ -5856,7 +5856,7 @@
       "closed": false
     },
     {
-      "id": "bc20d30c-a16d-4a78-9fcf-7d7d67338e10_bus_252",
+      "id": "a638b96b-9686-45e5-8d90-3c021ab7d44e_bus_252",
       "alertId": "769600",
       "is_banner": false,
       "mode": "bus",
@@ -5880,7 +5880,7 @@
       "closed": false
     },
     {
-      "id": "530b8b23-e54d-4bf9-bc85-aab31b8d150b_bus_253",
+      "id": "34afb0af-1ab5-43e2-95cf-f5d5f2ffe8b5_bus_253",
       "alertId": "769603",
       "is_banner": false,
       "mode": "bus",
@@ -5902,7 +5902,7 @@
       "closed": false
     },
     {
-      "id": "7faf143e-c448-464b-ac47-8e66e45925a3_bus_254",
+      "id": "1fd1130f-ec44-4e52-8c28-1d1aa6999bca_bus_254",
       "alertId": "769604",
       "is_banner": false,
       "mode": "bus",
@@ -5924,7 +5924,7 @@
       "closed": false
     },
     {
-      "id": "28b8cb3e-c96b-41ea-8b2f-1e5c5c9ba992_bus_255",
+      "id": "c09ed013-9901-4e56-b16c-13b17d98f9c2_bus_255",
       "alertId": "769605",
       "is_banner": false,
       "mode": "bus",
@@ -5946,7 +5946,7 @@
       "closed": false
     },
     {
-      "id": "6c4ce4a4-86af-495a-bae3-c48813821355_bus_256",
+      "id": "6a7412dd-3604-47b8-8dae-3e716988595a_bus_256",
       "alertId": "769608",
       "is_banner": false,
       "mode": "bus",
@@ -5968,7 +5968,7 @@
       "closed": false
     },
     {
-      "id": "0452f746-b60a-45d2-a63c-261e98736bbe_bus_257",
+      "id": "9ff92be1-f394-4903-862c-0fcd18ea33f2_bus_257",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -5990,7 +5990,7 @@
       "closed": false
     },
     {
-      "id": "0452f746-b60a-45d2-a63c-261e98736bbe_bus_258",
+      "id": "9ff92be1-f394-4903-862c-0fcd18ea33f2_bus_258",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6012,7 +6012,7 @@
       "closed": false
     },
     {
-      "id": "0452f746-b60a-45d2-a63c-261e98736bbe_bus_259",
+      "id": "9ff92be1-f394-4903-862c-0fcd18ea33f2_bus_259",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6034,7 +6034,7 @@
       "closed": false
     },
     {
-      "id": "0452f746-b60a-45d2-a63c-261e98736bbe_bus_260",
+      "id": "9ff92be1-f394-4903-862c-0fcd18ea33f2_bus_260",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6056,7 +6056,7 @@
       "closed": false
     },
     {
-      "id": "0452f746-b60a-45d2-a63c-261e98736bbe_bus_261",
+      "id": "9ff92be1-f394-4903-862c-0fcd18ea33f2_bus_261",
       "alertId": "769638",
       "is_banner": false,
       "mode": "bus",
@@ -6078,7 +6078,7 @@
       "closed": false
     },
     {
-      "id": "83b3fcc0-8253-4f7c-a618-35fc66843df7_skytrain_262",
+      "id": "da65fa77-1981-4548-bfa6-4b0e7a3bfc29_skytrain_262",
       "alertId": "769640",
       "is_banner": false,
       "mode": "skytrain",
@@ -6103,7 +6103,7 @@
       "closed": false
     },
     {
-      "id": "defb78d2-45bf-4d23-a24e-a104a941dd19_skytrain_263",
+      "id": "174cf9e1-7a0c-44ed-ae6f-bdafaee8062d_skytrain_263",
       "alertId": "769641",
       "is_banner": false,
       "mode": "skytrain",
@@ -6129,7 +6129,7 @@
       "closed": false
     },
     {
-      "id": "2bb02837-c767-4840-a005-baae5d4e7d26_general_264",
+      "id": "fdde68fd-639b-44f9-8e89-3861a0af9126_general_264",
       "alertId": "769643",
       "is_banner": false,
       "mode": "general",
@@ -6148,14 +6148,14 @@
       "endTime": "2026-11-10T23:00:00Z",
       "lastModified": "2026-11-10T08:00:04Z",
       "impacted_stations": [
-        "Lougheed Town Centre",
         "VCC-Clark",
+        "Lougheed Town Centre",
         "Lougheed Town Centre Station"
       ],
       "closed": false
     },
     {
-      "id": "151cb5e7-7af8-4d11-b5d5-53f5a3747be4_bus_265",
+      "id": "c64082a6-650a-4784-a0fa-5fc55463b6a5_bus_265",
       "alertId": "769678",
       "is_banner": false,
       "mode": "bus",
@@ -6177,7 +6177,7 @@
       "closed": false
     },
     {
-      "id": "90e5b781-3573-4ee8-b988-f6ac03bb39aa_bus_266",
+      "id": "68025e64-d88c-4b73-b28c-d83ac8a37826_bus_266",
       "alertId": "769681",
       "is_banner": false,
       "mode": "bus",
@@ -6199,7 +6199,7 @@
       "closed": false
     },
     {
-      "id": "991958f8-900e-4538-abad-356317bfd8a3_skytrain_267",
+      "id": "8833bf8e-89a6-49eb-86d3-0a09b1a8679a_skytrain_267",
       "alertId": "769692",
       "is_banner": false,
       "mode": "skytrain",
@@ -6218,15 +6218,15 @@
       "endTime": "2026-11-11T11:00:00Z",
       "lastModified": "2026-11-10T12:31:02Z",
       "impacted_stations": [
-        "Waterfront",
-        "Richmond-Brighouse",
         "Bridgeport",
+        "Richmond-Brighouse",
+        "Waterfront",
         "YVR-Airport"
       ],
       "closed": false
     },
     {
-      "id": "b2623e68-40ca-478c-8e98-3b9f7364c01e_skytrain_268",
+      "id": "041f5987-790b-40f5-9456-9621bec6d9b0_skytrain_268",
       "alertId": "769693",
       "is_banner": false,
       "mode": "skytrain",
@@ -6245,15 +6245,15 @@
       "endTime": "2026-11-13T11:00:00Z",
       "lastModified": "2026-11-10T12:31:02Z",
       "impacted_stations": [
-        "Waterfront",
-        "Richmond-Brighouse",
         "Bridgeport",
+        "Richmond-Brighouse",
+        "Waterfront",
         "YVR-Airport"
       ],
       "closed": false
     },
     {
-      "id": "837b8ca8-c25f-406a-a126-03c1069e93e7_skytrain_269",
+      "id": "03c86131-31e7-4950-85dc-cc14e908425c_skytrain_269",
       "alertId": "769721",
       "is_banner": false,
       "mode": "skytrain",
@@ -6272,17 +6272,17 @@
       "endTime": "2026-11-11T11:00:00Z",
       "lastModified": "2026-11-10T12:31:02Z",
       "impacted_stations": [
-        "Metrotown",
         "22nd Street",
-        "King George",
         "Edmonds",
+        "King George",
         "Waterfront",
-        "Royal Oak"
+        "Royal Oak",
+        "Metrotown"
       ],
       "closed": false
     },
     {
-      "id": "af14d94a-fbf6-4452-acb1-98f2353287eb_bus_270",
+      "id": "e0737f99-a916-4800-8c17-ba5ece87d974_bus_270",
       "alertId": "770013",
       "is_banner": false,
       "mode": "bus",
@@ -6304,7 +6304,7 @@
       "closed": false
     },
     {
-      "id": "bafc8053-26bd-4d46-b66b-6561062f7b50_bus_271",
+      "id": "1021b347-6972-49d6-9f3e-749ac27a9e14_bus_271",
       "alertId": "770014",
       "is_banner": false,
       "mode": "bus",
@@ -6326,7 +6326,7 @@
       "closed": false
     },
     {
-      "id": "bf5b1d3b-db5d-4a2d-ad2a-f5117b7935e6_bus_272",
+      "id": "9216fbcb-b77d-481f-94bb-500bfe3691f0_bus_272",
       "alertId": "770015",
       "is_banner": false,
       "mode": "bus",
@@ -6348,7 +6348,7 @@
       "closed": false
     },
     {
-      "id": "609372a6-4618-4a08-901f-a6ea2c0f116c_bus_273",
+      "id": "2bc2f42c-2d26-4c30-a601-f3d83ba2b69b_bus_273",
       "alertId": "770019",
       "is_banner": false,
       "mode": "bus",
@@ -6370,7 +6370,7 @@
       "closed": false
     },
     {
-      "id": "7e42dcea-79c5-459e-abc9-9e0900368419_bus_274",
+      "id": "2e39dd15-52f7-45fe-bfbd-66677be09934_bus_274",
       "alertId": "770020",
       "is_banner": false,
       "mode": "bus",
@@ -6392,7 +6392,7 @@
       "closed": false
     },
     {
-      "id": "5fda6f0f-11c6-44d0-9434-2b6de1de3124_bus_275",
+      "id": "a3d84e36-9771-4437-92bc-6e0fb096e1d4_bus_275",
       "alertId": "770021",
       "is_banner": false,
       "mode": "bus",
@@ -6414,7 +6414,7 @@
       "closed": false
     },
     {
-      "id": "a5ad5e3f-2976-4b5f-b97c-994303019286_bus_276",
+      "id": "76bee391-3e83-40e7-9915-984716d3a8aa_bus_276",
       "alertId": "770022",
       "is_banner": false,
       "mode": "bus",
@@ -6436,7 +6436,7 @@
       "closed": false
     },
     {
-      "id": "7d230c1f-6c78-480a-9859-9c67e8c33ea7_bus_277",
+      "id": "614190e9-e2df-45dd-9f21-0c6e93b177e2_bus_277",
       "alertId": "770041",
       "is_banner": false,
       "mode": "bus",
@@ -6458,7 +6458,7 @@
       "closed": false
     },
     {
-      "id": "f11cbd82-ff8d-4475-ab2c-963a602aa256_bus_278",
+      "id": "ee557911-95a4-495d-b47d-a82b77435334_bus_278",
       "alertId": "770052",
       "is_banner": false,
       "mode": "bus",
@@ -6480,7 +6480,7 @@
       "closed": false
     },
     {
-      "id": "127ae730-0594-4af9-8d36-c24fff506b40_bus_279",
+      "id": "ca66afc4-ad11-41e8-b700-b6590456fda7_bus_279",
       "alertId": "770053",
       "is_banner": false,
       "mode": "bus",
@@ -6502,7 +6502,7 @@
       "closed": false
     },
     {
-      "id": "08b1c79f-38ae-45b2-a31e-7163374ecb3b_bus_280",
+      "id": "8c677954-1542-42e2-bcc3-cd877f833fa2_bus_280",
       "alertId": "770079",
       "is_banner": false,
       "mode": "bus",
@@ -6526,7 +6526,7 @@
       "closed": false
     },
     {
-      "id": "8e3395ab-1cae-4646-94df-f564fe132715_bus_281",
+      "id": "a0ffcd66-8c3b-474c-8de1-f77301ed4c14_bus_281",
       "alertId": "770133",
       "is_banner": false,
       "mode": "bus",
@@ -6548,7 +6548,7 @@
       "closed": false
     },
     {
-      "id": "09681d5a-3169-4c91-b8fd-528966cf204f_bus_282",
+      "id": "b81d5009-13ab-4215-bc65-f9245a3fb3fc_bus_282",
       "alertId": "770153",
       "is_banner": false,
       "mode": "bus",
@@ -6570,7 +6570,7 @@
       "closed": false
     },
     {
-      "id": "5f4a5252-5568-40ba-80b2-0ca5c08f7787_bus_283",
+      "id": "c3d0290d-1602-46ba-be91-a8ae3437fa14_bus_283",
       "alertId": "770154",
       "is_banner": false,
       "mode": "bus",
@@ -6592,7 +6592,7 @@
       "closed": false
     },
     {
-      "id": "adda21ae-6cad-4c89-9fe1-f2e58355b7eb_skytrain_284",
+      "id": "16bdf144-99d0-4753-8fbe-09a477c13224_skytrain_284",
       "alertId": "770165",
       "is_banner": false,
       "mode": "skytrain",
@@ -6617,7 +6617,7 @@
       "closed": false
     },
     {
-      "id": "88d1357f-0788-433a-a248-5eb3c73a6cb7_skytrain_285",
+      "id": "d48d3f0f-7c79-4d68-9221-300975ca4852_skytrain_285",
       "alertId": "770209",
       "is_banner": false,
       "mode": "skytrain",
@@ -6642,7 +6642,7 @@
       "closed": false
     },
     {
-      "id": "0ba8ee3e-6149-4677-94c6-3f5f1723c474_skytrain_286",
+      "id": "365b0207-8b48-452a-a9c5-9694c49d7640_skytrain_286",
       "alertId": "770220",
       "is_banner": false,
       "mode": "skytrain",
@@ -6667,7 +6667,7 @@
       "closed": false
     },
     {
-      "id": "d5cf8f65-052b-4269-a657-e869d249a589_skytrain_287",
+      "id": "48d30979-8bad-44b0-addb-cfc7eb8a3edf_skytrain_287",
       "alertId": "770221",
       "is_banner": false,
       "mode": "skytrain",
@@ -6686,14 +6686,14 @@
       "endTime": "2026-11-14T00:00:00Z",
       "lastModified": "2026-11-10T08:00:04Z",
       "impacted_stations": [
-        "Inlet Centre",
         "VCC-Clark",
+        "Inlet Centre",
         "Inlet Centre Station"
       ],
       "closed": false
     },
     {
-      "id": "a5dfd41f-4872-413f-ab17-ac0e996c4166_general_288",
+      "id": "94d3f320-68eb-46a9-9902-140933dd7517_general_288",
       "alertId": "770233",
       "is_banner": false,
       "mode": "general",
@@ -6718,7 +6718,7 @@
       "closed": false
     },
     {
-      "id": "baa24338-4c90-4b56-9ed6-6b4125fd50b2_bus_289",
+      "id": "d95ccfb2-4c4d-4fbb-a1a5-9e9582b5affc_bus_289",
       "alertId": "770264",
       "is_banner": false,
       "mode": "bus",
@@ -6740,7 +6740,7 @@
       "closed": false
     },
     {
-      "id": "baa24338-4c90-4b56-9ed6-6b4125fd50b2_bus_290",
+      "id": "d95ccfb2-4c4d-4fbb-a1a5-9e9582b5affc_bus_290",
       "alertId": "770264",
       "is_banner": false,
       "mode": "bus",
@@ -6762,7 +6762,7 @@
       "closed": false
     },
     {
-      "id": "baa24338-4c90-4b56-9ed6-6b4125fd50b2_bus_291",
+      "id": "d95ccfb2-4c4d-4fbb-a1a5-9e9582b5affc_bus_291",
       "alertId": "770264",
       "is_banner": false,
       "mode": "bus",
@@ -6784,7 +6784,7 @@
       "closed": false
     },
     {
-      "id": "baa24338-4c90-4b56-9ed6-6b4125fd50b2_bus_292",
+      "id": "d95ccfb2-4c4d-4fbb-a1a5-9e9582b5affc_bus_292",
       "alertId": "770264",
       "is_banner": false,
       "mode": "bus",
@@ -6806,7 +6806,7 @@
       "closed": false
     },
     {
-      "id": "baa24338-4c90-4b56-9ed6-6b4125fd50b2_bus_293",
+      "id": "d95ccfb2-4c4d-4fbb-a1a5-9e9582b5affc_bus_293",
       "alertId": "770264",
       "is_banner": false,
       "mode": "bus",
@@ -6828,7 +6828,7 @@
       "closed": false
     },
     {
-      "id": "baa24338-4c90-4b56-9ed6-6b4125fd50b2_bus_294",
+      "id": "d95ccfb2-4c4d-4fbb-a1a5-9e9582b5affc_bus_294",
       "alertId": "770264",
       "is_banner": false,
       "mode": "bus",
@@ -6850,7 +6850,7 @@
       "closed": false
     },
     {
-      "id": "8e1740b9-26e3-489f-87eb-5ce5d2bf2f45_bus_295",
+      "id": "a2fc05a5-4b69-4ab0-860a-7826005ddf1d_bus_295",
       "alertId": "770268",
       "is_banner": false,
       "mode": "bus",
@@ -6872,7 +6872,7 @@
       "closed": false
     },
     {
-      "id": "c783e86e-765b-4140-85bb-09f6e5820ac4_bus_296",
+      "id": "4084951b-fd2f-489d-b0b4-421cc893329f_bus_296",
       "alertId": "770269",
       "is_banner": false,
       "mode": "bus",
@@ -6894,7 +6894,7 @@
       "closed": false
     },
     {
-      "id": "bcfc7b43-e002-471c-880c-6636a2806a60_bus_297",
+      "id": "19dca7ab-9298-4c01-921d-efca326ac3c3_bus_297",
       "alertId": "770272",
       "is_banner": false,
       "mode": "bus",
@@ -6916,7 +6916,7 @@
       "closed": false
     },
     {
-      "id": "bcfc7b43-e002-471c-880c-6636a2806a60_bus_298",
+      "id": "19dca7ab-9298-4c01-921d-efca326ac3c3_bus_298",
       "alertId": "770272",
       "is_banner": false,
       "mode": "bus",
@@ -6938,7 +6938,7 @@
       "closed": false
     },
     {
-      "id": "f2c0c461-7be1-40b1-9daa-a2a72574d054_bus_299",
+      "id": "20fefdf4-09e7-4630-9e31-f87a607f1528_bus_299",
       "alertId": "770286",
       "is_banner": false,
       "mode": "bus",
@@ -6962,7 +6962,7 @@
       "closed": false
     },
     {
-      "id": "dfc141b0-de16-4e2c-83b2-b76254de88a7_bus_300",
+      "id": "63d2e7ec-f8be-4216-abbc-1d7e14221b53_bus_300",
       "alertId": "770288",
       "is_banner": false,
       "mode": "bus",
@@ -6986,7 +6986,7 @@
       "closed": false
     },
     {
-      "id": "e93c7500-a5dc-42f1-bfb2-bb56e30d72fd_bus_301",
+      "id": "704302b1-7b28-4dd7-b74a-ffed69b3c920_bus_301",
       "alertId": "770303",
       "is_banner": false,
       "mode": "bus",
@@ -7008,7 +7008,7 @@
       "closed": false
     },
     {
-      "id": "2634d970-7404-46fc-be41-1ab48bb3d1ef_bus_302",
+      "id": "b4699e7a-9327-454a-ace5-6500f2a1cbe5_bus_302",
       "alertId": "770304",
       "is_banner": false,
       "mode": "bus",
@@ -7030,7 +7030,7 @@
       "closed": false
     },
     {
-      "id": "2634d970-7404-46fc-be41-1ab48bb3d1ef_bus_303",
+      "id": "b4699e7a-9327-454a-ace5-6500f2a1cbe5_bus_303",
       "alertId": "770304",
       "is_banner": false,
       "mode": "bus",
@@ -7052,7 +7052,7 @@
       "closed": false
     },
     {
-      "id": "dbfb5de1-9a8a-4894-888d-0e8c6b143280_bus_304",
+      "id": "bb25a92a-18b3-46fa-80d2-7fdbe50a22cb_bus_304",
       "alertId": "770305",
       "is_banner": false,
       "mode": "bus",
@@ -7074,7 +7074,7 @@
       "closed": false
     },
     {
-      "id": "dbfb5de1-9a8a-4894-888d-0e8c6b143280_bus_305",
+      "id": "bb25a92a-18b3-46fa-80d2-7fdbe50a22cb_bus_305",
       "alertId": "770305",
       "is_banner": false,
       "mode": "bus",
@@ -7096,7 +7096,7 @@
       "closed": false
     },
     {
-      "id": "44e53f03-5155-41a2-90aa-e39bae023c95_bus_306",
+      "id": "bd6d2040-b1b3-491f-b231-9bb0da605ae0_bus_306",
       "alertId": "770333",
       "is_banner": false,
       "mode": "bus",
@@ -7113,14 +7113,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T12:18:00Z",
       "endTime": "2026-11-10T13:56:00Z",
-      "lastModified": "2026-11-10T12:18:44Z",
+      "lastModified": "2026-11-10T12:48:02Z",
       "impacted_stations": [
         "22nd Street"
       ],
       "closed": false
     },
     {
-      "id": "75c8f021-179d-4248-9211-6a6f900d6eb9_bus_307",
+      "id": "e4d5a5fa-00c3-4932-996d-c4ffe5751ce5_bus_307",
       "alertId": "770334",
       "is_banner": false,
       "mode": "bus",
@@ -7137,14 +7137,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T12:19:00Z",
       "endTime": "2026-11-10T13:49:00Z",
-      "lastModified": "2026-11-10T12:19:16Z",
+      "lastModified": "2026-11-10T12:49:02Z",
       "impacted_stations": [
         "Richmond-Brighouse"
       ],
       "closed": false
     },
     {
-      "id": "2576f9a8-4a77-4c9e-8338-117f73c2decf_bus_308",
+      "id": "23564c9c-128b-40fe-8d71-8f5eb73f5560_bus_308",
       "alertId": "770335",
       "is_banner": false,
       "mode": "bus",
@@ -7168,7 +7168,7 @@
       "closed": false
     },
     {
-      "id": "24f087c7-fd86-40a3-966b-84af40e619c9_bus_309",
+      "id": "af53d498-7ead-4d0d-8f65-c918d56861e4_bus_309",
       "alertId": "770336",
       "is_banner": false,
       "mode": "bus",
@@ -7185,12 +7185,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T12:20:00Z",
       "endTime": "2026-11-10T13:25:00Z",
-      "lastModified": "2026-11-10T12:20:17Z",
+      "lastModified": "2026-11-10T12:50:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "f7430353-47bd-4e3d-8f50-50d97cdf76d9_bus_310",
+      "id": "77a1aceb-ed27-4a3f-8606-02fa1813dfe5_bus_310",
       "alertId": "770337",
       "is_banner": false,
       "mode": "bus",
@@ -7207,14 +7207,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T12:20:00Z",
       "endTime": "2026-11-10T13:37:00Z",
-      "lastModified": "2026-11-10T12:20:37Z",
+      "lastModified": "2026-11-10T12:50:02Z",
       "impacted_stations": [
         "Joyce-Collingwood"
       ],
       "closed": false
     },
     {
-      "id": "33f10de7-36df-43b7-8269-513ddab7e5c9_bus_311",
+      "id": "5a9c96a1-43ac-4d63-abe9-395dc858c40b_bus_311",
       "alertId": "770338",
       "is_banner": false,
       "mode": "bus",
@@ -7238,7 +7238,7 @@
       "closed": false
     },
     {
-      "id": "6a9b5d1d-fa97-44f0-b7c2-c34806a702c7_bus_312",
+      "id": "c81b4aeb-85c3-4c57-bbc4-df541857f9dc_bus_312",
       "alertId": "770339",
       "is_banner": false,
       "mode": "bus",
@@ -7255,14 +7255,14 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T12:23:00Z",
       "endTime": "2026-11-10T13:49:00Z",
-      "lastModified": "2026-11-10T12:24:08Z",
+      "lastModified": "2026-11-10T12:53:02Z",
       "impacted_stations": [
         "Surrey Central"
       ],
       "closed": false
     },
     {
-      "id": "e2cdab17-5f9a-4a3b-b6d0-bf4f06972146_bus_313",
+      "id": "2ff5d746-78ca-47c4-82f1-dbee2be101aa_bus_313",
       "alertId": "770340",
       "is_banner": false,
       "mode": "bus",
@@ -7279,12 +7279,12 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T12:27:00Z",
       "endTime": "2026-11-10T13:45:00Z",
-      "lastModified": "2026-11-10T12:27:32Z",
+      "lastModified": "2026-11-10T12:57:02Z",
       "impacted_stations": [],
       "closed": false
     },
     {
-      "id": "900f4034-b92c-4a54-a967-518e8cd9667f_bus_314",
+      "id": "81d8d2be-a504-4894-a9b5-e56f3f374491_bus_314",
       "alertId": "770341",
       "is_banner": false,
       "mode": "bus",
@@ -7308,32 +7308,7 @@
       "closed": false
     },
     {
-      "id": "fa264379-c456-49a9-a88a-947318801dc9_bus_315",
-      "alertId": "770342",
-      "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
-      "routeId": "3",
-      "routeLongName": "Main",
-      "effect": "CANCELLATION",
-      "effect_zh": "班次取消",
-      "critical": false,
-      "advisory": false,
-      "alertText": "3 Waterfront Station trip cancelled",
-      "header": "3 Waterfront Station trip leaving Marine Drive Station @ Bay 1 at 5:46 am is cancelled today due to mechanical issue.",
-      "description": "",
-      "url": "https://www.translink.ca/alerts",
-      "startTime": "2026-11-10T12:46:00Z",
-      "endTime": "2026-11-10T14:22:00Z",
-      "lastModified": "2026-11-10T12:33:58Z",
-      "impacted_stations": [
-        "Waterfront",
-        "Marine Drive"
-      ],
-      "closed": false
-    },
-    {
-      "id": "073c5c2e-9b06-434b-bba2-d7728325488f_bus_316",
+      "id": "a7ce3979-a17f-44db-b52a-90ffc8d2a5a7_bus_315",
       "alertId": "770343",
       "is_banner": false,
       "mode": "bus",
@@ -7357,7 +7332,7 @@
       "closed": false
     },
     {
-      "id": "441ba0cb-3af1-4c9c-ab09-338a788ef817_bus_317",
+      "id": "b93da643-e6c1-4230-8701-e9566490e1df_bus_316",
       "alertId": "770344",
       "is_banner": false,
       "mode": "bus",
@@ -7381,7 +7356,7 @@
       "closed": false
     },
     {
-      "id": "534e2542-d460-46bb-9cda-560dc8f032ef_bus_318",
+      "id": "b8e9c192-ae58-452d-a9b6-496c6551bc08_bus_317",
       "alertId": "770345",
       "is_banner": false,
       "mode": "bus",
@@ -7405,7 +7380,7 @@
       "closed": false
     },
     {
-      "id": "385a8ec1-5408-4569-98f5-737724c62a70_bus_319",
+      "id": "af969029-959f-4f72-ae91-621335a7f0be_bus_318",
       "alertId": "770346",
       "is_banner": false,
       "mode": "bus",
@@ -7422,238 +7397,310 @@
       "url": "https://www.translink.ca/alerts",
       "startTime": "2026-11-10T12:45:00Z",
       "endTime": "2026-11-10T14:02:00Z",
-      "lastModified": "2026-11-10T12:43:53Z",
+      "lastModified": "2026-11-10T13:15:02Z",
       "impacted_stations": [
         "Edmonds",
         "Metrotown"
       ],
       "closed": false
+    },
+    {
+      "id": "e0568ad5-4bb3-4b5e-b763-45113a9bf6ad_bus_319",
+      "alertId": "770347",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "320",
+      "routeLongName": "Langley/Fleetwood/Surrey Central Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "320 Fleetwood/Langley Centre trip cancelled",
+      "header": "320 Fleetwood trip leaving Surrey Central Station @ Bay 5 at 5:53 am is cancelled today due to operational issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T12:54:00Z",
+      "endTime": "2026-11-10T14:14:00Z",
+      "lastModified": "2026-11-10T12:54:53Z",
+      "impacted_stations": [
+        "Surrey Central"
+      ],
+      "closed": false
+    },
+    {
+      "id": "10bca746-fc93-42dd-be6c-32acacaa32cf_bus_320",
+      "alertId": "770348",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "320",
+      "routeLongName": "Langley/Fleetwood/Surrey Central Station",
+      "effect": "CANCELLATION",
+      "effect_zh": "班次取消",
+      "critical": false,
+      "advisory": false,
+      "alertText": "320 Surrey Central Station trip cancelled",
+      "header": "320 Surrey Central Station trip leaving Westbound Fraser Hwy @ 156 St at 6:36 am is cancelled today due to operational issue.",
+      "description": "",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T13:36:00Z",
+      "endTime": "2026-11-10T15:02:00Z",
+      "lastModified": "2026-11-10T12:55:14Z",
+      "impacted_stations": [
+        "Surrey Central"
+      ],
+      "closed": false
+    },
+    {
+      "id": "04642e06-8033-4ff1-b570-bba29c540e42_bus_321",
+      "alertId": "770349",
+      "is_banner": false,
+      "mode": "bus",
+      "mode_name": "巴士",
+      "routeId": "321",
+      "routeLongName": "King George Blvd",
+      "effect": "DETOUR",
+      "effect_zh": "路線改道",
+      "critical": false,
+      "advisory": false,
+      "alertText": "321 White Rock Centre/White Rock South detour",
+      "header": "321 White Rock Centre/White Rock South detour beginning at 6:10 AM. Regular route to King George & Hwy 10 then via Hwy 10, 152 St, 32 Ave, King George resume regular route due to road block.",
+      "description": "\n\r\nAffected stops:\r\n55468 Southbound King George Blvd @ 4900 Block\r\n55469 Southbound King George Blvd @ 44 Ave\r\n55470 Southbound King George Blvd @ 40 Ave\r\n59810 South Surrey Park & Ride @ Bay 2\r\n55471 Southbound King George Blvd @ Crescent Rd\r\n55472 Southbound King George Blvd @ 34 Ave\r\n59950 Southbound King George Blvd @ 32 Ave",
+      "url": "https://www.translink.ca/alerts",
+      "startTime": "2026-11-10T13:14:00Z",
+      "endTime": "2026-11-10T15:15:19Z",
+      "lastModified": "2026-11-10T13:14:06Z",
+      "impacted_stations": [
+        "King George"
+      ],
+      "closed": false
     }
   ],
   "station_alerts_map": {
-    "Waterfront": {
-      "critical": false,
-      "count": 6,
-      "alert_ids": [
-        "17fc86f1-77c2-4923-a976-07aa1b17e290_skytrain_1",
-        "0653ec4b-507b-423b-a3f9-69f483f70425_skytrain_18",
-        "83b3fcc0-8253-4f7c-a618-35fc66843df7_skytrain_262",
-        "defb78d2-45bf-4d23-a24e-a104a941dd19_skytrain_263",
-        "991958f8-900e-4538-abad-356317bfd8a3_skytrain_267",
-        "b2623e68-40ca-478c-8e98-3b9f7364c01e_skytrain_268"
-      ]
-    },
     "Granville": {
       "critical": false,
       "count": 2,
       "alert_ids": [
-        "17fc86f1-77c2-4923-a976-07aa1b17e290_skytrain_1",
-        "c8b38e38-6f14-4e6d-8268-631d0669045b_skytrain_240"
+        "32b248bb-61af-4fb7-b0e7-c37a067bee0b_skytrain_1",
+        "ef6ccafe-1c9b-4484-ad19-3f2478cb0417_skytrain_240"
       ]
     },
-    "Oakridge-41st Avenue": {
+    "Waterfront": {
       "critical": false,
-      "count": 1,
+      "count": 6,
       "alert_ids": [
-        "53ca05fd-7e4f-47d8-83c5-ba6751183f64_skytrain_3"
+        "32b248bb-61af-4fb7-b0e7-c37a067bee0b_skytrain_1",
+        "9df11c0c-349e-4d22-854a-c446acf8de23_skytrain_18",
+        "da65fa77-1981-4548-bfa6-4b0e7a3bfc29_skytrain_262",
+        "174cf9e1-7a0c-44ed-ae6f-bdafaee8062d_skytrain_263",
+        "8833bf8e-89a6-49eb-86d3-0a09b1a8679a_skytrain_267",
+        "041f5987-790b-40f5-9456-9621bec6d9b0_skytrain_268"
       ]
     },
     "King Edward": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "53ca05fd-7e4f-47d8-83c5-ba6751183f64_skytrain_3"
+        "b156aa4f-5abc-4341-89e1-61eb6cf3f116_skytrain_3"
       ]
     },
     "Langara-49th Avenue": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "53ca05fd-7e4f-47d8-83c5-ba6751183f64_skytrain_3"
+        "b156aa4f-5abc-4341-89e1-61eb6cf3f116_skytrain_3"
+      ]
+    },
+    "Oakridge-41st Avenue": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "b156aa4f-5abc-4341-89e1-61eb6cf3f116_skytrain_3"
       ]
     },
     "Oakridge-41st Avenue Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "53ca05fd-7e4f-47d8-83c5-ba6751183f64_skytrain_3"
-      ]
-    },
-    "Templeton": {
-      "critical": false,
-      "count": 1,
-      "alert_ids": [
-        "1b3e88b7-dc75-49a4-9d13-cb1aafa67493_skytrain_4"
-      ]
-    },
-    "Bridgeport": {
-      "critical": false,
-      "count": 3,
-      "alert_ids": [
-        "1b3e88b7-dc75-49a4-9d13-cb1aafa67493_skytrain_4",
-        "991958f8-900e-4538-abad-356317bfd8a3_skytrain_267",
-        "b2623e68-40ca-478c-8e98-3b9f7364c01e_skytrain_268"
+        "b156aa4f-5abc-4341-89e1-61eb6cf3f116_skytrain_3"
       ]
     },
     "YVR-Airport": {
       "critical": false,
       "count": 3,
       "alert_ids": [
-        "1b3e88b7-dc75-49a4-9d13-cb1aafa67493_skytrain_4",
-        "991958f8-900e-4538-abad-356317bfd8a3_skytrain_267",
-        "b2623e68-40ca-478c-8e98-3b9f7364c01e_skytrain_268"
+        "2422bef5-597a-4053-a41f-01186926f65b_skytrain_4",
+        "8833bf8e-89a6-49eb-86d3-0a09b1a8679a_skytrain_267",
+        "041f5987-790b-40f5-9456-9621bec6d9b0_skytrain_268"
       ]
     },
     "Sea Island Centre": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "1b3e88b7-dc75-49a4-9d13-cb1aafa67493_skytrain_4"
+        "2422bef5-597a-4053-a41f-01186926f65b_skytrain_4"
       ]
     },
-    "Gilmore": {
+    "Bridgeport": {
+      "critical": false,
+      "count": 3,
+      "alert_ids": [
+        "2422bef5-597a-4053-a41f-01186926f65b_skytrain_4",
+        "8833bf8e-89a6-49eb-86d3-0a09b1a8679a_skytrain_267",
+        "041f5987-790b-40f5-9456-9621bec6d9b0_skytrain_268"
+      ]
+    },
+    "Templeton": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "d8da9d4d-e713-4010-96f1-ded705de7aac_skytrain_10"
+        "2422bef5-597a-4053-a41f-01186926f65b_skytrain_4"
       ]
     },
     "VCC-Clark": {
       "critical": false,
       "count": 2,
       "alert_ids": [
-        "d8da9d4d-e713-4010-96f1-ded705de7aac_skytrain_10",
-        "d5cf8f65-052b-4269-a657-e869d249a589_skytrain_287"
+        "1ab392ce-2144-4880-9da4-7df011cacb9c_skytrain_10",
+        "48d30979-8bad-44b0-addb-cfc7eb8a3edf_skytrain_287"
+      ]
+    },
+    "Gilmore": {
+      "critical": false,
+      "count": 1,
+      "alert_ids": [
+        "1ab392ce-2144-4880-9da4-7df011cacb9c_skytrain_10"
       ]
     },
     "Gilmore Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "d8da9d4d-e713-4010-96f1-ded705de7aac_skytrain_10"
+        "1ab392ce-2144-4880-9da4-7df011cacb9c_skytrain_10"
       ]
     },
     "Production Way-University": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "b35b39b3-0355-4a4d-978e-186bb6380805_skytrain_11"
+        "98bd7ccc-4bc4-4d92-bc78-69d6438ff748_skytrain_11"
       ]
     },
     "Production Way-University Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "b35b39b3-0355-4a4d-978e-186bb6380805_skytrain_11"
+        "98bd7ccc-4bc4-4d92-bc78-69d6438ff748_skytrain_11"
       ]
     },
     "Commercial-Broadway": {
       "critical": false,
       "count": 2,
       "alert_ids": [
-        "0653ec4b-507b-423b-a3f9-69f483f70425_skytrain_18",
-        "3e30b0cc-0ea3-46f7-b3d2-a3dba1075e7c_skytrain_239"
+        "9df11c0c-349e-4d22-854a-c446acf8de23_skytrain_18",
+        "39574fdc-00bb-4cca-990b-0b0e89ea8d80_skytrain_239"
       ]
     },
     "Metrotown": {
       "critical": false,
       "count": 2,
       "alert_ids": [
-        "d0f3cad5-4590-43f2-ab90-e1c483bd1fed_skytrain_238",
-        "0ba8ee3e-6149-4677-94c6-3f5f1723c474_skytrain_286"
+        "254c0997-424b-4494-a338-dbca62a43faf_skytrain_238",
+        "365b0207-8b48-452a-a9c5-9694c49d7640_skytrain_286"
       ]
     },
     "Metrotown Station": {
       "critical": false,
       "count": 2,
       "alert_ids": [
-        "d0f3cad5-4590-43f2-ab90-e1c483bd1fed_skytrain_238",
-        "0ba8ee3e-6149-4677-94c6-3f5f1723c474_skytrain_286"
+        "254c0997-424b-4494-a338-dbca62a43faf_skytrain_238",
+        "365b0207-8b48-452a-a9c5-9694c49d7640_skytrain_286"
       ]
     },
     "Commercial-Broadway Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "3e30b0cc-0ea3-46f7-b3d2-a3dba1075e7c_skytrain_239"
+        "39574fdc-00bb-4cca-990b-0b0e89ea8d80_skytrain_239"
       ]
     },
     "Granville Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "c8b38e38-6f14-4e6d-8268-631d0669045b_skytrain_240"
+        "ef6ccafe-1c9b-4484-ad19-3f2478cb0417_skytrain_240"
       ]
     },
     "Waterfront Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "83b3fcc0-8253-4f7c-a618-35fc66843df7_skytrain_262"
+        "da65fa77-1981-4548-bfa6-4b0e7a3bfc29_skytrain_262"
       ]
     },
     "Nanaimo": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "defb78d2-45bf-4d23-a24e-a104a941dd19_skytrain_263"
+        "174cf9e1-7a0c-44ed-ae6f-bdafaee8062d_skytrain_263"
       ]
     },
     "Nanaimo Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "defb78d2-45bf-4d23-a24e-a104a941dd19_skytrain_263"
+        "174cf9e1-7a0c-44ed-ae6f-bdafaee8062d_skytrain_263"
       ]
     },
     "Richmond-Brighouse": {
       "critical": false,
       "count": 2,
       "alert_ids": [
-        "991958f8-900e-4538-abad-356317bfd8a3_skytrain_267",
-        "b2623e68-40ca-478c-8e98-3b9f7364c01e_skytrain_268"
+        "8833bf8e-89a6-49eb-86d3-0a09b1a8679a_skytrain_267",
+        "041f5987-790b-40f5-9456-9621bec6d9b0_skytrain_268"
       ]
     },
     "King George": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "adda21ae-6cad-4c89-9fe1-f2e58355b7eb_skytrain_284"
+        "16bdf144-99d0-4753-8fbe-09a477c13224_skytrain_284"
       ]
     },
     "King George Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "adda21ae-6cad-4c89-9fe1-f2e58355b7eb_skytrain_284"
+        "16bdf144-99d0-4753-8fbe-09a477c13224_skytrain_284"
       ]
     },
     "Joyce-Collingwood": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "88d1357f-0788-433a-a248-5eb3c73a6cb7_skytrain_285"
+        "d48d3f0f-7c79-4d68-9221-300975ca4852_skytrain_285"
       ]
     },
     "Joyce-Collingwood Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "88d1357f-0788-433a-a248-5eb3c73a6cb7_skytrain_285"
+        "d48d3f0f-7c79-4d68-9221-300975ca4852_skytrain_285"
       ]
     },
     "Inlet Centre": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "d5cf8f65-052b-4269-a657-e869d249a589_skytrain_287"
+        "48d30979-8bad-44b0-addb-cfc7eb8a3edf_skytrain_287"
       ]
     },
     "Inlet Centre Station": {
       "critical": false,
       "count": 1,
       "alert_ids": [
-        "d5cf8f65-052b-4269-a657-e869d249a589_skytrain_287"
+        "48d30979-8bad-44b0-addb-cfc7eb8a3edf_skytrain_287"
       ]
     }
   }
