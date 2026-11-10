@@ -27,7 +27,8 @@ import {
   Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet, UserShield, FireExtinguisher,
   Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
-  Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy
+  Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy,
+  TowerControl, CalendarClock, CandlestickChart
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -17542,6 +17543,7 @@ export default function AppMap() {
                 {[
                   { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
                   { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
+                  { id: 'finance', label: '財經', icon: CandlestickChart, color: 'text-emerald-400' },
                   { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
                   { id: 'sports', label: '體育', icon: SportShoeIcon, color: 'text-blue-400' },
                   { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
@@ -17566,6 +17568,7 @@ export default function AppMap() {
               {[
                 { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
                 { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
+                { id: 'finance', label: '財經', icon: CandlestickChart, color: 'text-emerald-400' },
                 { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
                 { id: 'sports', label: '體育', icon: SportShoeIcon, color: 'text-blue-400' },
                 { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
@@ -17660,6 +17663,7 @@ export default function AppMap() {
           {[
             { id: 'weather', label: '天氣', icon: CloudSun, color: 'text-sky-400' },
             { id: 'news', label: '新聞', icon: Newspaper, color: 'text-amber-400' },
+            { id: 'finance', label: '財經', icon: CandlestickChart, color: 'text-emerald-400' },
             { id: 'events', label: '活動', icon: CalendarDays, color: 'text-purple-400' },
             { id: 'sports', label: '體育', icon: SportShoeIcon, color: 'text-blue-400' },
             { id: 'beach', label: '泳灘', icon: Parasol, color: 'text-teal-300' },
@@ -20497,23 +20501,25 @@ export default function AppMap() {
           <div className="flex border-b border-[#262b38] mb-2.5 shrink-0 text-xs">
             <button
               onClick={() => setTerminalDetailTab('schedule')}
-              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer ${
+              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 terminalDetailTab === 'schedule'
                   ? 'border-sky-400 text-sky-400 font-bold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
-              班次
+              <CalendarClock className="w-3.5 h-3.5" />
+              <span>班次</span>
             </button>
             <button
               onClick={() => setTerminalDetailTab('webcams')}
-              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer ${
+              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 terminalDetailTab === 'webcams'
                   ? 'border-sky-400 text-sky-400 font-bold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
-              碼頭攝影機
+              <Camera className="w-3.5 h-3.5" />
+              <span>碼頭攝影機</span>
             </button>
           </div>
 
@@ -21039,46 +21045,50 @@ export default function AppMap() {
           <div className="flex border-b border-[#262b38] mb-2.5 shrink-0 text-xs">
             <button
               onClick={() => setYvrAirportTab('info')}
-              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer flex items-center justify-center gap-1.5 ${
                 yvrAirportTab === 'info'
-                  ? 'border-sky-500 text-sky-400'
+                  ? 'border-sky-500 text-sky-400 font-bold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
-              機場資料
+              <TowerControl className="w-3.5 h-3.5" />
+              <span>機場資料</span>
             </button>
             <button
               onClick={() => setYvrAirportTab('weather')}
-              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer flex items-center justify-center gap-1.5 ${
                 yvrAirportTab === 'weather'
-                  ? 'border-sky-500 text-sky-400'
+                  ? 'border-sky-500 text-sky-400 font-bold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
-              天氣狀況
+              <CloudSun className="w-3.5 h-3.5" />
+              <span>天氣狀況</span>
             </button>
             <button
               onClick={() => setYvrAirportTab('routes')}
-              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer flex items-center justify-center gap-1.5 ${
                 yvrAirportTab === 'routes'
-                  ? 'border-sky-500 text-sky-400'
+                  ? 'border-sky-500 text-sky-400 font-bold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
-              航線與航司
+              <CloudSun className="w-3.5 h-3.5" />
+              <span>航線與航司</span>
             </button>
             <button
               onClick={() => {
                 setYvrAirportTab('news');
                 if (yvrNewsList.length === 0) fetchYvrNews();
               }}
-              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer ${
+              className={`flex-1 py-1.5 text-center font-medium transition-colors border-b-2 -mb-px cursor-pointer flex items-center justify-center gap-1.5 ${
                 yvrAirportTab === 'news'
-                  ? 'border-sky-500 text-sky-400'
+                  ? 'border-sky-500 text-sky-400 font-bold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
-              最新資訊
+              <Newspaper className="w-3.5 h-3.5" />
+              <span>最新資訊</span>
             </button>
           </div>
 

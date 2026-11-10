@@ -1,6 +1,6 @@
 {
   "success": true,
-  "updated_at": "2026-11-09T19:25:39.241038-07:00",
+  "updated_at": "2026-11-09T19:55:12.734279-07:00",
   "draws": {
     "SIX49": {
       "drawNbr": 4466,
@@ -614,7 +614,7 @@
       "extraBreakdown": null,
       "gpNumbers": null,
       "gpAdditionalNumbers": null,
-      "nextDrawDate": "2026-11-09 (週一)"
+      "nextDrawDate": "2026-11-12 (週四)"
     }
   }
 }

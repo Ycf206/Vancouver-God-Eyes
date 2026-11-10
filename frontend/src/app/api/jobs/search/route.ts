@@ -32,11 +32,20 @@ export async function POST(request: Request) {
       body.SearchLocationDistance = -1;
     }
 
-    const res = await fetch('https://dev-api-jobboard.workbc.ca/api/Search/JobSearch', {
+    const res = await fetch('https://workbc-jb.a55eb5-prod.stratus.cloud.gov.bc.ca/api/Search/JobSearch', {
       method: 'POST',
       headers: {
+        'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Origin': 'https://www.workbc.ca',
+        'Referer': 'https://www.workbc.ca/',
+        'sec-ch-ua': '"Not-A.Brand";v="99", "Google Chrome";v="157", "Chromium";v="157"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'cross-site',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36',
       },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(12000),
@@ -48,8 +57,11 @@ export async function POST(request: Request) {
 
     const data = await res.json();
     return NextResponse.json(data);
-  } catch (err: any) {
-    console.error('Job search proxy error:', err);
-    return NextResponse.json({ error: 'Job search service temporarily unavailable' }, { status: 502 });
+  } catch (error: any) {
+    console.error('WorkBC Search Proxy Error:', error);
+    return NextResponse.json(
+      { error: 'WorkBC 伺服器無回應，請稍後再試。' },
+      { status: 504 }
+    );
   }
 }

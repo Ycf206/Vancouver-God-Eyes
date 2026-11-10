@@ -259,7 +259,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "sports_canucks",
-    "name": "NHL 溫哥華加人隊賽程",
+    "name": "冰上曲棍球",
     "type": "api",
     "cron_expr": "0 4 * * *",
     "schedule_interval": "每天 1 次",
@@ -285,7 +285,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "whitecaps_schedule",
-    "name": "MLS 溫哥華白浪足球賽程",
+    "name": "足球",
     "type": "api",
     "cron_expr": "0 14 * * *",
     "schedule_interval": "每日",
@@ -311,7 +311,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "bandits_schedule",
-    "name": "CEBL 溫哥華強盜籃球賽程",
+    "name": "籃球",
     "type": "api",
     "cron_expr": "0 15 * * *",
     "schedule_interval": "每日 (5月~8月)",
@@ -337,7 +337,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "lottery_latest",
-    "name": "PlayNow 彩票開彩結果",
+    "name": "彩票",
     "type": "api",
     "cron_expr": "0 */12 * * *",
     "schedule_interval": "每 12 小時",
@@ -1458,7 +1458,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "shopping_flipp",
-    "name": "大溫各大超市特惠傳單 (Flipp)",
+    "name": "購物",
     "type": "api",
     "cron_expr": "0 */12 * * *",
     "schedule_interval": "每 12 小時",
