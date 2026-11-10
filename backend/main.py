@@ -1402,6 +1402,12 @@ async def startup_event():
         asyncio.create_task(lottery_service.run_lottery_background_loop())
     except Exception as e:
         print(f"Failed to start lottery_service task: {e}")
+
+    try:
+        import flipp_service
+        asyncio.create_task(flipp_service.run_flipp_background_loop())
+    except Exception as e:
+        print(f"Failed to start flipp_service task: {e}")
     # 背景預熱全圖層記憶體倒排索引，避免首次搜尋冷啟動延遲
     threading.Thread(
         target=lambda: search_engine.ensure_ready(get_gtfs_metadata, database.SessionLocal),
@@ -1607,6 +1613,22 @@ def get_lottery_latest(refresh: bool = False, force: bool = False):
             content={"success": False, "draws": {}, "error": str(e)},
             status_code=500
         )
+
+@app.get("/api/shopping/flyers")
+def get_shopping_flyers(refresh: bool = False, force: bool = False):
+    """
+    提供大溫各大超市 Flipp 最新特惠傳單與商品資料 (原子磁碟快取，0ms 極速無卡頓)。
+    """
+    try:
+        import flipp_service
+        data = flipp_service.fetch_flipp_flyers(force=(refresh or force))
+        return JSONResponse(
+            content=data,
+            headers={"Cache-Control": "public, max-age=3600"}
+        )
+    except Exception as e:
+        print(f"Error serving flipp flyers: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e), "merchants": []})
 
 # In-memory cache for live parkade capacity (retained for up to 60 seconds to prevent rate limits)
 _LATEST_PARKADE_CAPACITY = None
@@ -4344,7 +4366,7 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "traffic_signals": ["vancouver_traffic_signals.geojson"],
     "turn_restrictions": ["vancouver_traffic_turn_restrictions.geojson"],
     "service_requests_311": ["vancouver_311.json"],
-    "tnt_eflyers": ["tnt_eflyers.json"],
+    "shopping_flipp": ["vancouver_flipp_flyers.json"],
     "vancouver_railways": ["vancouver_railways.geojson"],
     "fedex": ["vancouver_fedex.geojson"],
     "purolator": ["vancouver_purolator.geojson"],
@@ -4887,6 +4909,12 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["sports_bandits"] = time.time()
         cnt = data.get("totalGames") or len(data.get("games", []))
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 CEBL 官方 Vancouver Bandits {cur_y} 賽季賽程，共 {cnt} 場賽事。")
+    if sid in ("shopping_flipp", "flipp_flyers", "tnt_eflyers"):
+        import flipp_service
+        data = flipp_service.fetch_flipp_flyers(force=True)
+        _oci_runtime_ts["shopping_flipp"] = time.time()
+        cnt = data.get("total_merchants") or len(data.get("merchants", []))
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步大溫各大超市 Flipp 特惠傳單，共 {cnt} 家商戶。")
     if sid in ("lottery_latest", "lottery"):
         import lottery_service
         data = lottery_service.fetch_lottery_latest(force=True)

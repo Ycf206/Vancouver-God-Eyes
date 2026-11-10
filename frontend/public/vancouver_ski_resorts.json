@@ -1,6 +1,6 @@
 {
-  "_cache_timestamp": 1794189102.8446798,
-  "updated_at": "2026-11-09 01:51 UTC",
+  "_cache_timestamp": 1794229759.1514616,
+  "updated_at": "2026-11-09 13:09 UTC",
   "update_frequency": "每 1 日更新 (Daily)",
   "count": 3,
   "resorts": [
@@ -33,12 +33,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Sun",
-        "date": "08.11.2026",
-        "temp_min": "-3",
-        "temp_max": "3",
-        "condition": "sunny",
-        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 3 Grad."
+        "day": "Mon",
+        "date": "09.11.2026",
+        "temp_min": "-5",
+        "temp_max": "1",
+        "condition": "cloudy",
+        "weather_text": "Am Montag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen -5 bis 1 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -57,27 +57,20 @@
       "status_raw": "Ski resort closed",
       "status_zh": "季節休園",
       "is_open": false,
-      "season_range": "2026-12-05 至 2027-04-11",
+      "season_range": "",
       "slopes_open": 0,
-      "slopes_total": "33.0",
-      "slopes_label": "0 of 33 km of slopes",
+      "slopes_total": 0,
+      "slopes_label": "0 of 0 km",
       "lifts_open": 0,
-      "lifts_total": "7",
-      "lifts_label": "0 / 7 座",
+      "lifts_total": 0,
+      "lifts_label": "0 / 0 座",
       "snow_base": "-",
       "snow_top": "-",
-      "altitude_base": "850 m",
-      "altitude_top": "1250 m",
+      "altitude_base": "800 m",
+      "altitude_top": "1400 m",
       "last_snow": "-",
       "night_skiing": true,
-      "today_weather": {
-        "day": "Sun",
-        "date": "08.11.2026",
-        "temp_min": "-3",
-        "temp_max": "3",
-        "condition": "sunny",
-        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 3 Grad."
-      },
+      "today_weather": null,
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
     {
@@ -109,12 +102,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Sun",
-        "date": "08.11.2026",
-        "temp_min": "-3",
-        "temp_max": "3",
-        "condition": "sunny",
-        "weather_text": "Am Sonntag scheint fast ungehindert die Sonne. Die Temperaturen erreichen -3 bis 3 Grad."
+        "day": "Mon",
+        "date": "09.11.2026",
+        "temp_min": "-5",
+        "temp_max": "1",
+        "condition": "cloudy",
+        "weather_text": "Am Montag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen -5 bis 1 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     }

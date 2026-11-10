@@ -86,6 +86,8 @@ jobs:
             frontend/public/vancouver_parks.geojson \
             backend/data/vancouver_drinking_fountains.geojson \
             frontend/public/vancouver_drinking_fountains.geojson \
+            frontend/public/logo-mobile.jpg \
+            frontend/public/logo-web.jpg \
             backend/data/admin_sources_config.json 2>/dev/null || true
           git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/admin_sources_config.json -e backend/data/admin_layers_config.json -e backend/data/vancouver_yvr_flights.json
 

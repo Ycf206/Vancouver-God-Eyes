@@ -702,7 +702,7 @@ export default function TopBar() {
       {/* 標誌區域 (電腦版與手機版統一使用清晰 Icon 圖示) */}
       <div className="flex items-center justify-center mr-2.5 sm:mr-3.5 select-none shrink-0">
         <img
-          src="/logo-mobile.jpg"
+          src="/logo-mobile.jpg?v=20261109"
           alt="溫哥華上帝之眼"
           className="h-8 w-8 sm:h-10 sm:w-10 object-cover rounded-lg select-none shadow-sm border border-emerald-500/20"
         />

@@ -1457,26 +1457,26 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/3-1-1-service-requests/records/?lang=en"
   },
   {
-    "id": "tnt_eflyers",
-    "name": "大統華T&T",
+    "id": "shopping_flipp",
+    "name": "大溫各大超市特惠傳單 (Flipp)",
     "type": "api",
-    "cron_expr": "0 9 * * 5",
-    "schedule_interval": "每週五 09:00",
-    "record_count": 7,
-    "unit": "張高清海報頁面",
-    "last_updated": "2026-10-30T09:00:00Z",
+    "cron_expr": "0 */12 * * *",
+    "schedule_interval": "每 12 小時",
+    "record_count": 32,
+    "unit": "家大溫超市商戶",
+    "last_updated": "2026-11-09T17:00:00Z",
     "status": "healthy",
-    "data_pipeline_notes": "T&T Supermarket xmapi API (卑詩省專區) -> 抓取最新一期特價商品宣傳海報及高解析度圖片 -> 寫入 tnt_eflyers.json -> 探索購物大統華專區點擊查看特惠與燈箱預覽",
-    "runner": "github_actions",
+    "data_pipeline_notes": "Flipp Enterprise API -> 取得大溫各大超級市場 (Costco, T&T, Superstore, Walmart, Safeway, No Frills 等) 即時週傳單及單項商品與價格 -> 寫入 vancouver_flipp_flyers.json -> 探索購物分頁 0ms 極速展示",
+    "runner": "oci",
     "category": "生活",
-    "workflow_file": "update-tnt-eflyers.yml",
+    "workflow_file": "",
     "source_links": [
       {
-        "label": "T&T Supermarket E-Flyers",
-        "url": "https://www.tntsupermarket.com/"
+        "label": "Flipp Vancouver Weekly Flyers",
+        "url": "https://flipp.com/en-ca/vancouver-bc/flyers"
       }
     ],
-    "source_url": "https://www.tntsupermarket.com/rest/V3/xmapi/get-store-eflyers?postcode=V6B1A1"
+    "source_url": "https://dam.flippenterprise.net/api/flipp/data?locale=en&postal_code=V5P1W3&sid=6364941772613210"
   },
   {
     "id": "vancouver_railways",

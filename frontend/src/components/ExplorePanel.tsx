@@ -59,6 +59,29 @@ export function SoccerBallIcon({ className = "w-4 h-4", ...props }: React.SVGPro
   );
 }
 
+export interface FlippFlyerItem {
+  id: number;
+  name: string;
+  price?: string | null;
+  brand?: string | null;
+  valid_from?: string | null;
+  valid_to?: string | null;
+  cutout_image_url?: string | null;
+}
+
+export interface FlippMerchantData {
+  merchant: string;
+  merchant_id?: number;
+  merchant_logo?: string;
+  flyer_id: number;
+  flyer_name?: string;
+  valid_from?: string;
+  valid_to?: string;
+  website_url?: string;
+  items_count?: number;
+  items: FlippFlyerItem[];
+}
+
 export interface WhitecapsMatchItem {
   competition_id?: string;
   competition_name?: string;
@@ -1003,18 +1026,12 @@ function ExploreContent() {
   const [page311, setPage311] = useState<number>(1);
   const PAGE_SIZE_311 = 20;
 
-  // --- 購物 / 大統華 T&T 每週特價海報狀態 ---
-  const [tntFlyers, setTntFlyers] = useState<Array<{
-    id: string;
-    image_url: string;
-    image_name: string;
-    validity: string;
-    thumbnail: string;
-    alt?: string;
-  }>>([]);
-  const [loadingTnt, setLoadingTnt] = useState<boolean>(false);
-  const [selectedFlyerModal, setSelectedFlyerModal] = useState<number | null>(null);
-  const [flyerZoomLevel, setFlyerZoomLevel] = useState<number>(1);
+  // --- 購物 / Flipp 超市特惠傳單 (每 12 小時更新 1 次) ---
+  const [flippMerchants, setFlippMerchants] = useState<FlippMerchantData[]>([]);
+  const [selectedMerchant, setSelectedMerchant] = useState<string>('');
+  const [loadingFlipp, setLoadingFlipp] = useState<boolean>(false);
+  const [flippSearchQuery, setFlippSearchQuery] = useState<string>('');
+  const [flippItemSort, setFlippItemSort] = useState<'default' | 'name' | 'price-asc' | 'price-desc'>('default');
 
   // 取得 3-1-1 市政服務請求資料
   useEffect(() => {
@@ -1035,20 +1052,46 @@ function ExploreContent() {
       .finally(() => setLoading311(false));
   }, [isExploreOpen, exploreTab, requests311.length]);
 
-  // 取得大統華特價海報資料
+  // 取得 Flipp 大溫各大超市特惠傳單資料 (0ms 原子快取，每 12 小時背景自動檢查更新)
+  const fetchFlippFlyers = React.useCallback(async (force = false) => {
+    setLoadingFlipp(true);
+    try {
+      const apiUrl = getApiUrl();
+      const endpoints = [
+        `/api/shopping/flyers${force ? '?force=true' : ''}`,
+        `${apiUrl}/api/shopping/flyers${force ? '?force=true' : ''}`,
+        `/vancouver_flipp_flyers.json?t=${Date.now()}`
+      ];
+      let loaded = false;
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.merchants) && data.merchants.length > 0) {
+              setFlippMerchants(data.merchants);
+              setSelectedMerchant(prev => prev || data.merchants[0].merchant);
+              loaded = true;
+              break;
+            }
+          }
+        } catch {}
+      }
+      if (!loaded) {
+        console.warn('[Flipp] 無法載入最新超市傳單');
+      }
+    } catch (err) {
+      console.error('Failed to load Flipp flyers:', err);
+    } finally {
+      setLoadingFlipp(false);
+    }
+  }, []);
+
   useEffect(() => {
-    if (!isExploreOpen || exploreTab !== 'shopping') return;
-    if (tntFlyers.length > 0) return;
-    setLoadingTnt(true);
-    fetch(`/tnt_eflyers.json?t=${Date.now()}`, { cache: 'no-store' })
-      .then(res => res.json())
-      .then(data => {
-        const list = data?.data?.eflyer_list || [];
-        setTntFlyers(list);
-      })
-      .catch(err => console.error('Failed to load T&T flyers:', err))
-      .finally(() => setLoadingTnt(false));
-  }, [isExploreOpen, exploreTab, tntFlyers.length]);
+    if (isExploreOpen && exploreTab === 'shopping' && flippMerchants.length === 0) {
+      fetchFlippFlyers(false);
+    }
+  }, [isExploreOpen, exploreTab, flippMerchants.length, fetchFlippFlyers]);
 
   // --- 車禍意外 (Crashes) 狀態 ---
   const [crashesList, setCrashesList] = useState<Array<{
@@ -6883,95 +6926,246 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 1.6 購物分頁 (Shopping - 大統華 T&T 每週特價海報) ==================== */}
-      {activeTab === 'shopping' && (
-        <div className="flex flex-col flex-1 min-h-0">
-          {/* 子分頁列與右上角資訊 */}
-          <div className="flex items-start justify-between pb-2 mb-2 border-b border-[#262b38] shrink-0">
-            {/* 子分頁切換按鈕與下方效期 */}
-            <div className="flex flex-col items-start gap-1">
+{/* ==================== 1.6 購物分頁 (Shopping - 大溫各大超市特惠傳單 Flipp) ==================== */}
+      {activeTab === 'shopping' && (() => {
+        // 格式化日期為系統格式 yyyy-MM-dd
+        const formatFlippDate = (isoStr?: string | null): string => {
+          if (!isoStr) return '';
+          try {
+            const dt = new Date(isoStr);
+            if (isNaN(dt.getTime())) return isoStr.slice(0, 10);
+            const y = dt.getFullYear();
+            const m = String(dt.getMonth() + 1).padStart(2, '0');
+            const d = String(dt.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+          } catch {
+            return isoStr.slice(0, 10);
+          }
+        };
+
+        // 搜尋過濾：支援搜尋商戶或商品
+        const q = flippSearchQuery.trim().toLowerCase();
+        const displayMerchants = flippMerchants.filter(m => {
+          if (!q) return true;
+          return m.merchant.toLowerCase().includes(q) || m.items.some(it => it.name?.toLowerCase().includes(q));
+        });
+
+        const activeMerchant = displayMerchants.find(m => m.merchant === selectedMerchant) 
+          || flippMerchants.find(m => m.merchant === selectedMerchant) 
+          || displayMerchants[0] 
+          || flippMerchants[0];
+
+        // 價格數值解析器
+        const parsePriceNum = (priceStr?: string | null): number => {
+          if (!priceStr) return 999999;
+          const match = priceStr.match(/(\d+(\.\d+)?)/);
+          return match ? parseFloat(match[1]) : 999999;
+        };
+
+        // 當前商戶的商品列表與排序
+        let itemsList = activeMerchant ? [...activeMerchant.items] : [];
+        if (q) {
+          itemsList = itemsList.filter(it => it.name?.toLowerCase().includes(q) || it.brand?.toLowerCase().includes(q));
+        }
+
+        if (flippItemSort === 'name') {
+          itemsList.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        } else if (flippItemSort === 'price-asc') {
+          itemsList.sort((a, b) => parsePriceNum(a.price) - parsePriceNum(b.price));
+        } else if (flippItemSort === 'price-desc') {
+          itemsList.sort((a, b) => parsePriceNum(b.price) - parsePriceNum(a.price));
+        }
+
+        const dateRangeStr = activeMerchant 
+          ? `${formatFlippDate(activeMerchant.valid_from)} - ${formatFlippDate(activeMerchant.valid_to)}`
+          : '';
+
+        return (
+          <div className="flex flex-col flex-1 min-h-0 gap-2">
+            {/* 子分頁控制列：左側搜尋欄 + 中間 A-Z 商戶按鈕 + 右側重新整理按鈕 */}
+            <div className="flex items-center gap-1.5 pb-2 border-b border-[#262b38] shrink-0">
+              {/* 最左方：搜尋分頁輸入欄 (不用太闊) */}
+              <div className="relative shrink-0 w-28 sm:w-36">
+                <input
+                  type="text"
+                  value={flippSearchQuery}
+                  onChange={(e) => setFlippSearchQuery(e.target.value)}
+                  placeholder="搜尋分頁/商品..."
+                  className="w-full bg-[#121620] border border-[#232b3d] rounded-lg pl-7 pr-2 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-rose-500/60"
+                />
+                <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+
+              {/* 中間：由左至右 A-Z 排序的子分頁切換按鈕 (保留英文商戶名稱) */}
+              <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar flex-1 py-0.5">
+                {displayMerchants.map((m) => {
+                  const isActive = activeMerchant && activeMerchant.merchant === m.merchant;
+                  return (
+                    <button
+                      key={m.merchant}
+                      type="button"
+                      onClick={() => setSelectedMerchant(m.merchant)}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
+                        isActive
+                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-sm shadow-rose-950/40'
+                          : 'bg-[#121620] hover:bg-[#1a202c] text-gray-400 hover:text-gray-200 border border-[#222938]'
+                      }`}
+                    >
+                      {m.merchant}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 右側：手動即時更新圖示按鈕 */}
               <button
                 type="button"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600/30 text-rose-300 border border-rose-500/50 text-xs font-semibold shadow-xs"
+                onClick={() => fetchFlippFlyers(true)}
+                disabled={loadingFlipp}
+                className="p-1.5 rounded-lg bg-[#151922] border border-[#252c3c] text-gray-400 hover:text-rose-400 hover:bg-[#1c2230] transition-colors shrink-0 cursor-pointer disabled:opacity-50"
+                title="手動即時更新優惠資料"
               >
-                <ShoppingBag className="w-3.5 h-3.5 text-rose-400" />
-                <span>大統華 (T&T)</span>
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingFlipp ? 'animate-spin text-rose-400' : ''}`} />
               </button>
-              {tntFlyers.length > 0 && tntFlyers[0].validity && (
-                <span className="text-[10px] text-gray-400 font-mono pl-0.5">
-                  效期：{tntFlyers[0].validity}
+            </div>
+
+            {/* 子分頁按鈕下方資訊列：左側特惠數量與排序功能 + 右側貼邊的 valid_from - valid_to 與官網連結圖示按鈕 */}
+            <div className="flex items-center justify-between text-xs px-0.5 shrink-0">
+              {/* 左側：商品數量與排序功能 (名稱/價格) */}
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-gray-400">
+                  共 <span className="font-mono font-bold text-white">{itemsList.length}</span> 件商品
                 </span>
+                <div className="flex items-center gap-1 bg-[#121620] border border-[#222938] rounded-md px-1.5 py-0.5 text-[10.5px]">
+                  <span className="text-gray-500">排序:</span>
+                  <select
+                    value={flippItemSort}
+                    onChange={(e) => setFlippItemSort(e.target.value as any)}
+                    className="bg-transparent text-gray-300 cursor-pointer focus:outline-none"
+                    title="商品排序"
+                  >
+                    <option value="default" className="bg-[#121620]">預設</option>
+                    <option value="name" className="bg-[#121620]">名稱 (A-Z)</option>
+                    <option value="price-asc" className="bg-[#121620]">價格：低至高</option>
+                    <option value="price-desc" className="bg-[#121620]">價格：高至低</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* 右側貼近界面邊：valid_from - valid_to (yyyy-MM-dd) + 官網連結圖示按鈕 */}
+              {activeMerchant && (
+                <div className="flex items-center gap-1.5 text-right font-mono text-[11px] text-gray-400">
+                  {dateRangeStr && (
+                    <span className="text-gray-300">
+                      {dateRangeStr}
+                    </span>
+                  )}
+                  {activeMerchant.website_url && (
+                    <a
+                      href={activeMerchant.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1 rounded text-rose-400 hover:text-white hover:bg-rose-500/20 transition-colors shrink-0"
+                      title={`前往 ${activeMerchant.merchant} 官方網站`}
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
               )}
             </div>
 
-            {/* 右上角：每週五更新 1 次放在大統華官方網頁連結圖示按鈕左方 */}
-            <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
-              <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono">
-                {adminSourceIntervals['tnt_flyers'] || '每週五更新 1 次'}
-              </span>
-              <a
-                href="https://www.tntsupermarket.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-1 rounded-md text-rose-400 hover:text-white hover:bg-rose-900/50 transition-colors inline-flex items-center justify-center cursor-pointer"
-                title="大統華官方網站"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+            {/* 下方產品資料：網格清單列表式顯示 (每列 2 欄，保留英文，null 不顯示) */}
+            <div className="flex-1 overflow-y-auto pr-0.5 custom-scrollbar">
+              {loadingFlipp && flippMerchants.length === 0 ? (
+                <div className="py-16 flex flex-col items-center justify-center text-gray-400 gap-2">
+                  <RefreshCw className="w-6 h-6 animate-spin text-rose-400" />
+                  <span className="text-xs">正在載入大溫各大超市 Flipp 特惠傳單商品...</span>
+                </div>
+              ) : itemsList.length === 0 ? (
+                <div className="py-16 flex flex-col items-center justify-center text-gray-500 gap-2 text-xs">
+                  <ShoppingBag className="w-8 h-8 text-gray-600" />
+                  <span>{flippSearchQuery ? '查無符合條件的特惠商品' : '該超市暫無特惠商品資料'}</span>
+                  {flippSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setFlippSearchQuery('')}
+                      className="text-rose-400 hover:underline text-[11px]"
+                    >
+                      清除搜尋條件
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {itemsList.map((item) => {
+                    const itemValidRange = (item.valid_from && item.valid_to)
+                      ? `${formatFlippDate(item.valid_from)} - ${formatFlippDate(item.valid_to)}`
+                      : dateRangeStr;
+
+                    return (
+                      <div
+                        key={item.id}
+                        className="bg-[#121620] hover:bg-[#161c29] border border-[#202738] hover:border-rose-500/40 rounded-xl p-2.5 flex gap-2.5 items-center transition-all shadow-sm"
+                      >
+                        {/* 左側：圖片 cutout_image_url */}
+                        <div className="w-20 h-20 sm:w-22 sm:h-22 bg-white/5 rounded-lg flex items-center justify-center p-1 shrink-0 overflow-hidden border border-[#232a3a]">
+                          {item.cutout_image_url ? (
+                            <img
+                              src={item.cutout_image_url}
+                              alt={item.name || 'Product'}
+                              className="w-full h-full object-contain"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <ShoppingBag className="w-7 h-7 text-gray-600" />
+                          )}
+                        </div>
+
+                        {/* 右側：品牌 brand、名稱 name、價格 price、優惠日期 valid_from - valid_to */}
+                        <div className="flex flex-col justify-between flex-1 min-w-0 h-full py-0.5">
+                          <div className="flex flex-col min-w-0 leading-tight">
+                            {/* 品牌 brand (如為 null 則不顯示) */}
+                            {item.brand && (
+                              <span className="text-[10px] text-rose-400 font-bold uppercase tracking-wider truncate mb-0.5">
+                                {item.brand}
+                              </span>
+                            )}
+                            {/* 名稱 name */}
+                            <span 
+                              className="text-xs font-bold text-gray-100 line-clamp-2 leading-snug break-words" 
+                              title={item.name}
+                            >
+                              {item.name || '--'}
+                            </span>
+                          </div>
+
+                          <div className="flex flex-col min-w-0 mt-1">
+                            {/* 價格 price (如為 null 則不顯示) */}
+                            {item.price !== null && item.price !== undefined && item.price !== '' && (
+                              <div className="text-sm font-black font-mono text-emerald-400">
+                                {String(item.price).startsWith('$') ? item.price : `$${item.price}`}
+                              </div>
+                            )}
+
+                            {/* 優惠日期 valid_from - valid_to */}
+                            {itemValidRange && (
+                              <div className="text-[9.5px] text-gray-400 font-mono flex items-center gap-1 mt-0.5">
+                                <Calendar className="w-3 h-3 text-gray-500 shrink-0" />
+                                <span className="truncate">{itemValidRange}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
-
-          {/* 特價海報預覽網格 */}
-          <div className="flex-1 overflow-y-auto pr-1">
-            {loadingTnt ? (
-              <div className="py-12 flex flex-col items-center justify-center text-gray-400 gap-2">
-                <RefreshCw className="w-5 h-5 animate-spin text-rose-400" />
-                <span className="text-xs">載入大統華特價海報中...</span>
-              </div>
-            ) : tntFlyers.length === 0 ? (
-              <div className="py-10 text-center text-gray-400 text-xs">
-                暫無特價海報資料。
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                {tntFlyers.map((flyer, idx) => (
-                  <div
-                    key={flyer.id || idx}
-                    onClick={() => {
-                      setSelectedFlyerModal(idx);
-                      setFlyerZoomLevel(1);
-                    }}
-                    className="group relative bg-[#181c26] border border-[#283042] hover:border-rose-500/60 rounded-xl overflow-hidden cursor-pointer shadow-md transition-all hover:shadow-xl hover:scale-[1.02] flex flex-col"
-                  >
-                    <div className="relative aspect-[3/4] bg-black/40 overflow-hidden flex items-center justify-center">
-                      <img
-                        src={flyer.image_url || flyer.thumbnail}
-                        alt={flyer.alt || `Flyer Page ${idx + 1}`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 text-white text-xs font-semibold">
-                        <ZoomIn className="w-4 h-4 text-rose-400" />
-                        <span>點擊放大檢視</span>
-                      </div>
-                    </div>
-                    <div className="p-2 flex flex-col gap-0.5 bg-[#12151e]">
-                      <div className="flex items-center justify-between text-[11px] font-bold text-white">
-                        <span>第 {idx + 1} 頁</span>
-                      </div>
-                      {flyer.validity && (
-                        <span className="text-[9.5px] text-rose-300/80 font-mono truncate">
-                          {flyer.validity}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ==================== 探索 - 彩票分頁 (PlayNow Lottery) ==================== */}
       {activeTab === 'lottery' && (() => {
@@ -10931,7 +11125,7 @@ function ExploreContent() {
             <span className="text-[9.5px] text-gray-500">資料來源：City of Vancouver Open Data</span>
           )}
           {activeTab === 'shopping' && (
-            <span className="text-[9.5px] text-gray-500">資料來源：T&T Supermarket</span>
+            <span className="text-[9.5px] text-gray-500">資料來源：Flipp Enterprise Vancouver Supermarket Flyers (每 12 小時自動檢查更新)</span>
           )}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>
@@ -10978,120 +11172,7 @@ function ExploreContent() {
       </div>
 
       {/* 極光觀測預測圖 Lightbox Modal */}
-      {/* 大統華特價海報全螢幕放大檢視視窗 (T&T Flyer Lightbox Modal - 參照交通攝影機風格) */}
-      {selectedFlyerModal !== null && tntFlyers[selectedFlyerModal] && typeof document !== 'undefined' && createPortal(
-        <div 
-          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200 select-none"
-          onClick={() => setSelectedFlyerModal(null)}
-        >
-          <div 
-            className="relative max-w-4xl w-full bg-[#161922] border border-rose-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] h-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <ShoppingBag className="w-5 h-5 text-rose-400 shrink-0" />
-                <div className="flex flex-col min-w-0">
-                  <h4 className="text-sm font-bold text-gray-100 truncate">
-                    大統華每週特價海報
-                  </h4>
-                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
-                    <span className="text-rose-400 font-semibold">
-                      第 {selectedFlyerModal + 1} 頁 / 共 {tntFlyers.length} 頁
-                    </span>
-                    {tntFlyers[selectedFlyerModal].validity && (
-                      <>
-                        <span>·</span>
-                        <span className="text-gray-300 font-mono">
-                          {tntFlyers[selectedFlyerModal].validity}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setFlyerZoomLevel(prev => Math.min(prev + 0.25, 2.5))}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                  title="放大海報"
-                >
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFlyerZoomLevel(prev => Math.max(prev - 0.25, 0.75))}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                  title="縮小海報"
-                >
-                  <ZoomOut className="w-4 h-4" />
-                </button>
-                <a
-                  href={tntFlyers[selectedFlyerModal].image_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-rose-400 hover:bg-white/10 transition-colors cursor-pointer"
-                  title="在新分頁開啟或下載高解析度原圖"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setSelectedFlyerModal(null)}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors ml-1 cursor-pointer"
-                  title="關閉"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Modal Body / Image */}
-            <div className="relative flex-1 bg-black/80 flex items-center justify-center p-3 overflow-hidden min-h-[300px]">
-              {selectedFlyerModal > 0 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedFlyerModal(prev => (prev !== null ? prev - 1 : 0));
-                    setFlyerZoomLevel(1);
-                  }}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/75 hover:bg-black text-white flex items-center justify-center border border-white/20 shadow-xl transition-all cursor-pointer"
-                  title="上一頁"
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
-              )}
-
-              <img
-                src={tntFlyers[selectedFlyerModal].image_url}
-                alt={`Flyer Page ${selectedFlyerModal + 1}`}
-                style={{ transform: `scale(${flyerZoomLevel})`, transformOrigin: 'center center' }}
-                className="max-h-[70vh] sm:max-h-[74vh] w-auto max-w-full object-contain rounded-lg shadow-2xl transition-transform duration-200 select-none"
-              />
-
-              {selectedFlyerModal < tntFlyers.length - 1 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedFlyerModal(prev => (prev !== null ? prev + 1 : prev));
-                    setFlyerZoomLevel(1);
-                  }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/75 hover:bg-black text-white flex items-center justify-center border border-white/20 shadow-xl transition-all cursor-pointer"
-                  title="下一頁"
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
 
       {/* 太平洋西北即時衛星雲圖全螢幕燈箱視窗 (參照交通攝影機風格) */}
       {satelliteModalOpen && typeof document !== 'undefined' && createPortal(

@@ -3,9 +3,9 @@
   "source_url": "https://www.swpc.noaa.gov/",
   "api_endpoint": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
   "update_frequency": "每天 2 次 (12 小時快取)",
-  "last_updated": "2026-11-09T01:51:43.404678Z",
+  "last_updated": "2026-11-09T13:09:19.885839Z",
   "latest": {
-    "time_tag": "2026-11-08T21:00:00",
+    "time_tag": "2026-11-09T09:00:00",
     "kp": 2.67,
     "kp_int": 3,
     "g_scale": "平靜",
@@ -20,38 +20,6 @@
     }
   },
   "history": [
-    {
-      "time_tag": "2026-11-07T00:00:00",
-      "kp": 3.0,
-      "a_running": 15,
-      "g_scale": "微擾",
-      "g_desc": "輕微擾動",
-      "g_color": "#06b6d4"
-    },
-    {
-      "time_tag": "2026-11-07T03:00:00",
-      "kp": 2.33,
-      "a_running": 9,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
-    {
-      "time_tag": "2026-11-07T06:00:00",
-      "kp": 3.33,
-      "a_running": 18,
-      "g_scale": "微擾",
-      "g_desc": "輕微擾動",
-      "g_color": "#06b6d4"
-    },
-    {
-      "time_tag": "2026-11-07T09:00:00",
-      "kp": 3.33,
-      "a_running": 18,
-      "g_scale": "微擾",
-      "g_desc": "輕微擾動",
-      "g_color": "#06b6d4"
-    },
     {
       "time_tag": "2026-11-07T12:00:00",
       "kp": 3.0,
@@ -142,6 +110,38 @@
     },
     {
       "time_tag": "2026-11-08T21:00:00",
+      "kp": 2.67,
+      "a_running": 12,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-11-09T00:00:00",
+      "kp": 3.0,
+      "a_running": 15,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-11-09T03:00:00",
+      "kp": 3.33,
+      "a_running": 18,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-11-09T06:00:00",
+      "kp": 2.67,
+      "a_running": 12,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-11-09T09:00:00",
       "kp": 2.67,
       "a_running": 12,
       "g_scale": "平靜",
