@@ -1,8 +1,8 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
-  "total_count": 7,
-  "updated_at": "2026-11-09T15:28:39.915Z",
+  "total_count": 9,
+  "updated_at": "2026-11-10T14:29:06.001Z",
   "features": [
     {
       "type": "Feature",
@@ -54,8 +54,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.044216,
-          49.259704
+          -123.133731,
+          49.263539
         ]
       },
       "properties": {
@@ -63,7 +63,7 @@
         "facility_type": "food_vendors",
         "name": "Miss Siam",
         "business_name": "Miss Siam",
-        "address": "Broadway Tech Centre",
+        "address": "Broadway/Birch",
         "hours": "11 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
@@ -76,8 +76,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.090515,
-          49.267318
+          -123.113481,
+          49.286466
         ]
       },
       "properties": {
@@ -85,8 +85,8 @@
         "facility_type": "food_vendors",
         "name": "arturosmexico2go",
         "business_name": "arturosmexico2go",
-        "address": "Centre for Digital Media, 577 Great Northern Way (west side of the building)",
-        "hours": "11:30 AM – 2 PM",
+        "address": "Howe St & W Cordova St",
+        "hours": "11:30 AM – 2:45 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -98,12 +98,34 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -123.117712,
+          49.286774
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_5",
+        "facility_type": "food_vendors",
+        "name": "Il Saltimbocca by Via Tevere",
+        "business_name": "Il Saltimbocca by Via Tevere",
+        "address": "Burrard St & W Pender St",
+        "hours": "11 AM – 2 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           -123.124394,
           49.28244
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_5",
+        "id": "food_vendor_sfa_6",
         "facility_type": "food_vendors",
         "name": "JAPADOG",
         "business_name": "JAPADOG",
@@ -116,7 +138,7 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_6",
+      "id": "food_vendor_sfa_7",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -125,7 +147,7 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_6",
+        "id": "food_vendor_sfa_7",
         "facility_type": "food_vendors",
         "name": "Meet2Eat",
         "business_name": "Meet2Eat",
@@ -138,22 +160,44 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_7",
+      "id": "food_vendor_sfa_8",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.120867,
-          49.244489
+          -123.157335,
+          49.268244
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_7",
+        "id": "food_vendor_sfa_8",
         "facility_type": "food_vendors",
         "name": "Planted Love",
         "business_name": "Planted Love",
-        "address": "Women&#039;s BC Hospital, 693 W 30th Ave, Vancouver",
-        "hours": "11 AM – 2 PM",
+        "address": "2239 W 4th Ave, Vancouver, BC",
+        "hours": "11 AM – 7 PM",
         "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044216,
+          49.259771
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_9",
+        "facility_type": "food_vendors",
+        "name": "Thai Box On Truck",
+        "business_name": "Thai Box On Truck",
+        "address": "2665 Renfrew St, Vancouver (Broadway tech centre)",
+        "hours": "11:30 AM – 2 PM",
+        "has_credit_card": false,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
       }
