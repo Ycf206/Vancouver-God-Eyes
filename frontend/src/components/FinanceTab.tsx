@@ -9,18 +9,17 @@ import {
   RefreshCw,
   TrendingUp,
   TrendingDown,
-  ExternalLink,
-  ChevronDown,
   Trash2,
   ArrowUp,
   ArrowDown,
   Clock,
-  Calendar,
   AlertCircle,
-  CheckCircle2,
-  Sliders,
-  DollarSign
+  DollarSign,
+  Plus,
+  Ellipsis
 } from 'lucide-react';
+import { useUIStore } from '@/store/useUIStore';
+import { formatDateTime } from '@/utils/time';
 
 // CRA 官方歷年 TFSA 年度上限 (免稅儲蓄帳戶官方限額)
 const TFSA_ANNUAL_LIMITS: Record<number, number> = {
@@ -93,16 +92,8 @@ export interface StockSuggestionItem {
   type: string;
 }
 
-const DEFAULT_TFSA_ITEMS: TfsaStockItem[] = [
-  { id: '1', symbol: 'TSLA', targetPercent: 30, shares: 150, avgPrice: 33.862, currentPrice: 34.81, buyPrice: 34.81, buyShares: 0 },
-  { id: '2', symbol: 'SPCX', targetPercent: 25, shares: 100, avgPrice: 19.5995, currentPrice: 23.91, buyPrice: 23.91, buyShares: 0 },
-  { id: '3', symbol: 'GOOG', targetPercent: 20, shares: 80, avgPrice: 54.9244, currentPrice: 44.80, buyPrice: 44.80, buyShares: 0 },
-  { id: '4', symbol: 'NVDA', targetPercent: 20, shares: 50, avgPrice: 40.599, currentPrice: 47.35, buyPrice: 47.35, buyShares: 53 },
-  { id: '5', symbol: 'IBIT', targetPercent: 5, shares: 50, avgPrice: 32.2184, currentPrice: 33.20, buyPrice: 33.20, buyShares: 0 },
-  { id: '6', symbol: 'PLTR', targetPercent: 0, shares: 35, avgPrice: 11.7551, currentPrice: 14.77, buyPrice: 14.77, buyShares: 0 }
-];
-
 export function FinanceTab() {
+  const { timeFormat, timeZone } = useUIStore();
   const [subTab, setSubTab] = useState<'stock' | 'news' | 'tfsa'>('stock');
 
   // ==================== 1. 股票搜尋狀態 ====================
@@ -115,6 +106,7 @@ export function FinanceTab() {
   const [loadingStock, setLoadingStock] = useState<boolean>(false);
   const [stockData, setStockData] = useState<StockQuoteData | null>(null);
   const [stockError, setStockError] = useState<string>('');
+  const [chartHoverIndex, setChartHoverIndex] = useState<number | null>(null);
 
   // 搜尋建議狀態
   const [suggestions, setSuggestions] = useState<StockSuggestionItem[]>([]);
@@ -269,15 +261,23 @@ export function FinanceTab() {
   const [calcEndYear, setCalcEndYear] = useState<number>(2027);
   const [extraDeposit, setExtraDeposit] = useState<number>(767);
   const [withdrawalDeduct, setWithdrawalDeduct] = useState<number>(6000);
-  const [tfsaStocks, setTfsaStocks] = useState<TfsaStockItem[]>(DEFAULT_TFSA_ITEMS);
+  const [tfsaStocks, setTfsaStocks] = useState<TfsaStockItem[]>([]);
   const [updatingPrices, setUpdatingPrices] = useState<boolean>(false);
+  const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
+
+  // 點擊任意處關閉操作選單
+  useEffect(() => {
+    const handleCloseActionMenu = () => setOpenActionMenuId(null);
+    document.addEventListener('click', handleCloseActionMenu);
+    return () => document.removeEventListener('click', handleCloseActionMenu);
+  }, []);
 
   // 新增股票輸入欄位
   const [newSymbol, setNewSymbol] = useState<string>('');
   const [newShares, setNewShares] = useState<string>('');
   const [newAvgPrice, setNewAvgPrice] = useState<string>('');
 
-  // LocalStorage 持久化
+  // LocalStorage 持久化 (若無存儲則維持空資料)
   useEffect(() => {
     try {
       const saved = localStorage.getItem('godseye_tfsa_config');
@@ -287,7 +287,7 @@ export function FinanceTab() {
         if (parsed.endYear) setCalcEndYear(parsed.endYear);
         if (parsed.extraDeposit !== undefined) setExtraDeposit(parsed.extraDeposit);
         if (parsed.withdrawal !== undefined) setWithdrawalDeduct(parsed.withdrawal);
-        if (parsed.stocks && Array.isArray(parsed.stocks) && parsed.stocks.length > 0) {
+        if (parsed.stocks && Array.isArray(parsed.stocks)) {
           setTfsaStocks(parsed.stocks);
         }
       }
@@ -568,7 +568,7 @@ export function FinanceTab() {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full"
+                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-90 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -577,7 +577,7 @@ export function FinanceTab() {
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full"
+                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-90 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
                   />
                 </div>
               </div>
@@ -674,7 +674,7 @@ export function FinanceTab() {
                 </div>
               </div>
 
-              {/* 報價指標網格 (最高/最低/成交量/前收) */}
+              {/* 報價指標網格 (最高/最低/成交量/前收/類型) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                 <div className="bg-[#0d1017] p-2 rounded-lg border border-[#1e2536] flex flex-col">
                   <span className="text-[10px] text-gray-400">當日最高 / 最低</span>
@@ -684,77 +684,218 @@ export function FinanceTab() {
                 </div>
 
                 <div className="bg-[#0d1017] p-2 rounded-lg border border-[#1e2536] flex flex-col">
-                  <span className="text-[10px] text-gray-400">昨收盤價 (Prev Close)</span>
+                  <span className="text-[10px] text-gray-400">昨收盤價</span>
                   <span className="font-mono font-bold text-gray-200 mt-0.5">
                     ${stockData.previousClose.toFixed(2)}
                   </span>
                 </div>
 
                 <div className="bg-[#0d1017] p-2 rounded-lg border border-[#1e2536] flex flex-col">
-                  <span className="text-[10px] text-gray-400">成交量 (Volume)</span>
+                  <span className="text-[10px] text-gray-400">成交量</span>
                   <span className="font-mono font-bold text-gray-200 mt-0.5">
                     {stockData.regularMarketVolume ? stockData.regularMarketVolume.toLocaleString() : '--'}
                   </span>
                 </div>
 
                 <div className="bg-[#0d1017] p-2 rounded-lg border border-[#1e2536] flex flex-col">
-                  <span className="text-[10px] text-gray-400">時區 / 類型</span>
+                  <span className="text-[10px] text-gray-400">證券類型</span>
                   <span className="font-mono font-bold text-gray-200 mt-0.5 truncate">
-                    {stockData.timezone} ({stockData.instrumentType || 'EQUITY'})
+                    {stockData.instrumentType || 'EQUITY'}
                   </span>
                 </div>
               </div>
 
-              {/* 簡易 SVG 趨勢走勢圖 */}
+              {/* 互動式 SVG 趨勢走勢圖（含價格座標數字與指標懸浮詳細資訊） */}
               {stockData.chartPoints.length > 1 && (() => {
                 const pts = stockData.chartPoints;
                 const prices = pts.map(p => p.close as number);
                 const minP = Math.min(...prices);
                 const maxP = Math.max(...prices);
                 const rangeP = maxP - minP || 1;
-                const svgW = 600;
-                const svgH = 160;
+                const midP = (minP + maxP) / 2;
 
-                const polylinePoints = pts.map((p, idx) => {
-                  const x = (idx / (pts.length - 1)) * svgW;
-                  const y = svgH - (((p.close as number) - minP) / rangeP) * (svgH - 24) - 12;
-                  return `${x},${y}`;
-                }).join(' ');
+                const svgW = 600;
+                const svgH = 180;
+                const padLeft = 12;
+                const padRight = 64; // 數字顯示區域
+                const padTop = 18;
+                const padBottom = 24;
+                const plotW = svgW - padLeft - padRight;
+                const plotH = svgH - padTop - padBottom;
+
+                const coords = pts.map((p, idx) => {
+                  const x = padLeft + (idx / (pts.length - 1)) * plotW;
+                  const y = padTop + plotH - (((p.close as number) - minP) / rangeP) * plotH;
+                  return { x, y, pt: p };
+                });
+
+                const polylinePoints = coords.map(c => `${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' ');
+                const areaPoints = `${padLeft},${padTop + plotH} ${polylinePoints} ${padLeft + plotW},${padTop + plotH}`;
 
                 const isUp = stockData.change >= 0;
                 const strokeColor = isUp ? '#10b981' : '#f43f5e';
-                const fillColor = isUp ? 'rgba(16, 185, 129, 0.12)' : 'rgba(244, 63, 94, 0.12)';
 
-                const areaPoints = `0,${svgH} ${polylinePoints} ${svgW},${svgH}`;
+                const hovered = chartHoverIndex !== null && coords[chartHoverIndex] ? coords[chartHoverIndex] : null;
+
+                const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const relativeX = e.clientX - rect.left;
+                  const scaleX = svgW / rect.width;
+                  const svgX = relativeX * scaleX;
+                  const plotX = svgX - padLeft;
+                  const ratio = Math.max(0, Math.min(1, plotX / plotW));
+                  const idx = Math.min(pts.length - 1, Math.max(0, Math.round(ratio * (pts.length - 1))));
+                  setChartHoverIndex(idx);
+                };
 
                 return (
                   <div className="flex flex-col gap-1.5 pt-1">
                     <div className="flex items-center justify-between text-[11px] text-gray-400">
                       <span>走勢圖表 ({range} / {interval})</span>
-                      <span className="font-mono text-gray-500">
-                        最低: ${minP.toFixed(2)} - 最高: ${maxP.toFixed(2)}
+                      <span className="font-mono text-gray-400">
+                        最低: <span className="text-gray-300 font-bold">${minP.toFixed(2)}</span> / 最高: <span className="text-gray-300 font-bold">${maxP.toFixed(2)}</span>
                       </span>
                     </div>
 
-                    <div className="w-full bg-[#0d1017] border border-[#1e2536] rounded-xl p-2 relative overflow-hidden">
-                      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-36 sm:h-44 overflow-visible">
+                    <div className="w-full bg-[#0d1017] border border-[#1e2536] rounded-xl p-2 sm:p-2.5 relative select-none">
+                      {/* 指標碰觸特定時刻詳細數據卡 */}
+                      {hovered ? (
+                        <div className="flex flex-wrap items-center justify-between gap-2 px-2.5 py-1.5 mb-1.5 bg-[#141924] border border-sky-500/40 rounded-lg text-xs font-mono shadow-md animate-in fade-in duration-100">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sky-300 font-bold">
+                              {formatDateTime(hovered.pt.time * 1000, timeFormat, timeZone)}
+                            </span>
+                            <span className="text-white font-black text-sm">
+                              ${(hovered.pt.close as number).toFixed(2)}
+                            </span>
+                            {stockData.previousClose > 0 && (() => {
+                              const diff = (hovered.pt.close as number) - stockData.previousClose;
+                              const diffPct = (diff / stockData.previousClose) * 100;
+                              const hUp = diff >= 0;
+                              return (
+                                <span className={`text-[11px] font-bold ${hUp ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                  {hUp ? '+' : ''}{diff.toFixed(2)} ({hUp ? '+' : ''}{diffPct.toFixed(2)}%)
+                                </span>
+                              );
+                            })()}
+                          </div>
+
+                          <div className="flex items-center gap-2.5 text-[10.5px] text-gray-400">
+                            {hovered.pt.open !== null && (
+                              <span>開: <b className="text-gray-200">${hovered.pt.open.toFixed(2)}</b></span>
+                            )}
+                            {hovered.pt.high !== null && (
+                              <span>高: <b className="text-gray-200">${hovered.pt.high.toFixed(2)}</b></span>
+                            )}
+                            {hovered.pt.low !== null && (
+                              <span>低: <b className="text-gray-200">${hovered.pt.low.toFixed(2)}</b></span>
+                            )}
+                            {hovered.pt.volume !== null && hovered.pt.volume > 0 && (
+                              <span>量: <b className="text-gray-200">{hovered.pt.volume.toLocaleString()}</b></span>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between px-2 py-1 mb-1.5 text-[10.5px] text-gray-500 font-mono">
+                          <span>移動滑鼠指標或手指觸控檢視特定時刻詳細價格</span>
+                          <span>昨收盤價: ${stockData.previousClose.toFixed(2)}</span>
+                        </div>
+                      )}
+
+                      <svg
+                        viewBox={`0 0 ${svgW} ${svgH}`}
+                        className="w-full h-40 sm:h-48 overflow-visible cursor-crosshair touch-none"
+                        onPointerMove={handlePointerMove}
+                        onPointerLeave={() => setChartHoverIndex(null)}
+                      >
                         <defs>
                           <linearGradient id={`grad-${stockData.symbol}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor={strokeColor} stopOpacity="0.3" />
+                            <stop offset="0%" stopColor={strokeColor} stopOpacity="0.25" />
                             <stop offset="100%" stopColor={strokeColor} stopOpacity="0.0" />
                           </linearGradient>
                         </defs>
-                        {/* 面積漸層 */}
+
+                        {/* 橫向參考水平網格線與價格數字標籤 */}
+                        <line x1={padLeft} y1={padTop} x2={padLeft + plotW} y2={padTop} stroke="#1f2738" strokeDasharray="3 3" />
+                        <text x={padLeft + plotW + 6} y={padTop + 3.5} fill="#94a3b8" fontSize="9.5" fontFamily="monospace">
+                          ${maxP.toFixed(2)}
+                        </text>
+
+                        <line x1={padLeft} y1={padTop + plotH / 2} x2={padLeft + plotW} y2={padTop + plotH / 2} stroke="#1f2738" strokeDasharray="3 3" />
+                        <text x={padLeft + plotW + 6} y={padTop + plotH / 2 + 3.5} fill="#64748b" fontSize="9.5" fontFamily="monospace">
+                          ${midP.toFixed(2)}
+                        </text>
+
+                        <line x1={padLeft} y1={padTop + plotH} x2={padLeft + plotW} y2={padTop + plotH} stroke="#1f2738" strokeDasharray="3 3" />
+                        <text x={padLeft + plotW + 6} y={padTop + plotH + 3.5} fill="#94a3b8" fontSize="9.5" fontFamily="monospace">
+                          ${minP.toFixed(2)}
+                        </text>
+
+                        {/* 底部時間刻度 */}
+                        <text x={padLeft} y={svgH - 6} fill="#64748b" fontSize="9" fontFamily="monospace">
+                          {formatDateTime(pts[0].time * 1000, timeFormat, timeZone)}
+                        </text>
+                        <text x={padLeft + plotW} y={svgH - 6} textAnchor="end" fill="#64748b" fontSize="9" fontFamily="monospace">
+                          {formatDateTime(pts[pts.length - 1].time * 1000, timeFormat, timeZone)}
+                        </text>
+
+                        {/* 漸層面積 */}
                         <polygon points={areaPoints} fill={`url(#grad-${stockData.symbol})`} />
-                        {/* 走勢折線 */}
+
+                        {/* 折線 */}
                         <polyline
                           fill="none"
                           stroke={strokeColor}
-                          strokeWidth="2.5"
+                          strokeWidth="2.2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           points={polylinePoints}
                         />
+
+                        {/* 指標碰觸十字準星與亮點 */}
+                        {hovered && (
+                          <g>
+                            {/* 垂直指示線 */}
+                            <line
+                              x1={hovered.x}
+                              y1={padTop}
+                              x2={hovered.x}
+                              y2={padTop + plotH}
+                              stroke="#38bdf8"
+                              strokeWidth="1.2"
+                              strokeDasharray="2 2"
+                            />
+                            {/* 焦點圓點 */}
+                            <circle
+                              cx={hovered.x}
+                              cy={hovered.y}
+                              r="4.5"
+                              fill="#38bdf8"
+                              stroke="#ffffff"
+                              strokeWidth="2"
+                            />
+                            {/* 右側 Y 軸高亮價格徽章 */}
+                            <rect
+                              x={padLeft + plotW + 4}
+                              y={hovered.y - 8}
+                              width="56"
+                              height="16"
+                              rx="4"
+                              fill="#0284c7"
+                            />
+                            <text
+                              x={padLeft + plotW + 32}
+                              y={hovered.y + 3.5}
+                              textAnchor="middle"
+                              fill="#ffffff"
+                              fontSize="9.5"
+                              fontWeight="bold"
+                              fontFamily="monospace"
+                            >
+                              ${(hovered.pt.close as number).toFixed(2)}
+                            </text>
+                          </g>
+                        )}
                       </svg>
                     </div>
                   </div>
@@ -779,7 +920,7 @@ export function FinanceTab() {
                   value={newsQuery}
                   onChange={(e) => setNewsQuery(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') fetchNews(); }}
-                  placeholder="搜尋財經新聞關鍵字 (如: TSLA, Bank of Canada, Housing, Fed)..."
+                  placeholder="搜尋財經新聞關鍵字..."
                   className="w-full bg-[#0d1017] border border-[#262e3d] rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
                 />
                 <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
@@ -839,90 +980,90 @@ export function FinanceTab() {
             </div>
           ) : (
             <div className="space-y-2">
-              {newsList.map((item) => {
-                const dateStr = new Date(item.publishTime * 1000).toLocaleString(undefined, {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                });
+              {newsList.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-3 bg-[#121622] hover:bg-[#161c29] border border-[#222938] hover:border-emerald-500/40 rounded-xl transition-all flex flex-col sm:flex-row gap-3 items-start"
+                >
+                  {item.thumbnail && (
+                    <img
+                      src={item.thumbnail}
+                      alt=""
+                      className="w-full sm:w-28 h-24 object-cover rounded-lg shrink-0 border border-[#273042]"
+                      loading="lazy"
+                      onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+                    />
+                  )}
 
-                return (
-                  <div
-                    key={item.id}
-                    className="p-3 bg-[#121622] hover:bg-[#161c29] border border-[#222938] hover:border-emerald-500/40 rounded-xl transition-all flex flex-col sm:flex-row gap-3 items-start"
-                  >
-                    {item.thumbnail && (
-                      <img
-                        src={item.thumbnail}
-                        alt=""
-                        className="w-full sm:w-28 h-24 object-cover rounded-lg shrink-0 border border-[#273042]"
-                        loading="lazy"
-                        onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
-                      />
-                    )}
-
-                    <div className="flex flex-col flex-1 min-w-0">
-                      <div className="flex items-center gap-2 text-[10.5px] text-gray-400 mb-1 font-mono">
-                        <span className="px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-400 font-semibold">
-                          {item.publisher}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-gray-500" />
-                          <span>{dateStr}</span>
-                        </div>
-                      </div>
-
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs sm:text-[13px] font-bold text-gray-100 hover:text-emerald-400 transition-colors leading-snug line-clamp-2"
-                      >
-                        {item.title}
-                      </a>
-
-                      {item.summary && (
-                        <p className="text-[11px] text-gray-400 line-clamp-2 mt-1 leading-relaxed">
-                          {item.summary}
-                        </p>
-                      )}
-
-                      <div className="mt-2 flex items-center justify-end">
-                        <a
-                          href={item.link}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-[11px] text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-medium transition-colors"
-                        >
-                          <span>前往原文</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
+                  <div className="flex flex-col flex-1 min-w-0 w-full">
+                    {/* 頂部資訊列：左側媒體來源，右上角顯示統一格式之日期與時間 */}
+                    <div className="flex items-center justify-between gap-2 text-[10.5px] text-gray-400 mb-1.5 font-mono">
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold text-[10px]">
+                        {item.publisher}
+                      </span>
+                      <div className="flex items-center gap-1 text-[11px] text-gray-400 shrink-0">
+                        <Clock className="w-3 h-3 text-gray-500" />
+                        <span>{formatDateTime(item.publishTime * 1000, timeFormat, timeZone)}</span>
                       </div>
                     </div>
+
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs sm:text-[13px] font-bold text-gray-100 hover:text-emerald-400 transition-colors leading-snug line-clamp-2"
+                    >
+                      {item.title}
+                    </a>
+
+                    {item.summary && (
+                      <p className="text-[11px] text-gray-400 line-clamp-2 mt-1 leading-relaxed">
+                        {item.summary}
+                      </p>
+                    )}
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           )}
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* 子分頁 3: TFSA 投資配置分析 (依照圖片 1 視覺配置精確呈現) */}
+      {/* 子分頁 3: TFSA 投資配置分析 */}
       {/* ========================================================================= */}
       {subTab === 'tfsa' && (
         <div className="flex flex-col flex-1 min-h-0 gap-3 overflow-y-auto pr-0.5 custom-scrollbar">
-          {/* 1. 總限額設定卡片 (參考圖片 1 頂部) */}
+          {/* 1. 總限額設定卡片 */}
           <div className="bg-[#121622] rounded-xl border border-[#222938] p-3.5 sm:p-4 shadow-sm flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-sm font-bold text-gray-200">
-              <DollarSign className="w-4 h-4 text-emerald-400" />
-              <span>總限額設定</span>
+            {/* 第一行: 左側標題，右側貼齊邊界的總限額與剩餘資金 */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1e2535] pb-2.5">
+              <div className="flex items-center gap-2 text-sm font-bold text-gray-200">
+                <DollarSign className="w-4 h-4 text-emerald-400" />
+                <span>總限額設定</span>
+              </div>
+
+              <div className="flex items-center gap-4 sm:gap-6 ml-auto">
+                <div className="flex flex-col items-end">
+                  <span className="text-[10px] text-gray-400 font-medium">系統計算總限額</span>
+                  <span className="text-base sm:text-lg font-black font-mono text-white tracking-tight">
+                    ${systemCalculatedLimit.toLocaleString()}
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-end">
+                  <span className="text-[10px] text-gray-400 font-medium">現在剩餘資金</span>
+                  <span className={`text-base sm:text-lg font-black font-mono tracking-tight ${
+                    remainingFunds >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                  }`}>
+                    ${remainingFunds.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 items-end">
-              {/* 符合資格年份 (起) */}
+            {/* 下方第 2 行: 年份(起), 年份(迄), 額外存入, 提款減去 (平均調闊) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 items-end">
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] text-gray-400 font-medium">符合資格年份 (起)</label>
                 <input
@@ -935,11 +1076,10 @@ export function FinanceTab() {
                     setEligibleStartYear(y);
                     saveTfsaConfig(tfsaStocks, y, calcEndYear, extraDeposit, withdrawalDeduct);
                   }}
-                  className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#0e121a] border border-[#262f40] rounded-lg px-3 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              {/* 計算至年份 (迄) */}
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] text-gray-400 font-medium">計算至年份 (迄)</label>
                 <input
@@ -952,11 +1092,10 @@ export function FinanceTab() {
                     setCalcEndYear(y);
                     saveTfsaConfig(tfsaStocks, eligibleStartYear, y, extraDeposit, withdrawalDeduct);
                   }}
-                  className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#0e121a] border border-[#262f40] rounded-lg px-3 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              {/* 額外存入 ($) */}
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] text-gray-400 font-medium">額外存入 ($)</label>
                 <input
@@ -967,11 +1106,10 @@ export function FinanceTab() {
                     setExtraDeposit(v);
                     saveTfsaConfig(tfsaStocks, eligibleStartYear, calcEndYear, v, withdrawalDeduct);
                   }}
-                  className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#0e121a] border border-[#262f40] rounded-lg px-3 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              {/* 提款減去 ($) */}
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] text-gray-400 font-medium">提款減去 ($)</label>
                 <input
@@ -982,165 +1120,245 @@ export function FinanceTab() {
                     setWithdrawalDeduct(v);
                     saveTfsaConfig(tfsaStocks, eligibleStartYear, calcEndYear, extraDeposit, v);
                   }}
-                  className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#0e121a] border border-[#262f40] rounded-lg px-3 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-emerald-500"
                 />
-              </div>
-
-              {/* 系統計算總限額 */}
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] text-gray-400 font-medium">系統計算總限額</span>
-                <span className="text-xl font-black font-mono text-white tracking-tight">
-                  ${systemCalculatedLimit.toLocaleString()}
-                </span>
-              </div>
-
-              {/* 現在剩餘資金 */}
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] text-gray-400 font-medium">現在剩餘資金</span>
-                <span className={`text-xl font-black font-mono tracking-tight ${
-                  remainingFunds >= 0 ? 'text-emerald-400' : 'text-rose-400'
-                }`}>
-                  ${remainingFunds.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </span>
               </div>
             </div>
           </div>
 
-          {/* 2. 投資配置管理卡片 (表格與滑桿) */}
+          {/* 2. 新增股票區塊 (放置於限額設定下方，加號圖示按鈕) */}
+          <div className="bg-[#121622] rounded-xl border border-[#222938] p-3 flex flex-wrap items-center gap-2 shadow-sm">
+            <span className="text-xs font-bold text-gray-300 mr-1 shrink-0">新增股票:</span>
+            <input
+              type="text"
+              placeholder="代號 (如: AAPL)"
+              value={newSymbol}
+              onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddStock(); }}
+              className="w-28 sm:w-36 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono uppercase focus:outline-none focus:border-blue-500"
+            />
+            <input
+              type="number"
+              placeholder="數量 (持倉股數)"
+              value={newShares}
+              onChange={(e) => setNewShares(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddStock(); }}
+              className="w-28 sm:w-36 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+            />
+            <input
+              type="number"
+              step="0.01"
+              placeholder="均價 ($)"
+              value={newAvgPrice}
+              onChange={(e) => setNewAvgPrice(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddStock(); }}
+              className="w-28 sm:w-36 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+            />
+            <button
+              type="button"
+              onClick={handleAddStock}
+              title="新增股票"
+              className="w-8 h-8 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all flex items-center justify-center cursor-pointer shadow-sm active:scale-95 shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* 3. 投資配置管理卡片 (卡片分行佈局，免橫向捲動) */}
           <div className="bg-[#121622] rounded-xl border border-[#222938] p-3.5 sm:p-4 shadow-sm flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-gray-200">投資配置管理</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-gray-200">投資配置管理</span>
+                <span className="text-xs text-gray-500 font-mono">({tfsaStocks.length})</span>
+              </div>
 
+              {/* 更新現價圖示按鈕 */}
               <button
                 type="button"
                 onClick={handleUpdateCurrentPrices}
-                disabled={updatingPrices}
-                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
+                disabled={updatingPrices || tfsaStocks.length === 0}
+                title="更新現價"
+                className="w-8 h-8 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-lg transition-all flex items-center justify-center cursor-pointer shadow-sm active:scale-95"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${updatingPrices ? 'animate-spin' : ''}`} />
-                <span>更新現價</span>
               </button>
             </div>
 
-            {/* 表格本體 (水平滾動容器) */}
-            <div className="overflow-x-auto pb-2 custom-scrollbar border border-[#1e2536] rounded-xl">
-              <table className="w-full text-left border-collapse text-xs whitespace-nowrap">
-                <thead>
-                  <tr className="bg-[#0e121a] text-gray-400 border-b border-[#202738] font-bold text-[11px]">
-                    <th className="py-2.5 px-3">代號</th>
-                    <th className="py-2.5 px-3 min-w-[130px]">目標比例 (%)</th>
-                    <th className="py-2.5 px-3">目標金額</th>
-                    <th className="py-2.5 px-3">現價 (原幣)</th>
-                    <th className="py-2.5 px-3">持倉</th>
-                    <th className="py-2.5 px-3">均價</th>
-                    <th className="py-2.5 px-3">現值</th>
-                    <th className="py-2.5 px-3">買價</th>
-                    <th className="py-2.5 px-3 min-w-[120px]">買入數量</th>
-                    <th className="py-2.5 px-3">尚需買入 / 試算</th>
-                    <th className="py-2.5 px-3">試算後均價</th>
-                    <th className="py-2.5 px-3 text-center">操作</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1c2230]">
-                  {tfsaStocks.map((stk, idx) => {
-                    const targetAmount = Math.round(systemCalculatedLimit * (stk.targetPercent / 100));
-                    const currentValue = stk.shares * stk.currentPrice;
-                    const buyP = stk.buyPrice ?? stk.currentPrice;
-                    const buySh = stk.buyShares || 0;
+            {/* 股票清單 (多行卡片結構，無需左右拉動) */}
+            {tfsaStocks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-500 gap-1.5 text-xs border border-dashed border-[#222938] rounded-xl">
+                <PiggyBank className="w-8 h-8 text-gray-600 mb-1" />
+                <span>尚無 TFSA 配置股票，請在上方新增股票開始分析</span>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {tfsaStocks.map((stk, idx) => {
+                  const targetAmount = Math.round(systemCalculatedLimit * (stk.targetPercent / 100));
+                  const currentValue = stk.shares * stk.currentPrice;
+                  const buyP = stk.buyPrice ?? stk.currentPrice;
+                  const buySh = stk.buyShares || 0;
 
-                    // 尚需買入計算： (目標金額 - 現值)
-                    const diffValue = targetAmount - currentValue;
-                    const neededShares = (diffValue > 0 && stk.currentPrice > 0)
-                      ? Math.ceil(diffValue / stk.currentPrice)
-                      : 0;
+                  // 尚需買入計算： (目標金額 - 現值)
+                  const diffValue = targetAmount - currentValue;
+                  const neededShares = (diffValue > 0 && stk.currentPrice > 0)
+                    ? Math.ceil(diffValue / stk.currentPrice)
+                    : 0;
 
-                    // 試算後均價公式
-                    const totalSharesAfter = stk.shares + buySh;
-                    const calculatedAvgPrice = totalSharesAfter > 0
-                      ? (stk.shares * stk.avgPrice + buySh * buyP) / totalSharesAfter
-                      : stk.avgPrice;
+                  // 試算後均價公式
+                  const totalSharesAfter = stk.shares + buySh;
+                  const calculatedAvgPrice = totalSharesAfter > 0
+                    ? (stk.shares * stk.avgPrice + buySh * buyP) / totalSharesAfter
+                    : stk.avgPrice;
 
-                    return (
-                      <tr key={stk.id} className="hover:bg-[#161c2a] transition-colors">
-                        {/* 1. 代號 */}
-                        <td className="py-2.5 px-3 font-mono font-black text-white">
-                          {stk.symbol}
-                        </td>
+                  return (
+                    <div
+                      key={stk.id}
+                      className="bg-[#0e121a] border border-[#202838] hover:border-[#2d374d] rounded-xl p-3 flex flex-col gap-2.5 transition-all shadow-sm"
+                    >
+                      {/* 行 1: 基本標頭 (代號、現價、現值、達標狀態、更多操作按鈕) */}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="font-mono font-black text-base text-white">
+                            {stk.symbol}
+                          </span>
+                          <span className="text-xs font-mono font-bold text-emerald-400">
+                            ${stk.currentPrice.toFixed(2)}
+                          </span>
+                          <span className="text-xs text-gray-400 hidden sm:inline">
+                            現值: <b className="font-mono text-white">${currentValue.toFixed(2)}</b>
+                          </span>
+                        </div>
 
-                        {/* 2. 目標比例 (%) + 滑桿 */}
-                        <td className="py-2.5 px-3">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="range"
-                              min="0"
-                              max="100"
-                              value={stk.targetPercent}
-                              onChange={(e) => handleStockChange(stk.id, 'targetPercent', parseInt(e.target.value, 10))}
-                              className="w-20 accent-blue-500 cursor-pointer h-1.5 bg-gray-700 rounded-lg"
-                            />
-                            <span className="font-mono font-bold text-gray-200 w-6 text-right">
-                              {stk.targetPercent}
+                        <div className="flex items-center gap-2 shrink-0">
+                          {/* 達標與需買狀態標籤 */}
+                          {diffValue <= 0 ? (
+                            <span className="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                              已達標
                             </span>
-                            <span className="text-gray-500 text-[10px]">%</span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono">
+                              需買 {neededShares} 股 (餘 ${diffValue.toFixed(0)})
+                            </span>
+                          )}
+
+                          {/* 操作按鈕 (Lucide: ellipsis 下拉選單) */}
+                          <div className="relative" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              type="button"
+                              onClick={() => setOpenActionMenuId(openActionMenuId === stk.id ? null : stk.id)}
+                              className="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"
+                              title="操作選項"
+                            >
+                              <Ellipsis className="w-4 h-4" />
+                            </button>
+
+                            {openActionMenuId === stk.id && (
+                              <div className="absolute right-0 top-full mt-1 z-30 bg-[#161c2a] border border-[#2a3449] rounded-xl shadow-2xl py-1 w-28 flex flex-col text-xs font-medium animate-in fade-in duration-100">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    handleMoveStock(idx, 'up');
+                                    setOpenActionMenuId(null);
+                                  }}
+                                  disabled={idx === 0}
+                                  className="px-3 py-1.5 text-left text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 flex items-center gap-2 cursor-pointer"
+                                >
+                                  <ArrowUp className="w-3.5 h-3.5" />
+                                  <span>上移</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    handleMoveStock(idx, 'down');
+                                    setOpenActionMenuId(null);
+                                  }}
+                                  disabled={idx === tfsaStocks.length - 1}
+                                  className="px-3 py-1.5 text-left text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 flex items-center gap-2 cursor-pointer"
+                                >
+                                  <ArrowDown className="w-3.5 h-3.5" />
+                                  <span>下移</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    handleDeleteStock(stk.id);
+                                    setOpenActionMenuId(null);
+                                  }}
+                                  className="px-3 py-1.5 text-left text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 flex items-center gap-2 cursor-pointer border-t border-[#222b3d] mt-0.5"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>刪除</span>
+                                </button>
+                              </div>
+                            )}
                           </div>
-                        </td>
+                        </div>
+                      </div>
 
-                        {/* 3. 目標金額 */}
-                        <td className="py-2.5 px-3 font-mono font-semibold text-gray-300">
-                          ${targetAmount.toLocaleString()}
-                        </td>
+                      {/* 行 2: 目標配置與滑桿 */}
+                      <div className="flex items-center gap-2.5 bg-[#080b11] px-2.5 py-1.5 rounded-lg border border-[#1b2233]">
+                        <span className="text-[11px] text-gray-400 shrink-0 font-medium">目標比例</span>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={stk.targetPercent}
+                          onChange={(e) => handleStockChange(stk.id, 'targetPercent', parseInt(e.target.value, 10))}
+                          className="flex-1 accent-blue-500 cursor-pointer h-1.5 bg-gray-700 rounded-lg"
+                        />
+                        <span className="font-mono font-bold text-xs text-blue-400 w-10 text-right shrink-0">
+                          {stk.targetPercent}%
+                        </span>
+                        <span className="text-[11px] text-gray-400 border-l border-gray-700 pl-2 shrink-0">
+                          目標金額: <b className="font-mono text-gray-200">${targetAmount.toLocaleString()}</b>
+                        </span>
+                      </div>
 
-                        {/* 4. 現價 */}
-                        <td className="py-2.5 px-3 font-mono text-gray-300">
-                          $ {stk.currentPrice.toFixed(2)}
-                        </td>
+                      {/* 行 3: 持倉、均價、買價、買入數量、試算後均價四欄網格 */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        {/* 持倉股數與均價 */}
+                        <div className="bg-[#080b11] p-2 rounded-lg border border-[#1a2130] flex flex-col gap-1">
+                          <span className="text-[10px] text-gray-400 font-medium">持倉股數 / 均價 ($)</span>
+                          <div className="flex items-center gap-1.5 font-mono">
+                            <input
+                              type="number"
+                              value={stk.shares}
+                              onChange={(e) => handleStockChange(stk.id, 'shares', parseFloat(e.target.value) || 0)}
+                              className="w-16 bg-[#121622] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+                            />
+                            <span className="text-gray-500 text-[10px]">股 @</span>
+                            <input
+                              type="number"
+                              step="0.001"
+                              value={stk.avgPrice}
+                              onChange={(e) => handleStockChange(stk.id, 'avgPrice', parseFloat(e.target.value) || 0)}
+                              className="w-20 bg-[#121622] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+                            />
+                          </div>
+                        </div>
 
-                        {/* 5. 持倉 */}
-                        <td className="py-2.5 px-3 font-mono">
-                          <input
-                            type="number"
-                            value={stk.shares}
-                            onChange={(e) => handleStockChange(stk.id, 'shares', parseFloat(e.target.value) || 0)}
-                            className="w-16 bg-[#0e121a] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
-                          />
-                        </td>
-
-                        {/* 6. 均價 */}
-                        <td className="py-2.5 px-3 font-mono">
-                          <input
-                            type="number"
-                            step="0.001"
-                            value={stk.avgPrice}
-                            onChange={(e) => handleStockChange(stk.id, 'avgPrice', parseFloat(e.target.value) || 0)}
-                            className="w-20 bg-[#0e121a] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
-                          />
-                        </td>
-
-                        {/* 7. 現值 */}
-                        <td className="py-2.5 px-3 font-mono font-semibold text-white">
-                          ${currentValue.toFixed(2)}
-                        </td>
-
-                        {/* 8. 買價 */}
-                        <td className="py-2.5 px-3 font-mono">
+                        {/* 試算買價 */}
+                        <div className="bg-[#080b11] p-2 rounded-lg border border-[#1a2130] flex flex-col gap-1">
+                          <span className="text-[10px] text-gray-400 font-medium">試算買價 ($)</span>
                           <input
                             type="number"
                             step="0.01"
                             value={stk.buyPrice ?? stk.currentPrice}
                             onChange={(e) => handleStockChange(stk.id, 'buyPrice', parseFloat(e.target.value) || 0)}
-                            className="w-16 bg-[#0e121a] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+                            className="w-full bg-[#121622] border border-[#252e40] rounded px-2 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
                           />
-                        </td>
+                        </div>
 
-                        {/* 9. 買入數量 + 滑桿 */}
-                        <td className="py-2.5 px-3">
-                          <div className="flex flex-col gap-1">
+                        {/* 試算買入數量 */}
+                        <div className="bg-[#080b11] p-2 rounded-lg border border-[#1a2130] flex flex-col gap-1">
+                          <span className="text-[10px] text-gray-400 font-medium">試算買入 (股)</span>
+                          <div className="flex items-center gap-1.5">
                             <input
                               type="number"
                               min="0"
                               value={stk.buyShares || 0}
                               onChange={(e) => handleStockChange(stk.id, 'buyShares', parseInt(e.target.value, 10) || 0)}
-                              className="w-16 bg-[#0e121a] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+                              className="w-16 bg-[#121622] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
                             />
                             <input
                               type="range"
@@ -1148,100 +1366,24 @@ export function FinanceTab() {
                               max={Math.max(neededShares * 2, 100)}
                               value={stk.buyShares || 0}
                               onChange={(e) => handleStockChange(stk.id, 'buyShares', parseInt(e.target.value, 10) || 0)}
-                              className="w-20 accent-blue-500 cursor-pointer h-1.5 bg-gray-700 rounded-lg"
+                              className="flex-1 accent-blue-500 cursor-pointer h-1.5 bg-gray-700 rounded-lg"
                             />
                           </div>
-                        </td>
+                        </div>
 
-                        {/* 10. 尚需買入 / 試算 */}
-                        <td className="py-2.5 px-3 font-mono leading-tight">
-                          {diffValue <= 0 ? (
-                            <span className="text-emerald-400 font-bold">已達標</span>
-                          ) : (
-                            <div className="flex flex-col">
-                              <span className="text-gray-200 font-bold">{neededShares} 股</span>
-                              <span className="text-[10px] text-gray-400 font-normal">
-                                餘 $ {diffValue.toFixed(0)}
-                              </span>
-                            </div>
-                          )}
-                        </td>
-
-                        {/* 11. 試算後均價 */}
-                        <td className="py-2.5 px-3 font-mono font-bold text-white">
-                          ${calculatedAvgPrice.toFixed(2)}
-                        </td>
-
-                        {/* 12. 操作 */}
-                        <td className="py-2.5 px-3 text-center">
-                          <div className="flex items-center justify-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => handleMoveStock(idx, 'up')}
-                              disabled={idx === 0}
-                              className="p-1 text-gray-400 hover:text-white disabled:opacity-20 cursor-pointer"
-                              title="上移"
-                            >
-                              <ArrowUp className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleMoveStock(idx, 'down')}
-                              disabled={idx === tfsaStocks.length - 1}
-                              className="p-1 text-gray-400 hover:text-white disabled:opacity-20 cursor-pointer"
-                              title="下移"
-                            >
-                              <ArrowDown className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteStock(stk.id)}
-                              className="p-1 text-rose-400 hover:text-rose-300 cursor-pointer ml-1"
-                              title="刪除"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {/* 3. 底部列：新增股票 (代號, 數量, 均價, + 新增按鈕) */}
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#1e2535]">
-              <input
-                type="text"
-                placeholder="代號 (如: AAPL)"
-                value={newSymbol}
-                onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
-                className="w-28 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono uppercase focus:outline-none focus:border-blue-500"
-              />
-              <input
-                type="number"
-                placeholder="數量 (持倉股數)"
-                value={newShares}
-                onChange={(e) => setNewShares(e.target.value)}
-                className="w-28 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
-              />
-              <input
-                type="number"
-                step="0.01"
-                placeholder="均價 ($)"
-                value={newAvgPrice}
-                onChange={(e) => setNewAvgPrice(e.target.value)}
-                className="w-28 bg-[#0e121a] border border-[#252e40] rounded-lg px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
-              />
-              <button
-                type="button"
-                onClick={handleAddStock}
-                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer shadow-sm flex items-center gap-1"
-              >
-                <span>+ 新增</span>
-              </button>
-            </div>
+                        {/* 試算後均價 */}
+                        <div className="bg-[#080b11] p-2 rounded-lg border border-[#1a2130] flex flex-col justify-center">
+                          <span className="text-[10px] text-gray-400 font-medium">試算後均價</span>
+                          <span className="font-mono font-bold text-white text-xs mt-0.5">
+                            ${calculatedAvgPrice.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       )}

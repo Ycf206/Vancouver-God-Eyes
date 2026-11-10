@@ -11169,9 +11169,6 @@ function ExploreContent() {
           {activeTab === 'news' && (
             <span>共有 {filteredNews.length} 則即時新聞</span>
           )}
-          {activeTab === 'finance' && (
-            <span>支援美股 / 加股即時報價、財經新聞與 TFSA 投資配置</span>
-          )}
           {activeTab === 'events' && (
             <span>共有 {filteredEvents.length} 項活動資料</span>
           )}
