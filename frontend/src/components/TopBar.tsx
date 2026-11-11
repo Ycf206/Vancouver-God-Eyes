@@ -8,7 +8,7 @@ import {
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
   UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
-  Camera, Megaphone, Ban, Accessibility, Gauge, Construction
+  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes
 } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
@@ -981,7 +981,7 @@ export default function TopBar() {
 
             <div>
               <div className="flex items-center gap-1.5 pb-1.5 mb-2 border-b border-[#2d2e34] text-[11px] font-semibold text-gray-300">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <Boxes className="w-3.5 h-3.5 text-amber-400" />
                 <span>熱門分類捷徑</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">

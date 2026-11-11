@@ -26,6 +26,9 @@ DEFAULT_API_URL = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datase
 
 def update_311(target_count=1000, page_limit=100):
     base_api_url = get_source_endpoint_url("service_requests_311", DEFAULT_API_URL)
+    if "order_by" not in base_api_url:
+        sep = "&" if "?" in base_api_url else "?"
+        base_api_url = f"{base_api_url}{sep}order_by=service_request_open_timestamp%20desc"
     print(f"☎️ 正在更新溫哥華 3-1-1 市政服務請求資料 (URL: {base_api_url}, 目標拉取最新 {target_count} 筆)...")
     
     all_results = []

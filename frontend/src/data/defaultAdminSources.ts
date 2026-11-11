@@ -1480,7 +1480,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
         "url": "https://opendata.vancouver.ca/explore/dataset/3-1-1-service-requests"
       }
     ],
-    "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/3-1-1-service-requests/records/?lang=en"
+    "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/3-1-1-service-requests/records?lang=en&order_by=service_request_open_timestamp%20desc"
   },
   {
     "id": "shopping_flipp",

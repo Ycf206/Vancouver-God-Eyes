@@ -236,7 +236,7 @@ export function FinanceTab() {
   }, [interval, range, startDate, endDate, includePrePost]);
 
   // ==================== 2. 財經新聞狀態 ====================
-  const [newsQuery, setNewsQuery] = useState<string>('market');
+  const [newsQuery, setNewsQuery] = useState<string>('');
   const [newsList, setNewsList] = useState<FinanceNewsItem[]>([]);
   const [loadingNews, setLoadingNews] = useState<boolean>(false);
 
@@ -244,7 +244,8 @@ export function FinanceTab() {
     const targetQ = q !== undefined ? q : newsQuery;
     setLoadingNews(true);
     try {
-      const res = await fetch(`/api/finance/news?q=${encodeURIComponent(targetQ || 'market')}`);
+      const queryParam = (targetQ && targetQ.trim()) ? targetQ.trim() : 'market';
+      const res = await fetch(`/api/finance/news?q=${encodeURIComponent(queryParam)}`);
       const json = await res.json();
       if (json.success && json.news) {
         setNewsList(json.news);
@@ -643,7 +644,7 @@ export function FinanceTab() {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-90 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
+                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:[filter:brightness(0)_invert(1)]"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -652,7 +653,7 @@ export function FinanceTab() {
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-90 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
+                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:[filter:brightness(0)_invert(1)]"
                   />
                 </div>
               </div>

@@ -6880,7 +6880,7 @@ function ExploreContent() {
           {totalPages311 > 1 && (
             <div className="flex items-center justify-between px-3 py-1.5 bg-[#121620] border border-[#263147] rounded-lg text-xs shrink-0 mt-1">
               <div className="text-[11px] text-gray-400">
-                顯示第 <span className="font-semibold text-emerald-400">{(page311 - 1) * PAGE_SIZE_311 + 1}</span> - <span className="font-semibold text-emerald-400">{Math.min(page311 * PAGE_SIZE_311, filtered311Requests.length)}</span> 筆 (共 {filtered311Requests.length} 筆)
+                顯示第 <span className="font-semibold text-emerald-400">{(page311 - 1) * PAGE_SIZE_311 + 1}</span> - <span className="font-semibold text-emerald-400">{Math.min(page311 * PAGE_SIZE_311, filtered311Requests.length)}</span> 筆
               </div>
               <div className="flex items-center gap-1.5">
                 <button
@@ -7059,9 +7059,9 @@ function ExploreContent() {
 
             {/* 子分頁按鈕下方資訊列：左方貼近邊位排序 + 右側日期、Flipp傳單按鈕與官網連結按鈕 */}
             <div className="flex items-center justify-between text-xs px-0.5 shrink-0">
-              {/* 左方貼近邊位：排序功能 (符合第 3 點要求) */}
-              <div className="flex items-center gap-1 bg-[#121620] border border-[#222938] rounded-md px-2 py-0.5 text-[10.5px] shrink-0">
-                <span className="text-gray-400">排序:</span>
+              {/* 左方貼近邊位：排序功能 (圖示 arrow-up-down) */}
+              <div className="flex items-center gap-1.5 bg-[#121620] border border-[#222938] rounded-md px-2 py-0.5 text-[10.5px] shrink-0">
+                <ArrowUpDown className="w-3 h-3 text-gray-400 shrink-0" />
                 <select
                   value={flippItemSort}
                   onChange={(e) => setFlippItemSort(e.target.value as any)}
@@ -9933,14 +9933,6 @@ function ExploreContent() {
               <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
                 每 5 分鐘更新
               </span>
-              <button
-                onClick={() => fetchTranslinkAlerts(true)}
-                disabled={loadingTransitAlerts}
-                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
-                title="重新整理"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${loadingTransitAlerts ? 'animate-spin text-rose-400' : ''}`} />
-              </button>
               <a
                 href="https://www.translink.ca/alerts"
                 target="_blank"
@@ -9950,6 +9942,14 @@ function ExploreContent() {
               >
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
+              <button
+                onClick={() => fetchTranslinkAlerts(true)}
+                disabled={loadingTransitAlerts}
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
+                title="重新整理"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingTransitAlerts ? 'animate-spin text-rose-400' : ''}`} />
+              </button>
             </div>
           </div>
 

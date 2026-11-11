@@ -13,10 +13,20 @@ interface ChangelogEntry {
 
 const CHANGELOG_DATA: ChangelogEntry[] = [
   {
+    version: 'v2026.11.2',
+    title: 'v2026.11.2 更新內容',
+    date: '2026-11-10',
+    isLatest: true,
+    highlights: [
+      '新增 Drive BC 圖層',
+      '新增財經探索頁',
+      '修正工作探索頁錯誤'
+    ]
+  },
+  {
     version: 'v2026.11.1',
     title: 'v2026.11.1 更新內容',
     date: '2026-11-07',
-    isLatest: true,
     highlights: [
       '新增巴士轉車站',
       '新增天車車票資訊及收費區劃分',
@@ -48,7 +58,8 @@ interface ChangelogModalProps {
 export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
   // 記錄展開的分頁，預設展開最新版本
   const [expandedVersions, setExpandedVersions] = useState<Record<string, boolean>>({
-    'v2026.11.1': true,
+    'v2026.11.2': true,
+    'v2026.11.1': false,
     'v2026.11.0': false
   });
 
