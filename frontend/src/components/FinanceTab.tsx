@@ -16,7 +16,8 @@ import {
   AlertCircle,
   DollarSign,
   Plus,
-  Ellipsis
+  Ellipsis,
+  X
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { formatDateTime } from '@/utils/time';
@@ -97,7 +98,7 @@ export function FinanceTab() {
   const [subTab, setSubTab] = useState<'stock' | 'news' | 'tfsa'>('stock');
 
   // ==================== 1. 股票搜尋狀態 ====================
-  const [stockSymbolInput, setStockSymbolInput] = useState<string>('TSLA');
+  const [stockSymbolInput, setStockSymbolInput] = useState<string>('');
   const [interval, setInterval] = useState<string>('1d');
   const [range, setRange] = useState<string>('1mo');
   const [startDate, setStartDate] = useState<string>('');
@@ -227,10 +228,19 @@ export function FinanceTab() {
     }
   }, [stockSymbolInput, interval, range, startDate, endDate, includePrePost]);
 
-  // 初次掛載載入預設股票
+  // 輸入股票代號或參數變更時自動查詢 (Debounce 500ms，輸入文字自動搜尋，不再需要搜尋按鈕)
   useEffect(() => {
-    fetchStockData('TSLA');
-  }, []);
+    const sym = stockSymbolInput.trim();
+    if (!sym) {
+      setStockData(null);
+      setStockError('');
+      return;
+    }
+    const timer = setTimeout(() => {
+      fetchStockData(sym);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [stockSymbolInput, interval, range, startDate, endDate, includePrePost, fetchStockData]);
 
   // ==================== 2. 財經新聞狀態 ====================
   const [newsQuery, setNewsQuery] = useState<string>('market');
@@ -524,7 +534,7 @@ export function FinanceTab() {
         <div className="flex flex-col flex-1 min-h-0 gap-2 overflow-y-auto pr-0.5 custom-scrollbar">
           {/* 搜尋控制與參數列 */}
           <div className="p-3 bg-[#121622] rounded-xl border border-[#222938] flex flex-col gap-2.5 shrink-0">
-            {/* 代號輸入欄（支援即時搜尋建議）與查詢圖示按鈕 */}
+            {/* 代號輸入欄（支援即時搜尋建議與自動查詢） */}
             <div className="flex items-center gap-2">
               <div className="relative flex-1" ref={searchContainerRef}>
                 <input
@@ -534,15 +544,19 @@ export function FinanceTab() {
                     setStockSymbolInput(e.target.value);
                     if (e.target.value.trim().length > 0) {
                       setShowSuggestions(true);
+                    } else {
+                      setShowSuggestions(false);
                     }
                   }}
                   onFocus={() => {
-                    if (suggestions.length > 0) setShowSuggestions(true);
+                    if (suggestions.length > 0 && stockSymbolInput.trim().length > 0) setShowSuggestions(true);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       setShowSuggestions(false);
-                      fetchStockData();
+                      if (stockSymbolInput.trim()) {
+                        fetchStockData();
+                      }
                     } else if (e.key === 'Escape') {
                       setShowSuggestions(false);
                     }
@@ -551,8 +565,22 @@ export function FinanceTab() {
                   className="w-full bg-[#0d1017] border border-[#262e3d] rounded-lg pl-8 pr-8 py-2 text-xs text-white placeholder-gray-500 uppercase font-mono font-bold focus:outline-none focus:border-emerald-500"
                 />
                 <Search className="w-4 h-4 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                {loadingSuggestions && (
+                {(loadingStock || loadingSuggestions) && (
                   <RefreshCw className="w-3.5 h-3.5 text-emerald-400 animate-spin absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                )}
+                {!loadingStock && !loadingSuggestions && stockSymbolInput && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStockSymbolInput('');
+                      setShowSuggestions(false);
+                      setStockData(null);
+                    }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5 cursor-pointer"
+                    title="清除"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 )}
 
                 {/* 搜尋結果建議下拉選單 */}
@@ -594,20 +622,6 @@ export function FinanceTab() {
                   </div>
                 )}
               </div>
-
-              {/* 查詢報價圖示按鈕 */}
-              <button
-                type="button"
-                onClick={() => {
-                  setShowSuggestions(false);
-                  fetchStockData();
-                }}
-                disabled={loadingStock}
-                title="查詢報價"
-                className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg transition-all flex items-center justify-center shrink-0 cursor-pointer shadow-sm active:scale-95"
-              >
-                {loadingStock ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-              </button>
             </div>
 
             {/* 條件設定區塊：第一行 (起始日期, 結束日期) / 第二行 (週期, 時間範圍, 包含盤前/盤後) */}
@@ -685,6 +699,14 @@ export function FinanceTab() {
             <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{stockError}</span>
+            </div>
+          )}
+
+          {/* 無查詢時提示 */}
+          {!stockData && !loadingStock && !stockError && (
+            <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-500 text-xs">
+              <Search className="w-7 h-7 opacity-30 text-gray-400" />
+              <span>輸入股票代號（例如: NVDA, TSLA, RY.TO）即可自動查詢報價</span>
             </div>
           )}
 

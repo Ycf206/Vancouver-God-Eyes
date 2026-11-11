@@ -28,9 +28,28 @@ import {
   Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy,
-  TowerControl, CalendarClock, ChartNoAxesCombined
+  TowerControl, CalendarClock, ChartNoAxesCombined, Dam
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
+
+const LUCIDE_DAM_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 11.31c1.17.56 1.54 1.69 3.5 1.69 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M11.75 18c.35.5 1.45 1 2.75 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M2 6h4"/><path d="M7 3a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L10 4a1 1 0 0 0-1-1z"/></svg>`;
+
+const registerDamIcon = (mapInstance: any) => {
+  if (!mapInstance) return;
+  const targetMap = mapInstance.getMap ? mapInstance.getMap() : mapInstance;
+  if (!targetMap || typeof targetMap.hasImage !== 'function' || targetMap.hasImage('lucide-dam')) return;
+  const img = new Image(32, 32);
+  img.onload = () => {
+    try {
+      if (targetMap && typeof targetMap.hasImage === 'function' && !targetMap.hasImage('lucide-dam')) {
+        targetMap.addImage('lucide-dam', img);
+      }
+    } catch {
+      // ignore
+    }
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(LUCIDE_DAM_SVG);
+};
 
 const LetterXIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -865,6 +884,7 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'van-wifi-layer',
   'van-wifi-symbol-layer',
   'tide-stations-layer',
+  'tide-stations-dam-icon',
   'tide-stations-symbol-layer',
   'traffic-conditions-casing-layer',
   'traffic-conditions-layer',
@@ -3736,6 +3756,20 @@ export default function AppMap() {
   const isMarineTideActive = Boolean(isExploreOpen && exploreTab === 'weather' && weatherSubTab === 'marine');
   const isExploreTrafficActive = Boolean(isExploreOpen && exploreTab === 'traffic');
 
+  // 確保海岸潮汐水位站 Lucide: dam 圖示已注入 MapLibre
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+    registerDamIcon(map);
+    const handleStyleData = () => {
+      registerDamIcon(map);
+    };
+    map.on('styledata', handleStyleData);
+    return () => {
+      map.off('styledata', handleStyleData);
+    };
+  }, [mapStyleType, isMarineTideActive]);
+
   const mapStyle = useMemo(() => {
     // Determine Base and Label Tiles based on mapStyleType
     let baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'];
@@ -5655,10 +5689,21 @@ export default function AppMap() {
         type: 'circle',
         source: 'tide-stations',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 7, 12, 11, 15, 15],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 5, 12, 7.5, 15, 10],
           'circle-color': '#0284c7',
-          'circle-stroke-width': 2.5,
+          'circle-stroke-width': 2,
           'circle-stroke-color': '#38bdf8'
+        }
+      });
+      style.layers.push({
+        id: 'tide-stations-dam-icon',
+        type: 'symbol',
+        source: 'tide-stations',
+        layout: {
+          'icon-image': 'lucide-dam',
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 9, 0.32, 12, 0.45, 15, 0.6],
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true
         }
       });
       style.layers.push({
@@ -5667,8 +5712,8 @@ export default function AppMap() {
         source: 'tide-stations',
         layout: {
           'text-field': ['get', 'badge'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 13, 12, 16, 14],
-          'text-offset': [0, 1.4],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 9.5, 13, 11.5, 16, 13],
+          'text-offset': [0, 1.3],
           'text-anchor': 'top',
           'text-font': ['Open Sans Bold']
         },
@@ -7332,6 +7377,7 @@ export default function AppMap() {
           }
         }}
         onLoad={(e: any) => {
+          registerDamIcon(e.target);
           updateScale();
           const z = e.target?.getZoom ? e.target.getZoom() : e.viewState?.zoom;
           if (typeof z === 'number' && !isNaN(z) && Math.abs(z - currentZoomRef.current) > 0.15) {
@@ -8021,7 +8067,9 @@ export default function AppMap() {
             >
               <span className="absolute w-12 h-12 rounded-full bg-emerald-400/40 animate-ping pointer-events-none"></span>
               <span className="w-7 h-7 rounded-full border-2 border-emerald-400 bg-emerald-500/30 group-hover:bg-rose-500/60 group-hover:border-rose-400 flex items-center justify-center shadow-lg transition-all">
-                <span className="text-xs group-hover:hidden">{searchTarget.icon}</span>
+                <span className="text-xs group-hover:hidden">
+                  {searchTarget.category === 'tide_stations' ? <Dam className="w-3.5 h-3.5 text-cyan-300" /> : searchTarget.icon}
+                </span>
                 <span className="text-xs hidden group-hover:inline text-white font-bold leading-none">✕</span>
               </span>
             </div>
@@ -8173,7 +8221,7 @@ export default function AppMap() {
                    explorationSelectedFacility.facility_type === 'libraries' ? '📚' :
                    explorationSelectedFacility.facility_type === 'fuel' ? '⛽' :
                    explorationSelectedFacility.facility_type === 'van_wifi' ? '📶' :
-                   explorationSelectedFacility.facility_type === 'tide_stations' ? '🌊' :
+                   explorationSelectedFacility.facility_type === 'tide_stations' ? <Dam className="w-3.5 h-3.5 inline-block text-cyan-300" /> :
                    explorationSelectedFacility.facility_type === 'traffic_crosswalks' ? '🚶' : '📍')}
                 </span>
                 <span className="max-w-[150px] truncate">{explorationSelectedFacility.name}</span>
@@ -8204,7 +8252,7 @@ export default function AppMap() {
                      explorationSelectedFacility.facility_type === 'libraries' ? '📚' :
                      explorationSelectedFacility.facility_type === 'fuel' ? '⛽' :
                      explorationSelectedFacility.facility_type === 'van_wifi' ? '📶' :
-                     explorationSelectedFacility.facility_type === 'tide_stations' ? '🌊' :
+                     explorationSelectedFacility.facility_type === 'tide_stations' ? <Dam className="w-4 h-4 inline-block text-white" /> :
                      explorationSelectedFacility.facility_type === 'traffic_crosswalks' ? '🚶' : '📍')}
                   </span>
                 </div>
@@ -19591,7 +19639,7 @@ export default function AppMap() {
                          fac.facility_type === 'libraries' ? '📚' :
                          fac.facility_type === 'fuel' ? '⛽' :
                          fac.facility_type === 'van_wifi' ? '📶' :
-                         fac.facility_type === 'tide_stations' ? '🌊' :
+                         fac.facility_type === 'tide_stations' ? <Dam className="w-3.5 h-3.5 inline-block text-cyan-300" /> :
                          fac.facility_type === 'traffic_crosswalks' ? '🚶' : '📍')}
                       </span>
                       <div className="min-w-0">

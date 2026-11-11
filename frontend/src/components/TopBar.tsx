@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, MoreHorizontal, Compass, Filter, Check, 
   Milestone, Store, Trees, Landmark, Droplets, Clock, Sparkles, Navigation,
-  CircleDollarSign, Toilet, Fuel, EvCharger, Hospital, TrainFront, ParkingMeter, Package, Waves, Fence, Repeat, BusFront,
+  CircleDollarSign, Toilet, Fuel, EvCharger, Hospital, TrainFront, ParkingMeter, Package, Waves, Fence, Repeat, BusFront, Dam,
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
   UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
@@ -192,7 +192,7 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'beach_water_quality' || lk === 'beachWaterQuality') return <Parasol className={`${cls} text-teal-300`} />;
   if (c === 'border_crossing' || lk === 'borderCrossing') return <Fence className={`${cls} text-cyan-400`} />;
   if (c === 'ski_resort' || lk === 'skiResorts') return <CableCar className={`${cls} text-sky-400`} />;
-  if (c === 'tide_stations' || lk === 'tideStations') return <Waves className={`${cls} text-teal-400`} />;
+  if (c === 'tide_stations' || lk === 'tideStations') return <Dam className={`${cls} text-teal-400`} />;
   if (c === 'aed' || lk === 'aed') return <HeartPulse className={`${cls} text-rose-400`} />;
   if (c === 'community_gardens' || lk === 'communityGardens') return <Flower2 className={`${cls} text-lime-400`} />;
   if (c === 'fire_hydrants' || lk === 'fireHydrants') return <FireExtinguisher className={`${cls} text-rose-500`} />;

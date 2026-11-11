@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
 import { Landmark, 
@@ -1623,11 +1623,21 @@ function ExploreContent() {
     }
   };
 
+  const isInitialJobMountRef = useRef(true);
   useEffect(() => {
-    if (activeTab === 'jobs' && jobsList.length === 0 && !loadingJobs) {
-      fetchJobs(1);
+    if (activeTab !== 'jobs') return;
+    if (isInitialJobMountRef.current) {
+      isInitialJobMountRef.current = false;
+      if (jobsList.length === 0 && !loadingJobs) {
+        fetchJobs(1);
+      }
+      return;
     }
-  }, [activeTab]);
+    const timer = setTimeout(() => {
+      fetchJobs(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [activeTab, jobKeyword, jobSearchInField]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleJobClick = async (job: any) => {
@@ -5943,7 +5953,7 @@ function ExploreContent() {
         <div className="flex flex-col flex-1 min-h-0 relative">
           {/* 1.2 搜尋列與控制列 */}
           <div className="flex flex-col gap-2 mb-2 shrink-0">
-            {/* Search Input Row */}
+            {/* Search Input Row (自動即時搜尋) */}
             <div className="flex items-center gap-1.5">
               <div className="relative flex-1 min-w-0">
                 <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -5959,11 +5969,14 @@ function ExploreContent() {
                   placeholder="搜尋職位關鍵字 (如: Developer, Cook, Nurse)..."
                   className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-2 rounded-lg border border-[#232838] focus:outline-none focus:border-indigo-500/60 transition-colors"
                 />
-                {jobKeyword && (
+                {loadingJobs && (
+                  <RefreshCw className="w-3.5 h-3.5 text-indigo-400 animate-spin absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                )}
+                {!loadingJobs && jobKeyword && (
                   <button
                     type="button"
                     onClick={() => setJobKeyword('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5 cursor-pointer"
                     title="清除關鍵字"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -5983,22 +5996,6 @@ function ExploreContent() {
                 <option value="employer">僅僱主名稱</option>
                 <option value="jobId">職位編號</option>
               </select>
-
-              {/* 搜尋按鈕 */}
-              <button
-                type="button"
-                onClick={() => fetchJobs(1)}
-                disabled={loadingJobs}
-                className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold rounded-lg flex items-center gap-1 shrink-0 transition-colors cursor-pointer"
-                title="執行搜尋"
-              >
-                {loadingJobs ? (
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Search className="w-3.5 h-3.5" />
-                )}
-                <span className="hidden sm:inline">搜尋</span>
-              </button>
 
               {/* 1.3 篩選工具圖示按鈕 */}
               <button
@@ -11164,7 +11161,11 @@ function ExploreContent() {
       <div className="mt-2.5 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <div className="flex flex-col text-[10.5px] leading-tight text-gray-400 min-w-0 pr-2">
           {activeTab === 'weather' && (
-            <span>氣象數據：加拿大環境部 (ECCC MSC GeoMet)</span>
+            <span>
+              {weatherSubTab === 'models'
+                ? `共有 ${tideStations.length || 7} 座海岸潮汐水位站`
+                : '共有 7 天氣象預報數據'}
+            </span>
           )}
           {activeTab === 'news' && (
             <span>共有 {filteredNews.length} 則即時新聞</span>
@@ -11182,26 +11183,19 @@ function ExploreContent() {
             </span>
           )}
           {activeTab === 'beach' && (
-            <>
-              <span>共有 {beachList.length || 41} 座海灘水質</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Metro Vancouver</span>
-            </>
+            <span>共有 {beachList.length || 41} 座海灘水質檢測點</span>
           )}
           {activeTab === 'ski' && (
-            <>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Skiresort</span>
-            </>
+            <span>共有 {skiResorts.length || 3} 座滑雪場</span>
           )}
           {activeTab === 'aurora' && (
-            <>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：NOAA SWPC</span>
-            </>
+            <span>共有 3 天極光指數預測</span>
           )}
           {activeTab === 'jobs' && (
-            <span className="text-[9.5px] text-gray-500">資料來源：WorkBC (Government of British Columbia)</span>
+            <span>共有 {jobTotalCount || jobsList.length} 個職位空缺</span>
           )}
           {activeTab === '311' && (
-            <span className="text-[9.5px] text-gray-500">資料來源：City of Vancouver Open Data</span>
+            <span>共有 {filtered311Requests.length || requests311.length} 宗市政服務案件</span>
           )}
           {activeTab === 'shopping' && (() => {
             const currentMerchant = flippMerchants.find(m => m.merchant === selectedMerchant) || flippMerchants[0];
@@ -11224,10 +11218,7 @@ function ExploreContent() {
             <span>共 {ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中</span>
           )}
           {(activeTab === 'cargo' || activeTab === 'shipping') && (
-            <>
-              <span>共追蹤 {sortedShippingVessels.length} 艘港口商船 (依抵達時間近至遠排序)</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：AISStream</span>
-            </>
+            <span>共追蹤 {sortedShippingVessels.length} 艘港口商船</span>
           )}
           {activeTab === 'alerts' && (
             <span>共 {filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報</span>
@@ -11241,19 +11232,17 @@ function ExploreContent() {
               ? filteredSevereRoads.length
               : filteredTrafficAlerts.length;
             return (
-              <>
-                <span>共 {currentTabItemCount} 條主要幹道及橋隧</span>
-                <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：TomTom</span>
-              </>
+              <span>共 {currentTabItemCount} 條主要幹道及橋隧</span>
             );
           })()}
           {activeTab === 'border' && (
-            <>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：CBSA & CBP</span>
-            </>
+            <span>共有 {borderCrossings.length || 5} 個陸路美加口岸</span>
           )}
           {activeTab === 'crashes' && (
             <span>共 {filteredCrashes.length} 處車禍事故統計熱點</span>
+          )}
+          {activeTab === 'lottery' && (
+            <span>共有 {lotteryData ? Object.keys(lotteryData).length : 4} 項彩票開獎資訊</span>
           )}
         </div>
       </div>
@@ -11377,7 +11366,7 @@ function ExploreContent() {
 
             {/* Modal Footer */}
             <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
-              <span>資料來源：NOAA NESDIS STAR 即時氣象衛星 · 每 5-10 分鐘自動更新</span>
+              <span>NOAA NESDIS STAR 即時氣象衛星 · 每 5-10 分鐘自動更新</span>
               <span className="text-sky-400 font-mono text-[10.5px]">HD 衛星雲圖</span>
             </div>
           </div>

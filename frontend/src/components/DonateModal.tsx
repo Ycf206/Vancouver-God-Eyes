@@ -86,10 +86,10 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
             </label>
             <div className="grid grid-cols-4 gap-2">
               {[
-                { amount: 5, label: '$5 CAD', desc: '請杯咖啡 ☕' },
-                { amount: 15, label: '$15 CAD', desc: '暖心應援 🥪' },
-                { amount: 30, label: '$30 CAD', desc: '深度肯定 ✨' },
-                { amount: 50, label: '$50 CAD', desc: '熱情支持 🚀' },
+                { amount: 5, label: '$5 CAD', desc: '請杯咖啡' },
+                { amount: 15, label: '$15 CAD', desc: '暖心應援' },
+                { amount: 30, label: '$30 CAD', desc: '深度肯定' },
+                { amount: 50, label: '$50 CAD', desc: '熱情支持' },
               ].map((item) => (
                 <button
                   key={item.amount}
@@ -245,14 +245,6 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
               <span><strong>支付安全與隱私</strong>：所有線上付款均經由符合國際最高 PCI-DSS Level 1 認證標準之 Stripe 金流伺服器加密處理，本網站絕不儲存亦不會接觸您的信用卡敏感資訊。</span>
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="px-5 py-3 border-t border-[#2d2e34] bg-[#191a1e] flex items-center justify-between text-[11px] text-gray-500">
-          <span className="flex items-center gap-1">
-            <Info className="w-3 h-3 text-gray-400" />
-            <span>感謝您對「溫哥華上帝之眼」的欣賞與支持！</span>
-          </span>
         </div>
       </div>
     </div>
