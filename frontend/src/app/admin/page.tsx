@@ -2708,51 +2708,45 @@ export default function AdminPage() {
         {mainTab === 'system_logs' && (
           <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col">
             <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex items-center justify-between flex-wrap gap-3">
-              <div className="flex items-center gap-3">
-                <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-sky-400" />
-                  <span>系統運作與資料源更新日誌</span>
-                </h3>
-              </div>
-
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* 保留期限自定義設定 (自定義天數，不用下拉清單) */}
-                <div className="flex items-center gap-1.5 text-xs text-gray-300 bg-[#121620] border border-[#2c374d] rounded-lg px-2.5 py-1">
-                  <span className="text-gray-400 text-[11px] whitespace-nowrap">保留期限:</span>
-                  <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      min={0}
-                      max={9999}
-                      value={systemRetentionInput}
-                      onChange={(e) => setSystemRetentionInput(e.target.value)}
-                      onBlur={() => {
-                        const parsed = parseInt(systemRetentionInput, 10);
-                        handleSystemRetentionChange(isNaN(parsed) ? 30 : parsed);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          const parsed = parseInt(systemRetentionInput, 10);
-                          handleSystemRetentionChange(isNaN(parsed) ? 30 : parsed);
-                        }
-                      }}
-                      placeholder="天數"
-                      className="w-14 bg-[#181d28] border border-[#3b475e] focus:border-sky-500 rounded px-1.5 py-0.5 text-xs text-sky-300 font-mono text-center outline-none"
-                    />
-                    <span className="text-gray-400 text-[11px]">天</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
+              {/* 保留期限自定義設定 (自定義天數，不用下拉清單) */}
+              <div className="flex items-center gap-1.5 text-xs text-gray-300 bg-[#121620] border border-[#2c374d] rounded-lg px-2.5 py-1">
+                <span className="text-gray-400 text-[11px] whitespace-nowrap">保留期限:</span>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    max={9999}
+                    value={systemRetentionInput}
+                    onChange={(e) => setSystemRetentionInput(e.target.value)}
+                    onBlur={() => {
                       const parsed = parseInt(systemRetentionInput, 10);
                       handleSystemRetentionChange(isNaN(parsed) ? 30 : parsed);
                     }}
-                    className="text-[10.5px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-500/30 font-medium transition-colors cursor-pointer"
-                    title="儲存並套用保留天數"
-                  >
-                    套用
-                  </button>
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const parsed = parseInt(systemRetentionInput, 10);
+                        handleSystemRetentionChange(isNaN(parsed) ? 30 : parsed);
+                      }
+                    }}
+                    placeholder="天數"
+                    className="w-14 bg-[#181d28] border border-[#3b475e] focus:border-sky-500 rounded px-1.5 py-0.5 text-xs text-sky-300 font-mono text-center outline-none"
+                  />
+                  <span className="text-gray-400 text-[11px]">天</span>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const parsed = parseInt(systemRetentionInput, 10);
+                    handleSystemRetentionChange(isNaN(parsed) ? 30 : parsed);
+                  }}
+                  className="text-[10.5px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-500/30 font-medium transition-colors cursor-pointer"
+                  title="儲存並套用保留天數"
+                >
+                  套用
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap">
 
                 {/* 等級篩選 */}
                 <div className="flex items-center gap-1 bg-[#10131d] border border-[#252a38] rounded-lg p-0.5">
@@ -2841,8 +2835,8 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1e2535]">
-                  {pagedSystemLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-[#19202e] transition-colors">
+                  {pagedSystemLogs.map((log, idx) => (
+                    <tr key={`${log.id || 'syslog'}_${idx}`} className="hover:bg-[#19202e] transition-colors">
                       <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
                         {new Date(log.timestamp).toLocaleString('zh-HK', {
                           year: 'numeric',

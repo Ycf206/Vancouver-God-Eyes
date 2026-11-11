@@ -5,6 +5,7 @@ import tempfile
 import threading
 import logging
 import atexit
+import uuid
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any, Optional
 
@@ -18,6 +19,20 @@ SCHEDULE_CONFIG_FILE = os.path.join(DATA_DIR, 'schedule_history_config.json')
 
 # 日誌數量上限保護，避免無限制膨脹
 MAX_LOG_ENTRIES = 2000
+
+_log_counter = 0
+_log_counter_lock = threading.Lock()
+
+
+def _generate_unique_log_id(prefix: str = "syslog") -> str:
+    """保證毫秒與高並發下的全域唯一日誌 ID，杜絕前端 React 重複 key 警告"""
+    global _log_counter
+    with _log_counter_lock:
+        _log_counter = (_log_counter + 1) % 1000000
+        c = _log_counter
+    now_ms = int(time.time() * 1000)
+    rand_hex = uuid.uuid4().hex[:6]
+    return f"{prefix}_{now_ms}_{c:04d}_{rand_hex}"
 
 
 def _atomic_write_json(path: str, payload: Any) -> None:
@@ -112,6 +127,14 @@ class SystemLogService:
                     print(f"⚠️ 讀取 system_logs.json 異常: {e}")
                     loaded_logs = []
             self._system_logs = loaded_logs[:MAX_LOG_ENTRIES]
+            # 確保載入的所有日誌 ID 絕對唯一，清理舊有重複 key
+            seen_sys_ids = set()
+            for lg in self._system_logs:
+                if isinstance(lg, dict):
+                    lid = lg.get("id")
+                    if not lid or lid in seen_sys_ids:
+                        lg["id"] = _generate_unique_log_id("syslog")
+                    seen_sys_ids.add(lg["id"])
 
             # 4. 載入 Schedule History 至記憶體快取
             loaded_history = []
@@ -365,7 +388,7 @@ class SystemLogService:
 
             # 3. 構建並加入新日誌紀錄
             entry = {
-                "id": f"syslog_{int(now_ts * 1000)}_{len(str(message)) % 1000}",
+                "id": _generate_unique_log_id("syslog"),
                 "timestamp": now_iso,
                 "level": level_upper,
                 "file": str(file)[:200],
@@ -463,7 +486,7 @@ class SystemLogService:
             runner_tag = "GitHub Actions" if runner == "github_actions" else "OCI"
             level = "SUCCESS" if status == "success" else ("WARNING" if status == "warning" else "ERROR")
             sys_entry = {
-                "id": log_entry.get("id") or f"syslog_sched_{int(now_ts * 1000)}",
+                "id": log_entry.get("id") or _generate_unique_log_id("syslog_sched"),
                 "timestamp": now_iso,
                 "level": level,
                 "file": f"{runner_tag} ({src})",

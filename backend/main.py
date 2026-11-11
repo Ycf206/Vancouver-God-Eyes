@@ -4903,16 +4903,9 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
                 src_by_id[sid]["status"] = "updating"
 
         if new_gh_logs:
-            # 依時間由舊到新寫入 append_schedule_log 與 add_system_log，使最新項目排在頂端
+            # 依時間由舊到新寫入 append_schedule_log，自動同步寫入系統日誌（保留原工作流真實時間戳）
             for entry in reversed(new_gh_logs):
                 system_log_service.append_schedule_log(entry)
-                system_log_service.add_system_log(
-                    level="SUCCESS" if entry.get("status") == "success" else "ERROR",
-                    file=entry.get("workflow_file") or "github-actions",
-                    action="GITHUB_ACTION_SYNC",
-                    message=f"GitHub Actions 資料源更新完成：{entry.get('source_name')} ({entry.get('workflow_file')}) - {entry.get('detail')}",
-                    details=entry
-                )
             changed = True
 
     return changed
