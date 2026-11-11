@@ -91,9 +91,10 @@ def _is_layer_recent(filename: str, ttl_seconds: int) -> bool:
 
 
 def refresh_shared_bikes(full: bool = True) -> int:
-    """更新 Mobi 共享單車站點與即時車況"""
+    """更新 Mobi 共享單車站點與即時車況 (full=True 為每月全量站點結構，full=False 為每小時即時車位)"""
     file_path = "backend/scripts/layers/update_shared_bikes.py"
     target_file = "vancouver_shared_bikes.geojson"
+    mode_text = "每月全量站點" if full else "每小時即時車位"
     try:
         from update_shared_bikes import update_mobi_stations, update_mobi_status
         if full:
@@ -101,18 +102,19 @@ def refresh_shared_bikes(full: bool = True) -> int:
         else:
             features = update_mobi_status()
         cnt = len(features) if features else 0
-        log_data_source_update("shared_bikes", "Mobi 共享單車", cnt, target_file, file_path)
+        log_data_source_update("shared_bikes", f"Mobi 共享單車 ({mode_text})", cnt, target_file, file_path)
         return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_shared_bikes 異常: {e}")
-        log_data_source_update("shared_bikes", "Mobi 共享單車", None, target_file, file_path, error=e)
+        log_data_source_update("shared_bikes", f"Mobi 共享單車 ({mode_text})", None, target_file, file_path, error=e)
         return 0
 
 
 def refresh_escooter(full: bool = True) -> int:
-    """更新 Lime 共享滑板車站點與即時可用車況"""
+    """更新 Lime 共享滑板車站點與即時可用車況 (full=True 為每月全量站點結構，full=False 為每小時即時車況)"""
     file_path = "backend/scripts/layers/update_escooter.py"
     target_file = "vancouver_escooter.geojson"
+    mode_text = "每月全量站點" if full else "每小時即時車況"
     try:
         from update_escooter import update_escooter_stations, update_escooter_status
         if full:
@@ -120,11 +122,11 @@ def refresh_escooter(full: bool = True) -> int:
         else:
             features = update_escooter_status()
         cnt = len(features) if features else 0
-        log_data_source_update("escooter", "Lime 共享滑板車", cnt, target_file, file_path)
+        log_data_source_update("escooter", f"Lime 共享滑板車 ({mode_text})", cnt, target_file, file_path)
         return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_escooter 異常: {e}")
-        log_data_source_update("escooter", "Lime 共享滑板車", None, target_file, file_path, error=e)
+        log_data_source_update("escooter", f"Lime 共享滑板車 ({mode_text})", None, target_file, file_path, error=e)
         return 0
 
 
@@ -209,6 +211,7 @@ async def run_dynamic_layers_background_loop():
 
     last_bike_time = time.time()
     last_scooter_time = time.time()
+    last_monthly_stations_time = time.time()
     last_311_time = time.time()
     last_food_time = time.time()
 
@@ -217,17 +220,28 @@ async def run_dynamic_layers_background_loop():
             await asyncio.sleep(60)  # 每分鐘心跳檢查
             now = time.time()
 
-            # 1. 共享單車 (每 3600 秒)
+            # 1. 共享單車 (每 3600 秒更新即時車位；每 30 天自動觸發全量站點位置與名稱同步)
             if now - last_bike_time >= 3600:
                 last_bike_time = now
-                print("🚲 [Dynamic Layers] 觸發排程: Mobi 共享單車即時車況更新...")
-                await loop.run_in_executor(None, refresh_shared_bikes, False)
+                need_monthly_bikes = (now - last_monthly_stations_time >= 30 * 86400)
+                if need_monthly_bikes:
+                    print("🚲 [Dynamic Layers] 觸發排程: Mobi 共享單車每月全量站點同步 (full=True)...")
+                    await loop.run_in_executor(None, refresh_shared_bikes, True)
+                else:
+                    print("🚲 [Dynamic Layers] 觸發排程: Mobi 共享單車每小時即時車況更新 (full=False)...")
+                    await loop.run_in_executor(None, refresh_shared_bikes, False)
 
-            # 2. 共享滑板車 (每 3600 秒)
+            # 2. 共享滑板車 (每 3600 秒更新即時可用車況；每 30 天自動觸發全量站點位置與名稱同步)
             if now - last_scooter_time >= 3600:
                 last_scooter_time = now
-                print("🛴 [Dynamic Layers] 觸發排程: Lime 共享滑板車即時狀態更新...")
-                await loop.run_in_executor(None, refresh_escooter, False)
+                need_monthly_scooter = (now - last_monthly_stations_time >= 30 * 86400)
+                if need_monthly_scooter:
+                    last_monthly_stations_time = now
+                    print("🛴 [Dynamic Layers] 觸發排程: Lime 共享滑板車每月全量站點同步 (full=True)...")
+                    await loop.run_in_executor(None, refresh_escooter, True)
+                else:
+                    print("🛴 [Dynamic Layers] 觸發排程: Lime 共享滑板車每小時即時狀態更新 (full=False)...")
+                    await loop.run_in_executor(None, refresh_escooter, False)
 
             # 3. 3-1-1 市政工單 (每 12 小時 = 43200 秒)
             if now - last_311_time >= 43200:
