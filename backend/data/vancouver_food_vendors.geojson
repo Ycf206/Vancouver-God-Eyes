@@ -1,8 +1,8 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
-  "total_count": 9,
-  "updated_at": "2026-11-10T14:29:06.001Z",
+  "total_count": 8,
+  "updated_at": "2026-11-11T13:44:10.499Z",
   "features": [
     {
       "type": "Feature",
@@ -32,16 +32,16 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.106352,
-          49.27141
+          -123.030974,
+          49.206493
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_2",
         "facility_type": "food_vendors",
-        "name": "BC The Mad Greek",
-        "business_name": "BC The Mad Greek",
-        "address": "1600 Manitoba St, Vancouver, BC",
+        "name": "Babb D Thai Food",
+        "business_name": "Babb D Thai Food",
+        "address": "River District Town Centre, 8558 River District Cross, Vancouver, BC",
         "hours": "11 AM – 7 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
@@ -54,17 +54,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.133731,
-          49.263539
+          -123.10647,
+          49.271262
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_3",
         "facility_type": "food_vendors",
-        "name": "Miss Siam",
-        "business_name": "Miss Siam",
-        "address": "Broadway/Birch",
-        "hours": "11 AM – 2 PM",
+        "name": "Crack On",
+        "business_name": "Crack On",
+        "address": "Olympic Village Square, 1650 Manitoba St, Vancouver, BC",
+        "hours": "10 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -76,17 +76,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.113481,
-          49.286466
+          -123.1458,
+          49.270698
         ]
       },
       "properties": {
         "id": "food_vendor_sfa_4",
         "facility_type": "food_vendors",
-        "name": "arturosmexico2go",
-        "business_name": "arturosmexico2go",
-        "address": "Howe St & W Cordova St",
-        "hours": "11:30 AM – 2:45 PM",
+        "name": "Miss Siam",
+        "business_name": "Miss Siam",
+        "address": "Burrard/1st",
+        "hours": "11 AM – 2 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -98,34 +98,12 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.117712,
-          49.286774
-        ]
-      },
-      "properties": {
-        "id": "food_vendor_sfa_5",
-        "facility_type": "food_vendors",
-        "name": "Il Saltimbocca by Via Tevere",
-        "business_name": "Il Saltimbocca by Via Tevere",
-        "address": "Burrard St & W Pender St",
-        "hours": "11 AM – 2 PM",
-        "has_credit_card": true,
-        "local_area": "Vancouver",
-        "source": "StreetFoodApp"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "food_vendor_sfa_6",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           -123.124394,
           49.28244
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_6",
+        "id": "food_vendor_sfa_5",
         "facility_type": "food_vendors",
         "name": "JAPADOG",
         "business_name": "JAPADOG",
@@ -138,7 +116,7 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_7",
+      "id": "food_vendor_sfa_6",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -147,12 +125,12 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_7",
+        "id": "food_vendor_sfa_6",
         "facility_type": "food_vendors",
         "name": "Meet2Eat",
         "business_name": "Meet2Eat",
         "address": "9015 Shaughnessy St, Vancouver",
-        "hours": "8:45 AM – 4 PM",
+        "hours": "8:45 AM – 3 PM",
         "has_credit_card": true,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
@@ -160,7 +138,7 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_8",
+      "id": "food_vendor_sfa_7",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -169,7 +147,7 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_8",
+        "id": "food_vendor_sfa_7",
         "facility_type": "food_vendors",
         "name": "Planted Love",
         "business_name": "Planted Love",
@@ -182,20 +160,20 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_sfa_9",
+      "id": "food_vendor_sfa_8",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.044216,
-          49.259771
+          -123.145788,
+          49.270705
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_9",
+        "id": "food_vendor_sfa_8",
         "facility_type": "food_vendors",
         "name": "Thai Box On Truck",
         "business_name": "Thai Box On Truck",
-        "address": "2665 Renfrew St, Vancouver (Broadway tech centre)",
+        "address": "Burrard street & W 1st Avenue",
         "hours": "11:30 AM – 2 PM",
         "has_credit_card": false,
         "local_area": "Vancouver",
