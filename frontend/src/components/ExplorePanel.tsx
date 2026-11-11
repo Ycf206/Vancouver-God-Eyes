@@ -1023,6 +1023,7 @@ function ExploreContent() {
   const [search311Query, setSearch311Query] = useState<string>('');
   const [status311Filter, setStatus311Filter] = useState<'all' | 'open' | 'close'>('all');
   const [dept311Filter, setDept311Filter] = useState<string>('all');
+  const [date311Filter, setDate311Filter] = useState<string>('');
   const [sort311Order, setSort311Order] = useState<'desc' | 'asc'>('desc');
   const [page311, setPage311] = useState<number>(1);
   const PAGE_SIZE_311 = 20;
@@ -1134,6 +1135,10 @@ function ExploreContent() {
       if (status311Filter === 'open' && (r.status || '').toLowerCase() !== 'open') return false;
       if (status311Filter === 'close' && (r.status || '').toLowerCase() !== 'close') return false;
       if (dept311Filter !== 'all' && (r.department || '').trim() !== dept311Filter) return false;
+      if (date311Filter) {
+        const openDateStr = r.service_request_open_timestamp ? r.service_request_open_timestamp.slice(0, 10) : '';
+        if (openDateStr !== date311Filter) return false;
+      }
       if (search311Query.trim()) {
         const q = search311Query.trim().toLowerCase();
         const str = `${r.address || ''} ${r.service_request_type || ''} ${r.department || ''} ${r.local_area || ''} ${r.closure_reason || ''}`.toLowerCase();
@@ -1145,7 +1150,7 @@ function ExploreContent() {
       const timeB = new Date(b.service_request_open_timestamp || 0).getTime();
       return sort311Order === 'desc' ? timeB - timeA : timeA - timeB;
     });
-  }, [requests311, status311Filter, dept311Filter, search311Query, sort311Order]);
+  }, [requests311, status311Filter, dept311Filter, date311Filter, search311Query, sort311Order]);
 
   const totalPages311 = Math.max(1, Math.ceil(filtered311Requests.length / PAGE_SIZE_311));
   const paged311Requests = useMemo(() => {
@@ -1155,7 +1160,7 @@ function ExploreContent() {
 
   useEffect(() => {
     setPage311(1);
-  }, [search311Query, status311Filter, dept311Filter, sort311Order]);
+  }, [search311Query, status311Filter, dept311Filter, date311Filter, sort311Order]);
 
   const yesterday311Count = useMemo(() => {
     if (!requests311 || requests311.length === 0) return 0;
@@ -6755,12 +6760,34 @@ function ExploreContent() {
                 </button>
               </div>
 
-              {/* 部門篩選下拉 */}
-              <div className="flex items-center gap-1">
+              {/* 右側篩選組合：日期篩選 + 部門篩選下拉 + 排序切換按鈕 */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {/* 日期篩選工具 */}
+                <div className="relative flex items-center">
+                  <input
+                    type="date"
+                    value={date311Filter}
+                    onChange={(e) => setDate311Filter(e.target.value)}
+                    className="bg-[#181d28] border border-[#283042] text-gray-200 rounded-lg pl-2 pr-6 py-1 text-[11px] font-mono focus:outline-none focus:border-emerald-500 [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:[filter:brightness(0)_invert(1)]"
+                    title="篩選指定日期"
+                  />
+                  {date311Filter && (
+                    <button
+                      type="button"
+                      onClick={() => setDate311Filter('')}
+                      className="absolute right-1 text-gray-400 hover:text-white p-0.5 rounded transition-colors cursor-pointer"
+                      title="清除日期篩選"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+
+                {/* 部門篩選下拉 */}
                 <select
                   value={dept311Filter}
                   onChange={(e) => setDept311Filter(e.target.value)}
-                  className="bg-[#181d28] border border-[#283042] text-gray-200 rounded-lg px-2 py-1 text-[11px] focus:outline-none focus:border-emerald-500 max-w-[130px] sm:max-w-[160px] truncate"
+                  className="bg-[#181d28] border border-[#283042] text-gray-200 rounded-lg px-2 py-1 text-[11px] focus:outline-none focus:border-emerald-500 max-w-[120px] sm:max-w-[150px] truncate"
                 >
                   <option value="all">所有部門</option>
                   {departments311.map(d => (

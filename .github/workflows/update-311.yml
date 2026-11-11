@@ -1,8 +1,9 @@
 name: "Update 3-1-1 市政服務請求 (每日)"
 
 on:
-  schedule:
-    - cron: '0 8 * * *'
+  # 常規自動排程已移轉至 OCI 常駐伺服器背景守護進程 (節省 GitHub Actions 額度與無意義 Commit)
+  # schedule:
+  #   - cron: '0 8 * * *'
   workflow_dispatch:
 
 concurrency:

@@ -284,6 +284,28 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "source_url": "https://weathercams.faa.gov/api/summary?airportId=CYVR"
   },
   {
+    "id": "yvr_news_rss",
+    "name": "YVR 機場官方最新資訊",
+    "type": "api",
+    "cron_expr": "0 */2 * * *",
+    "schedule_interval": "每 2 小時",
+    "record_count": 25,
+    "unit": "則官方即時公告",
+    "last_updated": "2026-11-07T12:00:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "YVR Airport 官方 RSS Feed (Trending, Airmail, Project, Values) -> OCI 常駐排程自動解析文章標題、正文摘要、發布日期與圖片 -> 產出快取資料供地圖機場側邊面板瀏覽",
+    "runner": "oci",
+    "category": "道路",
+    "workflow_file": "",
+    "source_links": [
+      {
+        "label": "YVR 官方新聞網",
+        "url": "https://news.yvr.ca/"
+      }
+    ],
+    "source_url": "https://news.yvr.ca/"
+  },
+  {
     "id": "sports_canucks",
     "name": "冰上曲棍球",
     "type": "api",
@@ -799,14 +821,14 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "name": "街頭餐車",
     "type": "geojson",
     "cron_expr": "0 0 * * *",
-    "schedule_interval": "每日 00:00",
+    "schedule_interval": "每日 1 次",
     "record_count": 10,
     "unit": "處街頭餐車與熟食攤位",
     "last_updated": "2026-10-27T07:00:00Z",
     "status": "healthy",
-    "data_pipeline_notes": "StreetFoodApp 官方即時地圖爬蟲 -> 萃取溫哥華營業中餐車位置與營業時間 -> 寫入 /public/vancouver_food_vendors.geojson",
-    "runner": "github_actions",
-    "workflow_file": "update-food-vendors.yml",
+    "data_pipeline_notes": "StreetFoodApp 官方即時地圖爬蟲 -> OCI 常駐排程萃取溫哥華營業中餐車位置與營業時間 -> 寫入 /public/vancouver_food_vendors.geojson",
+    "runner": "oci",
+    "workflow_file": "",
     "category": "生活",
     "source_links": [
       {
@@ -1345,9 +1367,9 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "unit": "處站點與可用車位",
     "last_updated": "2026-10-26T13:06:40Z",
     "status": "healthy",
-    "data_pipeline_notes": "Mobi Entities API 取得站點位置 -> 配合各站 Station Detail API 即時更新單車與還車槽數 -> 寫入 /backend/data/vancouver_shared_bikes.geojson",
-    "runner": "github_actions",
-    "workflow_file": "update-shared-bikes-hourly.yml",
+    "data_pipeline_notes": "Mobi Entities API 取得站點位置 -> 配合各站 Station Detail API 即時更新單車與還車槽數 -> OCI 常駐排程寫入 /backend/data/vancouver_shared_bikes.geojson",
+    "runner": "oci",
+    "workflow_file": "",
     "category": "道路",
     "source_links": [
       {
@@ -1373,9 +1395,9 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "unit": "處滑板車站點",
     "last_updated": "2026-10-26T13:06:40Z",
     "status": "healthy",
-    "data_pipeline_notes": "Lime 外部查詢代理 API -> 取得站點資訊與即時可用滑板車/還車槽數 -> 寫入 /backend/data/vancouver_escooter.geojson",
-    "runner": "github_actions",
-    "workflow_file": "update-escooter-hourly.yml",
+    "data_pipeline_notes": "Lime 外部查詢代理 API -> 取得站點資訊與即時可用滑板車/還車槽數 -> OCI 常駐排程寫入 /backend/data/vancouver_escooter.geojson",
+    "runner": "oci",
+    "workflow_file": "",
     "category": "道路",
     "source_links": [
       {
@@ -1464,16 +1486,16 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "id": "service_requests_311",
     "name": "3-1-1",
     "type": "api",
-    "cron_expr": "0 8 * * *",
-    "schedule_interval": "每日 08:00",
+    "cron_expr": "0 */12 * * *",
+    "schedule_interval": "每 12 小時",
     "record_count": 1000,
     "unit": "筆即時案件",
     "last_updated": "2026-10-31T00:00:00Z",
     "status": "healthy",
-    "data_pipeline_notes": "Vancouver Open Data 3-1-1 Service Requests API -> 定期同步市民通報市政問題與工單進度 -> 寫入 vancouver_311.json -> 前端探索 3-1-1 列表呈現與導航",
-    "runner": "github_actions",
+    "data_pipeline_notes": "Vancouver Open Data 3-1-1 Service Requests API -> OCI 常駐排程同步市民通報市政問題與工單進度 -> 寫入 vancouver_311.json -> 前端探索 3-1-1 列表呈現與導航",
+    "runner": "oci",
     "category": "生活",
-    "workflow_file": "update-311.yml",
+    "workflow_file": "",
     "source_links": [
       {
         "label": "Vancouver OpenData 3-1-1",

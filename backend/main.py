@@ -1341,6 +1341,12 @@ async def startup_event():
         print(f"Failed to start yvr_airport_service task: {e}")
 
     try:
+        import dynamic_layers_service
+        asyncio.create_task(dynamic_layers_service.run_dynamic_layers_background_loop())
+    except Exception as e:
+        print(f"Failed to start dynamic_layers_service task: {e}")
+
+    try:
         asyncio.create_task(news_service.run_news_background_loop())
     except Exception as e:
         print(f"Failed to start news_service task: {e}")
@@ -4394,6 +4400,7 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "fedex": ["vancouver_fedex.geojson"],
     "purolator": ["vancouver_purolator.geojson"],
     "vancouver_crashes": ["vancouver_crashes.json"],
+    "yvr_news_rss": ["yvr_news_rss.json", "yvr_news.json"],
 }
 
 
@@ -4673,6 +4680,36 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
         tt_ts = tt_summary.get("updated_at") or _unix_to_iso(getattr(tomtom_service, "last_fetch_time", 0.0))
         tt_cnt = tt_summary.get("total_roads_count")
         oci_live_updates["traffic_conditions"] = (tt_ts, int(tt_cnt) if tt_cnt else None)
+
+    if "shared_bikes" in src_by_id:
+        sb_file = os.path.join(data_dir, "vancouver_shared_bikes.geojson")
+        sb_cnt, sb_ts = _extract_disk_file_meta(sb_file)
+        sb_runtime = _unix_to_iso(_oci_runtime_ts.get("shared_bikes"))
+        oci_live_updates["shared_bikes"] = (_max_iso_ts(sb_runtime, sb_ts), sb_cnt if sb_cnt > 0 else None)
+
+    if "escooter" in src_by_id:
+        es_file = os.path.join(data_dir, "vancouver_escooter.geojson")
+        es_cnt, es_ts = _extract_disk_file_meta(es_file)
+        es_runtime = _unix_to_iso(_oci_runtime_ts.get("escooter"))
+        oci_live_updates["escooter"] = (_max_iso_ts(es_runtime, es_ts), es_cnt if es_cnt > 0 else None)
+
+    if "service_requests_311" in src_by_id:
+        req311_file = os.path.join(data_dir, "vancouver_311.json")
+        req311_cnt, req311_ts = _extract_disk_file_meta(req311_file)
+        req311_runtime = _unix_to_iso(_oci_runtime_ts.get("service_requests_311"))
+        oci_live_updates["service_requests_311"] = (_max_iso_ts(req311_runtime, req311_ts), req311_cnt if req311_cnt > 0 else None)
+
+    if "food_vendors" in src_by_id:
+        fv_file = os.path.join(data_dir, "vancouver_food_vendors.geojson")
+        fv_cnt, fv_ts = _extract_disk_file_meta(fv_file)
+        fv_runtime = _unix_to_iso(_oci_runtime_ts.get("food_vendors"))
+        oci_live_updates["food_vendors"] = (_max_iso_ts(fv_runtime, fv_ts), fv_cnt if fv_cnt > 0 else None)
+
+    if "yvr_news_rss" in src_by_id:
+        yn_file = os.path.join(data_dir, "yvr_news_rss.json")
+        yn_cnt, yn_ts = _extract_disk_file_meta(yn_file)
+        yn_runtime = _unix_to_iso(_oci_runtime_ts.get("yvr_news_rss"))
+        oci_live_updates["yvr_news_rss"] = (_max_iso_ts(yn_runtime, yn_ts), yn_cnt if yn_cnt > 0 else None)
 
     for sid, (live_iso, live_cnt) in oci_live_updates.items():
         s = src_by_id.get(sid)
@@ -4956,6 +4993,32 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["yvr_weathercams"] = time.time()
         cnt = len(data.get("cameras", []))
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 FAA 溫哥華機場 (CYVR) 氣象攝影機與 METAR，共 {cnt} 組鏡頭。")
+    if sid in ("shared_bikes", "mobi_bikes"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_shared_bikes(full=True)
+        _oci_runtime_ts["shared_bikes"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 Mobi 共享單車站點與即時車況，共載入 {cnt} 處站點。")
+    if sid in ("escooter", "lime_scooters"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_escooter(full=True)
+        _oci_runtime_ts["escooter"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 Lime 共享滑板車站點與可用車輛，共載入 {cnt} 處站點。")
+    if sid in ("service_requests_311", "vancouver_311"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_311(target_count=1000)
+        _oci_runtime_ts["service_requests_311"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步溫哥華 3-1-1 市政服務請求，共載入最新 {cnt} 筆記錄。")
+    if sid in ("food_vendors", "street_food"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_food_vendors()
+        _oci_runtime_ts["food_vendors"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步溫哥華街頭熟食餐車 (StreetFoodApp)，共載入 {cnt} 處餐車。")
+    if sid in ("yvr_news_rss", "yvr_news"):
+        import yvr_airport_service
+        data = yvr_airport_service.fetch_yvr_news_rss(force_refresh=True)
+        _oci_runtime_ts["yvr_news_rss"] = time.time()
+        cnt = len(data) if isinstance(data, list) else None
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 YVR 官方即時要聞 RSS，共載入 {cnt} 則新聞。")
     return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
 
 
@@ -4989,7 +5052,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
             # 判斷是否為批次觸發
             if source_id == 'all_oci' or (source_id == 'all' and target_runner == 'oci'):
                 target_name = "全部 OCI 伺服器即時服務"
-                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping"):
+                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss"):
                     try:
                         _refresh_single_oci_service(idx_s)
                     except Exception:

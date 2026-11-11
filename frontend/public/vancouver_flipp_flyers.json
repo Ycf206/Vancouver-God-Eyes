@@ -1,6 +1,6 @@
 {
   "success": true,
-  "updated_at": "2026-11-09T18:05:56.155942-07:00",
+  "updated_at": "2026-11-10T18:09:44.998675-07:00",
   "postal_code": "V5P1W3",
   "total_merchants": 32,
   "merchants": [
@@ -5723,1218 +5723,327 @@
       "merchant": "FreshCo",
       "merchant_id": 2267,
       "merchant_logo": "https://images.wishabi.net/merchants/8lXBwlnbgJtwig==/mini_magick20191002-1-1d6tf9s.png",
-      "flyer_id": 8212695,
-      "flyer_name": "FreshCo Weekly eFlyer 11/05 - 11/11",
-      "valid_from": "2026-11-05T02:00:00-05:00",
+      "flyer_id": 8180946,
+      "flyer_name": "Diwali Low Prices",
+      "valid_from": "2026-10-15T03:00:00-04:00",
       "valid_to": "2026-11-11T23:59:59-05:00",
       "website_url": "https://freshco.com",
-      "items_count": 134,
+      "items_count": 35,
       "items": [
         {
-          "id": 1051265369,
-          "name": "Cara Cara Oranges 2 lb Product of South Africa or Australia 907 g or Compliments Clementines 2 lb Product of Australia 907 g",
-          "price": "3.96",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429436,
+          "name": "Rubicon Organic Coconut Water or Organic Non-Dairy Beverage 1 L",
+          "price": "3.99",
+          "brand": "Rubicon",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161462/1793340781/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762443/1791419988/extra_large.jpg"
         },
         {
-          "id": 1051265394,
-          "name": "Cesar Wet Dog Food 100 g",
-          "price": "1.35",
-          "brand": "Cesar",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161476/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265404,
-          "name": "Lindt Cornets 204 g",
-          "price": "12.43",
-          "brand": "Lindt",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161481/1793340787/extra_large.jpg"
-        },
-        {
-          "id": 1051265406,
-          "name": "Folgers Ground Coffee 544-816 g or K-Cup Pods 30 pk",
-          "price": "15.99",
-          "brand": "Folgers",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161482/1793340788/extra_large.jpg"
-        },
-        {
-          "id": 1051265419,
-          "name": "Compliments Flour 2.5 kg or Chocolate Chips 200-270 g",
-          "price": "",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161489/1793340792/extra_large.jpg"
-        },
-        {
-          "id": 1051265461,
-          "name": "Castello Sliced Cheese Assorted Varieties 125-165 g",
-          "price": "5.0",
-          "brand": "Castello",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161745/1793340793/extra_large.jpg"
-        },
-        {
-          "id": 1051265481,
-          "name": "Frito-Lay Value Size Potato Chips, Tortilla Chips, Snacks or Popcorn 275-535 g",
-          "price": "5.49",
-          "brand": "Frito-Lay",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161755/1793340783/extra_large.jpg"
-        },
-        {
-          "id": 1051265429,
-          "name": "MarcAngelo Porchetta, Pollo Asado Chicken Breast Roast or Pizzaiola Stuffed Chicken Breast 370 g-1 kg",
-          "price": "10.0",
-          "brand": "Marcangelo",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161727/1793340781/extra_large.jpg"
-        },
-        {
-          "id": 1051265434,
-          "name": "Best Buy Tilapia or Basa Fillets Frozen 750 g-1 kg",
-          "price": "10.0",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161730/1793340783/extra_large.jpg"
-        },
-        {
-          "id": 1051265463,
-          "name": "Mini Babybel Assorted Varieties 120 g or Mini Rolls 102 g",
+          "id": 1046429439,
+          "name": "Britannia Milk Rusk Biscuit 560 g",
           "price": "4.49",
-          "brand": "Babybel",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "brand": "Britannia",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161746/1793340794/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762446/1791419990/extra_large.jpg"
         },
         {
-          "id": 1051265466,
-          "name": "Kiwi 454 g Product of New Zealand or Avocados 5 pk Product of Mexico",
-          "price": "4.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161748/1793340795/extra_large.jpg"
-        },
-        {
-          "id": 1051265491,
-          "name": "Pepperidge Farm Goldfish Crackers or Snyder's of Hanover Pretzels 240 g",
-          "price": "2.99",
-          "brand": "Pepperidge Farm | Snyder's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161759/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265568,
-          "name": "Ferrero Rocher or Collection Chocolate 106-200 g",
-          "price": "8.49",
-          "brand": "Ferrero Rocher",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161785/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265575,
-          "name": "Hershey's Kisses Grinch Milk Chocolate or Reese's Miniatures Gift Box 184 g",
-          "price": "6.49",
-          "brand": "Hershey's | Reese's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161789/1793340785/extra_large.jpg"
-        },
-        {
-          "id": 1051265514,
-          "name": "Kurkure Snacks - FreshCo Diwali",
-          "price": "1.49",
-          "brand": "KURKURE",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161795/1793340780/extra_large.jpg"
-        },
-        {
-          "id": 1051265540,
-          "name": "Golden Punjabi Biscuits 1.10-1.13 kg - FreshCo Diwali",
-          "price": "6.29",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161809/1793340790/extra_large.jpg"
-        },
-        {
-          "id": 1051265558,
-          "name": "Toblerone Mini 120 g",
+          "id": 1046429444,
+          "name": "Sher Besan 1.81 kg",
           "price": "5.99",
-          "brand": "Toblerone",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "brand": "Sher",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161780/1793340779/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762451/1791419994/extra_large.jpg"
         },
         {
-          "id": 1051265564,
-          "name": "Merci Chocolate 200 g",
-          "price": "6.99",
-          "brand": "Merci",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161783/1793340781/extra_large.jpg"
-        },
-        {
-          "id": 1051265570,
-          "name": "Hershey's Pot of Gold",
-          "price": "6.49",
-          "brand": "Hershey's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161786/1793340783/extra_large.jpg"
-        },
-        {
-          "id": 1051265617,
-          "name": "Heinz Mayonnaise-Style Sauces 340 mL Any Variety",
+          "id": 1046429438,
+          "name": "Deep Naan, Paratha or Roti 292.12-400 g Selected Varieties",
           "price": "2.99",
-          "brand": "Heinz",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "brand": "Deep",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161491/1793340780/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762445/1791419989/extra_large.jpg"
         },
         {
-          "id": 1051265620,
-          "name": "Kraft Singles Processed Cheese 825 g Any Variety",
-          "price": "9.99",
-          "brand": "Kraft",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161493/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265371,
-          "name": "Purex or Sunlight Laundry Detergent 3.85-4.43 L or Snuggle Fabric Softener 2.77 L",
-          "price": "9.98",
-          "brand": "Purex | Sunlight | Snuggle",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161463/1793340781/extra_large.jpg"
-        },
-        {
-          "id": 1051265373,
-          "name": "Doritos 210-280 g, Ruffles 180-200 g or SunChips 205 g",
-          "price": "2.96",
-          "brand": "Doritos | Ruffles | SunChips",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161464/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265387,
-          "name": "Dare Bear Paws 168-240 g, Viva Puffs 300 g or Wagon Wheels 315 g",
-          "price": "2.28",
-          "brand": "Dare",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161472/1793340781/extra_large.jpg"
-        },
-        {
-          "id": 1051265483,
-          "name": "Nescafé Gold Instant Coffee 90-100 g, Espresso Concentrate 500 mL or Starbucks By Nespresso 10 pk",
-          "price": "7.44",
-          "brand": "Nescafé | Starbucks",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161756/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265488,
-          "name": "Pepsi Soft Drinks 2 L Selected Varieties",
-          "price": "2.49",
-          "brand": "Pepsi",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161758/1793340785/extra_large.jpg"
-        },
-        {
-          "id": 1051265512,
-          "name": "Gagan Mustard Oil 1 L - FreshCo Diwali",
+          "id": 1046429445,
+          "name": "Gagan Brown or White Sugar 1.83 kg",
           "price": "6.99",
           "brand": "Gagan",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161794/1793340779/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762452/1791419995/extra_large.jpg"
         },
         {
-          "id": 1051265600,
-          "name": "Heinz Soupe 370-380 mL Selected Varieties",
+          "id": 1046429452,
+          "name": "Deep Bhindi Baby Okra or Cut Okra 340 g",
+          "price": "1.29",
+          "brand": "Deep",
+          "valid_from": "2026-10-15T03:00:00-04:00",
+          "valid_to": "2026-11-11T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762426/1791419987/extra_large.jpg"
+        },
+        {
+          "id": 1046429449,
+          "name": "KFI Cooking Sauce 375-395 mL Selected Varieties",
           "price": "3.99",
-          "brand": "Heinz",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "brand": "KFI",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161776/1793340785/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762423/1791419985/extra_large.jpg"
         },
         {
-          "id": 1051265375,
-          "name": "Raspberries 170 g Product of USA or Mexico",
-          "price": "2.47",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161465/1793340783/extra_large.jpg"
-        },
-        {
-          "id": 1051265451,
-          "name": "Compliments Lemons 2 lb Product of South Africa 907 g",
-          "price": "4.99",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161739/1793340789/extra_large.jpg"
-        },
-        {
-          "id": 1051265393,
-          "name": "Kraft Slices 410 g",
-          "price": "3.97",
-          "brand": "Kraft",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161475/1793340783/extra_large.jpg"
-        },
-        {
-          "id": 1051265399,
-          "name": "Pampers Super Econo Pack Diapers 66-174 pk",
-          "price": "35.99",
-          "brand": "Pampers",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161478/1793340785/extra_large.jpg"
-        },
-        {
-          "id": 1051265468,
-          "name": "Mini Seedless Cucumbers 6 pk Product of Canada, Canada No. 1 or Medley Tomatoes Pint Product of Canada or Mexico",
-          "price": "3.49",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161749/1793340796/extra_large.jpg"
-        },
-        {
-          "id": 1051265476,
-          "name": "Campbell's Cooking Soup 284 mL",
-          "price": "1.99",
-          "brand": "Campbell's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161753/1793340781/extra_large.jpg"
-        },
-        {
-          "id": 1051265579,
-          "name": "Marigold™ Frozen Entrees 354 g - FreshCo Diwali",
-          "price": "5.99",
-          "brand": "MARIGOLD",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161791/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265584,
-          "name": "Compliments Candy Jolly Mix Assorted 800 g",
-          "price": "7.99",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161768/1793340779/extra_large.jpg"
-        },
-        {
-          "id": 1051265549,
-          "name": "Chalo! Dahi Yogurt 2.0% or 3.2% 750 g - FreshCo Diwali",
-          "price": "2.29",
+          "id": 1046429425,
+          "name": "Chalo! Juice 1 L Selected Varieties",
+          "price": "2.0",
           "brand": "Chalo!",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161814/1793340794/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762416/1791419986/extra_large.jpg"
         },
         {
-          "id": 1051265556,
-          "name": "Red Onions 3 lb Product of Ontario, Canada No. 1, 1.36 kg - FreshCo Diwali",
-          "price": "3.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429431,
+          "name": "TATA Iodized Sea Salt 1 kg",
+          "price": "1.49",
+          "brand": "Tata",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161818/1793340797/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762438/1791419984/extra_large.jpg"
         },
         {
-          "id": 1051265560,
-          "name": "Cadbury Celebrations Gift Box 121-126 g",
-          "price": "5.99",
-          "brand": "Cadbury",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429424,
+          "name": "Chalo! Basmati or Signature Rice 1.81 kg",
+          "price": "5.0",
+          "brand": "Chalo!",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161781/1793340780/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762415/1791419985/extra_large.jpg"
         },
         {
-          "id": 1051265562,
-          "name": "Toffifee Candy 400 g",
-          "price": "9.99",
-          "brand": "Toffifee®",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429426,
+          "name": "Chalo! Lassi 1 L Selected Varieties",
+          "price": "2.99",
+          "brand": "Chalo!",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161782/1793340781/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762417/1791419987/extra_large.jpg"
         },
         {
-          "id": 1051265588,
-          "name": "Panache Scottish Shortbread 350 g",
-          "price": "7.49",
-          "brand": "Panache",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429427,
+          "name": "Chalo! Naan or Paratha 1.02-1.36 kg Selected Varieties",
+          "price": "8.0",
+          "brand": "Chalo!",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161770/1793340781/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762418/1791419988/extra_large.jpg"
         },
         {
-          "id": 1051265465,
-          "name": "Piller's Deli Meats, 125-175 g, Mastro Genoa Salami, 150 g or San Daniele Prosciutto, 100 g",
-          "price": "3.99",
-          "brand": "Piller's | Mastro | San Daniele",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429430,
+          "name": "Chalo! Paneer 300 g",
+          "price": "4.0",
+          "brand": "Chalo!",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161747/1793340794/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436806174/1791419990/extra_large.jpg"
         },
         {
-          "id": 1051265436,
-          "name": "Sweet Green Bell Peppers Product of Mexico 5.49/kg",
-          "price": "2.49",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429433,
+          "name": "Sunfeast Yippee! Masala Noodles 280 g",
+          "price": "1.79",
+          "brand": "Sunfeast",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161731/1793340783/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762440/1791419985/extra_large.jpg"
         },
         {
-          "id": 1051265506,
-          "name": "Crave Frozen Meals 200-340 g",
-          "price": "3.99",
-          "brand": "Crave",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429422,
+          "name": "Chalo! Signature Basmati Rice",
+          "price": "12.0",
+          "brand": "Chalo!",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161765/1793340790/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762413/1791419984/extra_large.jpg"
         },
         {
-          "id": 1051265525,
-          "name": "Sally's Raw Cashews 1 kg - FreshCo Diwali",
-          "price": "19.99",
-          "brand": "Sally's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161801/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265547,
-          "name": "Marigold Frozen Dinners 354 g - FreshCo Diwali",
-          "price": "5.99",
-          "brand": "MARIGOLD",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161813/1793340793/extra_large.jpg"
-        },
-        {
-          "id": 1051265553,
-          "name": "Dawn Plain Paratha 2400 g - FreshCo Diwali",
-          "price": "7.99",
-          "brand": "Dawn",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161816/1793340795/extra_large.jpg"
-        },
-        {
-          "id": 1051823907,
-          "name": "WK02_ALLBANNERS_Empire_SceneScotia_eFlyer_NoEndDate.pdf",
-          "price": "",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439425344/1793651435/extra_large.jpg"
-        },
-        {
-          "id": 1051265448,
-          "name": "Compliments Sliced Ham, Bologna, Macaroni & Cheese Meat Loaf or Salami 175 g",
-          "price": "3.0",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161738/1793340788/extra_large.jpg"
-        },
-        {
-          "id": 1051265443,
-          "name": "Compliments Cheese Sticks Frozen 325-400 g",
-          "price": "6.0",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161735/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265425,
-          "name": "Blueberries 170 g Product of Peru, No. 1 Grade",
-          "price": "3.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161725/1793340779/extra_large.jpg"
-        },
-        {
-          "id": 1051265504,
-          "name": "General Mills Cereal Selected Varieties 252-416 g",
+          "id": 1046429440,
+          "name": "Deep Mango Pulp 850 g",
           "price": "3.49",
-          "brand": "General Mills",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "brand": "Deep",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161764/1793340790/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762447/1791419991/extra_large.jpg"
         },
         {
-          "id": 1051265499,
-          "name": "Christie Family Cookies Selected Varieties 285-500 g or Premium Snack Crackers 226-280 g",
-          "price": "4.49",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429454,
+          "name": "National Ginger or Garlic Paste 750 g Selected Varieties",
+          "price": "6.49",
+          "brand": "NATIONAL",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161762/1793340788/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762428/1791419988/extra_large.jpg"
         },
         {
-          "id": 1051265493,
-          "name": "Compliments Chocolate Covered Almonds or Raisins 900 g",
-          "price": "13.99",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161760/1793340787/extra_large.jpg"
-        },
-        {
-          "id": 1051265508,
-          "name": "PURINA Fancy Feast Grilled Variety Pack 1.02 kg",
-          "price": "9.99",
-          "brand": "Purina",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161766/1793340791/extra_large.jpg"
-        },
-        {
-          "id": 1051265486,
-          "name": "Kicking Horse Whole Bean Coffee 454 g",
-          "price": "17.99",
-          "brand": "KICKING HORSE",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161757/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265516,
-          "name": "Tilda Pure Basmati Rice 4 kg - FreshCo Diwali",
-          "price": "13.99",
-          "brand": "Tilda",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161796/1793340781/extra_large.jpg"
-        },
-        {
-          "id": 1051265544,
-          "name": "Tata Tea Agni 1 kg - FreshCo Diwali",
-          "price": "6.99",
-          "brand": "Tata tea",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161811/1793340791/extra_large.jpg"
-        },
-        {
-          "id": 1051265524,
-          "name": "Tre Stelle Paneer 300 g - FreshCo Diwali",
-          "price": "3.99",
-          "brand": "Tre Stelle",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161800/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265531,
-          "name": "Sherbon Mango or Guava Juice 2 L - FreshCo Diwali",
+          "id": 1046429434,
+          "name": "Sherbon Mango or Guava Juice 2 L",
           "price": "3.99",
           "brand": "SHERBON",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161804/1793340786/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762441/1791419986/extra_large.jpg"
         },
         {
-          "id": 1051265534,
-          "name": "Chalo! Pure Desi Ghee 1.6 kg - FreshCo Diwali",
-          "price": "22.99",
-          "brand": "Chalo!",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429442,
+          "name": "Surati Snacks 250-341 g Selected Varieties",
+          "price": "2.49",
+          "brand": "Surati",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161806/1793340788/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762449/1791419992/extra_large.jpg"
         },
         {
-          "id": 1051265533,
-          "name": "Handi Sona Masoori Rice 9.07 kg - FreshCo Diwali",
-          "price": "14.99",
-          "brand": "HANDI",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161805/1793340787/extra_large.jpg"
-        },
-        {
-          "id": 1051265527,
-          "name": "Walnuts 6.59/kg - FreshCo Diwali",
-          "price": "2.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161802/1793340785/extra_large.jpg"
-        },
-        {
-          "id": 1051265536,
-          "name": "Parliament Cookies 600 g Selected Varieties - FreshCo Diwali",
-          "price": "5.99",
-          "brand": "PARLIAMENT",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161807/1793340788/extra_large.jpg"
-        },
-        {
-          "id": 1051265538,
-          "name": "Nanak Milk Cake 400 g - FreshCo Diwali",
-          "price": "7.99",
+          "id": 1046429448,
+          "name": "Nanak Aloo Tikki Potato Patties 720 g",
+          "price": "6.99",
           "brand": "NANAK",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161808/1793340789/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762422/1791419985/extra_large.jpg"
         },
         {
-          "id": 1051265566,
-          "name": "Terry's Chocolate Orange 145 g",
-          "price": "6.99",
-          "brand": "Terry's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429429,
+          "name": "Chalo! Pure Desi Ghee 800 g",
+          "price": "12.99",
+          "brand": "Chalo!",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161784/1793340782/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762420/1791419989/extra_large.jpg"
         },
         {
-          "id": 1051265586,
-          "name": "Panache Wafer Rolls 400 g",
-          "price": "3.99",
-          "brand": "Panache",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161769/1793340780/extra_large.jpg"
-        },
-        {
-          "id": 1051265622,
-          "name": "Philadelphia Cream Cheese 227-250 g Any Variety",
-          "price": "3.99",
-          "brand": "PHILADELPHIA",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161494/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265625,
-          "name": "Orville Redenbacher® Microwave Popcorn Bags 5-8 pk 248-492 g",
-          "price": "4.49",
-          "brand": "Orville Redenbachers",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161819/1793340780/extra_large.jpg"
-        },
-        {
-          "id": 1051265397,
-          "name": "Becel Margarine 400 g",
-          "price": "3.97",
-          "brand": "Becel",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161477/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265364,
-          "name": "Carnation Evaporated Milk 354 ml",
-          "price": "1.57",
-          "brand": "Carnation",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161459/1793340779/extra_large.jpg"
-        },
-        {
-          "id": 1051265366,
-          "name": "Swiss Chalet or Montana's Pork Back Ribs Fully Cooked 600-650 g",
-          "price": "8.98",
-          "brand": "Swiss Chalet | Montana's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161460/1793340779/extra_large.jpg"
-        },
-        {
-          "id": 1051265408,
-          "name": "Nutella Hazelnut Spread 1 kg",
-          "price": "10.48",
-          "brand": "Nutella",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161483/1793340788/extra_large.jpg"
-        },
-        {
-          "id": 1051265411,
-          "name": "Burnbrae Prestige Family Pack, Golden Valley, Island Gold Prestige or Sparks Large Eggs 18 pk",
-          "price": "5.94",
-          "brand": "BURNBRAE",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161485/1793340790/extra_large.jpg"
-        },
-        {
-          "id": 1051265413,
-          "name": "Coca-Cola or Canada Dry Soft Drinks Mini Cans 6x222 mL",
-          "price": "4.29",
-          "brand": "Coca-Cola | Canada Dry",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161486/1793340790/extra_large.jpg"
-        },
-        {
-          "id": 1051265433,
-          "name": "Asian Inspirations Entrées Frozen 400 g",
-          "price": "4.99",
-          "brand": "ASIAN INSPIRATIONS",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161729/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265447,
-          "name": "Gala Apples Product of British Columbia, Canada Extra Fancy 4.39/kg",
-          "price": "1.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161737/1793340788/extra_large.jpg"
-        },
-        {
-          "id": 1051265458,
-          "name": "Compliments Croissants 270 g or Mini Muffins 12 pk",
+          "id": 1046429423,
+          "name": "Chalo! Lentils 1.89 kg Selected Varieties",
           "price": "5.0",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "brand": "Chalo!",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161743/1793340792/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762414/1791419985/extra_large.jpg"
         },
         {
-          "id": 1051265472,
-          "name": "Gatorade 6x591 mL or 8x355 mL",
-          "price": "6.29",
-          "brand": "Gatorade",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429428,
+          "name": "Chalo! Dahi Yogurt Plain 2.0% or 3.25% M.F. 1.8 kg",
+          "price": "5.0",
+          "brand": "Chalo!",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161751/1793340780/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762419/1791419988/extra_large.jpg"
         },
         {
-          "id": 1051265577,
-          "name": "Marigold™ Sauces 400 mL - FreshCo Diwali",
+          "id": 1046429435,
+          "name": "Rubicon Drink 4x200 mL Selected Varieties",
+          "price": "2.79",
+          "brand": "Rubicon",
+          "valid_from": "2026-10-15T03:00:00-04:00",
+          "valid_to": "2026-11-11T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762442/1791419987/extra_large.jpg"
+        },
+        {
+          "id": 1046429456,
+          "name": "Tre Stelle Paneer Cheese 300 g",
           "price": "3.99",
-          "brand": "MARIGOLD",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161790/1793340785/extra_large.jpg"
-        },
-        {
-          "id": 1051265624,
-          "name": "Assorted Products",
-          "price": "",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161495/1793340783/extra_large.jpg"
-        },
-        {
-          "id": 1051265376,
-          "name": "Italpasta 900 g Artisan 450 g or Catelli Garden Select Pasta Sauce 600 ml",
-          "price": "1.61",
-          "brand": "Italpasta | Catelli",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161466/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265380,
-          "name": "Cardinal Medium Ground Beef 454 g",
-          "price": "5.73",
-          "brand": "Cardinal",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161468/1793340785/extra_large.jpg"
-        },
-        {
-          "id": 1051265382,
-          "name": "Janes Pub Style Chicken Wings Frozen 660 g or Compliments Breaded Chicken Nuggets, Strips or Burgers Frozen 700 g",
-          "price": "6.91",
-          "brand": "Janes | Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161469/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265389,
-          "name": "Twinings Tea 20pk or Tetley Orange Pekoe Tea 72 pk",
-          "price": "3.88",
-          "brand": "Twinings | Tetley",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161473/1793340781/extra_large.jpg"
-        },
-        {
-          "id": 1051265427,
-          "name": "Hothouse Tomatoes Product of Canada, Canada No. 1, 4.39/kg",
-          "price": "1.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161726/1793340780/extra_large.jpg"
-        },
-        {
-          "id": 1051265431,
-          "name": "Fresh Pork Breakfast Sausages 375 g",
-          "price": "4.0",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161728/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265439,
-          "name": "Carrots or Yellow Onions 3 lb Product of Canada, Canada No. 1, 1.36 kg",
-          "price": "2.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161733/1793340785/extra_large.jpg"
-        },
-        {
-          "id": 1051265445,
-          "name": "Furlani Texas Toast or Breadsticks 638-660 g",
-          "price": "4.49",
-          "brand": "Furlani",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161736/1793340787/extra_large.jpg"
-        },
-        {
-          "id": 1051265367,
-          "name": "Lucerne 10% Cream 1 L",
-          "price": "2.94",
-          "brand": "Lucerne",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161461/1793340780/extra_large.jpg"
-        },
-        {
-          "id": 1051265378,
-          "name": "Baltic Frozen Herring Fillets in Oil 1 kg",
-          "price": "10.93",
-          "brand": "Baltic",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161467/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265384,
-          "name": "Panache Olive Oil 1 L",
-          "price": "12.99",
-          "brand": "Panache",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161470/1793340779/extra_large.jpg"
-        },
-        {
-          "id": 1051265386,
-          "name": "Kraft Peanut Butter 750 g-1 kg or Hazelnut Spread 725 g",
-          "price": "4.98",
-          "brand": "Kraft",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161471/1793340780/extra_large.jpg"
-        },
-        {
-          "id": 1051265401,
-          "name": "TRESemmé Shampoo or Conditioner 828 mL",
-          "price": "5.96",
-          "brand": "TRESemmé",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161479/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265421,
-          "name": "Purex Bathroom Tissue 12=24 rolls, SpongeTowels 3=6 rolls or Scotties Facial Tissue 6 pk",
-          "price": "6.99",
-          "brand": "Purex | SpongeTowels",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161490/1793340793/extra_large.jpg"
-        },
-        {
-          "id": 1051265423,
-          "name": "Swiss Chalet Pot Pies Frozen 650-655 g",
-          "price": "8.99",
-          "brand": "Swiss Chalet",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161724/1793340779/extra_large.jpg"
-        },
-        {
-          "id": 1051265456,
-          "name": "Jumbo Golden Pineapple Product of Costa Rica",
-          "price": "5.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161742/1793340791/extra_large.jpg"
-        },
-        {
-          "id": 1051265460,
-          "name": "Summer Fresh Dips or Hummus 200-227 g or Compliments Salad 426-454 g",
-          "price": "2.99",
-          "brand": "Summer Fresh | Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161744/1793340792/extra_large.jpg"
-        },
-        {
-          "id": 1051265391,
-          "name": "Royal Caribbean Parboiled Rice 8 kg",
-          "price": "12.99",
-          "brand": "Royal Caribbean",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161474/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265402,
-          "name": "Khaas Halal or Dahi Yogurt 750 g",
-          "price": "2.84",
-          "brand": "Khaas",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161480/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265417,
-          "name": "Tre Stelle Mozzarella Ball 340 g",
-          "price": "",
           "brand": "Tre Stelle",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161488/1793340792/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762430/1791419989/extra_large.jpg"
         },
         {
-          "id": 1051265441,
-          "name": "Ocean Jewel Steelhead Trout Fillets Previously Frozen 48.48/kg",
-          "price": "4.84",
-          "brand": "Ocean Jewel",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429450,
+          "name": "Gagan Biodegradable Compartment Tray 40 pk",
+          "price": "11.49",
+          "brand": "Gagan",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161734/1793340785/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762424/1791419986/extra_large.jpg"
         },
         {
-          "id": 1051265520,
-          "name": "David Roberts Assorted Peanuts Tray 660 g - FreshCo Diwali",
-          "price": "7.99",
-          "brand": "David Roberts",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429446,
+          "name": "Gagan Mustard Oil 1 L",
+          "price": "6.99",
+          "brand": "Gagan",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161798/1793340782/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762453/1791419996/extra_large.jpg"
         },
         {
-          "id": 1051265542,
-          "name": "Brar's Sher Besan 1.81 kg - FreshCo Diwali",
-          "price": "5.99",
-          "brand": "Brar's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429455,
+          "name": "Desi-licious Kulfi 1 L Selected Varieties",
+          "price": "7.49",
+          "brand": "Desi-licious",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161810/1793340791/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762429/1791419989/extra_large.jpg"
         },
         {
-          "id": 1051265593,
-          "name": "Panache Chocolate Truffles 150 g",
-          "price": "4.99",
-          "brand": "Panache",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429453,
+          "name": "Nanak Gulabjamun 908 g",
+          "price": "6.99",
+          "brand": "NANAK",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161772/1793340782/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762427/1791419988/extra_large.jpg"
         },
         {
-          "id": 1051265598,
-          "name": "Best Buy Tilapia or Basa Fillets Frozen 750 g-1 kg",
-          "price": "10.0",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161775/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265615,
-          "name": "Compliments Candy Canes 200 g",
-          "price": "3.49",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161779/1793340787/extra_large.jpg"
-        },
-        {
-          "id": 1051265594,
-          "name": "Panache Milk Chocolate Pecan Clusters 330 g",
-          "price": "8.99",
-          "brand": "Panache",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161773/1793340783/extra_large.jpg"
-        },
-        {
-          "id": 1051265454,
-          "name": "Dempster's Raisin Bread 600 g, Signature Buns 6-8 pk or Pull-Aparts 12 pk",
-          "price": "3.69",
-          "brand": "Dempster's®",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161741/1793340790/extra_large.jpg"
-        },
-        {
-          "id": 1051265518,
-          "name": "Tata Tea Orange Pekoe Bags 220 pk 638 g - FreshCo Diwali",
+          "id": 1046429437,
+          "name": "Tata Tea Gold 450 g",
           "price": "5.99",
           "brand": "Tata tea",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161797/1793340782/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762444/1791419988/extra_large.jpg"
         },
         {
-          "id": 1051265496,
-          "name": "Dawn Dish Detergent 2.01-2.64 L",
-          "price": "11.99",
-          "brand": "Dawn",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429441,
+          "name": "Britannia Biscuits 75 g Selected Varieties",
+          "price": "0.89",
+          "brand": "Britannia",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161761/1793340788/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762448/1791419992/extra_large.jpg"
         },
         {
-          "id": 1051265438,
-          "name": "Compliments Organic Baby Spinach, Baby Mixed Greens or Baby Arugula 142 g Product of Canada or USA",
-          "price": "4.0",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429443,
+          "name": "India Gate Pure Basmati Rice 4.54 kg",
+          "price": "14.49",
+          "brand": "India Gate",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161732/1793340784/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762450/1791419993/extra_large.jpg"
         },
         {
-          "id": 1051265471,
-          "name": "La Cocina Tortilla Chips 300-400 g",
-          "price": "3.29",
-          "brand": "La Cocina",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161750/1793340779/extra_large.jpg"
-        },
-        {
-          "id": 1051265546,
-          "name": "Rapini Bunch Product of USA - FreshCo Diwali",
-          "price": "3.0",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161812/1793340792/extra_large.jpg"
-        },
-        {
-          "id": 1051265618,
-          "name": "Maxwell House Roast & Ground Coffee 631-925 g or Single Serve Pods 30 pk Any Variety",
-          "price": "15.99",
-          "brand": "Maxwell House",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161492/1793340781/extra_large.jpg"
-        },
-        {
-          "id": 1051265502,
-          "name": "Activia Yogurt 650 g or Danone Oikos Yogurt 4 pk",
-          "price": "3.99",
-          "brand": "Activia | Danone",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161763/1793340789/extra_large.jpg"
-        },
-        {
-          "id": 1051265602,
-          "name": "Compliments Allsorts Tower 700 g",
-          "price": "6.99",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161777/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265613,
-          "name": "Fleecy Fabric Rinse 754 mL",
-          "price": "6.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161778/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265409,
-          "name": "Jamieson Vitamin C 500mg or Vitamin D 1,000 IU 75-240 pk Selected Varieties",
-          "price": "4.86",
-          "brand": "Jamieson",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161484/1793340789/extra_large.jpg"
-        },
-        {
-          "id": 1051265453,
-          "name": "Dempster's Whole Grains Bread 600 g, Tortillas 272-340 g or Tia Rosa Tortillas 275-384 g Selected Varieties",
-          "price": "3.29",
-          "brand": "Dempster's | Tia Rosa",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161740/1793340790/extra_large.jpg"
-        },
-        {
-          "id": 1051265474,
-          "name": "Natrel Lactose Free Milk 2 L Selected Varieties",
+          "id": 1046429432,
+          "name": "Brar's Paneer Jalapeño Black Pepper or Roasted Cumin & Chili 300 g",
           "price": "5.99",
-          "brand": "Natrel",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "brand": "Brar's",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161752/1793340781/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762439/1791419985/extra_large.jpg"
         },
         {
-          "id": 1051265510,
-          "name": "Häagen-Dazs Ice Cream 400-450 mL or Novelties 3-4 pk",
-          "price": "5.49",
-          "brand": "Häagen-Dazs",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "id": 1046429451,
+          "name": "Nanak Rasmalai 850 g Selected Varieties",
+          "price": "8.99",
+          "brand": "NANAK",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161767/1793340792/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762425/1791419986/extra_large.jpg"
         },
         {
-          "id": 1051265555,
-          "name": "Chalo! Lassi 1 L Selected Varieties - FreshCo Diwali",
+          "id": 1046429447,
+          "name": "Swad Saag 800 g",
           "price": "2.99",
-          "brand": "Chalo!",
-          "valid_from": "2026-11-05T02:00:00-05:00",
+          "brand": "Swad",
+          "valid_from": "2026-10-15T03:00:00-04:00",
           "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161817/1793340796/extra_large.jpg"
-        },
-        {
-          "id": 1051265522,
-          "name": "Chalo! Lentils or Chickpeas 1.81 kg Selected Varieties - FreshCo Diwali",
-          "price": "5.0",
-          "brand": "Chalo!",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161799/1793340783/extra_large.jpg"
-        },
-        {
-          "id": 1051265529,
-          "name": "Panjimi Naan 500-600 g - FreshCo Diwali",
-          "price": "4.0",
-          "brand": "PANJIMI",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161803/1793340786/extra_large.jpg"
-        },
-        {
-          "id": 1051265478,
-          "name": "Old El Paso Taco Kits 250-510 g",
-          "price": "3.99",
-          "brand": "Old El Paso",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161754/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265596,
-          "name": "Compliments Danish Butter Cookies 454 g",
-          "price": "5.99",
-          "brand": "Compliments",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161774/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265574,
-          "name": "Kinder Mix Advent Calendar 182 g or Kinder Maxi Mix With Toy 116 g",
-          "price": "12.99",
-          "brand": "Kinder",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161788/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265591,
-          "name": "Panache Belgium Biscuit Assortment 325 g",
-          "price": "6.99",
-          "brand": "Panache",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161771/1793340782/extra_large.jpg"
-        },
-        {
-          "id": 1051265415,
-          "name": "Kellogg's Core Bars 125-384 g",
-          "price": "2.67",
-          "brand": "Kellogg's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161487/1793340791/extra_large.jpg"
-        },
-        {
-          "id": 1051265572,
-          "name": "Hershey's Kisses 180 g or Reese's Miniatures Unwrapped Trees 161 g",
-          "price": "5.49",
-          "brand": "Hershey's | Reese's",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161787/1793340784/extra_large.jpg"
-        },
-        {
-          "id": 1051265551,
-          "name": "Cilantro Bunch Product of USA or Mexico - FreshCo Diwali",
-          "price": "0.99",
-          "brand": null,
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161815/1793340794/extra_large.jpg"
-        },
-        {
-          "id": 1051265581,
-          "name": "Healthy Choice® Gourmet Steamers Entrées 269-306 g or Swanson® Entrées 255-345 g",
-          "price": "3.99",
-          "brand": "Healthy Choice® | Swanson®",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161792/1793340787/extra_large.jpg"
-        },
-        {
-          "id": 1051265582,
-          "name": "Gardein SUPRÊME™ Plant-Based Burger 678 g",
-          "price": "17.99",
-          "brand": "Gardein",
-          "valid_from": "2026-11-05T02:00:00-05:00",
-          "valid_to": "2026-11-11T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439161793/1793340787/extra_large.jpg"
+          "cutout_image_url": "https://f.wishabi.net/page_items/436762421/1791419984/extra_large.jpg"
         }
       ]
     },
@@ -15565,84 +14674,75 @@
       "merchant": "Pomme Produce",
       "merchant_id": 3328,
       "merchant_logo": "https://images.wishabi.net/merchants/3328/1428002480/large",
-      "flyer_id": 8218098,
+      "flyer_id": 8224251,
       "flyer_name": "Weekly",
-      "valid_from": "2026-11-03T00:00:00-05:00",
-      "valid_to": "2026-11-09T23:59:59-05:00",
+      "valid_from": "2026-11-10T00:00:00-05:00",
+      "valid_to": "2026-11-16T23:59:59-05:00",
       "website_url": "https://pommenaturalmarket.com",
-      "items_count": 8,
+      "items_count": 7,
       "items": [
         {
-          "id": 1052119489,
-          "name": "ORGANIC FOUNTAINVIEW JUNIOR CARROTS",
+          "id": 1053320105,
+          "name": "ORGANIC PURPLE TOP TURNIPS",
           "price": "2.99",
-          "brand": "Fountainview Farms",
-          "valid_from": "2026-11-03T00:00:00-05:00",
-          "valid_to": "2026-11-09T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439543564/1793727876/extra_large.jpg"
-        },
-        {
-          "id": 1052119490,
-          "name": "ORGANIC GREENKALE",
-          "price": "2.29",
           "brand": null,
-          "valid_from": "2026-11-03T00:00:00-05:00",
-          "valid_to": "2026-11-09T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439543565/1793727877/extra_large.jpg"
+          "valid_from": "2026-11-10T00:00:00-05:00",
+          "valid_to": "2026-11-16T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/440154736/1794301334/extra_large.jpg"
         },
         {
-          "id": 1052119491,
-          "name": "ORGANIC TOMATOES ON THE VINE",
+          "id": 1053320103,
+          "name": "ORGANIC GALA APPLES",
           "price": "4.99",
           "brand": null,
-          "valid_from": "2026-11-03T00:00:00-05:00",
-          "valid_to": "2026-11-09T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439543566/1793727878/extra_large.jpg"
+          "valid_from": "2026-11-10T00:00:00-05:00",
+          "valid_to": "2026-11-16T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/440154734/1794301332/extra_large.jpg"
         },
         {
-          "id": 1052119493,
-          "name": "ORGANIC ASPARAGUS",
-          "price": "9.99",
+          "id": 1053320101,
+          "name": "ORGANIC PURPLE TOP TURNIPS",
+          "price": "2.99",
           "brand": null,
-          "valid_from": "2026-11-03T00:00:00-05:00",
-          "valid_to": "2026-11-09T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439543568/1793727879/extra_large.jpg"
+          "valid_from": "2026-11-10T00:00:00-05:00",
+          "valid_to": "2026-11-16T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/440154732/1794301331/extra_large.jpg"
         },
         {
-          "id": 1052119488,
-          "name": "ORGANIC RED BEETS",
-          "price": "2.19",
+          "id": 1053320100,
+          "name": "ORGANIC BLUEBERRIES",
+          "price": "5.99",
           "brand": null,
-          "valid_from": "2026-11-03T00:00:00-05:00",
-          "valid_to": "2026-11-09T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439543563/1793727876/extra_large.jpg"
+          "valid_from": "2026-11-10T00:00:00-05:00",
+          "valid_to": "2026-11-16T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/440154731/1794301330/extra_large.jpg"
         },
         {
-          "id": 1052119494,
-          "name": "ORGANIC TOMATOES ON THE VINE",
-          "price": "4.99",
+          "id": 1053320102,
+          "name": "ORGANIC MCINTOSH APPLES",
+          "price": "5.99",
           "brand": null,
-          "valid_from": "2026-11-03T00:00:00-05:00",
-          "valid_to": "2026-11-09T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439543569/1793727879/extra_large.jpg"
+          "valid_from": "2026-11-10T00:00:00-05:00",
+          "valid_to": "2026-11-16T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/440154733/1794301332/extra_large.jpg"
         },
         {
-          "id": 1052119495,
-          "name": "ORGANIC YELLOW ONIONS, ALBERTA, ORGANIC HONEYCRISP APPLES, BRITISH COLUMBIA",
-          "price": "",
+          "id": 1053320104,
+          "name": "ORGANIC AVOCADOS",
+          "price": "1.29",
           "brand": null,
-          "valid_from": "2026-11-03T00:00:00-05:00",
-          "valid_to": "2026-11-09T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439543570/1793727880/extra_large.jpg"
+          "valid_from": "2026-11-10T00:00:00-05:00",
+          "valid_to": "2026-11-16T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/440154735/1794301333/extra_large.jpg"
         },
         {
-          "id": 1052119492,
-          "name": "ORGANIC YELLOW ONIONS, ALBERTA, ORGANIC HONEYCRISP APPLES, BRITISH COLUMBIA",
-          "price": "3.49",
+          "id": 1053320106,
+          "name": "ORGANIC RED ONIONS",
+          "price": "1.49",
           "brand": null,
-          "valid_from": "2026-11-03T00:00:00-05:00",
-          "valid_to": "2026-11-09T23:59:59-05:00",
-          "cutout_image_url": "https://f.wishabi.net/page_items/439543567/1793727878/extra_large.jpg"
+          "valid_from": "2026-11-10T00:00:00-05:00",
+          "valid_to": "2026-11-16T23:59:59-05:00",
+          "cutout_image_url": "https://f.wishabi.net/page_items/440154737/1794301335/extra_large.jpg"
         }
       ]
     },

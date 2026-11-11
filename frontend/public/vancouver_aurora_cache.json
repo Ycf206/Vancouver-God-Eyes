@@ -3,11 +3,11 @@
   "source_url": "https://www.swpc.noaa.gov/",
   "api_endpoint": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
   "update_frequency": "每天 2 次 (12 小時快取)",
-  "last_updated": "2026-11-10T13:16:07.098965Z",
+  "last_updated": "2026-11-11T03:39:10.967660Z",
   "latest": {
-    "time_tag": "2026-11-10T09:00:00",
-    "kp": 2.67,
-    "kp_int": 3,
+    "time_tag": "2026-11-11T00:00:00",
+    "kp": 1.67,
+    "kp_int": 2,
     "g_scale": "平靜",
     "g_desc": "平靜平穩",
     "g_color": "#3b82f6",
@@ -20,46 +20,6 @@
     }
   },
   "history": [
-    {
-      "time_tag": "2026-11-08T12:00:00",
-      "kp": 2.67,
-      "a_running": 12,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
-    {
-      "time_tag": "2026-11-08T15:00:00",
-      "kp": 3.33,
-      "a_running": 18,
-      "g_scale": "微擾",
-      "g_desc": "輕微擾動",
-      "g_color": "#06b6d4"
-    },
-    {
-      "time_tag": "2026-11-08T18:00:00",
-      "kp": 4.0,
-      "a_running": 27,
-      "g_scale": "活躍",
-      "g_desc": "活躍擾動",
-      "g_color": "#10b981"
-    },
-    {
-      "time_tag": "2026-11-08T21:00:00",
-      "kp": 2.67,
-      "a_running": 12,
-      "g_scale": "平靜",
-      "g_desc": "平靜平穩",
-      "g_color": "#3b82f6"
-    },
-    {
-      "time_tag": "2026-11-09T00:00:00",
-      "kp": 3.0,
-      "a_running": 15,
-      "g_scale": "微擾",
-      "g_desc": "輕微擾動",
-      "g_color": "#06b6d4"
-    },
     {
       "time_tag": "2026-11-09T03:00:00",
       "kp": 3.33,
@@ -144,6 +104,46 @@
       "time_tag": "2026-11-10T09:00:00",
       "kp": 2.67,
       "a_running": 12,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-11-10T12:00:00",
+      "kp": 1.33,
+      "a_running": 5,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-11-10T15:00:00",
+      "kp": 3.0,
+      "a_running": 15,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-11-10T18:00:00",
+      "kp": 2.33,
+      "a_running": 9,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-11-10T21:00:00",
+      "kp": 2.0,
+      "a_running": 7,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-11-11T00:00:00",
+      "kp": 1.67,
+      "a_running": 6,
       "g_scale": "平靜",
       "g_desc": "平靜平穩",
       "g_color": "#3b82f6"

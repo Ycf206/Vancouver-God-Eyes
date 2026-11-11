@@ -1,6 +1,6 @@
 {
-  "_cache_timestamp": 1794317175.1365001,
-  "updated_at": "2026-11-10 13:26 UTC",
+  "_cache_timestamp": 1794368350.5203767,
+  "updated_at": "2026-11-11 03:39 UTC",
   "update_frequency": "每 1 日更新 (Daily)",
   "count": 3,
   "resorts": [
@@ -33,12 +33,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Tue",
-        "date": "10.11.2026",
-        "temp_min": "-3",
-        "temp_max": "2",
-        "condition": "snow showers",
-        "weather_text": "Am Dienstag bringen Wolken immer wieder Schneeschauer. Die Temperaturen erreichen -3 bis 2 Grad."
+        "day": "Wed",
+        "date": "11.11.2026",
+        "temp_min": "1",
+        "temp_max": "6",
+        "condition": "sunny",
+        "weather_text": "Am Mittwoch scheint fast ungehindert die Sonne. Die Temperaturen erreichen 1 bis 6 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -71,12 +71,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Tue",
-        "date": "10.11.2026",
-        "temp_min": "-3",
-        "temp_max": "2",
-        "condition": "rain showers",
-        "weather_text": "Am Dienstag bringen Wolken immer wieder Regenschauer. Die Temperaturen erreichen -3 bis 2 Grad."
+        "day": "Wed",
+        "date": "11.11.2026",
+        "temp_min": "1",
+        "temp_max": "6",
+        "condition": "sunny",
+        "weather_text": "Am Mittwoch scheint fast ungehindert die Sonne. Die Temperaturen erreichen 1 bis 6 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -109,12 +109,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Tue",
-        "date": "10.11.2026",
-        "temp_min": "-3",
-        "temp_max": "2",
-        "condition": "rain showers",
-        "weather_text": "Am Dienstag bringen Wolken immer wieder Regenschauer. Die Temperaturen erreichen -3 bis 2 Grad."
+        "day": "Wed",
+        "date": "11.11.2026",
+        "temp_min": "1",
+        "temp_max": "6",
+        "condition": "sunny",
+        "weather_text": "Am Mittwoch scheint fast ungehindert die Sonne. Die Temperaturen erreichen 1 bis 6 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     }

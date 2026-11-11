@@ -1,8 +1,9 @@
 name: "Update 共享滑板車 (Lime E-Scooters) (每小時即時車況)"
 
 on:
-  schedule:
-    - cron: '0 * * * *'
+  # 常規自動排程已移轉至 OCI 常駐伺服器背景守護進程 (節省 GitHub Actions 額度與無意義 Commit)
+  # schedule:
+  #   - cron: '0 * * * *'
   workflow_dispatch:
 
 concurrency:

@@ -1,7 +1,7 @@
 {
   "success": true,
   "season": "20262027",
-  "updated_at": "2026-11-09T17:57:48.567279-07:00",
+  "updated_at": "2026-11-10T18:09:43.977614-07:00",
   "clubTimezone": "America/Vancouver",
   "totalGames": 88,
   "games": [
@@ -2368,7 +2368,7 @@
       "easternUTCOffset": "-05:00",
       "venueUTCOffset": "-07:00",
       "venueTimezone": "America/Vancouver",
-      "gameState": "FUT",
+      "gameState": "OFF",
       "gameScheduleState": "OK",
       "tvBroadcasts": [
         {
@@ -2403,7 +2403,7 @@
         "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_light.svg",
         "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PHI_dark.svg",
         "awaySplitSquad": false,
-        "radioLink": "https://d2igy0yla8zi0u.cloudfront.net/PHI/20262027/PHI-radio.m3u8"
+        "score": 3
       },
       "homeTeam": {
         "id": 23,
@@ -2421,15 +2421,36 @@
         "logo": "https://assets.nhle.com/logos/nhl/svg/VAN_light.svg",
         "darkLogo": "https://assets.nhle.com/logos/nhl/svg/VAN_dark.svg",
         "homeSplitSquad": false,
-        "radioLink": "https://d2igy0yla8zi0u.cloudfront.net/VAN/20262027/VAN-radio.m3u8"
+        "score": 1
       },
       "periodDescriptor": {
-        "number": 1,
+        "number": 3,
         "periodType": "REG",
         "maxRegulationPeriods": 3
       },
-      "ticketsLink": "https://www.ticketmaster.ca/event/11006503F0A8BB85?brand=canucks&artistid=806037&wt.mc_id=NHL_TEAM_VAN_SCHEDULE_GM9&utm_source=NHL.com&utm_medium=client_PM&utm_campaign=NHL_TEAM_VAN&utm_content=SCHEDULE_GM9",
-      "ticketsLinkFr": "https://www.ticketmaster.ca/event/11006503F0A8BB85?brand=canucks&artistid=806037&wt.mc_id=NHL_TEAM_VAN_SCHEDULE_GM9&utm_source=NHL.com&utm_medium=client_PM&utm_campaign=NHL_TEAM_VAN&utm_content=SCHEDULE_GM9",
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8479361,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Woll"
+        }
+      },
+      "winningGoalScorer": {
+        "playerId": 8478439,
+        "firstInitial": {
+          "default": "T."
+        },
+        "lastName": {
+          "default": "Konecny"
+        }
+      },
+      "threeMinRecapFr": "/fr/video/phi-vs-van-09-11-2026-resume-6408169746112",
+      "condensedGame": "/video/phi-at-van-condensed-game-6408168283112",
       "gameCenterLink": "/gamecenter/phi-vs-van/2026/11/09/2026020284"
     },
     {

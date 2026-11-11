@@ -1,5 +1,50 @@
 [
   {
+    "id": "sync-1794368251083-food_vendors",
+    "timestamp": "2026-11-11T03:37:31.073Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "街頭餐車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [街頭餐車] 資料同步完成，共載入 2 筆記錄。"
+  },
+  {
+    "id": "sync-1794368149979-food_vendors",
+    "timestamp": "2026-11-11T03:35:49.951Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "街頭餐車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [街頭餐車] 資料同步完成，共載入 2 筆記錄。"
+  },
+  {
+    "id": "sync-1794368135422-escooter",
+    "timestamp": "2026-11-11T03:35:35.369Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享滑板車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享滑板車] 資料同步完成，共載入 250 筆記錄。"
+  },
+  {
+    "id": "sync-1794368126195-shared_bikes",
+    "timestamp": "2026-11-11T03:35:26.146Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享單車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+  },
+  {
+    "id": "sync-1794360151737-service_requests_311",
+    "timestamp": "2026-11-11T01:22:31.630Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "3-1-1",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+  },
+  {
     "id": "gh-run-42752468100-shared_bikes",
     "timestamp": "2026-11-10T03:55:38Z",
     "action": "GITHUB_WORKFLOW_SYNC",
@@ -216,60 +261,6 @@
     "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
   },
   {
-    "id": "gh-run-42132864763-shared_bikes",
-    "timestamp": "2026-11-05T23:55:05Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享單車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-  },
-  {
-    "id": "gh-run-42132603266-escooter",
-    "timestamp": "2026-11-05T23:52:30Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享滑板車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-  },
-  {
-    "id": "gh-run-42084097506-shared_bikes",
-    "timestamp": "2026-11-05T18:26:51Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享單車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-  },
-  {
-    "id": "gh-run-42083474328-escooter",
-    "timestamp": "2026-11-05T18:22:14Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享滑板車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-  },
-  {
-    "id": "gh-run-42011468684-shared_bikes",
-    "timestamp": "2026-11-05T10:32:34Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享單車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-  },
-  {
-    "id": "gh-run-42008906450-escooter",
-    "timestamp": "2026-11-05T10:14:05Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享滑板車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-  },
-  {
     "id": "gh-run-42392600394-shared_bikes",
     "timestamp": "2026-11-07T16:43:11Z",
     "action": "GITHUB_WORKFLOW_SYNC",
@@ -376,24 +367,6 @@
     "runner": "github_actions",
     "status": "success",
     "detail": "[GitHub Actions · 排程自動執行] 工作流 update-tnt-eflyers.yml 執行成功，目前共 8 張高清海報頁面。"
-  },
-  {
-    "id": "gh-run-42060512624-service_requests_311",
-    "timestamp": "2026-11-05T16:00:05Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "3-1-1",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-311.yml 執行成功，目前共 1324622 筆即時案件。"
-  },
-  {
-    "id": "gh-run-42042516204-food_vendors",
-    "timestamp": "2026-11-05T14:11:33Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "街頭餐車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-food-vendors.yml 執行成功，目前共 10 處街頭餐車與熟食攤位。"
   },
   {
     "id": "gh-run-42445091355-service_requests_311",
