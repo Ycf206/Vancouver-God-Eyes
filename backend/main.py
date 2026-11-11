@@ -3259,14 +3259,110 @@ def get_road_facilities_geojson(
         })
     return {"type": "FeatureCollection", "features": features}
 
+def fetch_311_by_date(target_date: str) -> list[dict]:
+    """
+    從溫哥華 OpenData API 抓取指定日期（溫哥華當地時間 YYYY-MM-DD）的全部 3-1-1 市政服務請求。
+    支援本機 311_dates/{target_date}.json 快取以加速後續載入。
+    """
+    import urllib.request
+    import urllib.parse
+    cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', '311_dates')
+    os.makedirs(cache_dir, exist_ok=True)
+    cache_file = os.path.join(cache_dir, f"311_{target_date}.json")
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r', encoding='utf-8') as f:
+                cached = json.load(f)
+                if isinstance(cached, list):
+                    return cached
+        except Exception:
+            pass
+
+    # 計算溫哥華當地日期 target_date 對應之 UTC 範圍 (覆蓋冬夏令時間 UTC-8 至 UTC-7)
+    try:
+        from datetime import datetime, timedelta
+        dt = datetime.strptime(target_date, "%Y-%m-%d")
+        next_dt = dt + timedelta(days=1)
+        start_utc = f"{dt.strftime('%Y-%m-%d')}T06:00:00Z"
+        end_utc = f"{next_dt.strftime('%Y-%m-%d')}T09:00:00Z"
+    except Exception:
+        start_utc = f"{target_date}T00:00:00Z"
+        end_utc = f"{target_date}T23:59:59Z"
+
+    where_clause = f"service_request_open_timestamp >= '{start_utc}' and service_request_open_timestamp <= '{end_utc}'"
+    encoded_where = urllib.parse.quote(where_clause)
+    base_url = f"https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/3-1-1-service-requests/records?where={encoded_where}&order_by=service_request_open_timestamp%20desc"
+
+    all_records = []
+    offset = 0
+    limit = 100
+    while len(all_records) < 1000:
+        url = f"{base_url}&limit={limit}&offset={offset}"
+        req = urllib.request.Request(url, headers={"User-Agent": "VancouverGodsEye/1.0"})
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                if resp.status == 200:
+                    payload = json.loads(resp.read().decode('utf-8'))
+                    batch = payload.get("results", [])
+                    if not batch:
+                        break
+                    all_records.extend(batch)
+                    offset += len(batch)
+                    if len(batch) < limit:
+                        break
+                else:
+                    break
+        except Exception:
+            break
+
+    matched_records = []
+    try:
+        from zoneinfo import ZoneInfo
+        van_tz = ZoneInfo("America/Vancouver")
+    except Exception:
+        van_tz = None
+
+    for r in all_records:
+        ts_str = r.get("service_request_open_timestamp")
+        if not ts_str:
+            continue
+        try:
+            dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+            if van_tz:
+                local_dt = dt.astimezone(van_tz)
+                local_date_str = local_dt.strftime("%Y-%m-%d")
+            else:
+                local_date_str = ts_str[:10]
+            if local_date_str == target_date:
+                matched_records.append(r)
+        except Exception:
+            if target_date in ts_str:
+                matched_records.append(r)
+
+    if matched_records:
+        try:
+            with open(cache_file, 'w', encoding='utf-8') as f:
+                json.dump(matched_records, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+
+    return matched_records
+
+
 @app.get("/api/explore/311")
-def get_311_service_requests(force: bool = False):
-    """取得最新溫哥華 3-1-1 市政服務請求資料 (禁用快取保證即時性)"""
+def get_311_service_requests(force: bool = False, date: Optional[str] = None):
+    """取得最新溫哥華 3-1-1 市政服務請求資料 (支援指定日期 target_date 歷史查詢)"""
     cache_headers = {
         "Cache-Control": "no-cache, no-store, must-revalidate",
         "Pragma": "no-cache",
         "Expires": "0"
     }
+
+    if date:
+        clean_date = date.strip()
+        records = fetch_311_by_date(clean_date)
+        return JSONResponse(content={"total_count": len(records), "results": records}, headers=cache_headers)
+
     data_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'vancouver_311.json')
     if not force and os.path.exists(data_file):
         try:
@@ -4800,9 +4896,16 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
                 src_by_id[sid]["status"] = "updating"
 
         if new_gh_logs:
-            # 依時間由舊到新寫入 append_schedule_log，使最新項目排在頂端
+            # 依時間由舊到新寫入 append_schedule_log 與 add_system_log，使最新項目排在頂端
             for entry in reversed(new_gh_logs):
                 system_log_service.append_schedule_log(entry)
+                system_log_service.add_system_log(
+                    level="SUCCESS" if entry.get("status") == "success" else "ERROR",
+                    file=entry.get("workflow_file") or "github-actions",
+                    action="GITHUB_ACTION_SYNC",
+                    message=f"GitHub Actions 資料源更新完成：{entry.get('source_name')} ({entry.get('workflow_file')}) - {entry.get('detail')}",
+                    details=entry
+                )
             changed = True
 
     return changed
@@ -5203,11 +5306,11 @@ def trigger_admin_sync(payload: dict = Body(...)):
             # 11.4 & 11.5 同步寫入持久化排程歷史與系統日誌
             system_log_service.append_schedule_log(new_log)
             system_log_service.add_system_log(
-                level="INFO" if log_status == "success" else ("WARNING" if log_status == "warning" else "ERROR"),
+                level="SUCCESS" if log_status == "success" else ("WARNING" if log_status == "warning" else "ERROR"),
                 file="backend/main.py",
                 action=action_name,
-                message=f"數據源同步觸發：{target_name} ({action_name}) - {detail_msg}",
-                details={"source_id": source_id, "detail": detail_msg}
+                message=f"資料源更新完成：{target_name} ({action_name}) - {detail_msg}",
+                details={"source_id": source_id, "detail": detail_msg, "record_count": target_src.get("record_count") if 'target_src' in locals() and target_src else None}
             )
 
             with _admin_cfg_lock:
@@ -5537,6 +5640,16 @@ def set_admin_schedule_history_retention(payload: dict = Body(...)):
     """
     days = int(payload.get("retention_days", 30))
     system_log_service.set_schedule_retention_days(days)
+    config_path = get_admin_config_path()
+    if os.path.exists(config_path):
+        try:
+            with _admin_cfg_lock:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
+                cfg["schedule_retention_days"] = days
+                _atomic_write_json(config_path, cfg)
+        except Exception:
+            pass
     return {"status": "success", "retention_days": days}
 
 
@@ -5546,6 +5659,16 @@ def clear_admin_schedule_history():
     11.5 清空排程更新歷史
     """
     system_log_service.clear_schedule_history()
+    config_path = get_admin_config_path()
+    if os.path.exists(config_path):
+        try:
+            with _admin_cfg_lock:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
+                cfg["logs"] = []
+                _atomic_write_json(config_path, cfg)
+        except Exception:
+            pass
     return {"status": "success", "message": "排程更新歷史已清空"}
 
 

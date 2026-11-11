@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import asyncio
+from datetime import datetime, timezone
 from typing import Optional, Dict, Any
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -12,6 +13,68 @@ if SCRIPTS_LAYERS_DIR not in sys.path:
 
 BACKEND_DATA_DIR = os.path.join(BACKEND_DIR, "data")
 FRONTEND_DATA_DIR = os.path.abspath(os.path.join(BACKEND_DIR, "..", "frontend", "public"))
+
+
+def log_data_source_update(
+    source_id: str,
+    source_name: str,
+    record_count: Optional[int],
+    target_file: str,
+    file_path: str,
+    error: Optional[Exception | str] = None,
+    runner: str = "oci"
+) -> None:
+    """
+    詳細記錄資料源更新紀錄至系統日誌 (system_logs.json) 與排程歷史 (admin_schedule_history.json)
+    無論伺服器在背景自動運行、或管理員手動觸發，成功與失敗皆留存詳細資料。
+    """
+    try:
+        from system_log_service import system_log_service
+        now_iso = datetime.now(timezone.utc).isoformat()
+        is_success = error is None and (record_count is not None and record_count >= 0)
+        level = "SUCCESS" if is_success else "ERROR"
+        action = "DATA_SOURCE_SYNC" if is_success else "DATA_SOURCE_SYNC_ERROR"
+
+        if is_success:
+            msg = f"資料源更新完成：{source_name} ({source_id})，成功更新 {record_count} 筆資料至 {target_file}。"
+        else:
+            msg = f"資料源更新失敗：{source_name} ({source_id})，錯誤原因: {str(error)}"
+
+        details = {
+            "source_id": source_id,
+            "source_name": source_name,
+            "record_count": record_count if is_success else 0,
+            "target_file": target_file,
+            "runner": runner,
+            "status": "success" if is_success else "error",
+            "error": str(error) if error else None
+        }
+
+        # 1. 寫入系統日誌 (System Logs)
+        system_log_service.add_system_log(
+            level=level,
+            file=file_path,
+            action=action,
+            message=msg,
+            details=details
+        )
+
+        # 2. 寫入排程歷史 (Schedule History)
+        sched_entry = {
+            "id": f"log-{int(time.time() * 1000)}",
+            "timestamp": now_iso,
+            "action": f"{runner.upper()}_DAEMON_SYNC",
+            "source_name": source_name,
+            "runner": runner,
+            "status": "success" if is_success else "error",
+            "detail": msg,
+            "record_count": record_count if is_success else 0
+        }
+        system_log_service.append_schedule_log(sched_entry)
+
+    except Exception as log_err:
+        print(f"⚠️ [Dynamic Layers] 寫入系統日誌失敗: {log_err}")
+
 
 def _is_layer_recent(filename: str, ttl_seconds: int) -> bool:
     """檢查本地快取檔是否存在且在 TTL 秒內已更新"""
@@ -26,63 +89,92 @@ def _is_layer_recent(filename: str, ttl_seconds: int) -> bool:
                 pass
     return False
 
+
 def refresh_shared_bikes(full: bool = True) -> int:
     """更新 Mobi 共享單車站點與即時車況"""
+    file_path = "backend/scripts/layers/update_shared_bikes.py"
+    target_file = "vancouver_shared_bikes.geojson"
     try:
         from update_shared_bikes import update_mobi_stations, update_mobi_status
         if full:
             features = update_mobi_stations()
         else:
             features = update_mobi_status()
-        return len(features) if features else 0
+        cnt = len(features) if features else 0
+        log_data_source_update("shared_bikes", "Mobi 共享單車", cnt, target_file, file_path)
+        return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_shared_bikes 異常: {e}")
+        log_data_source_update("shared_bikes", "Mobi 共享單車", None, target_file, file_path, error=e)
         return 0
+
 
 def refresh_escooter(full: bool = True) -> int:
     """更新 Lime 共享滑板車站點與即時可用車況"""
+    file_path = "backend/scripts/layers/update_escooter.py"
+    target_file = "vancouver_escooter.geojson"
     try:
         from update_escooter import update_escooter_stations, update_escooter_status
         if full:
             features = update_escooter_stations()
         else:
             features = update_escooter_status()
-        return len(features) if features else 0
+        cnt = len(features) if features else 0
+        log_data_source_update("escooter", "Lime 共享滑板車", cnt, target_file, file_path)
+        return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_escooter 異常: {e}")
+        log_data_source_update("escooter", "Lime 共享滑板車", None, target_file, file_path, error=e)
         return 0
+
 
 def refresh_311(target_count: int = 1000) -> int:
     """更新溫哥華 3-1-1 市政服務請求最新工單"""
+    file_path = "backend/scripts/layers/update_311.py"
+    target_file = "vancouver_311.json"
     try:
         from update_311 import update_311
         data = update_311(target_count=target_count)
-        if isinstance(data, dict) and "results" in data:
-            return len(data["results"])
-        return 0
+        cnt = len(data["results"]) if isinstance(data, dict) and "results" in data else 0
+        log_data_source_update("service_requests_311", "3-1-1 市政服務請求", cnt, target_file, file_path)
+        return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_311 異常: {e}")
+        log_data_source_update("service_requests_311", "3-1-1 市政服務請求", None, target_file, file_path, error=e)
         return 0
+
 
 def refresh_food_vendors() -> int:
     """更新市區街頭熟食餐車 (StreetFoodApp)"""
+    file_path = "backend/scripts/layers/update_food_vendors.py"
+    target_file = "vancouver_food_vendors.geojson"
     try:
         from update_food_vendors import update_food_vendors
         features = update_food_vendors()
-        return len(features) if features else 0
+        cnt = len(features) if features else 0
+        log_data_source_update("food_vendors", "街頭熟食餐車", cnt, target_file, file_path)
+        return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_food_vendors 異常: {e}")
+        log_data_source_update("food_vendors", "街頭熟食餐車", None, target_file, file_path, error=e)
         return 0
+
 
 def refresh_yvr_news() -> int:
     """更新 YVR 機場官方最新要聞 RSS"""
+    file_path = "backend/yvr_airport_service.py"
+    target_file = "yvr_news_rss.json"
     try:
         import yvr_airport_service
         items = yvr_airport_service.fetch_yvr_news_rss(force_refresh=True)
-        return len(items) if items else 0
+        cnt = len(items) if items else 0
+        log_data_source_update("yvr_news_rss", "YVR 機場官方最新要聞", cnt, target_file, file_path)
+        return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_yvr_news 異常: {e}")
+        log_data_source_update("yvr_news_rss", "YVR 機場官方最新要聞", None, target_file, file_path, error=e)
         return 0
+
 
 async def run_dynamic_layers_background_loop():
     """

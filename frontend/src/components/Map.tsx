@@ -16763,8 +16763,7 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2.5 text-xs">
                     {/* 標題下方顏色區塊：區塊內用中文顯示 event_type (event_sub_type) */}
-                    <div className={`px-2.5 py-1.5 rounded-lg flex items-center gap-2 border font-medium ${meta.badgeBg}`}>
-                      <IconComp size={16} className="shrink-0" />
+                    <div className={`px-2.5 py-1.5 rounded-lg flex items-center border font-medium ${meta.badgeBg}`}>
                       <span className="leading-snug break-words">{eventTypeZh}</span>
                     </div>
 

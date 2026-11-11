@@ -1024,6 +1024,7 @@ function ExploreContent() {
   const [status311Filter, setStatus311Filter] = useState<'all' | 'open' | 'close'>('all');
   const [dept311Filter, setDept311Filter] = useState<string>('all');
   const [date311Filter, setDate311Filter] = useState<string>('');
+  const [dateFilteredRequests311, setDateFilteredRequests311] = useState<any[] | null>(null);
   const [sort311Order, setSort311Order] = useState<'desc' | 'asc'>('desc');
   const [page311, setPage311] = useState<number>(1);
   const PAGE_SIZE_311 = 20;
@@ -1053,6 +1054,35 @@ function ExploreContent() {
       .catch(err => console.error('Failed to load 311 data:', err))
       .finally(() => setLoading311(false));
   }, [isExploreOpen, exploreTab, requests311.length]);
+
+  // 當選取特定日期時，向 /api/explore/311?date=... 動態查詢該日歷史工單
+  useEffect(() => {
+    if (!date311Filter) {
+      setDateFilteredRequests311(null);
+      return;
+    }
+    let isCancelled = false;
+    setLoading311(true);
+    fetch(`/api/explore/311?date=${encodeURIComponent(date311Filter)}&t=${Date.now()}`, { cache: 'no-store' })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        if (isCancelled) return;
+        const list = Array.isArray(data) ? data : (data.results || []);
+        setDateFilteredRequests311(list);
+      })
+      .catch(err => {
+        console.warn('Failed to fetch 311 by date:', err);
+      })
+      .finally(() => {
+        if (!isCancelled) setLoading311(false);
+      });
+    return () => {
+      isCancelled = true;
+    };
+  }, [date311Filter]);
 
   // 取得 Flipp 大溫各大超市特惠傳單資料 (0ms 原子快取，每 12 小時背景自動檢查更新)
   const fetchFlippFlyers = React.useCallback(async (force = false) => {
@@ -1131,13 +1161,20 @@ function ExploreContent() {
   }, [requests311]);
 
   const filtered311Requests = useMemo(() => {
-    return requests311.filter(r => {
+    const sourceList = (date311Filter && dateFilteredRequests311 !== null) ? dateFilteredRequests311 : requests311;
+    return sourceList.filter(r => {
       if (status311Filter === 'open' && (r.status || '').toLowerCase() !== 'open') return false;
       if (status311Filter === 'close' && (r.status || '').toLowerCase() !== 'close') return false;
       if (dept311Filter !== 'all' && (r.department || '').trim() !== dept311Filter) return false;
       if (date311Filter) {
-        const openDateStr = r.service_request_open_timestamp ? r.service_request_open_timestamp.slice(0, 10) : '';
-        if (openDateStr !== date311Filter) return false;
+        const raw = r.service_request_open_timestamp;
+        if (!raw) return false;
+        try {
+          const vanDate = new Date(raw).toLocaleDateString('en-CA', { timeZone: 'America/Vancouver' });
+          if (vanDate !== date311Filter && raw.slice(0, 10) !== date311Filter) return false;
+        } catch {
+          if (raw.slice(0, 10) !== date311Filter) return false;
+        }
       }
       if (search311Query.trim()) {
         const q = search311Query.trim().toLowerCase();
@@ -1150,7 +1187,7 @@ function ExploreContent() {
       const timeB = new Date(b.service_request_open_timestamp || 0).getTime();
       return sort311Order === 'desc' ? timeB - timeA : timeA - timeB;
     });
-  }, [requests311, status311Filter, dept311Filter, date311Filter, search311Query, sort311Order]);
+  }, [requests311, dateFilteredRequests311, status311Filter, dept311Filter, date311Filter, search311Query, sort311Order]);
 
   const totalPages311 = Math.max(1, Math.ceil(filtered311Requests.length / PAGE_SIZE_311));
   const paged311Requests = useMemo(() => {
@@ -6838,7 +6875,9 @@ function ExploreContent() {
                 ) : filtered311Requests.length === 0 ? (
                   <tr>
                     <td colSpan={10} className="py-10 text-center text-gray-400 text-xs">
-                      沒有符合條件的 3-1-1 服務請求。
+                      {date311Filter
+                        ? `該日期（${date311Filter}）暫無符合條件的 3-1-1 服務請求。`
+                        : '沒有符合條件的 3-1-1 服務請求。'}
                     </td>
                   </tr>
                 ) : (
@@ -6846,7 +6885,7 @@ function ExploreContent() {
                     const isOpen = (req.status || '').toLowerCase() === 'open';
                     const hasNav = req.geom && typeof req.geom.lat === 'number' && typeof req.geom.lon === 'number';
                     const addrTitleCase = req.address 
-                      ? req.address.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) 
+                      ? req.address.toLowerCase().replace(/\b\w/g, (c: string) => c.toUpperCase()) 
                       : '—';
                     return (
                       <tr 

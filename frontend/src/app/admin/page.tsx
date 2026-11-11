@@ -590,10 +590,27 @@ export default function AdminPage() {
       fetchAnalyticsData();
     } else if (mainTab === 'system_logs') {
       fetchSystemLogs();
+    } else if (mainTab === 'logs') {
+      fetchScheduleHistory();
     } else if (mainTab === 'maintenance') {
       fetchMaintenanceStatus();
     }
   }, [mainTab, isUnlocked]);
+
+  const fetchScheduleHistory = async () => {
+    try {
+      const res = await adminApiFetch<{ logs: AuditLog[]; retention_days?: number }>('/api/admin/schedule-history');
+      if (res.ok && res.data && Array.isArray(res.data.logs)) {
+        setLogs(res.data.logs);
+        if (typeof res.data.retention_days === 'number') {
+          setScheduleRetentionDays(res.data.retention_days);
+          setScheduleRetentionInput(String(res.data.retention_days));
+        }
+      }
+    } catch (err) {
+      console.error('Fetch schedule history error:', err);
+    }
+  };
 
   const fetchMaintenanceStatus = async () => {
     try {
@@ -763,6 +780,7 @@ export default function AdminPage() {
       method: 'POST',
       body: JSON.stringify({ retention_days: safeDays })
     });
+    await fetchScheduleHistory();
     await fetchAdminData();
   };
 
@@ -1134,7 +1152,7 @@ export default function AdminPage() {
     try {
       setIsLoading(true);
       
-      const res = await adminApiFetch<{ sources: DataSource[]; logs: AuditLog[] }>('/api/admin/sources');
+      const res = await adminApiFetch<{ sources: DataSource[]; logs: AuditLog[]; schedule_retention_days?: number }>('/api/admin/sources');
       let loadedSources: DataSource[] = [];
       if (res.ok && res.data && Array.isArray(res.data.sources) && res.data.sources.length > 0) {
         loadedSources = res.data.sources.map(s => ({
@@ -1142,12 +1160,17 @@ export default function AdminPage() {
           runner: (s.runner as string) === 'github' ? 'github_actions' : s.runner
         }));
         setLogs(res.data.logs || []);
+        if (typeof (res.data as any).schedule_retention_days === 'number') {
+          setScheduleRetentionDays((res.data as any).schedule_retention_days);
+          setScheduleRetentionInput(String((res.data as any).schedule_retention_days));
+        }
         setBackendConnected(true);
       } else {
         loadedSources = DEFAULT_ADMIN_SOURCES as DataSource[];
         setBackendConnected(false);
       }
       setSources(loadedSources);
+      fetchSystemLogs();
 
       // 查詢 GitHub Token 配置狀態 (僅由伺服器安全保存，不再寫入瀏覽器 localStorage)
       const ghRes = await adminApiFetch<{ configured: boolean; repo: string; token_masked: string }>('/api/admin/github-status');

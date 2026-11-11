@@ -150,7 +150,7 @@ class SystemLogService:
 
             if len(valid_logs) != len(logs):
                 try:
-                    _atomic_write_json(SYSTEM_LOGS_FILE, valid_logs[:1000])
+                    _atomic_write_json(SYSTEM_LOGS_FILE, valid_logs[:2000])
                 except Exception:
                     pass
             return valid_logs
@@ -198,7 +198,7 @@ class SystemLogService:
                 logs = [l for l in logs if isinstance(l, dict) and _is_ts_on_or_after(l.get("timestamp"), cutoff)]
 
             try:
-                _atomic_write_json(SYSTEM_LOGS_FILE, logs[:1000])
+                _atomic_write_json(SYSTEM_LOGS_FILE, logs[:2000])
             except Exception:
                 pass
         return entry
@@ -235,7 +235,7 @@ class SystemLogService:
 
             if len(valid_items) != len(history):
                 try:
-                    _atomic_write_json(SCHEDULE_HISTORY_FILE, valid_items[:1000])
+                    _atomic_write_json(SCHEDULE_HISTORY_FILE, valid_items[:2000])
                 except Exception:
                     pass
             return valid_items
@@ -264,7 +264,7 @@ class SystemLogService:
                 history = [h for h in history if isinstance(h, dict) and _is_ts_on_or_after(h.get("timestamp"), cutoff)]
 
             try:
-                _atomic_write_json(SCHEDULE_HISTORY_FILE, history[:1000])
+                _atomic_write_json(SCHEDULE_HISTORY_FILE, history[:2000])
             except Exception:
                 pass
 
