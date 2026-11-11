@@ -1310,6 +1310,13 @@ async def broadcast_maritime_vessels():
             print(f"Error in maritime vessels broadcast: {e}")
         await asyncio.sleep(4)
 
+@app.on_event("shutdown")
+def shutdown_event():
+    try:
+        system_log_service.flush_all()
+    except Exception:
+        pass
+
 @app.on_event("startup")
 async def startup_event():
     try:

@@ -57,3 +57,4 @@ nginx/certs/
 # Runtime log and session files
 backend/data/system_logs.json
 backend/data/.admin_session_key
+backend/data/311_dates/

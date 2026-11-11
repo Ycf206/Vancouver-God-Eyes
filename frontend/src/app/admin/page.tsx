@@ -631,7 +631,8 @@ export default function AdminPage() {
   };
 
   const handleCopyLogContent = (log: any) => {
-    const fullText = `[${log.level}] ${new Date(log.timestamp).toLocaleString('zh-HK')} | ${log.file} | ${log.action}\n訊息: ${log.message}${
+    const repeatInfo = log.repeat_count && log.repeat_count > 1 ? ` (連續重複 ${log.repeat_count} 次，最後時間: ${log.last_seen || log.timestamp})` : '';
+    const fullText = `[${log.level}${repeatInfo}] ${new Date(log.timestamp).toLocaleString('zh-HK')} | ${log.file} | ${log.action}\n訊息: ${log.message}${
       log.details && Object.keys(log.details).length > 0
         ? `\n詳細資訊:\n${JSON.stringify(log.details, null, 2)}`
         : ''
@@ -3007,17 +3008,27 @@ export default function AdminPage() {
                         })}
                       </td>
                       <td className="py-3 px-3 text-center">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          log.level === 'ERROR'
-                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                            : log.level === 'WARNING'
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                              : log.level === 'SUCCESS'
-                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                                : 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
-                        }`}>
-                          {log.level}
-                        </span>
+                        <div className="inline-flex items-center gap-1.5 justify-center">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            log.level === 'ERROR'
+                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                              : log.level === 'WARNING'
+                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                                : log.level === 'SUCCESS'
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                  : 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                          }`}>
+                            {log.level}
+                          </span>
+                          {log.repeat_count && log.repeat_count > 1 && (
+                            <span
+                              className="px-1.5 py-0.2 rounded-full text-[9.5px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                              title={`智慧防抖已抑制重複寫入，此異常已連續發生 ${log.repeat_count} 次 (最後發生: ${log.last_seen || log.timestamp})`}
+                            >
+                              ×{log.repeat_count}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="py-3 px-4 font-mono text-[11.5px] text-indigo-300">
                         {log.file}
