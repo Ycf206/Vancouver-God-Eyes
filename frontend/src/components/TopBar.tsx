@@ -8,7 +8,7 @@ import {
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
   UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
-  Camera, Megaphone, Ban, Accessibility, Gauge
+  Camera, Megaphone, Ban, Accessibility, Gauge, Construction
 } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
@@ -162,6 +162,7 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'safety_cameras' || lk === 'safetyCameras') return <Siren className={`${cls} text-rose-500`} />;
   if (c === 'traffic_conditions' || lk === 'trafficConditions') return <LineSquiggle className={`${cls} text-emerald-400`} />;
   if (c === 'traffic_alerts' || lk === 'trafficAlerts') return <Megaphone className={`${cls} text-amber-400`} />;
+  if (c === 'drivebc' || lk === 'driveBC') return <Construction className={`${cls} text-amber-500`} />;
   if (c === 'fuel' || lk === 'fuel') return <Fuel className={`${cls} text-amber-400`} />;
   if (c === 'community_centres' || lk === 'communityCentres') return <UserRoundGroup className={`${cls} text-violet-400`} />;
   if (c === 'libraries' || lk === 'libraries') return <BookOpen className={`${cls} text-amber-400`} />;
@@ -266,7 +267,7 @@ export default function TopBar() {
           'bikeways', 'bikeRacks', 'sharedBikes', 'escooter', 'trafficSignals',
           'turnRestrictions', 'evCharging', 'tesla', 'truckRoutes', 'roadClosures',
           'roadConstruction', 'trafficCameras', 'safetyCameras', 'fuel',
-          'trafficConditions', 'snowRemovalRoutes', 'trafficAlerts'
+          'trafficConditions', 'snowRemovalRoutes', 'trafficAlerts', 'driveBC'
         ];
         const targetCats = [
           'parking_meters', 'impark', 'motorcycle_parking', 'accessible_parking',
@@ -275,7 +276,7 @@ export default function TopBar() {
           'turn_restrictions', 'traffic_turn_restrictions', 'ev_charging', 'tesla',
           'truck_routes', 'truck_routes_restriction', 'road_closures',
           'road_construction', 'traffic_cameras', 'safety_cameras', 'fuel',
-          'traffic_conditions', 'snow_removal_routes', 'traffic_incident', 'trafficAlerts'
+          'traffic_conditions', 'snow_removal_routes', 'traffic_incident', 'trafficAlerts', 'drivebc'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||

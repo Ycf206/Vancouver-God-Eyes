@@ -14,7 +14,7 @@ import {
   BusFront, Repeat, TrainFront, ShipCargo, Plane, Road, ParkingMeter, Motorbike, Milestone,
   EvCharger, TrainTrack, TrafficCone, LineSquiggle, HouseHeart, UserRoundGroup, Package,
   CircleDollarSign, Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet,
-  UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, FunnelX
+  UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, FunnelX, Construction
 } from 'lucide-react';
 
 // 自定義倒 U 型單車架 SVG 元件 (LetterU)
@@ -729,9 +729,12 @@ export default function LayerPanel() {
               <LayerButton layerKey="fuel" label="油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
               <LayerButton layerKey="trafficConditions" label="路況" icon={LineSquiggle} title="即時路況：TomTom 全大溫街道即時暢通度 (綠/黃/紅)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
 
-              {/* Row 13: 鏟雪路線 | 即時通報 (路況下方) */}
-              <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} title="鏟雪路線" colorClass="text-sky-200" activeBg="bg-[#172836]" activeBorder="border-sky-300/50" activeShadow="shadow-[0_0_6px_rgba(240,249,255,0.2)]" />
+              {/* Row 13: Drive BC | 即時通報 (路況下方) */}
+              <LayerButton layerKey="driveBC" label="Drive BC" icon={Construction} title="Drive BC：BC 省即時路況事件、施工、天候封閉與未來預告" colorClass="text-amber-500" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
               <LayerButton layerKey="trafficAlerts" label="即時通報" icon={Megaphone} title="即時通報：TomTom 即時標出事故、封路、施工與危險障礙點" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+
+              {/* Row 14: 鏟雪路線 */}
+              <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} title="鏟雪路線" colorClass="text-sky-200" activeBg="bg-[#172836]" activeBorder="border-sky-300/50" activeShadow="shadow-[0_0_6px_rgba(240,249,255,0.2)]" />
             </div>
           )}
         </div>

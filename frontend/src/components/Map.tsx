@@ -28,7 +28,7 @@ import {
   Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy,
-  TowerControl, CalendarClock, ChartNoAxesCombined, Dam
+  TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -928,6 +928,113 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'street-lighting-poles-layer'
 ];
 
+// Lucide: calendar-arrow-right
+function CalendarArrowRightIcon({ size = 14, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m14 18 4-4-4-4" />
+      <path d="M18 14H8" />
+      <path d="M8 2v4" />
+      <path d="M16 2v4" />
+      <path d="M21 14V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8" />
+      <path d="M3 10h18" />
+    </svg>
+  );
+}
+
+function getDriveBCEventTypeNameZh(eventType?: string, eventSubType?: string): string {
+  const typeMap: Record<string, string> = {
+    CONSTRUCTION: '道路工程',
+    INCIDENT: '突發事件',
+    ROAD_CONDITION: '路況通報',
+    SPECIAL_EVENT: '特別活動',
+    WEATHER_CONDITION: '天氣狀況',
+    CLOSURE: '道路封閉',
+    FUTURE_EVENT: '未來工程預告',
+  };
+  const subTypeMap: Record<string, string> = {
+    ROAD_CONSTRUCTION: '道路施工',
+    ROAD_MAINTENANCE: '道路維護',
+    HAZARD: '道路危險',
+    PLANNED_EVENT: '計劃事件',
+    OBSTRUCTION: '道路受阻',
+    ALMOST_IMPASSABLE: '幾乎無法通行',
+    CLOSURE: '全面封閉',
+    ACCIDENT: '交通事故',
+    FLOODING: '淹水積水',
+    AVALANCHE: '雪崩管制',
+    FIRE: '火警事故',
+    STORM: '風暴影響',
+    POOR_VISIBILITY: '能見度低',
+    SLIPPERY: '路面濕滑',
+    ANIMAL_HAZARD: '動物出沒',
+    DEBRIS: '路面障礙物',
+    ROCKFALL: '落石管制',
+    WASHOUT: '道路坍塌',
+    SPILL: '路面油污溢漏',
+    BRIDGE_WORK: '橋樑維護',
+  };
+
+  const rawType = (eventType || '').toUpperCase().trim();
+  const rawSub = (eventSubType || '').toUpperCase().trim();
+
+  const typeZh = typeMap[rawType] || eventType || '交通事件';
+  const subZh = subTypeMap[rawSub] || (eventSubType ? eventSubType.replace(/_/g, ' ') : '');
+
+  if (subZh && subZh !== typeZh) {
+    return `${typeZh} (${subZh})`;
+  }
+  return typeZh;
+}
+
+function getDriveBCCategoryMeta(cat?: string) {
+  if (cat === 'futureEvents') {
+    return {
+      bg: 'bg-blue-600',
+      badgeBg: 'bg-blue-500/15 border-blue-500/30 text-blue-600 dark:text-blue-400',
+      icon: CalendarArrowRightIcon,
+    };
+  }
+  if (cat === 'roadConditions') {
+    return {
+      bg: 'bg-amber-600',
+      badgeBg: 'bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-400',
+      icon: TrafficCone,
+    };
+  }
+  if (cat === 'minorEvents') {
+    return {
+      bg: 'bg-orange-600',
+      badgeBg: 'bg-orange-500/15 border-orange-500/30 text-orange-600 dark:text-orange-400',
+      icon: TriangleAlert,
+    };
+  }
+  if (cat === 'closures') {
+    return {
+      bg: 'bg-red-600',
+      badgeBg: 'bg-red-500/15 border-red-500/30 text-red-600 dark:text-red-400',
+      icon: Construction,
+    };
+  }
+  // Default / majorEvents
+  return {
+    bg: 'bg-rose-700',
+    badgeBg: 'bg-rose-500/15 border-rose-500/30 text-rose-600 dark:text-rose-400',
+    icon: TriangleAlert,
+  };
+}
+
 export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
@@ -970,6 +1077,25 @@ export default function AppMap() {
     count: number;
     alertIds: string[];
   } | null>(null);
+
+  const [driveBCEvents, setDriveBCEvents] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!layers.driveBC) return;
+    let active = true;
+    fetch('/api/drivebc/events')
+      .then(r => r.json())
+      .then(data => {
+        if (!active) return;
+        const list = Array.isArray(data) ? data : (data.events || []);
+        const valid = list.filter((x: any) => x.location?.coordinates && Array.isArray(x.location.coordinates) && x.location.coordinates.length >= 2);
+        setDriveBCEvents(valid);
+      })
+      .catch(err => {
+        console.error('Failed to load DriveBC events:', err);
+      });
+    return () => { active = false; };
+  }, [layers.driveBC]);
 
   // 當關閉探索介面或切到非警報分頁時，關閉車站警報彈窗
   useEffect(() => {
@@ -1988,6 +2114,7 @@ export default function AppMap() {
         else if (type === 'tide_stations' && !layers.tideStations) facilityClosed = true;
         else if ((type === 'traffic_conditions' || type === 'traffic_corridor') && !layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== 'lions_gate_bridge_atis' && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
         else if ((type === 'traffic_alerts' || type === 'traffic_incident') && !layers.trafficAlerts && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
+        else if (type === 'drivebc' && !layers.driveBC && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
         else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
         else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
@@ -7300,6 +7427,7 @@ export default function AppMap() {
     layers.publicArt,
     layers.trafficConditions,
     layers.trafficAlerts,
+    layers.driveBC,
     layers.roadClosures,
     layers.roadConstruction,
     layers.streetLighting,
@@ -9844,6 +9972,76 @@ export default function AppMap() {
           </Marker>
         )}
 
+        {/* 🚗 Drive BC 即時交通事件標記 (圓點圖示根據 display_category 顯示 Lucide 圖示) */}
+        {layers.driveBC && driveBCEvents.map((evt: any) => {
+          const coords = evt.location?.coordinates;
+          if (!coords || !Array.isArray(coords) || coords.length < 2) return null;
+          const lon = Number(coords[0]);
+          const lat = Number(coords[1]);
+          if (isNaN(lon) || isNaN(lat)) return null;
+
+          const cat = evt.display_category || '';
+          const meta = getDriveBCCategoryMeta(cat);
+          const IconComp = meta.icon;
+          const isSelected = selectedFacility?.id === evt.id;
+
+          return (
+            <Marker
+              key={`drivebc-${evt.id}`}
+              longitude={lon}
+              latitude={lat}
+              anchor="center"
+            >
+              <div
+                className="flex flex-col items-center cursor-pointer select-none group"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  lastInteractiveItemClickRef.current = Date.now();
+                  setSelectedStop(null);
+                  setSelectedFerry(null);
+                  setSelectedAirport(null);
+                  setSelectedBusExchange(null);
+                  setSelectedSkytrainStation(null);
+                  setSelectedFacility({
+                    id: evt.id,
+                    facility_type: 'drivebc',
+                    name: evt.route_display || 'BC Drive',
+                    local_area: evt.closest_landmark || '',
+                    lon,
+                    lat,
+                    properties: evt
+                  });
+                }}
+              >
+                <div
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white border-[1.5px] border-white shadow-md transition-all group-hover:scale-115 ${meta.bg} ${isSelected ? 'ring-2 ring-white scale-125 z-30 shadow-lg' : ''}`}
+                  title={`${evt.route_display || 'BC Drive'}: ${getDriveBCEventTypeNameZh(evt.event_type, evt.event_sub_type)}`}
+                >
+                  <IconComp size={13} className="text-white shrink-0" />
+                </div>
+              </div>
+            </Marker>
+          );
+        })}
+
+        {/* Drive BC 單點聚焦圖釘 (當從搜尋直達而圖層未開啟時) */}
+        {!layers.driveBC && selectedFacility && selectedFacility.facility_type === 'drivebc' && selectedFacility.lat && selectedFacility.lon && (() => {
+          const cat = selectedFacility.properties?.display_category || '';
+          const meta = getDriveBCCategoryMeta(cat);
+          const IconComp = meta.icon;
+          return (
+            <Marker
+              longitude={selectedFacility.lon}
+              latitude={selectedFacility.lat}
+              anchor="center"
+            >
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-white border-2 border-white shadow-xl ring-2 ring-amber-400 bg-amber-600 animate-pulse">
+                <IconComp size={15} className="text-white shrink-0" />
+              </div>
+            </Marker>
+          );
+        })()}
+
         {/* Live Flight Detail Popup */}
         {selectedFlight && (() => {
           const isDom = selectedFlight.is_domestic ?? false;
@@ -10330,6 +10528,7 @@ export default function AppMap() {
                   if (t === 'railways') return { label: '鐵路軌道', bg: 'bg-orange-700 text-white' };
                   if (t === 'crime_areas') return { label: '社區治安', bg: 'bg-red-700 text-white' };
                   if (t === 'traffic_alerts' || t === 'traffic_incident') return { label: '即時通報', bg: 'bg-amber-600 text-white' };
+                  if (t === 'drivebc') return { label: 'BC Drive', bg: 'bg-[#ea580c] text-white' };
                   if (t === 'job') return { label: '工作', bg: 'bg-indigo-600 text-white' };
                   return null;
                 })();
@@ -10347,7 +10546,7 @@ export default function AppMap() {
                     bikeways: 'bikeways', bike_racks: 'bikeRacks', traffic_cameras: 'trafficCameras',
                     safety_cameras: 'safetyCameras', traffic_conditions: 'trafficConditions',
                     traffic_corridor: 'trafficConditions', traffic_alerts: 'trafficAlerts',
-                    traffic_incident: 'trafficAlerts', road_closures: 'roadClosures',
+                    traffic_incident: 'trafficAlerts', drivebc: 'driveBC', road_closures: 'roadClosures',
                     road_construction: 'roadConstruction', public_washrooms: 'publicWashrooms',
                     drinking_fountains: 'drinkingFountains', beach_water_quality: 'beachWaterQuality',
                     border_crossing: 'borderCrossing', ski_resort: 'skiResorts', tide_stations: 'tideStations',
@@ -10388,6 +10587,9 @@ export default function AppMap() {
                     }
                     if (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') {
                       return selectedFacility.properties?.type_label || selectedFacility.properties?.subtype_zh || selectedFacility.properties?.type_zh || selectedFacility.properties?.category_zh || (selectedFacility.name || '').replace(/^[^\w\u4e00-\u9fa5]+/, '').trim() || '即時通報';
+                    }
+                    if (selectedFacility.facility_type === 'drivebc') {
+                      return selectedFacility.properties?.route_display || selectedFacility.name || 'BC Drive';
                     }
                     if (selectedFacility.facility_type === 'traffic_speed_limits') {
                       return (selectedFacility.properties?.hblock || selectedFacility.name || '').replace(/\s*\(限速.*?\)/g, '').replace(/\s*\(Speed.*?\)/g, '').trim();
@@ -10591,7 +10793,7 @@ export default function AppMap() {
                               bikeways: 'bikeways', bike_racks: 'bikeRacks', traffic_cameras: 'trafficCameras',
                               safety_cameras: 'safetyCameras', traffic_conditions: 'trafficConditions',
                               traffic_corridor: 'trafficConditions', traffic_alerts: 'trafficAlerts',
-                              traffic_incident: 'trafficAlerts', road_closures: 'roadClosures',
+                              traffic_incident: 'trafficAlerts', drivebc: 'driveBC', road_closures: 'roadClosures',
                               road_construction: 'roadConstruction', public_washrooms: 'publicWashrooms',
                               drinking_fountains: 'drinkingFountains', beach_water_quality: 'beachWaterQuality',
                               border_crossing: 'borderCrossing', ski_resort: 'skiResorts', tide_stations: 'tideStations',
@@ -10609,6 +10811,7 @@ export default function AppMap() {
                           selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                           (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'bg-orange-500 shadow-[0_0_6px_rgba(234,88,12,0.5)]' :
                           (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
+                          selectedFacility.facility_type === 'drivebc' ? 'bg-[#ea580c] shadow-[0_0_6px_rgba(234,88,12,0.5)]' :
                           selectedFacility.facility_type === 'road_closures' ? 'bg-red-600' :
                           selectedFacility.facility_type === 'road_construction' ? 'bg-orange-600' :
                           (selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits') ? 'bg-amber-400' :
@@ -10671,11 +10874,14 @@ export default function AppMap() {
                           {popupTitle}
                         </h3>
                         {(selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
-                  selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions') && (
+                  selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark)) && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
                               if (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋')) {
                                 return 'Lions Gate Bridge Road';
+                              }
+                              if (selectedFacility.facility_type === 'drivebc') {
+                                return selectedFacility.properties?.closest_landmark || '';
                               }
                               if (selectedFacility.facility_type === 'marine_terminals') {
                                 return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
@@ -16507,6 +16713,126 @@ export default function AppMap() {
                         className="w-full py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                       >
                         <span>前往 TomTom 即時路況</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Drive BC (BC 省交通即時事件) Details */}
+              {selectedFacility.facility_type === 'drivebc' && (() => {
+                const props = selectedFacility.properties || {};
+                const cat = props.display_category || '';
+                const meta = getDriveBCCategoryMeta(cat);
+                const IconComp = meta.icon;
+                const eventTypeZh = getDriveBCEventTypeNameZh(props.event_type, props.event_sub_type);
+
+                // 影響日期計算 (start - end)
+                const startStr = props.start ? formatDateOnly(props.start, timeZone) : '';
+                const endStr = props.end ? formatDateOnly(props.end, timeZone) : '';
+                let dateRangeStr = '';
+                if (startStr && endStr) {
+                  dateRangeStr = `${startStr} - ${endStr}`;
+                } else if (startStr) {
+                  dateRangeStr = startStr;
+                } else if (endStr) {
+                  dateRangeStr = endStr;
+                }
+
+                // 剩餘天數 (只有未過 end 才顯示)
+                let remainingDaysStr = '';
+                if (props.end) {
+                  const endMs = new Date(props.end).getTime();
+                  if (!isNaN(endMs)) {
+                    const nowMs = Date.now();
+                    const diffMs = endMs - nowMs;
+                    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+                    if (diffDays > 0) {
+                      remainingDaysStr = ` (剩餘 ${diffDays} 天)`;
+                    }
+                  }
+                }
+
+                const createdStr = props.first_created ? formatDateOnly(props.first_created, timeZone) : '';
+                const updatedStr = props.last_updated ? formatDateOnly(props.last_updated, timeZone) : '';
+
+                const hasGreyContent = Boolean(dateRangeStr || props.direction_display || props.optimized_description || createdStr || updatedStr);
+                const hasMetadata = Boolean(createdStr || updatedStr);
+
+                return (
+                  <div className="flex flex-col gap-2.5 text-xs">
+                    {/* 標題下方顏色區塊：區塊內用中文顯示 event_type (event_sub_type) */}
+                    <div className={`px-2.5 py-1.5 rounded-lg flex items-center gap-2 border font-medium ${meta.badgeBg}`}>
+                      <IconComp size={16} className="shrink-0" />
+                      <span className="leading-snug break-words">{eventTypeZh}</span>
+                    </div>
+
+                    {/* 顏色區塊下方的灰色區塊 */}
+                    {hasGreyContent && (
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col gap-2 text-xs">
+                        {/* 影響日期 */}
+                        {dateRangeStr && (
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-500 font-medium">影響日期</span>
+                            <span className="text-xs text-gray-800 font-semibold mt-0.5">
+                              {dateRangeStr}{remainingDaysStr}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* 影響方向 */}
+                        {props.direction_display && (
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-500 font-medium">影響方向</span>
+                            <span className="text-xs text-gray-800 mt-0.5">
+                              {props.direction_display}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* 詳細資料 */}
+                        {props.optimized_description && (
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-500 font-medium">詳細資料</span>
+                            <p className="text-xs text-gray-700 mt-0.5 leading-relaxed break-words whitespace-pre-wrap">
+                              {props.optimized_description}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* 分隔線 */}
+                        {hasMetadata && (dateRangeStr || props.direction_display || props.optimized_description) && (
+                          <div className="border-t border-gray-200 my-0.5" />
+                        )}
+
+                        {/* 建立日期 */}
+                        {createdStr && (
+                          <div className="flex justify-between items-center text-[11px] text-gray-500">
+                            <span>建立日期</span>
+                            <span className="font-mono text-gray-700">{createdStr}</span>
+                          </div>
+                        )}
+
+                        {/* 最後修改日期 */}
+                        {updatedStr && (
+                          <div className="flex justify-between items-center text-[11px] text-gray-500">
+                            <span>最後修改日期</span>
+                            <span className="font-mono text-gray-700">{updatedStr}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 灰色區塊下方加入連結按鈕 "前往 Drive BC 官方網頁" */}
+                    <div className="pt-0.5">
+                      <a 
+                        href="https://www.drivebc.ca/" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-full py-1.5 px-3 rounded-lg bg-[#002f6c] hover:bg-[#00204d] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <span>前往 Drive BC 官方網頁</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>

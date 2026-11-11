@@ -228,19 +228,12 @@ export function FinanceTab() {
     }
   }, [stockSymbolInput, interval, range, startDate, endDate, includePrePost]);
 
-  // 輸入股票代號或參數變更時自動查詢 (Debounce 500ms，輸入文字自動搜尋，不再需要搜尋按鈕)
+  // 當週期、時間範圍或盤前盤後設定變更且已有股票資料時，重新抓取該股票最新數據
   useEffect(() => {
-    const sym = stockSymbolInput.trim();
-    if (!sym) {
-      setStockData(null);
-      setStockError('');
-      return;
+    if (stockData?.symbol) {
+      fetchStockData(stockData.symbol);
     }
-    const timer = setTimeout(() => {
-      fetchStockData(sym);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [stockSymbolInput, interval, range, startDate, endDate, includePrePost, fetchStockData]);
+  }, [interval, range, startDate, endDate, includePrePost]);
 
   // ==================== 2. 財經新聞狀態 ====================
   const [newsQuery, setNewsQuery] = useState<string>('market');
@@ -534,7 +527,7 @@ export function FinanceTab() {
         <div className="flex flex-col flex-1 min-h-0 gap-2 overflow-y-auto pr-0.5 custom-scrollbar">
           {/* 搜尋控制與參數列 */}
           <div className="p-3 bg-[#121622] rounded-xl border border-[#222938] flex flex-col gap-2.5 shrink-0">
-            {/* 代號輸入欄（支援即時搜尋建議與自動查詢） */}
+            {/* 代號輸入欄（支援即時搜尋建議）與查詢按鈕 */}
             <div className="flex items-center gap-2">
               <div className="relative flex-1" ref={searchContainerRef}>
                 <input
@@ -561,14 +554,14 @@ export function FinanceTab() {
                       setShowSuggestions(false);
                     }
                   }}
-                  placeholder="輸入股票代號或名稱 (如: TSLA, RY.TO, NVDA)..."
+                  placeholder="輸入股票代號或名稱..."
                   className="w-full bg-[#0d1017] border border-[#262e3d] rounded-lg pl-8 pr-8 py-2 text-xs text-white placeholder-gray-500 uppercase font-mono font-bold focus:outline-none focus:border-emerald-500"
                 />
                 <Search className="w-4 h-4 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                {(loadingStock || loadingSuggestions) && (
+                {loadingSuggestions && (
                   <RefreshCw className="w-3.5 h-3.5 text-emerald-400 animate-spin absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 )}
-                {!loadingStock && !loadingSuggestions && stockSymbolInput && (
+                {!loadingSuggestions && stockSymbolInput && (
                   <button
                     type="button"
                     onClick={() => {
@@ -622,6 +615,22 @@ export function FinanceTab() {
                   </div>
                 )}
               </div>
+
+              {/* 查詢報價圖示按鈕 */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowSuggestions(false);
+                  if (stockSymbolInput.trim()) {
+                    fetchStockData();
+                  }
+                }}
+                disabled={loadingStock}
+                title="查詢股票報價"
+                className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg transition-all flex items-center justify-center shrink-0 cursor-pointer shadow-sm active:scale-95"
+              >
+                {loadingStock ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+              </button>
             </div>
 
             {/* 條件設定區塊：第一行 (起始日期, 結束日期) / 第二行 (週期, 時間範圍, 包含盤前/盤後) */}
@@ -658,8 +667,18 @@ export function FinanceTab() {
                     onChange={(e) => handleIntervalChange(e.target.value)}
                     className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full"
                   >
-                    {['1m', '2m', '5m', '15m', '30m', '60m', '1d', '1wk', '1mo'].map(opt => (
-                      <option key={opt} value={opt}>{opt}</option>
+                    {[
+                      { value: '1m', label: '1分鐘' },
+                      { value: '2m', label: '2分鐘' },
+                      { value: '5m', label: '5分鐘' },
+                      { value: '15m', label: '15分鐘' },
+                      { value: '30m', label: '30分鐘' },
+                      { value: '60m', label: '60分鐘' },
+                      { value: '1d', label: '1天' },
+                      { value: '1wk', label: '1週' },
+                      { value: '1mo', label: '1個月' },
+                    ].map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                   </select>
                 </div>
@@ -672,8 +691,17 @@ export function FinanceTab() {
                     onChange={(e) => handleRangeChange(e.target.value)}
                     className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full"
                   >
-                    {['1d', '5d', '1mo', '3mo', '6mo', '1y', '5y', 'max'].map(opt => (
-                      <option key={opt} value={opt}>{opt}</option>
+                    {[
+                      { value: '1d', label: '1天' },
+                      { value: '5d', label: '5天' },
+                      { value: '1mo', label: '1個月' },
+                      { value: '3mo', label: '3個月' },
+                      { value: '6mo', label: '6個月' },
+                      { value: '1y', label: '1年' },
+                      { value: '5y', label: '5年' },
+                      { value: 'max', label: '最大範圍' },
+                    ].map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                   </select>
                 </div>
@@ -1009,35 +1037,6 @@ export function FinanceTab() {
               >
                 {loadingNews ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               </button>
-            </div>
-
-            {/* 快速標籤 */}
-            <div className="flex items-center gap-1.5 overflow-x-auto text-[11px] custom-scrollbar">
-              <span className="text-gray-400 shrink-0">主題:</span>
-              {[
-                { label: '市場動態', q: 'market' },
-                { label: '加拿大經濟', q: 'Bank of Canada economy' },
-                { label: '美聯儲利率', q: 'Federal Reserve interest rates' },
-                { label: '科技股', q: 'technology stocks' },
-                { label: '溫哥華房產', q: 'Vancouver real estate' },
-                { label: '能源與油價', q: 'oil gas energy' },
-              ].map((btn) => (
-                <button
-                  key={btn.label}
-                  type="button"
-                  onClick={() => {
-                    setNewsQuery(btn.q);
-                    fetchNews(btn.q);
-                  }}
-                  className={`px-2 py-0.5 rounded font-medium border transition-colors cursor-pointer shrink-0 ${
-                    newsQuery === btn.q
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
-                      : 'bg-[#181d2a] text-gray-400 hover:text-white border-[#273042]'
-                  }`}
-                >
-                  {btn.label}
-                </button>
-              ))}
             </div>
           </div>
 

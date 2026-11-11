@@ -74,6 +74,32 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "source_url": "https://api.tomtom.com/traffic/services/4/flowSegmentData"
   },
   {
+    "id": "drivebc_events",
+    "name": "Drive BC",
+    "type": "api",
+    "cron_expr": "0 4 * * *",
+    "schedule_interval": "每日 1 次",
+    "record_count": 257,
+    "unit": "則交通即時事件",
+    "last_updated": "2026-11-10T19:50:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Drive BC Events Polling API -> 取得 BC 省即時交通事故、道路施工、天候封閉與未來預告事件 -> 格式化坐標與影響說明 -> 寫入 vancouver_drivebc_events.json -> 地圖與探索分頁極速展示",
+    "runner": "oci",
+    "category": "道路",
+    "workflow_file": "",
+    "source_links": [
+      {
+        "label": "DriveBC Official Portal",
+        "url": "https://www.drivebc.ca/"
+      },
+      {
+        "label": "DriveBC Events Polling API",
+        "url": "https://www.drivebc.ca/api/eventspolling/"
+      }
+    ],
+    "source_url": "https://www.drivebc.ca/api/eventspolling/"
+  },
+  {
     "id": "traffic_cameras",
     "name": "交通攝影機",
     "type": "api",

@@ -1408,6 +1408,12 @@ async def startup_event():
         asyncio.create_task(flipp_service.run_flipp_background_loop())
     except Exception as e:
         print(f"Failed to start flipp_service task: {e}")
+
+    try:
+        import drivebc_service
+        asyncio.create_task(drivebc_service.run_drivebc_background_loop())
+    except Exception as e:
+        print(f"Failed to start drivebc_service task: {e}")
     # 背景預熱全圖層記憶體倒排索引，避免首次搜尋冷啟動延遲
     threading.Thread(
         target=lambda: search_engine.ensure_ready(get_gtfs_metadata, database.SessionLocal),
@@ -1629,6 +1635,22 @@ def get_shopping_flyers(refresh: bool = False, force: bool = False):
     except Exception as e:
         print(f"Error serving flipp flyers: {e}")
         return JSONResponse(status_code=500, content={"error": str(e), "merchants": []})
+
+@app.get("/api/drivebc/events")
+def get_drivebc_events(refresh: bool = False, force: bool = False):
+    """
+    獲取 Drive BC 即時交通事件 (支援 ?force=true 強制刷新)
+    """
+    try:
+        import drivebc_service
+        data = drivebc_service.fetch_drivebc_events(force=(refresh or force))
+        return JSONResponse(
+            content=data,
+            headers={"Cache-Control": "public, max-age=3600"}
+        )
+    except Exception as e:
+        print(f"Error serving Drive BC events: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e), "events": []})
 
 # In-memory cache for live parkade capacity (retained for up to 60 seconds to prevent rate limits)
 _LATEST_PARKADE_CAPACITY = None
@@ -4367,6 +4389,7 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "turn_restrictions": ["vancouver_traffic_turn_restrictions.geojson"],
     "service_requests_311": ["vancouver_311.json"],
     "shopping_flipp": ["vancouver_flipp_flyers.json"],
+    "drivebc_events": ["vancouver_drivebc_events.json"],
     "vancouver_railways": ["vancouver_railways.geojson"],
     "fedex": ["vancouver_fedex.geojson"],
     "purolator": ["vancouver_purolator.geojson"],
@@ -4915,6 +4938,12 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["shopping_flipp"] = time.time()
         cnt = data.get("total_merchants") or len(data.get("merchants", []))
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步大溫各大超市 Flipp 特惠傳單，共 {cnt} 家商戶。")
+    if sid in ("drivebc_events", "drivebc"):
+        import drivebc_service
+        data = drivebc_service.fetch_drivebc_events(force=True)
+        _oci_runtime_ts["drivebc_events"] = time.time()
+        cnt = data.get("total_events") or len(data.get("events", []))
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 Drive BC 官方交通事件，共 {cnt} 則通報。")
     if sid in ("lottery_latest", "lottery"):
         import lottery_service
         data = lottery_service.fetch_lottery_latest(force=True)

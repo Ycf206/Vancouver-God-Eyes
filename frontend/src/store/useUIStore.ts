@@ -95,6 +95,7 @@ export interface UIState {
     tideStations: boolean;
     trafficConditions: boolean;
     trafficAlerts: boolean;
+    driveBC: boolean;
     roadClosures: boolean;
     roadConstruction: boolean;
     streetLighting: boolean;
@@ -341,6 +342,7 @@ export const useUIStore = create<UIState>()(
         tideStations: false,
         trafficConditions: false,
         trafficAlerts: false,
+        driveBC: false,
         roadClosures: false,
         roadConstruction: false,
         streetLighting: false,
@@ -516,6 +518,7 @@ export const useUIStore = create<UIState>()(
               (layer === 'marineTerminals' && st.category === 'marine_terminals') ||
               (layer === 'oneWayStreets' && (st.category === 'one_way_streets' || String(st.id ?? '').startsWith('oneway_'))) ||
               (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || String(st.id ?? '').startsWith('snow_'))) ||
+              (layer === 'driveBC' && (st.category === 'drivebc' || String(st.id ?? '').startsWith('RIDE-') || String(st.id ?? '').startsWith('drivebc_'))) ||
               (layer === 'waterDistributionMains' && (st.category === 'water_distribution_mains' || String(st.id ?? '').startsWith('water_'))) ||
               (layer === 'sewerMains' && (st.category === 'sewer_mains' || String(st.id ?? '').startsWith('sewer_'))) ||
               ((layer === 'skytrainRoutes' || layer === 'skytrainStops') && st.category === 'skytrain') ||
@@ -790,6 +793,7 @@ export const useUIStore = create<UIState>()(
           tesla: persistedState?.layers?.tesla || false,
           oneWayStreets: persistedState?.layers?.oneWayStreets || false,
           snowRemovalRoutes: persistedState?.layers?.snowRemovalRoutes || false,
+          driveBC: persistedState?.layers?.driveBC || false,
           marineTerminals: persistedState?.layers?.marineTerminals ?? true,
           crimeAreas: persistedState?.layers?.crimeAreas || false,
           waterDistributionMains: persistedState?.layers?.waterDistributionMains || false,
