@@ -126,6 +126,36 @@ class SystemLogService:
                     loaded_history = []
             self._schedule_history = loaded_history[:MAX_LOG_ENTRIES]
 
+            # 5. 合併既有的排程歷史記錄至系統日誌，確保所有歷史排程與資料源更新皆出現在系統日誌
+            existing_timestamps = {l.get("timestamp") for l in self._system_logs if isinstance(l, dict) and "timestamp" in l}
+            converted_history_logs = []
+            for h in self._schedule_history:
+                if not isinstance(h, dict):
+                    continue
+                ts = h.get("timestamp")
+                if ts and ts not in existing_timestamps:
+                    status = str(h.get("status", "success")).lower()
+                    lvl = "SUCCESS" if status == "success" else ("WARNING" if status == "warning" else "ERROR")
+                    src = h.get("source_name") or "資料源"
+                    runner = h.get("runner") or "oci"
+                    runner_tag = "GitHub Actions" if runner == "github_actions" else "OCI"
+                    converted_history_logs.append({
+                        "id": h.get("id") or f"syslog_sched_{int(time.time()*1000)}",
+                        "timestamp": ts,
+                        "level": lvl,
+                        "file": f"{runner_tag} ({src})",
+                        "action": h.get("action", "SCHEDULE_SYNC"),
+                        "message": h.get("detail") or f"資料源排程同步：{src}",
+                        "details": h,
+                        "repeat_count": 1,
+                        "last_seen": ts,
+                        "throttle_key": f"SCHED|{h.get('id')}"
+                    })
+            if converted_history_logs:
+                self._system_logs.extend(converted_history_logs)
+                self._system_logs.sort(key=lambda x: str(x.get("timestamp", "")), reverse=True)
+                self._system_logs = self._system_logs[:MAX_LOG_ENTRIES]
+
     # --- Retention Configuration ---
     def get_system_retention_days(self) -> int:
         try:
@@ -142,9 +172,11 @@ class SystemLogService:
         with self._lock:
             try:
                 _atomic_write_json(SYSTEM_LOGS_CONFIG_FILE, {"retention_days": days})
+                _atomic_write_json(SCHEDULE_CONFIG_FILE, {"retention_days": days})
             except Exception:
                 pass
             self.prune_system_logs(days)
+            self.prune_schedule_history(days)
         return days
 
     def get_schedule_retention_days(self) -> int:
@@ -361,8 +393,10 @@ class SystemLogService:
     def clear_system_logs(self):
         with self._lock:
             self._system_logs = []
+            self._schedule_history = []
             self._throttle_cache.clear()
             self._system_logs_dirty = True
+            self._schedule_history_dirty = True
             self.flush_all()
 
     # --- Schedule History Management ---
@@ -404,9 +438,9 @@ class SystemLogService:
         now_ts = time.time()
         runner = log_entry.get("runner", "")
         src = log_entry.get("source_name", "")
-        status = log_entry.get("status", "")
-        detail = str(log_entry.get("detail", ""))[:60]
-        sched_key = f"{runner}|{src}|{status}|{detail}"
+        status = str(log_entry.get("status", "success")).lower()
+        detail = str(log_entry.get("detail", ""))[:120]
+        sched_key = f"{runner}|{src}|{status}|{detail[:60]}"
 
         with self._lock:
             # 5 分鐘內完全重複的排程歷史記錄進行抑制，避免同秒觸發或密集重試刷屏
@@ -423,6 +457,27 @@ class SystemLogService:
             if retention_days > 0:
                 cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
                 self._schedule_history = [h for h in self._schedule_history if isinstance(h, dict) and _is_ts_on_or_after(h.get("timestamp"), cutoff)]
+
+            # 同步寫入統一系統日誌 (System Logs)，確保所有排程與資料更新均集中顯示於系統日誌分頁中
+            now_iso = log_entry.get("timestamp") or datetime.now(timezone.utc).isoformat()
+            runner_tag = "GitHub Actions" if runner == "github_actions" else "OCI"
+            level = "SUCCESS" if status == "success" else ("WARNING" if status == "warning" else "ERROR")
+            sys_entry = {
+                "id": log_entry.get("id") or f"syslog_sched_{int(now_ts * 1000)}",
+                "timestamp": now_iso,
+                "level": level,
+                "file": f"{runner_tag} ({src})",
+                "action": log_entry.get("action", "SCHEDULE_SYNC"),
+                "message": log_entry.get("detail") or f"資料源排程同步：{src}",
+                "details": log_entry,
+                "repeat_count": 1,
+                "last_seen": now_iso,
+                "throttle_key": f"SCHED|{sched_key}"
+            }
+            if not any(l.get("timestamp") == now_iso and l.get("action") == sys_entry["action"] for l in self._system_logs[:10]):
+                self._system_logs.insert(0, sys_entry)
+                self._system_logs = self._system_logs[:MAX_LOG_ENTRIES]
+                self._system_logs_dirty = True
 
             self._schedule_debounced_flush()
 

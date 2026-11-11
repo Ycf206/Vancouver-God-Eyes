@@ -6845,101 +6845,123 @@ function ExploreContent() {
             </div>
           </div>
 
-          {/* 表格方式顯示 (縮窄表格，文字斷行顯示，避免過度水平滑動) */}
-          <div className="flex-1 overflow-auto border border-[#263147] rounded-xl bg-[#121620]">
-            <table className="w-full text-left border-collapse text-[11px]">
-              <thead className="sticky top-0 z-10 bg-[#181e2b] border-b border-[#263147] text-[10.5px] font-bold text-gray-400 shadow-sm">
-                <tr>
-                  <th className="py-2 px-2 whitespace-nowrap">狀態</th>
-                  <th className="py-2 px-2 whitespace-nowrap">部門</th>
-                  <th className="py-2 px-2">服務請求類型</th>
-                  <th className="py-2 px-1.5 whitespace-nowrap">渠道</th>
-                  <th className="py-2 px-1.5 whitespace-nowrap">開始時間</th>
-                  <th className="py-2 px-1.5 whitespace-nowrap">結束時間</th>
-                  <th className="py-2 px-2">結束原因</th>
-                  <th className="py-2 px-2 whitespace-nowrap">所屬地區</th>
-                  <th className="py-2 px-2">地址</th>
-                  <th className="py-2 px-1.5 text-center whitespace-nowrap">導航</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#1e2638]">
-                {loading311 ? (
-                  <tr>
-                    <td colSpan={10} className="py-12 text-center text-gray-400">
-                      <div className="flex flex-col items-center justify-center gap-2">
-                        <RefreshCw className="w-5 h-5 animate-spin text-emerald-400" />
-                        <span className="text-xs">載入最新 3-1-1 服務請求中...</span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : filtered311Requests.length === 0 ? (
-                  <tr>
-                    <td colSpan={10} className="py-10 text-center text-gray-400 text-xs">
-                      {date311Filter
-                        ? `該日期（${date311Filter}）暫無符合條件的 3-1-1 服務請求。`
-                        : '沒有符合條件的 3-1-1 服務請求。'}
-                    </td>
-                  </tr>
-                ) : (
-                  paged311Requests.map((req, idx) => {
-                    const isOpen = (req.status || '').toLowerCase() === 'open';
-                    const hasNav = req.geom && typeof req.geom.lat === 'number' && typeof req.geom.lon === 'number';
-                    const addrTitleCase = req.address 
-                      ? req.address.toLowerCase().replace(/\b\w/g, (c: string) => c.toUpperCase()) 
-                      : '—';
-                    return (
-                      <tr 
-                        key={`${req.service_request_open_timestamp}_${idx}`}
-                        className="hover:bg-[#181d28] transition-colors"
-                      >
-                        <td className="py-2 px-2 whitespace-nowrap">
-                          <span className={`px-1.5 py-0.5 rounded-full text-[9.5px] font-bold tracking-wider ${
-                            isOpen 
-                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' 
-                              : 'bg-gray-700/40 text-gray-300 border border-gray-600/50'
-                          }`}>
-                            {isOpen ? '處理中' : '已結束'}
-                          </span>
-                        </td>
-                        <td className="py-2 px-2 text-gray-300 whitespace-normal break-words max-w-[85px] leading-snug">{req.department || '—'}</td>
-                        <td className="py-2 px-2 font-semibold text-white whitespace-normal break-words max-w-[140px] leading-snug" title={req.service_request_type || ''}>
+          {/* 清單顯示 (多行結構化卡片，寬度 100% 自適應，徹底免除左右拉動) */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#263147] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#364462]">
+            {loading311 ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400">
+                <RefreshCw className="w-5 h-5 animate-spin text-emerald-400" />
+                <span className="text-xs">載入最新 3-1-1 服務請求中...</span>
+              </div>
+            ) : filtered311Requests.length === 0 ? (
+              <div className="py-10 text-center text-gray-400 text-xs bg-[#121620] border border-[#263147] rounded-xl">
+                {date311Filter
+                  ? `該日期（${date311Filter}）暫無符合條件的 3-1-1 服務請求。`
+                  : '沒有符合條件的 3-1-1 服務請求。'}
+              </div>
+            ) : (
+              paged311Requests.map((req, idx) => {
+                const isOpen = (req.status || '').toLowerCase() === 'open';
+                const hasNav = req.geom && typeof req.geom.lat === 'number' && typeof req.geom.lon === 'number';
+                const addrTitleCase = req.address 
+                  ? req.address.toLowerCase().replace(/\b\w/g, (c: string) => c.toUpperCase()) 
+                  : '';
+                // 結束時間：若案件已結案，優先使用詳細結案時間戳記 (last_modified_timestamp)，確保同時完整顯示日期與時間
+                const closeRaw = (req as any).service_request_close_timestamp || (
+                  req.service_request_close_date 
+                    ? (req.last_modified_timestamp || req.service_request_close_date)
+                    : null
+                );
+                const openFormatted = format311DateTime(req.service_request_open_timestamp) || '—';
+                const closeFormatted = isOpen 
+                  ? '處理中' 
+                  : (format311DateTime(closeRaw) || '—');
+
+                return (
+                  <div 
+                    key={`${req.service_request_open_timestamp}_${idx}`}
+                    className="p-3 bg-[#131722] hover:bg-[#181d2a] border border-[#232a3a] hover:border-emerald-500/40 rounded-xl transition-all shadow-sm flex flex-col gap-1.5"
+                  >
+                    {/* Line 1: 狀態膠囊 + 服務請求類型標題 + 右側導航按鈕 */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 flex-wrap min-w-0">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider shrink-0 ${
+                          isOpen 
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' 
+                            : 'bg-gray-700/40 text-gray-300 border border-gray-600/50'
+                        }`}>
+                          {isOpen ? '處理中' : '已結束'}
+                        </span>
+                        <h4 className="font-semibold text-white text-xs leading-snug break-words">
                           {req.service_request_type || '—'}
-                        </td>
-                        <td className="py-2 px-1.5 text-gray-400 font-mono text-[10px] whitespace-nowrap">{req.channel || '—'}</td>
-                        <td className="py-2 px-1.5 font-mono text-[10px] text-gray-300 whitespace-nowrap">
-                          {format311DateTime(req.service_request_open_timestamp) || '—'}
-                        </td>
-                        <td className="py-2 px-1.5 font-mono text-[10px] text-gray-400 whitespace-nowrap">
-                          {format311DateTime(req.service_request_close_date) || '—'}
-                        </td>
-                        <td className="py-2 px-2 text-gray-300 whitespace-normal break-words max-w-[120px] leading-snug" title={req.closure_reason || ''}>
-                          {req.closure_reason || '—'}
-                        </td>
-                        <td className="py-2 px-2 text-cyan-300 whitespace-normal break-words max-w-[90px] leading-snug">{req.local_area || '—'}</td>
-                        <td className="py-2 px-2 text-gray-200 whitespace-normal break-words max-w-[130px] leading-snug" title={addrTitleCase}>
-                          {addrTitleCase}
-                        </td>
-                        <td className="py-2 px-1.5 text-center whitespace-nowrap">
-                          {hasNav && req.geom ? (
-                            <a
-                              href={getGoogleNavUrl(req.geom.lat, req.geom.lon)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-1 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-600/30 transition-colors inline-flex items-center justify-center cursor-pointer"
-                              title="Google 導航至此"
-                            >
-                              <Navigation className="w-3.5 h-3.5" />
-                            </a>
-                          ) : (
-                            <span className="text-gray-600">—</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+                        </h4>
+                      </div>
+                      {hasNav && req.geom && (
+                        <a
+                          href={getGoogleNavUrl(req.geom.lat, req.geom.lon)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-lg text-emerald-400 hover:text-white bg-emerald-950/40 hover:bg-emerald-600/40 border border-emerald-800/40 transition-colors inline-flex items-center justify-center shrink-0 cursor-pointer"
+                          title="Google 地圖導航至此"
+                        >
+                          <Navigation className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                    </div>
+
+                    {/* Line 2: 部門 + 所屬地區 + 渠道標籤 */}
+                    <div className="flex items-center gap-1.5 flex-wrap text-[10.5px]">
+                      {req.department && (
+                        <span className="px-2 py-0.5 rounded bg-indigo-950/40 text-indigo-300 border border-indigo-800/30 truncate max-w-[220px]" title={req.department}>
+                          {req.department}
+                        </span>
+                      )}
+                      {req.local_area && (
+                        <span className="px-2 py-0.5 rounded bg-cyan-950/40 text-cyan-300 border border-cyan-800/30">
+                          📍 {req.local_area}
+                        </span>
+                      )}
+                      {req.channel && (
+                        <span className="px-1.5 py-0.5 rounded bg-[#1e2535] text-gray-400 font-mono text-[10px] border border-[#2d374d]">
+                          {req.channel}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Line 3: 地址與結束原因 (若有) */}
+                    {(addrTitleCase || (!isOpen && req.closure_reason && req.closure_reason !== 'N/A')) && (
+                      <div className="flex flex-col gap-0.5 text-[11px] text-gray-300 bg-[#0e121a] px-2.5 py-1.5 rounded-lg border border-[#1e2536]">
+                        {addrTitleCase && (
+                          <div className="flex items-center gap-1.5 text-gray-200">
+                            <span className="text-gray-500 text-[10px] shrink-0 font-sans">地址:</span>
+                            <span className="truncate font-mono">{addrTitleCase}</span>
+                          </div>
+                        )}
+                        {!isOpen && req.closure_reason && req.closure_reason !== 'N/A' && (
+                          <div className="flex items-baseline gap-1.5 text-gray-400 text-[10.5px]">
+                            <span className="text-gray-500 text-[10px] shrink-0 font-sans">結案原因:</span>
+                            <span className="text-amber-300/90">{req.closure_reason}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Line 4: 開始時間與結束時間 (均精確至時分) */}
+                    <div className="flex items-center justify-between text-[10.5px] font-mono text-gray-400 pt-0.5 border-t border-[#1d2434] flex-wrap gap-1">
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-500 font-sans">開始:</span>
+                        <span className="text-gray-300">{openFormatted}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-500 font-sans">結束:</span>
+                        <span className={isOpen ? 'text-emerald-400 font-sans' : 'text-gray-300'}>
+                          {closeFormatted}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
 
           {/* 6. 3-1-1 頁數分頁導航列 */}

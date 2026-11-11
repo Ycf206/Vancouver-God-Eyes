@@ -408,7 +408,7 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
-  const [mainTab, setMainTab] = useState<'sources' | 'layers' | 'logs' | 'system_logs' | 'analytics' | 'issues' | 'maintenance'>('sources');
+  const [mainTab, setMainTab] = useState<'sources' | 'layers' | 'system_logs' | 'analytics' | 'issues' | 'maintenance'>('sources');
 
   // 圖層控制管理狀態 (Zustand store 整合)
   const layers = useUIStore((state) => state.layers);
@@ -590,8 +590,6 @@ export default function AdminPage() {
       fetchAnalyticsData();
     } else if (mainTab === 'system_logs') {
       fetchSystemLogs();
-    } else if (mainTab === 'logs') {
-      fetchScheduleHistory();
     } else if (mainTab === 'maintenance') {
       fetchMaintenanceStatus();
     }
@@ -754,11 +752,13 @@ export default function AdminPage() {
     await fetchSystemLogs();
   };
 
-  // 11.4 清空系統日誌
+  // 11.4 清空系統日誌 (同時清空統一之系統日誌與排程記錄)
   const handleClearSystemLogs = async () => {
-    if (!confirm('確定要清空所有系統運作與錯誤日誌嗎？此操作無法還原。')) return;
+    if (!confirm('確定要清空所有系統運作、錯誤與資料更新日誌嗎？此操作無法還原。')) return;
     await adminApiFetch('/api/admin/system-logs/clear', { method: 'POST' });
+    await adminApiFetch('/api/admin/schedule-history/clear', { method: 'POST' });
     await fetchSystemLogs();
+    setLogs([]);
   };
 
   // 11.4 匯出系統日誌為 JSON
@@ -853,7 +853,7 @@ export default function AdminPage() {
     }
   };
 
-  // 11.4 系統日誌過濾與分頁計算
+  // 11.4 系統日誌過濾與分頁計算 (包含資料源更新、排程修改與系統事件)
   const filteredSystemLogs = useMemo(() => {
     return systemLogs.filter((log) => {
       if (systemLogLevelFilter !== 'all' && log.level !== systemLogLevelFilter) return false;
@@ -862,7 +862,8 @@ export default function AdminPage() {
         const matchFile = (log.file || '').toLowerCase().includes(q);
         const matchMsg = (log.message || '').toLowerCase().includes(q);
         const matchAction = (log.action || '').toLowerCase().includes(q);
-        if (!matchFile && !matchMsg && !matchAction) return false;
+        const matchDetails = log.details ? JSON.stringify(log.details).toLowerCase().includes(q) : false;
+        if (!matchFile && !matchMsg && !matchAction && !matchDetails) return false;
       }
       return true;
     });
@@ -1704,28 +1705,7 @@ export default function AdminPage() {
             )}
           </button>
 
-          {/* 分頁 2: 資料更新日誌 */}
-          <button
-            onClick={() => setMainTab('logs')}
-            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
-              mainTab === 'logs'
-                ? 'bg-[#141822] text-white border-t-2 border-t-amber-500 border-x border-[#232a3b] shadow-sm z-10'
-                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
-            }`}
-          >
-            <FileText className={`w-3.5 h-3.5 ${mainTab === 'logs' ? 'text-amber-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
-            <span>資料更新日誌</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-              mainTab === 'logs' ? 'bg-amber-500/20 text-amber-300' : 'bg-black/30 text-gray-500'
-            }`}>
-              {logs.length}
-            </span>
-            {mainTab === 'logs' && (
-              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
-            )}
-          </button>
-
-          {/* 分頁 3: 系統日誌 */}
+          {/* 分頁 2: 系統日誌 (合併資料更新日誌與系統日誌) */}
           <button
             onClick={() => setMainTab('system_logs')}
             className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
@@ -2724,147 +2704,14 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 11.5 分頁 2: 資料源更新排程記錄 (持久保留) */}
-        {mainTab === 'logs' && (
-          <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col">
-            <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex items-center justify-between flex-wrap gap-3">
-              <div className="flex items-center gap-3">
-                <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-amber-400" />
-                  <span>資料源更新排程記錄</span>
-                </h3>
-                <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-medium">
-                  <History className="w-3 h-3" />
-                  <span>部署持續保留</span>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3 flex-wrap">
-                {/* 11.5 排程歷史保留期限自定義設定 (自定義天數，不用下拉清單) */}
-                <div className="flex items-center gap-1.5 text-xs text-gray-300 bg-[#121620] border border-[#2c374d] rounded-lg px-2.5 py-1">
-                  <span className="text-gray-400 text-[11px] whitespace-nowrap">保留期限:</span>
-                  <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      min={0}
-                      max={9999}
-                      value={scheduleRetentionInput}
-                      onChange={(e) => setScheduleRetentionInput(e.target.value)}
-                      onBlur={() => {
-                        const parsed = parseInt(scheduleRetentionInput, 10);
-                        handleScheduleRetentionChange(isNaN(parsed) ? 30 : parsed);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          const parsed = parseInt(scheduleRetentionInput, 10);
-                          handleScheduleRetentionChange(isNaN(parsed) ? 30 : parsed);
-                        }
-                      }}
-                      placeholder="天數"
-                      className="w-14 bg-[#181d28] border border-[#3b475e] focus:border-amber-500 rounded px-1.5 py-0.5 text-xs text-amber-300 font-mono text-center outline-none"
-                    />
-                    <span className="text-gray-400 text-[11px]">天</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const parsed = parseInt(scheduleRetentionInput, 10);
-                      handleScheduleRetentionChange(isNaN(parsed) ? 30 : parsed);
-                    }}
-                    className="text-[10.5px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30 font-medium transition-colors cursor-pointer"
-                    title="儲存並套用保留天數"
-                  >
-                    套用
-                  </button>
-                </div>
-
-                <button
-                  disabled={!isUnlocked || logs.length === 0}
-                  onClick={handleClearLogs}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
-                    isUnlocked && logs.length > 0
-                      ? 'bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 cursor-pointer'
-                      : 'bg-gray-800 text-gray-600 cursor-not-allowed'
-                  }`}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>清空記錄</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto max-h-[72vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#3e4e6d]">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="sticky top-0 z-10 bg-[#161b26] border-b border-[#242b3b] text-gray-400 font-semibold uppercase text-[10px] tracking-wider shadow-sm">
-                    <th className="py-2.5 px-4 w-44">時間戳記</th>
-                    <th className="py-2.5 px-4 w-32">動作類型</th>
-                    <th className="py-2.5 px-4 w-44">目標資料源</th>
-                    <th className="py-2.5 px-4 w-28">執行載體</th>
-                    <th className="py-2.5 px-4">詳細事件訊息</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1e2535]">
-                  {logs.map((log) => (
-                    <tr key={log.id} className="hover:bg-[#19202e] transition-colors">
-                      <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
-                        {new Date(log.timestamp).toLocaleString('zh-HK', {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: false
-                        })}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ${
-                          log.status === 'error' || log.action.includes('ERROR')
-                            ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
-                            : log.action.includes('GITHUB')
-                              ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
-                              : log.action.includes('OCI')
-                                ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                                : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-                        }`}>
-                          {log.action}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 font-bold text-white text-xs">
-                        {log.source_name}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="text-[11px] text-gray-400">
-                          {log.runner === 'github_actions' ? 'GitHub Actions' : log.runner === 'oci' ? 'OCI 主機' : '全系統'}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-gray-300 text-xs">
-                        {log.detail}
-                      </td>
-                    </tr>
-                  ))}
-                  {logs.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="py-12 text-center text-gray-500 text-xs">
-                        尚無任何排程或同步歷史日誌
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* 11.4 分頁 3: 系統日誌 */}
+        {/* 11.4 分頁 2: 系統日誌 (統一整合系統運作、異常報錯、資料更新與排程記錄) */}
         {mainTab === 'system_logs' && (
           <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col">
             <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-3">
                 <h3 className="font-bold text-sm text-white flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-sky-400" />
-                  <span>系統運作與錯誤日誌</span>
+                  <span>系統運作與資料源更新日誌</span>
                 </h3>
               </div>
 
@@ -2938,7 +2785,7 @@ export default function AdminPage() {
                       setSystemLogSearch(e.target.value);
                       setSystemLogPage(1);
                     }}
-                    placeholder="搜尋檔案或訊息..."
+                    placeholder="搜尋檔案、動作、資料源或訊息..."
                     className="bg-[#10131a] text-xs text-gray-200 placeholder-gray-500 pl-8 pr-2.5 py-1 rounded-lg border border-[#283144] focus:outline-none focus:border-sky-500/60 w-36 sm:w-48"
                   />
                 </div>
