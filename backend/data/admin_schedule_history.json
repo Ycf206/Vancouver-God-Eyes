@@ -1,5 +1,14 @@
 [
   {
+    "id": "sync-1794489086474-service_requests_311",
+    "timestamp": "2026-11-12T13:11:26.347Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "3-1-1",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+  },
+  {
     "id": "log-1794487332963",
     "timestamp": "2026-11-12T12:42:12.962522+00:00",
     "action": "OCI_DAEMON_SYNC",

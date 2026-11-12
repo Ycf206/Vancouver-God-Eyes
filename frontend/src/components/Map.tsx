@@ -1044,7 +1044,7 @@ export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
     contourInterval, timeFormat, distanceUnit, temperatureUnit, userLocation, setUserLocation, setExploreOpen,
-    isExploreOpen, exploreTab, weatherSubTab, setExploreTab, openExploreTab, openExploreTabs, setOpenExploreTabs, setSettingsModalOpen,
+    isExploreOpen, isExploreMinimized, setExploreMinimized, exploreTab, weatherSubTab, setExploreTab, openExploreTab, openExploreTabs, setOpenExploreTabs, setSettingsModalOpen,
     parkingMeterFilter, setParkingMeterFilter,
     motorcycleParkingFilter, setMotorcycleParkingFilter,
     radiusExploration, setRadiusExploration,
@@ -18056,12 +18056,12 @@ export default function AppMap() {
                   <button
                     key={t.id}
                     onClick={() => {
-                      if (isExploreOpen && exploreTab === t.id) {
-                        if (openExploreTabs && openExploreTabs.length > 1) {
-                          setOpenExploreTabs([t.id as any]);
-                        }
-                        setExploreOpen(false);
+                      if (isExploreOpen && exploreTab === t.id && !isExploreMinimized) {
+                        setExploreMinimized(true);
                       } else {
+                        if (isExploreMinimized) {
+                          setExploreMinimized(false);
+                        }
                         openExploreTab(t.id as any);
                       }
                       setIsExploreSearchActive(false);
@@ -18152,12 +18152,12 @@ export default function AppMap() {
               <button
                 key={tab.id}
                 onClick={() => {
-                  if (isExploreOpen && exploreTab === tab.id) {
-                    if (openExploreTabs && openExploreTabs.length > 1) {
-                      setOpenExploreTabs([tab.id as any]);
-                    }
-                    setExploreOpen(false);
+                  if (isExploreOpen && exploreTab === tab.id && !isExploreMinimized) {
+                    setExploreMinimized(true);
                   } else {
+                    if (isExploreMinimized) {
+                      setExploreMinimized(false);
+                    }
                     openExploreTab(tab.id as any);
                   }
                 }}

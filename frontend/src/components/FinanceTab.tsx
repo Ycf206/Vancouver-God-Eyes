@@ -1447,51 +1447,51 @@ export function FinanceTab() {
                         </span>
                       </div>
 
-                      {/* 行 3: 持倉、均價、買價、買入數量、試算後均價四欄網格 */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                        {/* 持倉股數與均價 */}
-                        <div className="bg-[#080b11] p-2 rounded-lg border border-[#1a2130] flex flex-col gap-1">
-                          <span className="text-[10px] text-gray-400 font-medium">持倉股數 / 均價 ($)</span>
+                      {/* 行 3: 持倉、均價、買價、買入數量、試算後均價 (拆分成 2 行 2 欄網格佈局) */}
+                      <div className="grid grid-cols-2 gap-2.5 text-xs">
+                        {/* 第 1 行左：持倉股數與均價 */}
+                        <div className="bg-[#080b11] p-2.5 rounded-lg border border-[#1a2130] flex flex-col justify-between gap-1.5">
+                          <span className="text-[10.5px] text-gray-400 font-medium">持倉股數 / 均價 ($)</span>
                           <div className="flex items-center gap-1.5 font-mono">
                             <input
                               type="number"
                               value={stk.shares}
                               onChange={(e) => handleStockChange(stk.id, 'shares', parseFloat(e.target.value) || 0)}
-                              className="w-16 bg-[#121622] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+                              className="w-16 min-w-0 bg-[#121622] border border-[#252e40] rounded px-1.5 py-1 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
                             />
-                            <span className="text-gray-500 text-[10px]">股 @</span>
+                            <span className="text-gray-500 text-[10.5px] shrink-0">股 @</span>
                             <input
                               type="number"
                               step="0.001"
                               value={stk.avgPrice}
                               onChange={(e) => handleStockChange(stk.id, 'avgPrice', parseFloat(e.target.value) || 0)}
-                              className="w-20 bg-[#121622] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+                              className="flex-1 min-w-0 bg-[#121622] border border-[#252e40] rounded px-1.5 py-1 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
                             />
                           </div>
                         </div>
 
-                        {/* 試算買價 */}
-                        <div className="bg-[#080b11] p-2 rounded-lg border border-[#1a2130] flex flex-col gap-1">
-                          <span className="text-[10px] text-gray-400 font-medium">試算買價 ($)</span>
+                        {/* 第 1 行右：試算買價 */}
+                        <div className="bg-[#080b11] p-2.5 rounded-lg border border-[#1a2130] flex flex-col justify-between gap-1.5">
+                          <span className="text-[10.5px] text-gray-400 font-medium">試算買價 ($)</span>
                           <input
                             type="number"
                             step="0.01"
                             value={stk.buyPrice ?? stk.currentPrice}
                             onChange={(e) => handleStockChange(stk.id, 'buyPrice', parseFloat(e.target.value) || 0)}
-                            className="w-full bg-[#121622] border border-[#252e40] rounded px-2 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+                            className="w-full bg-[#121622] border border-[#252e40] rounded px-2 py-1 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
                           />
                         </div>
 
-                        {/* 試算買入數量 */}
-                        <div className="bg-[#080b11] p-2 rounded-lg border border-[#1a2130] flex flex-col gap-1">
-                          <span className="text-[10px] text-gray-400 font-medium">試算買入 (股)</span>
-                          <div className="flex items-center gap-1.5">
+                        {/* 第 2 行左：試算買入數量與滑桿 */}
+                        <div className="bg-[#080b11] p-2.5 rounded-lg border border-[#1a2130] flex flex-col justify-between gap-1.5">
+                          <span className="text-[10.5px] text-gray-400 font-medium">試算買入 (股)</span>
+                          <div className="flex items-center gap-2">
                             <input
                               type="number"
                               min="0"
                               value={stk.buyShares || 0}
                               onChange={(e) => handleStockChange(stk.id, 'buyShares', parseInt(e.target.value, 10) || 0)}
-                              className="w-16 bg-[#121622] border border-[#252e40] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
+                              className="w-16 min-w-0 bg-[#121622] border border-[#252e40] rounded px-1.5 py-1 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
                             />
                             <input
                               type="range"
@@ -1499,17 +1499,24 @@ export function FinanceTab() {
                               max={Math.max(neededShares * 2, 100)}
                               value={stk.buyShares || 0}
                               onChange={(e) => handleStockChange(stk.id, 'buyShares', parseInt(e.target.value, 10) || 0)}
-                              className="flex-1 accent-blue-500 cursor-pointer h-1.5 bg-gray-700 rounded-lg"
+                              className="flex-1 accent-blue-500 cursor-pointer h-1.5 bg-gray-700 rounded-lg min-w-0"
                             />
                           </div>
                         </div>
 
-                        {/* 試算後均價 */}
-                        <div className="bg-[#080b11] p-2 rounded-lg border border-[#1a2130] flex flex-col justify-center">
-                          <span className="text-[10px] text-gray-400 font-medium">試算後均價</span>
-                          <span className="font-mono font-bold text-white text-xs mt-0.5">
-                            ${calculatedAvgPrice.toFixed(2)}
-                          </span>
+                        {/* 第 2 行右：試算後均價 */}
+                        <div className="bg-[#080b11] p-2.5 rounded-lg border border-[#1a2130] flex flex-col justify-between gap-1.5">
+                          <span className="text-[10.5px] text-gray-400 font-medium">試算後均價</span>
+                          <div className="flex items-baseline justify-between font-mono">
+                            <span className="font-bold text-white text-sm">
+                              ${calculatedAvgPrice.toFixed(2)}
+                            </span>
+                            {buySh > 0 && (
+                              <span className="text-[10px] text-blue-400">
+                                (共 {totalSharesAfter} 股)
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

@@ -15,7 +15,7 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
   {
     version: 'v2026.11.2',
     title: 'v2026.11.2 更新內容',
-    date: '2026-11-10',
+    date: '2026-11-14',
     isLatest: true,
     highlights: [
       '新增停電圖層',

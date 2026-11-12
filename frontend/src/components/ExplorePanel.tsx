@@ -4412,7 +4412,13 @@ function ExploreContent() {
                   setDraggedTab(null);
                   setDragOverTab(null);
                 }}
-                onClick={() => setExploreTab(tabId)}
+                onClick={() => {
+                  if (isSelected) {
+                    setExploreMinimized(true);
+                  } else {
+                    setExploreTab(tabId);
+                  }
+                }}
                 className={`group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-grab active:cursor-grabbing transition-all border shrink-0 select-none ${
                   isDragging ? 'opacity-40 scale-95' : ''
                 } ${
