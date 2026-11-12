@@ -116,7 +116,7 @@ export default function PowerOutagesDrawer() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedRegion, setSelectedRegion] = useState<string>('ALL');
   const [selectedCause, setSelectedCause] = useState<string>('ALL');
-  const [sortBy, setSortBy] = useState<'customers_desc' | 'customers_asc' | 'date_desc' | 'date_asc' | 'updated_desc'>('customers_desc');
+  const [sortBy, setSortBy] = useState<'customers_desc' | 'customers_asc' | 'date_desc' | 'date_asc' | 'updated_desc'>('updated_desc');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 15;
 
@@ -250,8 +250,8 @@ export default function PowerOutagesDrawer() {
         return da - db;
       }
       if (sortBy === 'updated_desc') {
-        const ua = a.lastUpdated ? new Date(a.lastUpdated).getTime() : 0;
-        const ub = b.lastUpdated ? new Date(b.lastUpdated).getTime() : 0;
+        const ua = a.lastUpdated ? (typeof a.lastUpdated === 'number' ? a.lastUpdated : new Date(a.lastUpdated).getTime() || 0) : 0;
+        const ub = b.lastUpdated ? (typeof b.lastUpdated === 'number' ? b.lastUpdated : new Date(b.lastUpdated).getTime() || 0) : 0;
         return ub - ua;
       }
       return 0;
@@ -299,6 +299,58 @@ export default function PowerOutagesDrawer() {
       }
     }
   };
+
+  // 當在地圖上點擊停電圓點或區域時（透過 custom event 或 selectedOutageId），自動切換至「現正停電」並確保篩選條件不會隱藏該筆停電
+  const jumpToOutage = useCallback((outageId: string | number) => {
+    if (!outageId) return;
+    const strId = String(outageId);
+
+    // 1. 切換至「現正停電」分頁
+    setActiveTab('current');
+
+    // 2. 檢查在目前篩選條件下是否可見，若被搜尋或篩選過濾掉了，自動重設以確保可見
+    const inFiltered = filteredAndSortedList.some(it => String(it.id) === strId);
+    if (!inFiltered && currentOutages.some(it => String(it.id) === strId)) {
+      setSearchQuery('');
+      setSelectedRegion('ALL');
+      setSelectedCause('ALL');
+    }
+  }, [currentOutages, filteredAndSortedList]);
+
+  // 監聽 custom event 與 selectedOutageId 變更，觸發 jumpToOutage
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleCustomEvent = (e: any) => {
+      const id = e.detail?.id;
+      if (id) {
+        jumpToOutage(id);
+      }
+    };
+    window.addEventListener('godseye:select-outage', handleCustomEvent);
+    return () => {
+      window.removeEventListener('godseye:select-outage', handleCustomEvent);
+    };
+  }, [jumpToOutage]);
+
+  // 當 selectedOutageId 與 filteredAndSortedList 變更時，計算對應頁碼並平滑滾動至目標卡片
+  useEffect(() => {
+    if (!selectedOutageId || activeTab !== 'current') return;
+    const strId = String(selectedOutageId);
+    const idx = filteredAndSortedList.findIndex(it => String(it.id) === strId);
+    if (idx !== -1) {
+      const targetPage = Math.floor(idx / pageSize) + 1;
+      if (currentPage !== targetPage) {
+        setCurrentPage(targetPage);
+      }
+      const timer = setTimeout(() => {
+        const el = document.getElementById(`outage-card-${strId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 160);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedOutageId, filteredAndSortedList, currentPage, activeTab, pageSize]);
 
   if (!isPowerOutagesOpen) return null;
 
@@ -550,11 +602,11 @@ export default function PowerOutagesDrawer() {
                 className="bg-[#10141d] border border-[#232c3d] rounded-lg px-2 py-1 text-amber-300 font-medium outline-none truncate"
                 title="排序方式"
               >
+                <option value="updated_desc">最後更新日期</option>
                 <option value="customers_desc">受影響戶數 ↓</option>
                 <option value="customers_asc">受影響戶數 ↑</option>
                 <option value="date_desc">停電日期 (最新)</option>
                 <option value="date_asc">停電日期 (最舊)</option>
-                <option value="updated_desc">最後更新時間</option>
               </select>
             </div>
           </div>
@@ -578,16 +630,17 @@ export default function PowerOutagesDrawer() {
                 return (
                   <div
                     key={item.id}
+                    id={`outage-card-${item.id}`}
                     onClick={() => {
                       if (activeTab === 'current') {
                         handleLocateOnMap(item);
                       }
                     }}
-                    className={`bg-[#181d28] border rounded-xl p-3 shadow-md flex flex-col gap-2 transition-all duration-150 ${
+                    className={`bg-[#181d28] border rounded-xl p-3 shadow-md flex flex-col gap-2 transition-all duration-200 ${
                       activeTab === 'current' ? 'cursor-pointer hover:border-amber-400/60' : ''
                     } ${
-                      selectedOutageId === item.id 
-                        ? 'border-amber-400 bg-[#1d2331] ring-1 ring-amber-400/40' 
+                      String(selectedOutageId) === String(item.id) 
+                        ? 'border-amber-400 bg-[#1f2637] ring-2 ring-amber-400/70 shadow-lg shadow-amber-500/20' 
                         : 'border-[#262d3d] hover:border-[#38435a]'
                     }`}
                   >

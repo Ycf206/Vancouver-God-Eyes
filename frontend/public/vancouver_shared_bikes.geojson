@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
   "total_count": 262,
-  "updated_at": "2026-11-12T04:37:13.857Z",
+  "updated_at": "2026-11-12T12:42:10.135Z",
   "features": [
     {
       "type": "Feature",
@@ -74,10 +74,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1030 Denman Street",
-          "V6G 2M6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -122,8 +119,8 @@
         "name": "Bute & Comox",
         "station_id": "st_d0mo5ems6arcv489jga0",
         "full_id": "st_d0mo5ems6arcv489jga0",
-        "available_bikes": 0,
-        "available_slots": 22,
+        "available_bikes": 1,
+        "available_slots": 21,
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
@@ -147,9 +144,9 @@
         "name": "Columbia & 1st",
         "station_id": "st_d0mo5ems6arcv489jgq0",
         "full_id": "st_d0mo5ems6arcv489jgq0",
-        "available_bikes": 11,
-        "available_slots": 9,
-        "capacity": 20,
+        "available_bikes": 13,
+        "available_slots": 8,
+        "capacity": 21,
         "is_closed": false,
         "isClosed": false,
         "address": [],
@@ -172,8 +169,8 @@
         "name": "Alder & 11th",
         "station_id": "st_d0mo5ems6arcv489jh0g",
         "full_id": "st_d0mo5ems6arcv489jh0g",
-        "available_bikes": 2,
-        "available_slots": 12,
+        "available_bikes": 3,
+        "available_slots": 11,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
@@ -202,10 +199,7 @@
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Cypress Street",
-          "V6J 1C9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -225,8 +219,8 @@
         "name": "14th & Main",
         "station_id": "st_d0mo5ems6arcv489jgs0",
         "full_id": "st_d0mo5ems6arcv489jgs0",
-        "available_bikes": 7,
-        "available_slots": 14,
+        "available_bikes": 6,
+        "available_slots": 15,
         "capacity": 21,
         "is_closed": false,
         "isClosed": false,
@@ -250,8 +244,8 @@
         "name": "Olympic Village Station",
         "station_id": "st_d0mo5ems6arcv489jgt0",
         "full_id": "st_d0mo5ems6arcv489jgt0",
-        "available_bikes": 14,
-        "available_slots": 9,
+        "available_bikes": 12,
+        "available_slots": 11,
         "capacity": 23,
         "is_closed": false,
         "isClosed": false,
@@ -350,8 +344,8 @@
         "name": "Columbia & 5th",
         "station_id": "st_d0mo5ems6arcv489jgsg",
         "full_id": "st_d0mo5ems6arcv489jgsg",
-        "available_bikes": 14,
-        "available_slots": 4,
+        "available_bikes": 15,
+        "available_slots": 3,
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
@@ -380,7 +374,10 @@
         "capacity": 13,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Cypress Street",
+          "V6J 1Z2 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -425,8 +422,8 @@
         "name": "Burrard & Drake",
         "station_id": "st_d0mo5ems6arcv489jg7g",
         "full_id": "st_d0mo5ems6arcv489jg7g",
-        "available_bikes": 2,
-        "available_slots": 22,
+        "available_bikes": 1,
+        "available_slots": 23,
         "capacity": 24,
         "is_closed": false,
         "isClosed": false,
@@ -505,7 +502,10 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Seaside Greenway - Creekside Park",
+          "V6A 3Z7 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -550,8 +550,8 @@
         "name": "Yew & 5th",
         "station_id": "st_d0mo5ems6arcv489jh5g",
         "full_id": "st_d0mo5ems6arcv489jh5g",
-        "available_bikes": 1,
-        "available_slots": 15,
+        "available_bikes": 0,
+        "available_slots": 16,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
@@ -575,12 +575,15 @@
         "name": "Bute & Davie",
         "station_id": "st_d0mo5ems6arcv489jfq0",
         "full_id": "st_d0mo5ems6arcv489jfq0",
-        "available_bikes": 2,
-        "available_slots": 18,
+        "available_bikes": 4,
+        "available_slots": 16,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "1150 Bute Street",
+          "V6E 1Z6 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -655,7 +658,10 @@
         "capacity": 25,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "West 1st Avenue",
+          "V6J 1G5 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -680,10 +686,7 @@
         "capacity": 10,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "100 Keefer Street",
-          "V6A 1X3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -708,7 +711,10 @@
         "capacity": 12,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Chilco Street",
+          "V6G 1S1 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -778,8 +784,8 @@
         "name": "Beatty & Robson",
         "station_id": "st_d0mo5ems6arcv489jg20",
         "full_id": "st_d0mo5ems6arcv489jg20",
-        "available_bikes": 7,
-        "available_slots": 11,
+        "available_bikes": 5,
+        "available_slots": 13,
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
@@ -803,8 +809,8 @@
         "name": "Cardero & Robson",
         "station_id": "st_d0mo5ems6arcv489jg5g",
         "full_id": "st_d0mo5ems6arcv489jg5g",
-        "available_bikes": 10,
-        "available_slots": 16,
+        "available_bikes": 12,
+        "available_slots": 14,
         "capacity": 26,
         "is_closed": false,
         "isClosed": false,
@@ -883,7 +889,10 @@
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "280 Nelson Street",
+          "V6B 6J8 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -953,12 +962,15 @@
         "name": "Richards & Helmcken",
         "station_id": "st_d0mo5ems6arcv489jgug",
         "full_id": "st_d0mo5ems6arcv489jgug",
-        "available_bikes": 3,
-        "available_slots": 14,
+        "available_bikes": 1,
+        "available_slots": 16,
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "1099 Richards Street",
+          "V6B 3E6 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1003,8 +1015,8 @@
         "name": "Expo & Smithe",
         "station_id": "st_d0mo5ems6arcv489jfvg",
         "full_id": "st_d0mo5ems6arcv489jfvg",
-        "available_bikes": 1,
-        "available_slots": 13,
+        "available_bikes": 2,
+        "available_slots": 12,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
@@ -1028,12 +1040,15 @@
         "name": "Bute & Robson",
         "station_id": "st_d0mo5ems6arcv489jg4g",
         "full_id": "st_d0mo5ems6arcv489jg4g",
-        "available_bikes": 5,
-        "available_slots": 18,
+        "available_bikes": 6,
+        "available_slots": 17,
         "capacity": 23,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Bute Street",
+          "V6E 1C3 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1078,8 +1093,8 @@
         "name": "Ontario & 5th",
         "station_id": "st_d0mo5ems6arcv489jgjg",
         "full_id": "st_d0mo5ems6arcv489jgjg",
-        "available_bikes": 14,
-        "available_slots": 5,
+        "available_bikes": 13,
+        "available_slots": 6,
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
@@ -1108,10 +1123,7 @@
         "capacity": 25,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Bidwell Street",
-          "V6G 1Y6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1156,8 +1168,8 @@
         "name": "Robson & Granville",
         "station_id": "st_d0mo5ems6arcv489jh30",
         "full_id": "st_d0mo5ems6arcv489jh30",
-        "available_bikes": 15,
-        "available_slots": 9,
+        "available_bikes": 14,
+        "available_slots": 10,
         "capacity": 24,
         "is_closed": false,
         "isClosed": false,
@@ -1181,8 +1193,8 @@
         "name": "Yaletown-Roundhouse Station",
         "station_id": "st_d0mo5ems6arcv489jh60",
         "full_id": "st_d0mo5ems6arcv489jh60",
-        "available_bikes": 11,
-        "available_slots": 3,
+        "available_bikes": 10,
+        "available_slots": 4,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
@@ -1206,15 +1218,12 @@
         "name": "10th & Columbia",
         "station_id": "st_d0mo5ems6arcv489jh7g",
         "full_id": "st_d0mo5ems6arcv489jh7g",
-        "available_bikes": 6,
-        "available_slots": 5,
+        "available_bikes": 7,
+        "available_slots": 4,
         "capacity": 11,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "196 West 10th Avenue",
-          "V5Y 1P3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1239,7 +1248,10 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Husain Rahim Plaza",
+          "V5Z 4K6 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1259,12 +1271,15 @@
         "name": "Dunsmuir & Beatty",
         "station_id": "st_d0mo5ems6arcv489jfsg",
         "full_id": "st_d0mo5ems6arcv489jfsg",
-        "available_bikes": 8,
-        "available_slots": 17,
+        "available_bikes": 7,
+        "available_slots": 18,
         "capacity": 25,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Dunsmuir Street",
+          "V6B 6A3 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1284,8 +1299,8 @@
         "name": "Cardero & Davie",
         "station_id": "st_d0mo5ems6arcv489jg50",
         "full_id": "st_d0mo5ems6arcv489jg50",
-        "available_bikes": 9,
-        "available_slots": 9,
+        "available_bikes": 14,
+        "available_slots": 4,
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
@@ -1312,15 +1327,12 @@
         "name": "Richards & Robson",
         "station_id": "st_d0mo5ems6arcv489jge0",
         "full_id": "st_d0mo5ems6arcv489jge0",
-        "available_bikes": 6,
-        "available_slots": 12,
+        "available_bikes": 4,
+        "available_slots": 14,
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "794 Richards Street",
-          "V6B 3A4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1340,8 +1352,8 @@
         "name": "Harwood & Bute",
         "station_id": "st_d0mo5ems6arcv489jgeg",
         "full_id": "st_d0mo5ems6arcv489jgeg",
-        "available_bikes": 8,
-        "available_slots": 12,
+        "available_bikes": 11,
+        "available_slots": 9,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
@@ -1370,10 +1382,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "905 Chilco Street",
-          "V6G 1L1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1446,15 +1455,12 @@
         "name": "Heather & 14th",
         "station_id": "st_d0mo5ems6arcv489jh90",
         "full_id": "st_d0mo5ems6arcv489jh90",
-        "available_bikes": 10,
-        "available_slots": 6,
+        "available_bikes": 11,
+        "available_slots": 5,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Heather Street",
-          "V5Z 4M2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1474,15 +1480,12 @@
         "name": "Hornby & Nelson",
         "station_id": "st_d0mo5ems6arcv489jg80",
         "full_id": "st_d0mo5ems6arcv489jg80",
-        "available_bikes": 1,
-        "available_slots": 15,
+        "available_bikes": 2,
+        "available_slots": 14,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Hornby Street",
-          "V6Z 3H8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1507,10 +1510,7 @@
         "capacity": 10,
         "is_closed": true,
         "isClosed": true,
-        "address": [
-          "Beach Avenue Bike Route",
-          "V6G 2P6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1530,15 +1530,12 @@
         "name": "Nicola & Robson",
         "station_id": "st_d0mo5ems6arcv489jgig",
         "full_id": "st_d0mo5ems6arcv489jgig",
-        "available_bikes": 6,
-        "available_slots": 11,
+        "available_bikes": 8,
+        "available_slots": 9,
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1438 Robson Street",
-          "V6G 1C1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1558,9 +1555,9 @@
         "name": "Rogers Tower",
         "station_id": "st_d0mo5ems6arcv489jfpg",
         "full_id": "st_d0mo5ems6arcv489jfpg",
-        "available_bikes": 13,
+        "available_bikes": 14,
         "available_slots": 4,
-        "capacity": 17,
+        "capacity": 18,
         "is_closed": false,
         "isClosed": false,
         "address": [],
@@ -1638,10 +1635,7 @@
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1079 Marinaside Crescent",
-          "V6Z 2Z4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1666,10 +1660,7 @@
         "capacity": 12,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1483 West 7th Avenue",
-          "V6H 0B1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1694,7 +1685,10 @@
         "capacity": 30,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "2020 McNicoll Avenue",
+          "V6J 1A3 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1719,10 +1713,7 @@
         "capacity": 35,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "West 10th Avenue",
-          "V5Y 1R4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1770,15 +1761,12 @@
         "name": "Richards & Smithe",
         "station_id": "st_d0mo5ems6arcv489jg8g",
         "full_id": "st_d0mo5ems6arcv489jg8g",
-        "available_bikes": 7,
-        "available_slots": 9,
+        "available_bikes": 8,
+        "available_slots": 8,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "867 Richards Street",
-          "V6B 3B4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1828,10 +1816,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "2098 West 7th Avenue",
-          "V6J 1Z6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1876,8 +1861,8 @@
         "name": "Canada Place",
         "station_id": "st_d0mo5ems6arcv489jg0g",
         "full_id": "st_d0mo5ems6arcv489jg0g",
-        "available_bikes": 16,
-        "available_slots": 10,
+        "available_bikes": 17,
+        "available_slots": 9,
         "capacity": 26,
         "is_closed": false,
         "isClosed": false,
@@ -1906,10 +1891,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Seaside Greenway - False Creek South",
-          "V5Z 4K7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1929,15 +1911,12 @@
         "name": "Richards & Davie",
         "station_id": "st_d0mo5ems6arcv489jgi0",
         "full_id": "st_d0mo5ems6arcv489jgi0",
-        "available_bikes": 2,
-        "available_slots": 11,
+        "available_bikes": 3,
+        "available_slots": 10,
         "capacity": 13,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1238 Richards Street",
-          "V6B 1S2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -1982,15 +1961,12 @@
         "name": "Dunsmuir & Richards",
         "station_id": "st_d0mo5ems6arcv489jft0",
         "full_id": "st_d0mo5ems6arcv489jft0",
-        "available_bikes": 9,
-        "available_slots": 11,
+        "available_bikes": 8,
+        "available_slots": 12,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Dunsmuir Street",
-          "V6B 2Z5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2010,15 +1986,12 @@
         "name": "Burrard Station (Melville & Dunsmuir)",
         "station_id": "st_d0mo5ems6arcv489jg00",
         "full_id": "st_d0mo5ems6arcv489jg00",
-        "available_bikes": 9,
-        "available_slots": 19,
+        "available_bikes": 8,
+        "available_slots": 20,
         "capacity": 28,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1088 Melville Street",
-          "V6E 4L4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2038,15 +2011,12 @@
         "name": "Keefer & Abbott",
         "station_id": "st_d0mo5ems6arcv489jgc0",
         "full_id": "st_d0mo5ems6arcv489jgc0",
-        "available_bikes": 24,
-        "available_slots": 3,
+        "available_bikes": 22,
+        "available_slots": 5,
         "capacity": 27,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "179 Keefer Place",
-          "V6B 6C1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2066,8 +2036,8 @@
         "name": "10th & Granville",
         "station_id": "st_d0mo5ems6arcv489jh70",
         "full_id": "st_d0mo5ems6arcv489jh70",
-        "available_bikes": 10,
-        "available_slots": 2,
+        "available_bikes": 9,
+        "available_slots": 3,
         "capacity": 12,
         "is_closed": false,
         "isClosed": false,
@@ -2119,8 +2089,8 @@
         "name": "10th & Ontario",
         "station_id": "st_d0mo5ems6arcv489jha0",
         "full_id": "st_d0mo5ems6arcv489jha0",
-        "available_bikes": 2,
-        "available_slots": 18,
+        "available_bikes": 1,
+        "available_slots": 19,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
@@ -2144,15 +2114,12 @@
         "name": "Granville & Georgia",
         "station_id": "st_d0mo5ems6arcv489jfug",
         "full_id": "st_d0mo5ems6arcv489jfug",
-        "available_bikes": 14,
-        "available_slots": 5,
+        "available_bikes": 12,
+        "available_slots": 7,
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Granville Street",
-          "V6Z 1E4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2177,10 +2144,7 @@
         "capacity": 10,
         "is_closed": true,
         "isClosed": true,
-        "address": [
-          "Granville Bridge",
-          "V6H 4E5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2225,15 +2189,12 @@
         "name": "Ontario & Seawall",
         "station_id": "st_d0mo5ems6arcv489jfrg",
         "full_id": "st_d0mo5ems6arcv489jfrg",
-        "available_bikes": 7,
-        "available_slots": 12,
+        "available_bikes": 10,
+        "available_slots": 9,
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "88 Switchmen Street",
-          "V6A 0H2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2254,14 +2215,11 @@
         "station_id": "st_d0mo5ems6arcv489jg30",
         "full_id": "st_d0mo5ems6arcv489jg30",
         "available_bikes": 18,
-        "available_slots": 8,
-        "capacity": 26,
+        "available_slots": 7,
+        "capacity": 25,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1835 Morton Avenue",
-          "V6G 1V3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2281,15 +2239,12 @@
         "name": "8th & Ontario",
         "station_id": "st_d0mo5ems6arcv489jgr0",
         "full_id": "st_d0mo5ems6arcv489jgr0",
-        "available_bikes": 2,
+        "available_bikes": 3,
         "available_slots": 13,
-        "capacity": 15,
+        "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "West 8th Avenue",
-          "V5Y 1M8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2337,15 +2292,12 @@
         "name": "Alexander & Main",
         "station_id": "st_d0mo5ems6arcv489jh00",
         "full_id": "st_d0mo5ems6arcv489jh00",
-        "available_bikes": 18,
-        "available_slots": 1,
+        "available_bikes": 17,
+        "available_slots": 2,
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "195 Alexander Street",
-          "V6A 1B8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2365,12 +2317,15 @@
         "name": "Robson & Hornby",
         "station_id": "st_d0mo5ems6arcv489jh50",
         "full_id": "st_d0mo5ems6arcv489jh50",
-        "available_bikes": 13,
-        "available_slots": 17,
+        "available_bikes": 10,
+        "available_slots": 20,
         "capacity": 30,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Robson Street",
+          "V6Z 1S4 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2423,10 +2378,7 @@
         "capacity": 12,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Saint Catherines Street",
-          "V5T 2E8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2446,15 +2398,12 @@
         "name": "Charles & Woodland",
         "station_id": "st_d0mo5ems6arcv489jifg",
         "full_id": "st_d0mo5ems6arcv489jifg",
-        "available_bikes": 7,
-        "available_slots": 7,
+        "available_bikes": 8,
+        "available_slots": 6,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Charles Street",
-          "V5L 2T1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2479,10 +2428,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 18th Avenue",
-          "V5V 3M6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2502,15 +2448,12 @@
         "name": "1st & Scotia",
         "station_id": "st_d0mo5ems6arcv489jhag",
         "full_id": "st_d0mo5ems6arcv489jhag",
-        "available_bikes": 18,
-        "available_slots": 2,
+        "available_bikes": 19,
+        "available_slots": 1,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 1st Avenue",
-          "V5T 3K7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2535,10 +2478,7 @@
         "capacity": 10,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "West 14th Avenue",
-          "V6H 2S4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2558,15 +2498,12 @@
         "name": "Alexander & Dunlevy",
         "station_id": "st_d0mo5ems6arcv489ji6g",
         "full_id": "st_d0mo5ems6arcv489ji6g",
-        "available_bikes": 1,
-        "available_slots": 12,
+        "available_bikes": 3,
+        "available_slots": 10,
         "capacity": 13,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Alexander Street",
-          "V6A 1G7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2641,10 +2578,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Prince Edward Street",
-          "V5T 3J8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2670,7 +2604,7 @@
         "is_closed": false,
         "isClosed": false,
         "address": [
-          "East 6th Avenue",
+          "621 East 6th Avenue",
           "V5T 4J3 Vancouver"
         ],
         "operator": "Mobi by Rogers",
@@ -2692,15 +2626,12 @@
         "name": "Science World",
         "station_id": "st_d0mo5ems6arcv489jio0",
         "full_id": "st_d0mo5ems6arcv489jio0",
-        "available_bikes": 6,
-        "available_slots": 9,
+        "available_bikes": 5,
+        "available_slots": 10,
         "capacity": 15,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Seaside Greenway - Creekside Park",
-          "V6A 3Z7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2725,10 +2656,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Quebec Street",
-          "V6A 0H6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2773,8 +2701,8 @@
         "name": "Charles & Commercial",
         "station_id": "st_d0mo5ems6arcv489ji30",
         "full_id": "st_d0mo5ems6arcv489ji30",
-        "available_bikes": 6,
-        "available_slots": 16,
+        "available_bikes": 7,
+        "available_slots": 15,
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
@@ -2801,14 +2729,14 @@
         "name": "Keefer & Princess",
         "station_id": "st_d0mo5ems6arcv489ji7g",
         "full_id": "st_d0mo5ems6arcv489ji7g",
-        "available_bikes": 5,
-        "available_slots": 9,
+        "available_bikes": 6,
+        "available_slots": 8,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
         "address": [
-          "601 Keefer Street",
-          "V6A 3V8 Vancouver"
+          "592 East Pender Street",
+          "V6A 1R5 Vancouver"
         ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
@@ -2829,8 +2757,8 @@
         "name": "Cordova & Granville",
         "station_id": "st_d0mo5ems6arcv489jia0",
         "full_id": "st_d0mo5ems6arcv489jia0",
-        "available_bikes": 7,
-        "available_slots": 11,
+        "available_bikes": 6,
+        "available_slots": 12,
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
@@ -2854,8 +2782,8 @@
         "name": "14th & Oak",
         "station_id": "st_d0mo5ems6arcv489jid0",
         "full_id": "st_d0mo5ems6arcv489jid0",
-        "available_bikes": 6,
-        "available_slots": 8,
+        "available_bikes": 9,
+        "available_slots": 5,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
@@ -2910,15 +2838,12 @@
         "name": "Prince Edward & 14th",
         "station_id": "st_d0mo5ems6arcv489jimg",
         "full_id": "st_d0mo5ems6arcv489jimg",
-        "available_bikes": 1,
-        "available_slots": 13,
+        "available_bikes": 2,
+        "available_slots": 12,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "3080 Prince Edward Street",
-          "V5T 3J8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2966,15 +2891,12 @@
         "name": "Pine & 10th",
         "station_id": "st_d0mo5ems6arcv489jhe0",
         "full_id": "st_d0mo5ems6arcv489jhe0",
-        "available_bikes": 10,
-        "available_slots": 9,
+        "available_bikes": 11,
+        "available_slots": 8,
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "2527 Pine Street",
-          "V6J 2C2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -2999,10 +2921,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Saint George Street",
-          "V5T 1X3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3027,10 +2946,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "North Grandview Highway",
-          "V5N 4B7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3055,10 +2971,7 @@
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "120 Alexander Street",
-          "V6A 3C3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3078,15 +2991,12 @@
         "name": "Pender & Gore",
         "station_id": "st_d0mo5ems6arcv489jicg",
         "full_id": "st_d0mo5ems6arcv489jicg",
-        "available_bikes": 4,
-        "available_slots": 7,
+        "available_bikes": 3,
+        "available_slots": 8,
         "capacity": 11,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East Pender Street",
-          "V6A 1X9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3162,12 +3072,15 @@
         "name": "Georgia & Main",
         "station_id": "st_d0mo5ems6arcv489jhn0",
         "full_id": "st_d0mo5ems6arcv489jhn0",
-        "available_bikes": 18,
-        "available_slots": 1,
+        "available_bikes": 19,
+        "available_slots": 0,
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "East Georgia Street",
+          "V6A 2V4 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3192,7 +3105,10 @@
         "capacity": 13,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Ironwork Passage",
+          "V6H 3P7 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3212,12 +3128,15 @@
         "name": "Keith & 6th",
         "station_id": "st_d0mo5ems6arcv489jhv0",
         "full_id": "st_d0mo5ems6arcv489jhv0",
-        "available_bikes": 26,
-        "available_slots": 1,
+        "available_bikes": 27,
+        "available_slots": 0,
         "capacity": 27,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "1155 East Broadway",
+          "V5T 4V5 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3242,10 +3161,7 @@
         "capacity": 26,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 10th Avenue",
-          "V5N 1X5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3270,10 +3186,7 @@
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1530 Adanac Street",
-          "V5L 4X6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3298,10 +3211,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Melville Street",
-          "V6E 4C4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3326,10 +3236,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 15th Avenue",
-          "V5N 4M4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3429,10 +3336,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "125 East 10th Avenue",
-          "V5T 1Z3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3457,10 +3361,7 @@
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Carrall Greenway",
-          "V6B 0P8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3485,10 +3386,7 @@
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Glen Drive",
-          "V5T 4N7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3538,10 +3436,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1997 Commercial Drive",
-          "V5N 4B1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3566,10 +3461,7 @@
         "capacity": 13,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 15th Avenue",
-          "V5N 3P9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3669,10 +3561,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "425 Carrall Street",
-          "V6B 6E3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3692,15 +3581,12 @@
         "name": "Alberni & Jervis",
         "station_id": "st_d0mo5ems6arcv489jieg",
         "full_id": "st_d0mo5ems6arcv489jieg",
-        "available_bikes": 9,
-        "available_slots": 11,
+        "available_bikes": 8,
+        "available_slots": 12,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Alberni Street",
-          "V6E 4R3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3775,10 +3661,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "333 East 11th Avenue",
-          "V5T 3J7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3803,10 +3686,7 @@
         "capacity": 15,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 14th Avenue",
-          "V5T 3K5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3826,8 +3706,8 @@
         "name": "Burrard & 4th",
         "station_id": "st_d0mo5ems6arcv489jhp0",
         "full_id": "st_d0mo5ems6arcv489jhp0",
-        "available_bikes": 6,
-        "available_slots": 10,
+        "available_bikes": 5,
+        "available_slots": 11,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
@@ -3856,10 +3736,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Cotton Drive",
-          "V5L 3T2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -3909,10 +3786,7 @@
         "capacity": 12,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Woodland Drive",
-          "V5L 3T8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4012,10 +3886,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Commercial Drive",
-          "V5L 5C9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4035,8 +3906,8 @@
         "name": "Keefer & Hawks",
         "station_id": "st_d0mo5ems6arcv489jj0g",
         "full_id": "st_d0mo5ems6arcv489jj0g",
-        "available_bikes": 10,
-        "available_slots": 5,
+        "available_bikes": 9,
+        "available_slots": 6,
         "capacity": 15,
         "is_closed": false,
         "isClosed": false,
@@ -4060,15 +3931,12 @@
         "name": "York & Yew",
         "station_id": "st_d0mo5ems6arcv489jhb0",
         "full_id": "st_d0mo5ems6arcv489jhb0",
-        "available_bikes": 9,
-        "available_slots": 9,
+        "available_bikes": 8,
+        "available_slots": 10,
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "2204 York Avenue",
-          "V6K 1C6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4093,10 +3961,7 @@
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Beach Avenue Bike Route",
-          "V6G 1X5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4121,10 +3986,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Stanley Park Seawall Bike Path",
-          "V6G 3E2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4144,15 +4006,12 @@
         "name": "Napier & Commercial",
         "station_id": "st_d0mo5ems6arcv489ji3g",
         "full_id": "st_d0mo5ems6arcv489ji3g",
-        "available_bikes": 9,
-        "available_slots": 5,
+        "available_bikes": 10,
+        "available_slots": 4,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1704 Napier Street",
-          "V5L 3X2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4177,10 +4036,7 @@
         "capacity": 15,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Commercial Drive",
-          "V5L 3W6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4205,10 +4061,7 @@
         "capacity": 15,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "730 East 8th Avenue",
-          "V5T 1Y2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4228,8 +4081,8 @@
         "name": "Campbell & Hastings",
         "station_id": "st_d0mo5ems6arcv489jib0",
         "full_id": "st_d0mo5ems6arcv489jib0",
-        "available_bikes": 6,
-        "available_slots": 8,
+        "available_bikes": 7,
+        "available_slots": 7,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
@@ -4283,10 +4136,7 @@
         "capacity": 15,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1171 Thurlow Street",
-          "V6E 1L4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4306,8 +4156,8 @@
         "name": "Windsor & 14th",
         "station_id": "st_d0mo5ems6arcv489jiug",
         "full_id": "st_d0mo5ems6arcv489jiug",
-        "available_bikes": 3,
-        "available_slots": 11,
+        "available_bikes": 2,
+        "available_slots": 12,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
@@ -4389,10 +4239,7 @@
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "10th Avenue Bikeway",
-          "V5T 4G5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4412,15 +4259,12 @@
         "name": "Quebec & 3rd",
         "station_id": "st_d0mo5ems6arcv489jhd0",
         "full_id": "st_d0mo5ems6arcv489jhd0",
-        "available_bikes": 15,
+        "available_bikes": 14,
         "available_slots": 5,
-        "capacity": 20,
+        "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Quebec Street",
-          "V5T 2Z3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4440,15 +4284,12 @@
         "name": "Union & Dunlevy",
         "station_id": "st_d0mo5ems6arcv489jhlg",
         "full_id": "st_d0mo5ems6arcv489jhlg",
-        "available_bikes": 14,
-        "available_slots": 2,
+        "available_bikes": 16,
+        "available_slots": 0,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "346 Union Street",
-          "V6A 2Z9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4473,10 +4314,7 @@
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Saint Catherines Street",
-          "V5T 4K9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4496,15 +4334,12 @@
         "name": "Woodland & 4th",
         "station_id": "st_d0mo5ems6arcv489jig0",
         "full_id": "st_d0mo5ems6arcv489jig0",
-        "available_bikes": 8,
-        "available_slots": 6,
+        "available_bikes": 9,
+        "available_slots": 5,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Woodland Drive",
-          "V5N 1N2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4524,15 +4359,12 @@
         "name": "7th &  Alder",
         "station_id": "st_d0mo5ems6arcv489jivg",
         "full_id": "st_d0mo5ems6arcv489jivg",
-        "available_bikes": 2,
-        "available_slots": 14,
+        "available_bikes": 3,
+        "available_slots": 13,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "West 7th Avenue",
-          "V6H 1A4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4552,8 +4384,8 @@
         "name": "5th & Main",
         "station_id": "st_d0mo5ems6arcv489jhi0",
         "full_id": "st_d0mo5ems6arcv489jhi0",
-        "available_bikes": 1,
-        "available_slots": 16,
+        "available_bikes": 0,
+        "available_slots": 17,
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
@@ -4582,10 +4414,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "662 East 10th Avenue",
-          "V5T 1X6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4605,15 +4434,12 @@
         "name": "McLean & Pender",
         "station_id": "st_d0mo5ems6arcv489jilg",
         "full_id": "st_d0mo5ems6arcv489jilg",
-        "available_bikes": 14,
-        "available_slots": 2,
+        "available_bikes": 13,
+        "available_slots": 3,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "McLean Drive",
-          "V5L 1P3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4638,10 +4464,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Thornton Street",
-          "V6A 3S7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4661,15 +4484,12 @@
         "name": "7th & Laurel",
         "station_id": "st_d0mo5ems6arcv489jiv0",
         "full_id": "st_d0mo5ems6arcv489jiv0",
-        "available_bikes": 10,
-        "available_slots": 4,
+        "available_bikes": 12,
+        "available_slots": 2,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "889 West 7th Avenue",
-          "V5Z 3Y1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4694,10 +4514,7 @@
         "capacity": 10,
         "is_closed": true,
         "isClosed": true,
-        "address": [
-          "šxʷƛ̓ənəq Xwtl’e7énḵ Square",
-          "V6C 3G1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4747,10 +4564,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Avison Way",
-          "V6G 4M9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4775,10 +4589,7 @@
         "capacity": 28,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Stanley Park Seawall Bike Path",
-          "V6G 1Z4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4803,10 +4614,7 @@
         "capacity": 12,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 8th Avenue",
-          "V5T 0A8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4831,10 +4639,7 @@
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1175 Broughton Street",
-          "V6G 2B3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4854,15 +4659,12 @@
         "name": "13th & St George",
         "station_id": "st_d0mo5ems6arcv489jie0",
         "full_id": "st_d0mo5ems6arcv489jie0",
-        "available_bikes": 3,
-        "available_slots": 13,
+        "available_bikes": 2,
+        "available_slots": 14,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 13th Avenue",
-          "V5T 3R7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4937,10 +4739,7 @@
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "North Lakewood Drive",
-          "V5L 1J4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -4965,10 +4764,7 @@
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "195 East 26th Avenue",
-          "V5V 2C1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5013,8 +4809,8 @@
         "name": "UBC Bookstore",
         "station_id": "st_d0mo5ems6arcv489jkeg",
         "full_id": "st_d0mo5ems6arcv489jkeg",
-        "available_bikes": 3,
-        "available_slots": 9,
+        "available_bikes": 2,
+        "available_slots": 10,
         "capacity": 12,
         "is_closed": false,
         "isClosed": false,
@@ -5043,10 +4839,7 @@
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Beach Avenue Bike Route",
-          "V6Z 2M2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5071,7 +4864,10 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Richards Street",
+          "V6B 1B8 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5096,10 +4892,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "2785 West 8th Avenue",
-          "V6K 2G4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5124,10 +4917,7 @@
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Commercial Street",
-          "V5N 4E9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5152,7 +4942,10 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "199 East 22nd Avenue",
+          "V5V 3P1 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5172,8 +4965,8 @@
         "name": "War Memorial Gym",
         "station_id": "st_d0mo5ems6arcv489jk5g",
         "full_id": "st_d0mo5ems6arcv489jk5g",
-        "available_bikes": 22,
-        "available_slots": 5,
+        "available_bikes": 21,
+        "available_slots": 6,
         "capacity": 27,
         "is_closed": false,
         "isClosed": false,
@@ -5197,15 +4990,12 @@
         "name": "Princess & Union",
         "station_id": "st_d0mo5ems6arcv489jj40",
         "full_id": "st_d0mo5ems6arcv489jj40",
-        "available_bikes": 5,
-        "available_slots": 7,
+        "available_bikes": 6,
+        "available_slots": 6,
         "capacity": 12,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "741 Princess Avenue",
-          "V6A 3V8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5225,15 +5015,12 @@
         "name": "Adanac & Lakewood",
         "station_id": "st_d0mo5ems6arcv489jk10",
         "full_id": "st_d0mo5ems6arcv489jk10",
-        "available_bikes": 8,
-        "available_slots": 12,
+        "available_bikes": 7,
+        "available_slots": 13,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Adanac Street",
-          "V5L 4N8 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5253,8 +5040,8 @@
         "name": "Pharmaceutical Sciences",
         "station_id": "st_d0mo5ems6arcv489jk6g",
         "full_id": "st_d0mo5ems6arcv489jk6g",
-        "available_bikes": 4,
-        "available_slots": 18,
+        "available_bikes": 3,
+        "available_slots": 19,
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
@@ -5308,10 +5095,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Point Grey Road",
-          "V6K 1K4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5331,8 +5115,8 @@
         "name": "Dunbar & 6th",
         "station_id": "st_d0mo5ems6arcv489jjl0",
         "full_id": "st_d0mo5ems6arcv489jjl0",
-        "available_bikes": 5,
-        "available_slots": 11,
+        "available_bikes": 6,
+        "available_slots": 10,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
@@ -5381,8 +5165,8 @@
         "name": "Balsam & Cornwall",
         "station_id": "st_d0mo5ems6arcv489jjhg",
         "full_id": "st_d0mo5ems6arcv489jjhg",
-        "available_bikes": 9,
-        "available_slots": 8,
+        "available_bikes": 8,
+        "available_slots": 9,
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
@@ -5411,10 +5195,7 @@
         "capacity": 15,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "199 East 20th Avenue",
-          "V5V 3N6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5464,10 +5245,7 @@
         "capacity": 25,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "7 Alexander Street",
-          "V6A 1E9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5487,12 +5265,15 @@
         "name": "Strangway Building",
         "station_id": "st_d0mo5ems6arcv489jkf0",
         "full_id": "st_d0mo5ems6arcv489jkf0",
-        "available_bikes": 5,
-        "available_slots": 17,
+        "available_bikes": 3,
+        "available_slots": 19,
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "University Boulevard",
+          "V6T 0C5 Electoral Area A"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5512,15 +5293,12 @@
         "name": "Jervis & Robson",
         "station_id": "st_d0mo5ems6arcv489jjcg",
         "full_id": "st_d0mo5ems6arcv489jjcg",
-        "available_bikes": 8,
-        "available_slots": 11,
+        "available_bikes": 7,
+        "available_slots": 12,
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "860 Jervis Street",
-          "V6B 1C6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5573,10 +5351,7 @@
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Cardero Street",
-          "V6G 3E9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5601,10 +5376,7 @@
         "capacity": 26,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "3880-3896 Point Grey Road",
-          "V6R 1B3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5624,8 +5396,8 @@
         "name": "Yew & Broadway",
         "station_id": "st_d0mo5ems6arcv489jjh0",
         "full_id": "st_d0mo5ems6arcv489jjh0",
-        "available_bikes": 5,
-        "available_slots": 13,
+        "available_bikes": 4,
+        "available_slots": 14,
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
@@ -5654,10 +5426,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Trafalgar Street",
-          "V6K 2E9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5682,10 +5451,7 @@
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "508 West 29th Avenue",
-          "V7T 1A2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5710,10 +5476,7 @@
         "capacity": 15,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "West King Edward Avenue",
-          "V5Z 2C3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5738,10 +5501,7 @@
         "capacity": 21,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "East 30th Avenue",
-          "V5V 3R4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5786,8 +5546,8 @@
         "name": "Orchard Commons",
         "station_id": "st_d0mo5ems6arcv489jk80",
         "full_id": "st_d0mo5ems6arcv489jk80",
-        "available_bikes": 7,
-        "available_slots": 19,
+        "available_bikes": 6,
+        "available_slots": 20,
         "capacity": 26,
         "is_closed": false,
         "isClosed": false,
@@ -5811,8 +5571,8 @@
         "name": "Denman & Bayshore",
         "station_id": "st_d0mo5ems6arcv489jkg0",
         "full_id": "st_d0mo5ems6arcv489jkg0",
-        "available_bikes": 19,
-        "available_slots": 3,
+        "available_bikes": 17,
+        "available_slots": 5,
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
@@ -5836,15 +5596,12 @@
         "name": "Smithe & Burrard",
         "station_id": "st_d0mo5ems6arcv489jj4g",
         "full_id": "st_d0mo5ems6arcv489jj4g",
-        "available_bikes": 7,
-        "available_slots": 9,
+        "available_bikes": 5,
+        "available_slots": 11,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Smithe Street",
-          "V6Z 2N2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5869,10 +5626,7 @@
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "333 Seymour Street",
-          "V6B 5A7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5897,10 +5651,7 @@
         "capacity": 23,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Blenheim Street",
-          "V6K 1K4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -5920,8 +5671,8 @@
         "name": "qəlɬaləməcən leləm | Orca House",
         "station_id": "st_d0mo5ems6arcv489jkh0",
         "full_id": "st_d0mo5ems6arcv489jkh0",
-        "available_bikes": 5,
-        "available_slots": 16,
+        "available_bikes": 7,
+        "available_slots": 14,
         "capacity": 21,
         "is_closed": false,
         "isClosed": false,
@@ -5945,8 +5696,8 @@
         "name": "Place Vanier",
         "station_id": "st_d0mo5ems6arcv489jkig",
         "full_id": "st_d0mo5ems6arcv489jkig",
-        "available_bikes": 5,
-        "available_slots": 9,
+        "available_bikes": 6,
+        "available_slots": 8,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
@@ -5975,10 +5726,7 @@
         "capacity": 13,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Hawks Avenue",
-          "V6A 3S7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6003,7 +5751,10 @@
         "capacity": 21,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Beach Avenue Bike Route",
+          "V6G 1Y7 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6028,10 +5779,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Balaclava Street",
-          "V6K 4M9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6051,8 +5799,8 @@
         "name": "Totem Park",
         "station_id": "st_d0mo5ems6arcv489jkhg",
         "full_id": "st_d0mo5ems6arcv489jkhg",
-        "available_bikes": 2,
-        "available_slots": 19,
+        "available_bikes": 5,
+        "available_slots": 16,
         "capacity": 21,
         "is_closed": false,
         "isClosed": false,
@@ -6076,15 +5824,12 @@
         "name": "Granville Island",
         "station_id": "st_d0mo5ems6arcv489jj8g",
         "full_id": "st_d0mo5ems6arcv489jj8g",
-        "available_bikes": 31,
-        "available_slots": 1,
+        "available_bikes": 29,
+        "available_slots": 3,
         "capacity": 32,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Railspur Alley",
-          "V6H 3R7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6109,10 +5854,7 @@
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1777 Haro Street",
-          "V6G 1K6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6137,10 +5879,7 @@
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Trafalgar Street",
-          "V6K 1A1 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6165,7 +5904,10 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Balaclava Street",
+          "V6K 4M9 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6190,10 +5932,7 @@
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Wall Street",
-          "V5L 1G2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6238,15 +5977,12 @@
         "name": "Thunderbird & Thunderbird",
         "station_id": "st_d0mo5ems6arcv489jkgg",
         "full_id": "st_d0mo5ems6arcv489jkgg",
-        "available_bikes": 2,
-        "available_slots": 18,
+        "available_bikes": 3,
+        "available_slots": 17,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Thunderbird Crescent",
-          "V6T 0C3 Electoral Area A"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6296,10 +6032,7 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "West 22nd Avenue",
-          "V5Z 2X9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6319,9 +6052,9 @@
         "name": "IK Barber Learning Centre",
         "station_id": "st_d0mo5ems6arcv489jk60",
         "full_id": "st_d0mo5ems6arcv489jk60",
-        "available_bikes": 9,
-        "available_slots": 9,
-        "capacity": 18,
+        "available_bikes": 8,
+        "available_slots": 11,
+        "capacity": 19,
         "is_closed": false,
         "isClosed": false,
         "address": [],
@@ -6349,10 +6082,7 @@
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Heather Street",
-          "V5Z 2G6 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6377,7 +6107,10 @@
         "capacity": 22,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "Sasamat Street",
+          "V6R 2J1 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6397,15 +6130,12 @@
         "name": "Thunderbird Parkade",
         "station_id": "st_d0mo5ems6arcv489jke0",
         "full_id": "st_d0mo5ems6arcv489jke0",
-        "available_bikes": 6,
-        "available_slots": 11,
+        "available_bikes": 7,
+        "available_slots": 10,
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Thunderbird Boulevard",
-          "V6T 1Z3 Electoral Area A"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6458,10 +6188,7 @@
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Wylie Street",
-          "V5Y 0N4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6481,8 +6208,8 @@
         "name": "Heather & 18th",
         "station_id": "st_d0mo5ems6arcv489jjj0",
         "full_id": "st_d0mo5ems6arcv489jjj0",
-        "available_bikes": 7,
-        "available_slots": 9,
+        "available_bikes": 8,
+        "available_slots": 8,
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
@@ -6506,15 +6233,12 @@
         "name": "18th & Cambie",
         "station_id": "st_d0mo5ems6arcv489jjjg",
         "full_id": "st_d0mo5ems6arcv489jjjg",
-        "available_bikes": 2,
-        "available_slots": 18,
+        "available_bikes": 1,
+        "available_slots": 19,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "West 18th Avenue",
-          "V6R 1J9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6539,7 +6263,10 @@
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "West 13th Avenue",
+          "V5Z 0H3 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6564,10 +6291,7 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "1783 West 14th Avenue",
-          "V6J 0H7 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6592,10 +6316,7 @@
         "capacity": 17,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "2386 East Mall",
-          "V6T 1Z9 Electoral Area A"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6615,15 +6336,12 @@
         "name": "Bute & Barclay",
         "station_id": "st_d0mo5ems6arcv489jj50",
         "full_id": "st_d0mo5ems6arcv489jj50",
-        "available_bikes": 6,
-        "available_slots": 23,
+        "available_bikes": 7,
+        "available_slots": 22,
         "capacity": 29,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "888 Bute Street",
-          "V6E 1Y5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6643,15 +6361,12 @@
         "name": "Point Grey & Blenheim",
         "station_id": "st_d0mo5ems6arcv489jje0",
         "full_id": "st_d0mo5ems6arcv489jje0",
-        "available_bikes": 12,
-        "available_slots": 2,
+        "available_bikes": 11,
+        "available_slots": 3,
         "capacity": 14,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Point Grey Road",
-          "V6K 1K4 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6676,10 +6391,7 @@
         "capacity": 16,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Arbutus Street",
-          "V6L 0B9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6704,7 +6416,10 @@
         "capacity": 18,
         "is_closed": false,
         "isClosed": false,
-        "address": [],
+        "address": [
+          "887 West 28th Avenue",
+          "V6J 3G6 Vancouver"
+        ],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6724,9 +6439,9 @@
         "name": "Trimble & 8th",
         "station_id": "st_d0mo5ems6arcv489jk40",
         "full_id": "st_d0mo5ems6arcv489jk40",
-        "available_bikes": 1,
+        "available_bikes": 0,
         "available_slots": 19,
-        "capacity": 20,
+        "capacity": 19,
         "is_closed": false,
         "isClosed": false,
         "address": [
@@ -6757,10 +6472,7 @@
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Walter Gage Road",
-          "V6T 1Z1 Electoral Area A"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6810,10 +6522,7 @@
         "capacity": 21,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Granville Bridge",
-          "V6Z 1N2 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6863,10 +6572,7 @@
         "capacity": 25,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "5903 Berton Avenue",
-          "V6S 0B3 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6914,15 +6620,12 @@
         "name": "Pacific & Rolston",
         "station_id": "st_d4587m9f2imc73a5td50",
         "full_id": "st_d4587m9f2imc73a5td50",
-        "available_bikes": 2,
-        "available_slots": 18,
+        "available_bikes": 1,
+        "available_slots": 19,
         "capacity": 20,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Pacific Street",
-          "V6Z 0G5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6942,15 +6645,12 @@
         "name": "Binning & Wesbrook",
         "station_id": "st_d4b6ltk6ib0c73dseih0",
         "full_id": "st_d4b6ltk6ib0c73dseih0",
-        "available_bikes": 4,
-        "available_slots": 7,
+        "available_bikes": 8,
+        "available_slots": 3,
         "capacity": 11,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "3638 Wesbrook Mall",
-          "V6S 0M9 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }
@@ -6970,15 +6670,12 @@
         "name": "Granville & Neon",
         "station_id": "st_d44drubbnf4c739kj49g",
         "full_id": "st_d44drubbnf4c739kj49g",
-        "available_bikes": 2,
-        "available_slots": 17,
+        "available_bikes": 3,
+        "available_slots": 16,
         "capacity": 19,
         "is_closed": false,
         "isClosed": false,
-        "address": [
-          "Granville Connector",
-          "V6Z 0G5 Vancouver"
-        ],
+        "address": [],
         "operator": "Mobi by Rogers",
         "facility_type": "shared_bikes"
       }

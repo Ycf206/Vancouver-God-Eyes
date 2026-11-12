@@ -7853,9 +7853,12 @@ export default function AppMap() {
             setSelectedStop(null);
             setSelectedFacility(null);
             const props = feature.properties || {};
-            const outageId = props.id ? String(props.id) : null;
+            const outageId = props.id !== undefined && props.id !== null ? String(props.id) : null;
             if (outageId) {
               setSelectedOutageId(outageId);
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('godseye:select-outage', { detail: { id: outageId } }));
+              }
             }
             setPowerOutagesOpen(true);
             return;

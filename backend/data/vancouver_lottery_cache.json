@@ -1,24 +1,24 @@
 {
   "success": true,
-  "updated_at": "2026-11-11T21:37:03.115696-07:00",
+  "updated_at": "2026-11-12T05:49:27.716086-07:00",
   "draws": {
     "SIX49": {
-      "drawNbr": 4466,
-      "drawDate": "Nov 7, 2026",
+      "drawNbr": 4467,
+      "drawDate": "Nov 11, 2026",
       "drawNbrs": [
-        9,
-        15,
-        20,
-        23,
-        26,
-        31
+        2,
+        3,
+        21,
+        34,
+        40,
+        44
       ],
-      "bonusNbr": 6,
+      "bonusNbr": 1,
       "extraNbrs": [
-        35,
-        50,
+        19,
         52,
-        80
+        63,
+        82
       ],
       "maxMillionPending": 0,
       "prizeDiv": 0,
@@ -32,23 +32,23 @@
         {
           "prizeDiv": 20,
           "seqNbr": 1,
-          "prizeDesc": "$1,000,000.00",
+          "prizeDesc": "$38,000,000.00",
           "whiteBallPrizeAmount": 1000000.0,
-          "goldBallPrizeAmount": 36000000.0,
-          "goldBallDrawn": false,
+          "goldBallPrizeAmount": 38000000.0,
+          "goldBallDrawn": true,
           "whiteBallsDrawn": 14,
-          "goldBallsDrawn": 0,
-          "nthBallDrawn": 14,
+          "goldBallsDrawn": 1,
+          "nthBallDrawn": 15,
           "startingBallTotal": 30,
           "drawNbrs": [
             4,
-            2,
-            8,
-            2,
+            3,
             7,
-            4,
+            7,
+            9,
+            7,
+            3,
             5,
-            8,
             0,
             2
           ]

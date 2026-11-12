@@ -1,6 +1,6 @@
 {
-  "_cache_timestamp": 1794458822.8720767,
-  "updated_at": "2026-11-12 04:47 UTC",
+  "_cache_timestamp": 1794488367.573079,
+  "updated_at": "2026-11-12 12:59 UTC",
   "update_frequency": "每 1 日更新 (Daily)",
   "count": 3,
   "resorts": [
@@ -35,10 +35,10 @@
       "today_weather": {
         "day": "Thu",
         "date": "12.11.2026",
-        "temp_min": "0",
+        "temp_min": "1",
         "temp_max": "6",
-        "condition": "sunny",
-        "weather_text": "Am Donnerstag scheint fast ungehindert die Sonne. Die Temperaturen erreichen 0 bis 6 Grad."
+        "condition": "fair",
+        "weather_text": "Am Donnerstag scheint die Sonne, begleitet von wenigen Wolken. Die Temperaturen erreichen 1 bis 6 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -73,10 +73,10 @@
       "today_weather": {
         "day": "Thu",
         "date": "12.11.2026",
-        "temp_min": "0",
+        "temp_min": "1",
         "temp_max": "6",
-        "condition": "sunny",
-        "weather_text": "Am Donnerstag scheint fast ungehindert die Sonne. Die Temperaturen erreichen 0 bis 6 Grad."
+        "condition": "fair",
+        "weather_text": "Am Donnerstag scheint die Sonne, begleitet von wenigen Wolken. Die Temperaturen erreichen 1 bis 6 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -111,10 +111,10 @@
       "today_weather": {
         "day": "Thu",
         "date": "12.11.2026",
-        "temp_min": "0",
+        "temp_min": "1",
         "temp_max": "6",
-        "condition": "sunny",
-        "weather_text": "Am Donnerstag scheint fast ungehindert die Sonne. Die Temperaturen erreichen 0 bis 6 Grad."
+        "condition": "fair",
+        "weather_text": "Am Donnerstag scheint die Sonne, begleitet von wenigen Wolken. Die Temperaturen erreichen 1 bis 6 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     }
