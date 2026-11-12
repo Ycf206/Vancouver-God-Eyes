@@ -1,5 +1,43 @@
 [
   {
+    "id": "log-1794458234955",
+    "timestamp": "2026-11-12T04:37:14.952675+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Lime 共享滑板車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 250 筆資料至 vancouver_escooter.geojson。",
+    "record_count": 250
+  },
+  {
+    "id": "sync-1794458234950-escooter",
+    "timestamp": "2026-11-12T04:37:14.852Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享滑板車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享滑板車] 資料同步完成，共載入 250 筆記錄。"
+  },
+  {
+    "id": "log-1794458234096",
+    "timestamp": "2026-11-12T04:37:14.095814+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Mobi 共享單車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+    "record_count": 262
+  },
+  {
+    "id": "sync-1794458234092-shared_bikes",
+    "timestamp": "2026-11-12T04:37:13.857Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享單車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+  },
+  {
     "id": "log-1794457799884",
     "timestamp": "2026-11-12T04:29:59.883714+00:00",
     "action": "OCI_DAEMON_SYNC",

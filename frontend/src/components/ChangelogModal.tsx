@@ -18,6 +18,7 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
     date: '2026-11-10',
     isLatest: true,
     highlights: [
+      '新增停電圖層',
       '新增 Drive BC 圖層',
       '新增財經探索頁',
       '修正工作探索頁錯誤'

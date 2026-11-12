@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   ZapOff, Zap, TriangleAlert, ExternalLink, RefreshCw, X, Search, 
-  Navigation, MapPin, ArrowUpDown, Filter, ChevronLeft, ChevronRight,
+  Navigation, ArrowUpDown, Filter, ChevronLeft, ChevronRight,
   Clock, Users, AlertCircle, Wrench, Calendar as CalendarIcon, Info
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
@@ -89,11 +89,17 @@ export default function PowerOutagesDrawer() {
   const { 
     isPowerOutagesOpen, 
     setPowerOutagesOpen, 
+    setLayers,
     timeFormat, 
     timeZone,
     selectedOutageId,
     setSelectedOutageId 
   } = useUIStore();
+
+  const handleClose = () => {
+    setPowerOutagesOpen(false);
+    setLayers({ powerOutages: false });
+  };
 
   const [activeTab, setActiveTab] = useState<'messages' | 'current' | 'restored' | 'planned'>('current');
   const [loading, setLoading] = useState<boolean>(false);
@@ -312,9 +318,6 @@ export default function PowerOutagesDrawer() {
               <span>卑詩省停電即時情況</span>
             </h3>
             <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-              <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                BC Hydro
-              </span>
               <span className="text-[10px] text-gray-400 font-mono">
                 {lastDataFetchTime 
                   ? `更新: ${formatDateTime(lastDataFetchTime, timeFormat, timeZone)}`
@@ -353,7 +356,7 @@ export default function PowerOutagesDrawer() {
 
           {/* 關閉按鈕 */}
           <button
-            onClick={() => setPowerOutagesOpen(false)}
+            onClick={handleClose}
             className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-rose-500/20 hover:text-rose-400 transition-colors cursor-pointer"
             title="關閉界面"
           >
@@ -429,56 +432,60 @@ export default function PowerOutagesDrawer() {
 
       {/* 分頁 1: 地區警報內容展示 */}
       {activeTab === 'messages' && (
-        <div className="flex-1 overflow-y-auto pr-1 space-y-2.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full">
-          {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400">
-              <TriangleAlert className="w-8 h-8 text-amber-500/40 mb-2" />
-              <p className="text-xs">目前全卑詩省各地區暫無緊急廣播警報。</p>
-            </div>
-          ) : (
-            messages.map((msg, idx) => {
-              const posted = formatTime(msg.postedDate);
-              const updated = formatTime(msg.updatedDate);
-              // 去除可能夾帶的 HTML 標籤
-              const cleanMessage = msg.message ? msg.message.replace(/<[^>]*>/g, '').trim() : '';
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 overflow-y-auto pr-1 space-y-2.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400">
+                <TriangleAlert className="w-8 h-8 text-amber-500/40 mb-2" />
+                <p className="text-xs">目前全卑詩省各地區暫無緊急廣播警報。</p>
+              </div>
+            ) : (
+              messages.map((msg, idx) => {
+                const posted = formatTime(msg.postedDate);
+                const updated = formatTime(msg.updatedDate);
+                // 去除可能夾帶的 HTML 標籤
+                const cleanMessage = msg.message ? msg.message.replace(/<[^>]*>/g, '').trim() : '';
 
-              return (
-                <div 
-                  key={idx} 
-                  className="bg-[#181d28] border border-amber-500/30 rounded-xl p-3 shadow-md flex flex-col gap-2"
-                >
-                  <div className="flex items-center justify-between border-b border-[#252c3c] pb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                      <span className="font-bold text-sm text-white">{msg.regionCodeName}</span>
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                        地區警報
-                      </span>
+                return (
+                  <div 
+                    key={idx} 
+                    className="bg-[#181d28] border border-amber-500/30 rounded-xl p-3 shadow-md flex flex-col gap-2"
+                  >
+                    <div className="flex items-center justify-between border-b border-[#252c3c] pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span className="font-bold text-sm text-white">{msg.regionCodeName}</span>
+                      </div>
+                    </div>
+
+                    <div className="text-[11px] text-gray-400 space-y-0.5 font-mono">
+                      {posted && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-gray-500">發出日期:</span>
+                          <span className="text-gray-300">{posted}</span>
+                        </div>
+                      )}
+                      {updated && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-gray-500">更新日期:</span>
+                          <span className="text-gray-300">{updated}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="bg-[#121620] border border-[#222a3a] rounded-lg p-2.5 text-xs text-amber-100/90 leading-relaxed break-words whitespace-pre-wrap">
+                      {cleanMessage}
                     </div>
                   </div>
+                );
+              })
+            )}
+          </div>
 
-                  <div className="text-[11px] text-gray-400 space-y-0.5 font-mono">
-                    {posted && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-gray-500">發出日期:</span>
-                        <span className="text-gray-300">{posted}</span>
-                      </div>
-                    )}
-                    {updated && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-gray-500">更新日期:</span>
-                        <span className="text-gray-300">{updated}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bg-[#121620] border border-[#222a3a] rounded-lg p-2.5 text-xs text-amber-100/90 leading-relaxed break-words whitespace-pre-wrap">
-                    {cleanMessage}
-                  </div>
-                </div>
-              );
-            })
-          )}
+          {/* 底部總數 */}
+          <div className="mt-2 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
+            <span>共有 {messages.length} 則地區警報</span>
+          </div>
         </div>
       )}
 
@@ -552,12 +559,6 @@ export default function PowerOutagesDrawer() {
             </div>
           </div>
 
-          {/* 總數摘要 */}
-          <div className="flex items-center justify-between px-1 pb-1.5 text-[10.5px] text-gray-400 shrink-0 font-mono">
-            <span>共有 {totalItems} 宗{activeTab === 'current' ? '現正停電' : activeTab === 'restored' ? '已恢復供電' : '預期停電'}記錄</span>
-            <span>頁次 {currentPage} / {totalPages}</span>
-          </div>
-
           {/* 列表清單 (垂直滾動，寬度 100% 自適應，零橫向滾動條) */}
           <div className="flex-1 overflow-y-auto pr-1 space-y-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full">
             {pagedList.length === 0 ? (
@@ -577,13 +578,20 @@ export default function PowerOutagesDrawer() {
                 return (
                   <div
                     key={item.id}
+                    onClick={() => {
+                      if (activeTab === 'current') {
+                        handleLocateOnMap(item);
+                      }
+                    }}
                     className={`bg-[#181d28] border rounded-xl p-3 shadow-md flex flex-col gap-2 transition-all duration-150 ${
+                      activeTab === 'current' ? 'cursor-pointer hover:border-amber-400/60' : ''
+                    } ${
                       selectedOutageId === item.id 
                         ? 'border-amber-400 bg-[#1d2331] ring-1 ring-amber-400/40' 
                         : 'border-[#262d3d] hover:border-[#38435a]'
                     }`}
                   >
-                    {/* 卡片頂部：行政區、戶數標籤、以及 (只有現正停電) 導航按鈕組 */}
+                    {/* 卡片頂部：行政區、以及 (只有現正停電) 外部連結與導航按鈕組 */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
@@ -605,62 +613,34 @@ export default function PowerOutagesDrawer() {
                         )}
                       </div>
 
-                      {/* 右上方操作按鈕組 (受影響客戶數標籤 + 現正停電導航/地圖按鈕) */}
-                      <div className="flex flex-col items-end gap-1.5 shrink-0">
-                        {/* 受影響客戶數膠囊標籤 */}
-                        {item.numCustomersOut !== null && item.numCustomersOut !== undefined && (
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full font-mono border ${
-                            activeTab === 'current'
-                              ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                              : activeTab === 'restored'
-                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                                : 'bg-sky-500/20 text-sky-300 border-sky-500/40'
-                          }`}>
-                            {item.numCustomersOut} 戶受影響
-                          </span>
-                        )}
+                      {/* 只有 (2) 現正停電才顯示官方地圖連結與 Google 導航按鈕 */}
+                      {activeTab === 'current' && (
+                        <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                          {/* BC Hydro 官方單一停電地圖連結 */}
+                          <a
+                            href={getBCHydroOutageMapUrl(item.id)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-amber-400 p-1.5 rounded-md hover:bg-amber-500/20 transition-colors"
+                            title="前往 BC Hydro 官方停電地圖"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+                          </a>
 
-                        {/* 只有 (2) 現正停電才顯示地圖跳轉、官方地圖連結與 Google 導航按鈕 */}
-                        {activeTab === 'current' && (
-                          <div className="flex items-center gap-1">
-                            {/* 地圖定位高亮按鈕 */}
-                            {hasCoordinates && (
-                              <button
-                                type="button"
-                                onClick={() => handleLocateOnMap(item)}
-                                className="text-gray-400 hover:text-amber-300 p-1 rounded-md hover:bg-amber-500/20 transition-colors cursor-pointer"
-                                title="在地圖上定位此停電區域"
-                              >
-                                <MapPin className="w-3.5 h-3.5 text-amber-400" />
-                              </button>
-                            )}
-
-                            {/* BC Hydro 官方單一停電地圖連結 */}
+                          {/* 最右方 Google 導航按鈕 */}
+                          {hasCoordinates && (
                             <a
-                              href={getBCHydroOutageMapUrl(item.id)}
+                              href={getGoogleNavUrl(item.latitude, item.longitude)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-gray-400 hover:text-amber-400 p-1 rounded-md hover:bg-amber-500/20 transition-colors"
-                              title="前往 BC Hydro 官方停電地圖"
+                              className="text-gray-400 hover:text-sky-400 p-1.5 rounded-md hover:bg-sky-500/20 transition-colors"
+                              title="Google Maps 導航至此"
                             >
-                              <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+                              <Navigation className="w-3.5 h-3.5 text-sky-400" />
                             </a>
-
-                            {/* 最右方 Google 導航按鈕 */}
-                            {hasCoordinates && (
-                              <a
-                                href={getGoogleNavUrl(item.latitude, item.longitude)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-400 hover:text-sky-400 p-1 rounded-md hover:bg-sky-500/20 transition-colors"
-                                title="Google Maps 導航至此"
-                              >
-                                <Navigation className="w-3.5 h-3.5 text-sky-400" />
-                              </a>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     {/* 灰色區塊 (顯示原因、維修人員、停電時間、恢復時間、最後更新) */}
@@ -732,42 +712,51 @@ export default function PowerOutagesDrawer() {
             )}
           </div>
 
-          {/* 分頁器 */}
+          {/* 頁數選擇與分頁控制 (底部分頁列，參考探索-工作) */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between pt-2 border-t border-[#242b3b] mt-2 shrink-0 text-xs font-mono">
+            <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-[#232838] shrink-0 text-xs">
               <button
                 type="button"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className={`px-2.5 py-1 rounded-lg border flex items-center gap-1 transition-colors cursor-pointer ${
-                  currentPage === 1
-                    ? 'border-transparent text-gray-600 cursor-not-allowed'
-                    : 'border-[#2d374a] text-gray-300 hover:bg-[#1b2230] hover:text-white'
-                }`}
+                disabled={currentPage <= 1}
+                className="px-2.5 py-1.5 rounded-lg bg-[#10131a] border border-[#232838] hover:bg-[#181d28] disabled:opacity-40 disabled:pointer-events-none text-gray-300 flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>上一頁</span>
               </button>
 
-              <span className="text-gray-400 text-[11px]">
-                {currentPage} / {totalPages}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-gray-400 text-[11px]">前往</span>
+                <select
+                  value={currentPage}
+                  onChange={(e) => setCurrentPage(Number(e.target.value))}
+                  className="bg-[#10131a] text-xs font-semibold text-amber-300 border border-amber-500/40 rounded px-2 py-1 focus:outline-none cursor-pointer"
+                >
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <option key={p} value={p}>
+                      第 {p} 頁
+                    </option>
+                  ))}
+                </select>
+                <span className="text-gray-500 text-[11px]">/ {totalPages} 頁</span>
+              </div>
 
               <button
                 type="button"
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className={`px-2.5 py-1 rounded-lg border flex items-center gap-1 transition-colors cursor-pointer ${
-                  currentPage === totalPages
-                    ? 'border-transparent text-gray-600 cursor-not-allowed'
-                    : 'border-[#2d374a] text-gray-300 hover:bg-[#1b2230] hover:text-white'
-                }`}
+                disabled={currentPage >= totalPages}
+                className="px-2.5 py-1.5 rounded-lg bg-[#10131a] border border-[#232838] hover:bg-[#181d28] disabled:opacity-40 disabled:pointer-events-none text-gray-300 flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <span>下一頁</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
+
+          {/* 底部總數 (放到底部，參考探索-工作) */}
+          <div className="mt-2 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
+            <span>共有 {totalItems} 宗{activeTab === 'current' ? '現正停電' : activeTab === 'restored' ? '已恢復供電' : '預期停電'}記錄</span>
+          </div>
         </div>
       )}
     </div>
