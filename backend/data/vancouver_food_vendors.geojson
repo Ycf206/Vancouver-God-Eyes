@@ -1,34 +1,12 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
-  "total_count": 2,
-  "updated_at": "2026-11-11T03:37:31.073Z",
+  "total_count": 1,
+  "updated_at": "2026-11-12T04:29:59.861Z",
   "features": [
     {
       "type": "Feature",
       "id": "food_vendor_sfa_1",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.115931,
-          49.23516
-        ]
-      },
-      "properties": {
-        "id": "food_vendor_sfa_1",
-        "facility_type": "food_vendors",
-        "name": "Armanmobile STEAMWORKS",
-        "business_name": "Armanmobile STEAMWORKS",
-        "address": "5516 Cambie St., Vancouver",
-        "hours": "9 AM – 9 PM",
-        "has_credit_card": true,
-        "local_area": "Vancouver",
-        "source": "StreetFoodApp"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "food_vendor_sfa_2",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -37,7 +15,7 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_2",
+        "id": "food_vendor_sfa_1",
         "facility_type": "food_vendors",
         "name": "JAPADOG",
         "business_name": "JAPADOG",

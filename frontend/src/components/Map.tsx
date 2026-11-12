@@ -350,6 +350,7 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
   streetLighting: { label: '路燈燈柱', prefixes: ['street-lighting-poles', 'street_lighting_poles'] },
   streetLightingConduits: { label: '路燈電網', prefixes: ['street-lighting-conduits', 'street_lighting_conduits', 'street-lighting-glow', 'street-lighting-layer'] },
+  powerOutages: { label: '停電', prefixes: ['power-outages', 'power_outages'] },
   beachWaterQuality: { label: '海灘水質', prefixes: ['beach-water', 'beach_water'] },
   fireHydrants: { label: '消防栓', prefixes: ['fire-hydrants', 'fire_hydrants'] },
   zoningDistricts: { label: '土地規劃', prefixes: ['zoning-districts', 'zoning_districts'] },
@@ -925,7 +926,11 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'turn-restrictions-symbol-layer',
   'turn-restrictions-arrow-line-layer',
   'turn-restrictions-arrowhead-fill-layer',
-  'street-lighting-poles-layer'
+  'street-lighting-poles-layer',
+  'power-outages-polygon-fill',
+  'power-outages-polygon-outline',
+  'power-outages-point-glow',
+  'power-outages-point-core'
 ];
 
 // Lucide: calendar-arrow-right
@@ -1055,7 +1060,9 @@ export default function AppMap() {
     setSelectedCrash,
     activeJobSkillModal,
     setActiveJobSkillModal,
-    layerCustomColors
+    layerCustomColors,
+    setPowerOutagesOpen,
+    setSelectedOutageId
   } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
@@ -1420,6 +1427,15 @@ export default function AppMap() {
           center: [ferry.lon, ferry.lat],
           zoom: 13,
           duration: 1200
+        });
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).__godsEyeFlyTo = (lon: number, lat: number, zoom = 14) => {
+        mapRef.current?.flyTo({
+          center: [lon, lat],
+          zoom,
+          duration: 1200,
+          essential: true
         });
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -7056,6 +7072,64 @@ export default function AppMap() {
       });
     }
 
+    // Utilities: Power Outages (卑詩省停電即時情況 - BC Hydro)
+    if (layers.powerOutages) {
+      style.sources['power_outages'] = {
+        type: 'geojson',
+        data: '/bchydro_outages_map.geojson'
+      };
+      // 半透明停電多邊形區域 (橘紅填色)
+      style.layers.push({
+        id: 'power-outages-polygon-fill',
+        type: 'fill',
+        source: 'power_outages',
+        filter: ['==', '$type', 'Polygon'],
+        paint: {
+          'fill-color': '#f97316',
+          'fill-opacity': 0.28
+        }
+      });
+      // 停電多邊形邊框線
+      style.layers.push({
+        id: 'power-outages-polygon-outline',
+        type: 'line',
+        source: 'power_outages',
+        filter: ['==', '$type', 'Polygon'],
+        paint: {
+          'line-color': '#ea580c',
+          'line-width': 1.8,
+          'line-opacity': 0.85
+        }
+      });
+      // 中心點外層脈衝微光
+      style.layers.push({
+        id: 'power-outages-point-glow',
+        type: 'circle',
+        source: 'power_outages',
+        filter: ['==', '$type', 'Point'],
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 6, 12, 11, 16, 16],
+          'circle-color': '#f97316',
+          'circle-opacity': 0.35,
+          'circle-blur': 0.8
+        }
+      });
+      // 中心點核心圓標
+      style.layers.push({
+        id: 'power-outages-point-core',
+        type: 'circle',
+        source: 'power_outages',
+        filter: ['==', '$type', 'Point'],
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 4, 12, 6, 16, 8],
+          'circle-color': '#ef4444',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.95
+        }
+      });
+    }
+
     // Utilities: Street Lighting Poles (溫哥華市政公用路燈燈柱 - 58,000+ 燈柱)
     if (layers.streetLighting) {
       style.sources['street_lighting_poles'] = { 
@@ -7432,6 +7506,7 @@ export default function AppMap() {
     layers.roadConstruction,
     layers.streetLighting,
     layers.streetLightingConduits,
+    layers.powerOutages,
     layers.beachWaterQuality,
     layers.fireHydrants,
     layers.zoningDistricts,
@@ -7769,6 +7844,21 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
+          } else if (
+            layerId === 'power-outages-polygon-fill' || 
+            layerId === 'power-outages-polygon-outline' || 
+            layerId === 'power-outages-point-core' || 
+            layerId === 'power-outages-point-glow'
+          ) {
+            setSelectedStop(null);
+            setSelectedFacility(null);
+            const props = feature.properties || {};
+            const outageId = props.id ? String(props.id) : null;
+            if (outageId) {
+              setSelectedOutageId(outageId);
+            }
+            setPowerOutagesOpen(true);
+            return;
           } else if (layerId === 'road-closures-layer' || layerId === 'road-closures-casing-layer') {
             setSelectedStop(null);
             const props = feature.properties || {};

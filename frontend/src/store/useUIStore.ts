@@ -100,6 +100,7 @@ export interface UIState {
     roadConstruction: boolean;
     streetLighting: boolean;
     streetLightingConduits: boolean;
+    powerOutages: boolean;
     beachWaterQuality: boolean;
     fireHydrants: boolean;
     zoningDistricts: boolean;
@@ -239,6 +240,11 @@ export interface UIState {
   isMaritimeScheduleOpen: boolean;
   toggleMaritimeSchedule: () => void;
   setMaritimeScheduleOpen: (open: boolean) => void;
+  isPowerOutagesOpen: boolean;
+  togglePowerOutages: () => void;
+  setPowerOutagesOpen: (open: boolean) => void;
+  selectedOutageId: number | string | null;
+  setSelectedOutageId: (id: number | string | null) => void;
   selectedFlightId: string | null;
   setSelectedFlightId: (id: string | null) => void;
   selectedCrash: { location: string; count: number; lat: number; lon: number } | null;
@@ -347,6 +353,7 @@ export const useUIStore = create<UIState>()(
         roadConstruction: false,
         streetLighting: false,
         streetLightingConduits: false,
+        powerOutages: false,
         beachWaterQuality: false,
         fireHydrants: false,
         zoningDistricts: false,
@@ -711,6 +718,11 @@ export const useUIStore = create<UIState>()(
       isMaritimeScheduleOpen: false,
       toggleMaritimeSchedule: () => set((state) => ({ isMaritimeScheduleOpen: !state.isMaritimeScheduleOpen })),
       setMaritimeScheduleOpen: (open) => set({ isMaritimeScheduleOpen: open }),
+      isPowerOutagesOpen: false,
+      togglePowerOutages: () => set((state) => ({ isPowerOutagesOpen: !state.isPowerOutagesOpen })),
+      setPowerOutagesOpen: (open) => set({ isPowerOutagesOpen: open }),
+      selectedOutageId: null,
+      setSelectedOutageId: (id) => set({ selectedOutageId: id }),
       selectedFlightId: null,
       setSelectedFlightId: (id) => set({ selectedFlightId: id }),
       selectedCrash: null,

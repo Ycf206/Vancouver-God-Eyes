@@ -1613,5 +1613,74 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://public.tableau.com/app/profile/icbc/viz/LowerMainlandCrashes"
+  },
+  {
+    "id": "bchydro_current",
+    "name": "BC Hydro 現正停電與警報",
+    "type": "json",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 97,
+    "unit": "筆停電事件與地區警報",
+    "last_updated": "2026-11-12T04:22:20Z",
+    "status": "healthy",
+    "data_pipeline_notes": "BC Hydro Current Outages API -> 取得全省停電多邊形與各區緊急廣播 -> OCI 常駐排程每小時寫入 bchydro_outages_current.json 及 bchydro_outages_map.geojson",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "公共事業",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "BC Hydro 現正停電 API",
+        "url": "https://www.bchydro.com/power-outages/app/outages-list-data-current.json"
+      }
+    ],
+    "source_url": "https://www.bchydro.com/power-outages/app/outages-list-data-current.json"
+  },
+  {
+    "id": "bchydro_restored",
+    "name": "BC Hydro 恢復供電 (14天)",
+    "type": "json",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 3486,
+    "unit": "筆恢復供電記錄",
+    "last_updated": "2026-11-12T04:22:20Z",
+    "status": "healthy",
+    "data_pipeline_notes": "BC Hydro Restored Outages API -> 過去 14 天內已修復之供電歷史 -> OCI 常駐排程每小時寫入 bchydro_outages_restored.json",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "公共事業",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "BC Hydro 恢復供電 API",
+        "url": "https://www.bchydro.com/power-outages/app/outages-list-data-restored_14_days.json"
+      }
+    ],
+    "source_url": "https://www.bchydro.com/power-outages/app/outages-list-data-restored_14_days.json"
+  },
+  {
+    "id": "bchydro_planned",
+    "name": "BC Hydro 預期停電",
+    "type": "json",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 523,
+    "unit": "筆預期維護停電",
+    "last_updated": "2026-11-12T04:22:20Z",
+    "status": "healthy",
+    "data_pipeline_notes": "BC Hydro Planned Outages API -> 未來預計維修工程停電計劃 -> OCI 常駐排程每小時寫入 bchydro_outages_planned.json",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "公共事業",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "BC Hydro 預期停電 API",
+        "url": "https://www.bchydro.com/power-outages/app/outages-list-data-planned.json"
+      }
+    ],
+    "source_url": "https://www.bchydro.com/power-outages/app/outages-list-data-planned.json"
   }
 ];

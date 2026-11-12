@@ -8,6 +8,7 @@ const LayerPanel = dynamic(() => import('@/components/LayerPanel'), { ssr: false
 const FlightScheduleModal = dynamic(() => import('@/components/FlightScheduleModal'), { ssr: false });
 const FerryScheduleModal = dynamic(() => import('@/components/FerryScheduleModal'), { ssr: false });
 const MaritimeScheduleModal = dynamic(() => import('@/components/MaritimeScheduleModal'), { ssr: false });
+const PowerOutagesDrawer = dynamic(() => import('@/components/PowerOutagesDrawer'), { ssr: false });
 
 const AppMap = dynamic(() => import('@/components/Map'), { 
   ssr: false,
@@ -30,6 +31,7 @@ export default function Home() {
           <FlightScheduleModal />
           <FerryScheduleModal />
           <MaritimeScheduleModal />
+          <PowerOutagesDrawer />
         </>
       )}
       <AppMap />

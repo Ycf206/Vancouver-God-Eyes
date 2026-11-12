@@ -5122,6 +5122,21 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["yvr_news_rss"] = time.time()
         cnt = len(data) if isinstance(data, list) else None
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 YVR 官方即時要聞 RSS，共載入 {cnt} 則新聞。")
+    if sid in ("bchydro_current", "bchydro_outages_current", "bchydro"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_bchydro_outages("current")
+        _oci_runtime_ts["bchydro_current"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 BC Hydro 現正停電與地區警報，共載入 {cnt} 筆停電事件。")
+    if sid in ("bchydro_restored", "bchydro_outages_restored"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_bchydro_outages("restored")
+        _oci_runtime_ts["bchydro_restored"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 BC Hydro 過去 14 天恢復供電歷史，共載入 {cnt} 筆記錄。")
+    if sid in ("bchydro_planned", "bchydro_outages_planned"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_bchydro_outages("planned")
+        _oci_runtime_ts["bchydro_planned"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 BC Hydro 預期停電，共載入 {cnt} 筆記錄。")
     return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
 
 

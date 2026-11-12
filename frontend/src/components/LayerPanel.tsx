@@ -14,7 +14,7 @@ import {
   BusFront, Repeat, TrainFront, ShipCargo, Plane, Road, ParkingMeter, Motorbike, Milestone,
   EvCharger, TrainTrack, TrafficCone, LineSquiggle, HouseHeart, UserRoundGroup, Package,
   CircleDollarSign, Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet,
-  UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, FunnelX, Construction
+  UserShield, FireExtinguisher, Zap, ZapOff, Faucet, UtilityPole, Earth, Grid3x2, Parasol, FunnelX, Construction
 } from 'lucide-react';
 
 // 自定義倒 U 型單車架 SVG 元件 (LetterU)
@@ -157,6 +157,7 @@ const SEARCHABLE_LAYERS: Array<{
   // 公共事業 UTILITIES
   { id: 'waterDistributionMains', name: '自來水管道', category: '公共事業', keywords: ['water', 'pipe', '自來水管道', '水管'], icon: Faucet },
   { id: 'streetLightingConduits', name: '路燈電網', category: '公共事業', keywords: ['street light', 'conduit', '路燈電網', '電纜'], icon: UtilityPole },
+  { id: 'powerOutages', name: '停電', category: '公共事業', keywords: ['power outage', 'outage', 'bc hydro', 'blackout', '停電', '供電', '斷電'], icon: ZapOff },
 
   // 地理 GEOGRAPHY
   { id: 'localAreaBoundary', name: '區域邊界', category: '地理', keywords: ['boundary', 'local area', '區域邊界', '社區邊界'], icon: Grid3x2 },
@@ -177,6 +178,7 @@ const SEARCHABLE_LAYERS: Array<{
   { id: 'sewerMains', name: '污水管網', category: '公共事業', keywords: ['sewer', '污水', '排水'], icon: Waves },
   { id: 'streetLightingConduits', name: '街燈電纜', category: '公共事業', keywords: ['conduit', '電纜', '路燈電線'], icon: Zap },
   { id: 'streetLighting', name: '街燈', category: '公共事業', keywords: ['street light', 'lamp', '街燈', '路燈'], icon: Lightbulb },
+  { id: 'powerOutages', name: '停電', category: '公共事業', keywords: ['power outage', 'outage', 'bc hydro', 'blackout', '停電', '供電', '斷電'], icon: ZapOff },
 
   // 地理 GEOGRAPHY
   { id: 'localAreaBoundary', name: '社區界線', category: '地理', keywords: ['neighbourhood', 'boundary', '社區', '分區界線'], icon: MapPin },
@@ -191,6 +193,7 @@ export default function LayerPanel() {
     mapStyleType, setMapStyleType, layers, toggleLayer, resetAllLayers,
     isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule, isFlightScheduleOpen,
     toggleFerrySchedule, isFerryScheduleOpen, toggleMaritimeSchedule, isMaritimeScheduleOpen,
+    isPowerOutagesOpen, togglePowerOutages, setPowerOutagesOpen,
     contourInterval, setContourInterval, hiddenLayersInPanel,
     disabledLayers,
     layerCustomColors
@@ -349,6 +352,9 @@ export default function LayerPanel() {
         onClick={() => {
           if (isDisabled) return;
           toggleLayer(layerKey);
+          if (layerKey === 'powerOutages') {
+            setPowerOutagesOpen(!isActive);
+          }
         }}
         disabled={isDisabled}
         style={customStyle}
@@ -834,6 +840,7 @@ export default function LayerPanel() {
               <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
               <LayerButton layerKey="streetLightingConduits" label="路燈電網" icon={UtilityPole} title="路燈電網" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
               <LayerButton layerKey="streetLighting" label="路燈" icon={Lightbulb} title="路燈燈柱" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+              <LayerButton layerKey="powerOutages" label="停電" icon={ZapOff} title="卑詩省停電即時情況" colorClass="text-amber-400" activeBg="bg-[#2d1b14]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.2)]" />
             </div>
           )}
         </div>

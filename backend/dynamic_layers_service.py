@@ -178,6 +178,34 @@ def refresh_yvr_news() -> int:
         return 0
 
 
+def refresh_bchydro_outages(outage_type: str = "all") -> int:
+    """更新 BC Hydro 卑詩水電局停電資料 (現正停電、恢復供電、預期停電)"""
+    file_path = "backend/scripts/layers/update_bchydro_outages.py"
+    try:
+        from update_bchydro_outages import update_current_outages, update_restored_outages, update_planned_outages
+        total_cnt = 0
+        if outage_type in ("all", "current"):
+            res_c = update_current_outages()
+            cnt_c = res_c.get("count", 0) if isinstance(res_c, dict) else 0
+            total_cnt += cnt_c
+            log_data_source_update("bchydro_current", "BC Hydro 現正停電與警報", cnt_c, "bchydro_outages_current.json", file_path)
+        if outage_type in ("all", "restored"):
+            res_r = update_restored_outages()
+            cnt_r = res_r.get("count", 0) if isinstance(res_r, dict) else 0
+            total_cnt += cnt_r
+            log_data_source_update("bchydro_restored", "BC Hydro 恢復供電 (14天)", cnt_r, "bchydro_outages_restored.json", file_path)
+        if outage_type in ("all", "planned"):
+            res_p = update_planned_outages()
+            cnt_p = res_p.get("count", 0) if isinstance(res_p, dict) else 0
+            total_cnt += cnt_p
+            log_data_source_update("bchydro_planned", "BC Hydro 預期停電", cnt_p, "bchydro_outages_planned.json", file_path)
+        return total_cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_bchydro_outages 異常: {e}")
+        log_data_source_update("bchydro_current", "BC Hydro 停電資料", None, "bchydro_outages_current.json", file_path, error=e)
+        return 0
+
+
 async def run_dynamic_layers_background_loop():
     """
     OCI 常駐後台背景更新排程 (動態圖層與高頻資料):
@@ -206,6 +234,9 @@ async def run_dynamic_layers_background_loop():
         if not _is_layer_recent("vancouver_food_vendors.geojson", 86400):
             print("🍔 [Dynamic Layers] 初始預熱街頭熟食餐車...")
             await loop.run_in_executor(None, refresh_food_vendors)
+        if not _is_layer_recent("bchydro_outages_current.json", 3600):
+            print("⚡ [Dynamic Layers] 初始預熱 BC Hydro 停電即時數據...")
+            await loop.run_in_executor(None, refresh_bchydro_outages, "all")
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] 初始預熱異常: {e}")
 
@@ -214,6 +245,7 @@ async def run_dynamic_layers_background_loop():
     last_monthly_stations_time = time.time()
     last_311_time = time.time()
     last_food_time = time.time()
+    last_bchydro_time = time.time()
 
     while True:
         try:
@@ -254,6 +286,12 @@ async def run_dynamic_layers_background_loop():
                 last_food_time = now
                 print("🍔 [Dynamic Layers] 觸發排程: 街頭熟食餐車更新...")
                 await loop.run_in_executor(None, refresh_food_vendors)
+
+            # 5. BC Hydro 停電即時數據 (每 3600 秒 = 1 小時)
+            if now - last_bchydro_time >= 3600:
+                last_bchydro_time = now
+                print("⚡ [Dynamic Layers] 觸發排程: BC Hydro 停電即時數據同步 (Current, Restored, Planned)...")
+                await loop.run_in_executor(None, refresh_bchydro_outages, "all")
 
         except asyncio.CancelledError:
             print("🛑 [Dynamic Layers Service] 常駐背景排程已停止。")
