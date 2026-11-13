@@ -14,7 +14,7 @@ import {
   BusFront, Repeat, TrainFront, ShipCargo, Plane, Road, ParkingMeter, Motorbike, Milestone,
   EvCharger, TrainTrack, TrafficCone, LineSquiggle, HouseHeart, UserRoundGroup, Package,
   CircleDollarSign, Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet,
-  UserShield, FireExtinguisher, Zap, ZapOff, Faucet, UtilityPole, Earth, Grid3x2, Parasol, FunnelX, Construction
+  UserShield, FireExtinguisher, Zap, ZapOff, Earth, Grid3x2, Parasol, FunnelX, Construction
 } from 'lucide-react';
 
 // 自定義倒 U 型單車架 SVG 元件 (LetterU)
@@ -155,29 +155,6 @@ const SEARCHABLE_LAYERS: Array<{
   { id: 'fireHalls', name: '消防', category: '政府', keywords: ['fire', '消防', '消防局'], icon: FireExtinguisher },
 
   // 公共事業 UTILITIES
-  { id: 'waterDistributionMains', name: '自來水管道', category: '公共事業', keywords: ['water', 'pipe', '自來水管道', '水管'], icon: Faucet },
-  { id: 'streetLightingConduits', name: '路燈電網', category: '公共事業', keywords: ['street light', 'conduit', '路燈電網', '電纜'], icon: UtilityPole },
-  { id: 'powerOutages', name: '停電', category: '公共事業', keywords: ['power outage', 'outage', 'bc hydro', 'blackout', '停電', '供電', '斷電'], icon: ZapOff },
-
-  // 地理 GEOGRAPHY
-  { id: 'localAreaBoundary', name: '區域邊界', category: '地理', keywords: ['boundary', 'local area', '區域邊界', '社區邊界'], icon: Grid3x2 },
-  { id: 'beachWaterQuality', name: '海灘水質', category: '地理', keywords: ['beach', 'water quality', '海灘水質', '海灘'], icon: Parasol },
-  { id: 'contourLines', name: '等高線', category: '自然', keywords: ['contour', 'elevation', '等高線', '地形'], icon: Mountain },
-
-  // 政府 / 公共安全 GOVERNMENT
-  { id: 'police', name: '警署', category: '政府', keywords: ['police', 'vpd', 'rcmp', '警署', '警察局'], icon: ShieldAlert },
-  { id: 'crimeAreas', name: '罪案熱點', category: '政府', keywords: ['crime', '罪案', '治安'], icon: Fingerprint },
-  { id: 'fireHalls', name: '消防局', category: '政府', keywords: ['fire', 'firehall', '消防局'], icon: Flame },
-  { id: 'fireHydrants', name: '消防栓', category: '政府', keywords: ['fire hydrant', '消防栓', '水龍頭'], icon: Droplets },
-  { id: 'hospitals', name: '醫院', category: '政府', keywords: ['hospital', 'clinic', '醫院', '急診'], icon: Hospital },
-  { id: 'disasterHubs', name: '地震災難支援點', category: '政府', keywords: ['disaster hub', 'earthquake', '防災', '避難', '地震'], icon: LifeBuoy },
-  { id: 'vanWifi', name: 'VanWiFi 免費熱點', category: '政府', keywords: ['wifi', 'vanwifi', '無線網路', '免費wifi'], icon: Wifi },
-
-  // 公共事業 UTILITIES
-  { id: 'waterDistributionMains', name: '自來水主管', category: '公共事業', keywords: ['water main', '自來水', '供水'], icon: Droplets },
-  { id: 'sewerMains', name: '污水管網', category: '公共事業', keywords: ['sewer', '污水', '排水'], icon: Waves },
-  { id: 'streetLightingConduits', name: '街燈電纜', category: '公共事業', keywords: ['conduit', '電纜', '路燈電線'], icon: Zap },
-  { id: 'streetLighting', name: '街燈', category: '公共事業', keywords: ['street light', 'lamp', '街燈', '路燈'], icon: Lightbulb },
   { id: 'powerOutages', name: '停電', category: '公共事業', keywords: ['power outage', 'outage', 'bc hydro', 'blackout', '停電', '供電', '斷電'], icon: ZapOff },
 
   // 地理 GEOGRAPHY
@@ -270,8 +247,7 @@ export default function LayerPanel() {
       'disasterHubs', 'vanWifi'
     ] as const;
     const utilitiesKeys = [
-      'waterDistributionMains', 'sewerMains', 'streetLightingConduits',
-      'streetLighting'
+      'powerOutages'
     ] as const;
     const geographyKeys = [
       'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'beachWaterQuality'
@@ -836,10 +812,6 @@ export default function LayerPanel() {
           <CategoryHeader id="utilities" title="公共事業" english="UTILITIES" icon={Zap} colorClass="text-cyan-400" subColorClass="text-cyan-400/70" />
           {!collapsedCategories['utilities'] && (
             <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
-              <LayerButton layerKey="waterDistributionMains" label="自來水管道" icon={Faucet} colorClass="text-sky-400" activeBg="bg-[#102436]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.15)]" />
-              <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-              <LayerButton layerKey="streetLightingConduits" label="路燈電網" icon={UtilityPole} title="路燈電網" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
-              <LayerButton layerKey="streetLighting" label="路燈" icon={Lightbulb} title="路燈燈柱" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
               <LayerButton layerKey="powerOutages" label="停電" icon={ZapOff} title="卑詩省停電即時情況" colorClass="text-amber-400" activeBg="bg-[#2d1b14]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.2)]" />
             </div>
           )}

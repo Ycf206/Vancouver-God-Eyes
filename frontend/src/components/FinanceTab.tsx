@@ -17,6 +17,7 @@ import {
   DollarSign,
   Plus,
   Ellipsis,
+  FunnelX,
   X
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
@@ -174,11 +175,23 @@ export function FinanceTab() {
   // 時間範圍智慧聯動（避免大範圍選到過短的分鐘週期）
   const handleRangeChange = (newRange: string) => {
     setRange(newRange);
+    if (newRange === 'custom') {
+      return;
+    }
     if (['1mo', '3mo', '6mo', '1y', '5y', 'max'].includes(newRange) && interval === '1m') {
       setInterval('1d');
     } else if (['3mo', '6mo', '1y', '5y', 'max'].includes(newRange) && ['2m', '5m', '15m', '30m'].includes(interval)) {
       setInterval('1d');
     }
+  };
+
+  // 清除股票搜尋篩選條件
+  const handleClearStockFilters = () => {
+    setInterval('1d');
+    setRange('1mo');
+    setStartDate('');
+    setEndDate('');
+    setIncludePrePost(false);
   };
 
   // 查詢股票資料
@@ -196,7 +209,7 @@ export function FinanceTab() {
       params.set('interval', interval);
       params.set('includePrePost', includePrePost ? 'true' : 'false');
 
-      if (startDate && endDate) {
+      if (range === 'custom' && startDate && endDate) {
         const p1 = Math.floor(new Date(startDate).getTime() / 1000);
         const p2 = Math.floor(new Date(endDate).getTime() / 1000) + 86400; // 涵蓋當日整天
         if (!isNaN(p1) && !isNaN(p2) && p2 > p1) {
@@ -207,10 +220,10 @@ export function FinanceTab() {
           params.set('period1', String(p1));
           params.set('period2', String(p2));
         } else {
-          params.set('range', range);
+          params.set('range', '1mo');
         }
       } else {
-        params.set('range', range);
+        params.set('range', range === 'custom' ? '1mo' : range);
       }
 
       const res = await fetch(`/api/finance/stock?${params.toString()}`);
@@ -272,12 +285,19 @@ export function FinanceTab() {
   const [updatingPrices, setUpdatingPrices] = useState<boolean>(false);
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
 
-  // 點擊任意處關閉操作選單
+  // 點擊選單外部關閉操作選單
   useEffect(() => {
-    const handleCloseActionMenu = () => setOpenActionMenuId(null);
-    document.addEventListener('click', handleCloseActionMenu);
-    return () => document.removeEventListener('click', handleCloseActionMenu);
-  }, []);
+    if (!openActionMenuId) return;
+    const handleCloseActionMenu = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && target.closest('.action-menu-container')) {
+        return;
+      }
+      setOpenActionMenuId(null);
+    };
+    document.addEventListener('mousedown', handleCloseActionMenu);
+    return () => document.removeEventListener('mousedown', handleCloseActionMenu);
+  }, [openActionMenuId]);
 
   // 新增股票輸入欄位與搜尋建議狀態
   const [newSymbol, setNewSymbol] = useState<string>('');
@@ -634,32 +654,10 @@ export function FinanceTab() {
               </button>
             </div>
 
-            {/* 條件設定區塊：第一行 (起始日期, 結束日期) / 第二行 (週期, 時間範圍, 包含盤前/盤後) */}
+            {/* 條件設定區塊：第一行 (週期, 時間範圍, 包含盤前/盤後, 清除篩選按鈕) / 第二行 (自定義時才顯示：起始日期, 結束日期) */}
             <div className="flex flex-col gap-2 pt-2 border-t border-[#1e2535] text-xs">
-              {/* 第一行: 起始日期, 結束日期 */}
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10.5px] text-gray-400 font-medium">起始日期</span>
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:[filter:brightness(0)_invert(1)]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10.5px] text-gray-400 font-medium">結束日期</span>
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:[filter:brightness(0)_invert(1)]"
-                  />
-                </div>
-              </div>
-
-              {/* 第二行: 週期, 時間範圍, 包含盤前/盤後 */}
-              <div className="grid grid-cols-[1fr_1fr_auto] gap-2 items-end">
+              {/* 第一行: 週期, 時間範圍, 包含盤前/盤後, 清除篩選按鈕 (FunnelX) */}
+              <div className="grid grid-cols-[1fr_1fr_auto_auto] gap-2 items-end">
                 {/* 週期 */}
                 <div className="flex flex-col gap-1">
                   <span className="text-[10.5px] text-gray-400 font-medium">週期</span>
@@ -701,6 +699,7 @@ export function FinanceTab() {
                       { value: '1y', label: '1年' },
                       { value: '5y', label: '5年' },
                       { value: 'max', label: '最大範圍' },
+                      { value: 'custom', label: '自定義' },
                     ].map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
@@ -719,7 +718,43 @@ export function FinanceTab() {
                     <span className="text-[11px]">包含盤前/盤後</span>
                   </label>
                 </div>
+
+                {/* 清除篩選圖示按鈕 (FunnelX) */}
+                <div className="pb-1.5">
+                  <button
+                    type="button"
+                    onClick={handleClearStockFilters}
+                    className="p-1.5 rounded-lg border border-[#262f40] bg-[#0e121a] hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-400 text-gray-400 transition-colors cursor-pointer flex items-center justify-center shrink-0"
+                    title="清除篩選條件"
+                  >
+                    <FunnelX className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
+
+              {/* 第二行: 當且僅當選擇自定義時才顯示 (起始日期, 結束日期) */}
+              {range === 'custom' && (
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1e2535]/60 animate-in fade-in duration-150">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10.5px] text-gray-400 font-medium">起始日期</span>
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:[filter:brightness(0)_invert(1)]"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10.5px] text-gray-400 font-medium">結束日期</span>
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="bg-[#0e121a] border border-[#262f40] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 font-mono focus:outline-none focus:border-emerald-500 w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:[filter:brightness(0)_invert(1)]"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1375,10 +1410,13 @@ export function FinanceTab() {
                           )}
 
                           {/* 操作按鈕 (Lucide: ellipsis 下拉選單) */}
-                          <div className="relative" onClick={(e) => e.stopPropagation()}>
+                          <div className="relative action-menu-container" onClick={(e) => e.stopPropagation()}>
                             <button
                               type="button"
-                              onClick={() => setOpenActionMenuId(openActionMenuId === stk.id ? null : stk.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenActionMenuId(prev => (prev === stk.id ? null : stk.id));
+                              }}
                               className="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"
                               title="操作選項"
                             >

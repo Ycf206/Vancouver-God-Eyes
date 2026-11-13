@@ -83,8 +83,6 @@ export interface UIState {
     maritimeShipping: boolean;
     marineTerminals: boolean;
     crimeAreas: boolean;
-    waterDistributionMains: boolean;
-    sewerMains: boolean;
     trafficSpeedLimits: boolean;
     bikeRacks: boolean;
     postalCodeFSA: boolean;
@@ -98,8 +96,6 @@ export interface UIState {
     driveBC: boolean;
     roadClosures: boolean;
     roadConstruction: boolean;
-    streetLighting: boolean;
-    streetLightingConduits: boolean;
     powerOutages: boolean;
     beachWaterQuality: boolean;
     fireHydrants: boolean;
@@ -336,8 +332,6 @@ export const useUIStore = create<UIState>()(
         maritimeShipping: true,
         marineTerminals: true,
         crimeAreas: false,
-        waterDistributionMains: false,
-        sewerMains: false,
         trafficSpeedLimits: false,
         bikeRacks: false,
         postalCodeFSA: false,
@@ -351,8 +345,6 @@ export const useUIStore = create<UIState>()(
         driveBC: false,
         roadClosures: false,
         roadConstruction: false,
-        streetLighting: false,
-        streetLightingConduits: false,
         powerOutages: false,
         beachWaterQuality: false,
         fireHydrants: false,
@@ -526,8 +518,6 @@ export const useUIStore = create<UIState>()(
               (layer === 'oneWayStreets' && (st.category === 'one_way_streets' || String(st.id ?? '').startsWith('oneway_'))) ||
               (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || String(st.id ?? '').startsWith('snow_'))) ||
               (layer === 'driveBC' && (st.category === 'drivebc' || String(st.id ?? '').startsWith('RIDE-') || String(st.id ?? '').startsWith('drivebc_'))) ||
-              (layer === 'waterDistributionMains' && (st.category === 'water_distribution_mains' || String(st.id ?? '').startsWith('water_'))) ||
-              (layer === 'sewerMains' && (st.category === 'sewer_mains' || String(st.id ?? '').startsWith('sewer_'))) ||
               ((layer === 'skytrainRoutes' || layer === 'skytrainStops') && st.category === 'skytrain') ||
               ((layer === 'seabusRoutes' || layer === 'seabusStops') && st.category === 'seabus') ||
               ((layer === 'busRoutes' || layer === 'busStops') && (st.category === 'bus_stop' || st.category === 'bus_route')) ||
@@ -808,8 +798,6 @@ export const useUIStore = create<UIState>()(
           driveBC: persistedState?.layers?.driveBC || false,
           marineTerminals: persistedState?.layers?.marineTerminals ?? true,
           crimeAreas: persistedState?.layers?.crimeAreas || false,
-          waterDistributionMains: persistedState?.layers?.waterDistributionMains || false,
-          sewerMains: persistedState?.layers?.sewerMains || false,
         };
         for (const [k, v] of Object.entries(disabled)) {
           if (v && k in mergedLayers) {

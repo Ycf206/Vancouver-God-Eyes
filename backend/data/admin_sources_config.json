@@ -862,94 +862,6 @@
       "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-washrooms/records/"
     },
     {
-      "id": "street_lighting",
-      "name": "路燈",
-      "type": "geojson",
-      "cron_expr": "0 0 1 1 *",
-      "schedule_interval": "每年 1 月 1 日",
-      "record_count": 55000,
-      "unit": "盞市政街道燈柱",
-      "last_updated": "2026-11-01T06:07:10Z",
-      "status": "healthy",
-      "data_pipeline_notes": "電機工程處智慧路燈系統 -> 記錄燈桿柱號 (Pole ID)、LED 功率、光源類型與維護盤號 -> 寫入 /public/vancouver_street_lighting.geojson",
-      "runner": "github_actions",
-      "workflow_file": "update-street-lighting.yml",
-      "category": "公共事業",
-      "source_links": [
-        {
-          "label": "OpenData 路燈燈桿 API",
-          "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-poles/records/"
-        }
-      ],
-      "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-poles/records/"
-    },
-    {
-      "id": "street_lighting_conduits",
-      "name": "路燈管道",
-      "type": "geojson",
-      "cron_expr": "0 0 1 1 *",
-      "schedule_interval": "每年 1 月 1 日",
-      "record_count": 24500,
-      "unit": "段地下供電纜線管道",
-      "last_updated": "2026-11-01T06:07:10Z",
-      "status": "healthy",
-      "data_pipeline_notes": "地下基礎管線檔案庫 -> 記錄電網導線管、檢查人孔與供電回路佈局 -> 寫入 /public/vancouver_street_lighting_conduits.geojson",
-      "runner": "github_actions",
-      "workflow_file": "update-street-lighting-conduits.yml",
-      "category": "公共事業",
-      "source_links": [
-        {
-          "label": "OpenData 路燈管線 API",
-          "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-conduits/records/"
-        }
-      ],
-      "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-conduits/records/"
-    },
-    {
-      "id": "water_distribution_mains",
-      "name": "自來水管",
-      "type": "geojson",
-      "cron_expr": "0 0 1 1 *",
-      "schedule_interval": "每年 1 月 1 日",
-      "record_count": 18200,
-      "unit": "段市政自來水主管線",
-      "last_updated": "2026-11-01T06:07:10Z",
-      "status": "healthy",
-      "data_pipeline_notes": "溫哥華自來水水務局 GIS -> 記錄主水管材質 (鑄鐵/延性鑄鐵/鋼管)、管徑尺寸 (mm) 與安裝年份 -> 寫入 /public/vancouver_water_distribution_mains.geojson",
-      "runner": "github_actions",
-      "workflow_file": "update-water-distribution-mains.yml",
-      "category": "公共事業",
-      "source_links": [
-        {
-          "label": "OpenData 自來水管線 API",
-          "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/water-distribution-mains/records/"
-        }
-      ],
-      "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/water-distribution-mains/records/"
-    },
-    {
-      "id": "sewer_mains",
-      "name": "下水道管",
-      "type": "geojson",
-      "cron_expr": "0 0 1 1 *",
-      "schedule_interval": "每年 1 月 1 日",
-      "record_count": 39927,
-      "unit": "段污水與雨水分流涵管",
-      "last_updated": "2026-11-01T06:07:00Z",
-      "status": "healthy",
-      "data_pipeline_notes": "下水道工程處污水雨水分離工程庫 -> 標記雨水管、衛生污水管與合流涵洞流向與高程 -> 寫入 /public/vancouver_sewer_mains.geojson",
-      "runner": "github_actions",
-      "workflow_file": "update-sewer-mains.yml",
-      "category": "公共事業",
-      "source_links": [
-        {
-          "label": "OpenData 污水管線 API",
-          "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/sewer-mains/records/"
-        }
-      ],
-      "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/sewer-mains/records/"
-    },
-    {
       "id": "traffic_speed_limits",
       "name": "速限路段",
       "type": "geojson",
@@ -1190,7 +1102,7 @@
       "schedule_interval": "每 1 小時",
       "record_count": 262,
       "unit": "處站點與可用車位",
-      "last_updated": "2026-11-12T12:42:10.135Z",
+      "last_updated": "2026-11-13T00:43:59.473Z",
       "status": "healthy",
       "data_pipeline_notes": "Mobi Entities API 取得站點位置 -> 配合各站 Station Detail API 即時更新單車與還車槽數 -> OCI 常駐排程寫入 /backend/data/vancouver_shared_bikes.geojson",
       "runner": "oci",
@@ -1216,9 +1128,9 @@
       "type": "geojson",
       "cron_expr": "0 * * * *",
       "schedule_interval": "每 1 小時",
-      "record_count": 250,
+      "record_count": 251,
       "unit": "處滑板車站點",
-      "last_updated": "2026-11-12T12:42:10.826Z",
+      "last_updated": "2026-11-13T00:44:01.022Z",
       "status": "healthy",
       "data_pipeline_notes": "Lime 外部查詢代理 API -> 取得站點資訊與即時可用滑板車/還車槽數 -> OCI 常駐排程寫入 /backend/data/vancouver_escooter.geojson",
       "runner": "oci",
@@ -1315,7 +1227,7 @@
       "schedule_interval": "每 12 小時",
       "record_count": 1000,
       "unit": "筆即時案件",
-      "last_updated": "2026-11-12T13:11:26.347Z",
+      "last_updated": "2026-11-13T01:00:08.273Z",
       "status": "healthy",
       "data_pipeline_notes": "Vancouver Open Data 3-1-1 Service Requests API -> OCI 常駐排程同步市民通報市政問題與工單進度 -> 寫入 vancouver_311.json -> 前端探索 3-1-1 列表呈現與導航",
       "runner": "oci",

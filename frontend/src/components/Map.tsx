@@ -341,15 +341,11 @@ function isShipOnLand(lon: number, lat: number): boolean {
 
 const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }> = {
   bikeRacks: { label: '單車架', prefixes: ['bike-racks'] },
-  waterDistributionMains: { label: '自來水管道', prefixes: ['water-distribution-mains'] },
-  sewerMains: { label: '污水管道', prefixes: ['sewer-mains'] },
   contours: { label: '等高線', prefixes: ['contours'] },
   snowRemovalRoutes: { label: '鏟雪路線', prefixes: ['snow-removal-routes'] },
   litterContainers: { label: '垃圾箱', prefixes: ['litter-containers'] },
   bikeways: { label: '單車道路網', prefixes: ['bikeways'] },
   parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
-  streetLighting: { label: '路燈燈柱', prefixes: ['street-lighting-poles', 'street_lighting_poles'] },
-  streetLightingConduits: { label: '路燈電網', prefixes: ['street-lighting-conduits', 'street_lighting_conduits', 'street-lighting-glow', 'street-lighting-layer'] },
   powerOutages: { label: '停電', prefixes: ['power-outages', 'power_outages'] },
   beachWaterQuality: { label: '海灘水質', prefixes: ['beach-water', 'beach_water'] },
   fireHydrants: { label: '消防栓', prefixes: ['fire-hydrants', 'fire_hydrants'] },
@@ -877,8 +873,6 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'litter-containers-cluster-layer',
   'litter-containers-layer',
   'litter-containers-symbol-layer',
-  'water-distribution-mains-layer',
-  'sewer-mains-layer',
   'contours-layer',
   'contours-label-layer',
   'van-wifi-cluster-layer',
@@ -898,9 +892,6 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'road-closures-layer',
   'road-construction-casing-layer',
   'road-construction-layer',
-  'street-lighting-cluster-layer',
-  'street-lighting-layer',
-  'street-lighting-symbol-layer',
   'fire-hydrants-cluster-layer',
   'fire-hydrants-layer',
   'fire-hydrants-symbol-layer',
@@ -926,7 +917,6 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'turn-restrictions-symbol-layer',
   'turn-restrictions-arrow-line-layer',
   'turn-restrictions-arrowhead-fill-layer',
-  'street-lighting-poles-layer',
   'power-outages-polygon-fill',
   'power-outages-polygon-outline',
   'power-outages-point-glow',
@@ -2120,8 +2110,6 @@ export default function AppMap() {
         else if (type === 'bike_racks' && !layers.bikeRacks) facilityClosed = true;
         else if (type === 'postal_code_fsa' && !layers.postalCodeFSA) facilityClosed = true;
         else if (type === 'public_art' && !layers.publicArt) facilityClosed = true;
-        else if (type === 'water_distribution_mains' && !layers.waterDistributionMains) facilityClosed = true;
-        else if (type === 'sewer_mains' && !layers.sewerMains) facilityClosed = true;
         else if (type === 'one_way_streets' && !layers.oneWayStreets) facilityClosed = true;
         else if (type === 'snow_removal_routes' && !layers.snowRemovalRoutes) facilityClosed = true;
         else if (type === 'traffic_crosswalks' && !layers.trafficCrosswalks) facilityClosed = true;
@@ -2133,8 +2121,6 @@ export default function AppMap() {
         else if (type === 'drivebc' && !layers.driveBC && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
         else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
-        else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
-        else if (type === 'street_lighting_conduits' && !layers.streetLightingConduits) facilityClosed = true;
         else if (type === 'beach_water_quality' && !layers.beachWaterQuality) facilityClosed = true;
         else if (type === 'fire_hydrants' && !layers.fireHydrants) facilityClosed = true;
         else if (type === 'zoning_districts' && !layers.zoningDistricts) facilityClosed = true;
@@ -3134,8 +3120,6 @@ export default function AppMap() {
     const prev = prevLayersRef.current;
     prevLayersRef.current = layers;
 
-    const turnedOnWater = !prev.waterDistributionMains && layers.waterDistributionMains;
-    const turnedOnSewer = !prev.sewerMains && layers.sewerMains;
     const turnedOnBikeRacks = !prev.bikeRacks && layers.bikeRacks;
     const turnedOnCrosswalks = !prev.trafficCrosswalks && layers.trafficCrosswalks;
     const turnedOnLitter = !prev.litterContainers && layers.litterContainers;
@@ -3156,23 +3140,7 @@ export default function AppMap() {
       }
     }
 
-    // 2. 自來水管道或污水管道 (Water / Sewer Mains)
-    if (turnedOnWater || turnedOnSewer) {
-      if (z < 12.5) {
-        const names = [];
-        if (turnedOnWater || layers.waterDistributionMains) names.push('自來水管道');
-        if (turnedOnSewer || layers.sewerMains) names.push('污水管道');
-        setZoomNotification({
-          show: true,
-          title: `已開啟${names.join('與')}`,
-          message: '地下管道網數據較為龐大密集，請將地圖放大以檢視詳細線路分佈。',
-          targetZoom: 13.5
-        });
-        return;
-      }
-    }
-
-    // 3. 斑馬線 (Crosswalks)
+    // 2. 斑馬線 (Crosswalks)
     if (turnedOnCrosswalks) {
       if (z < 13.5) {
         setZoomNotification({
@@ -3185,7 +3153,7 @@ export default function AppMap() {
       }
     }
 
-    // 4. 垃圾箱 (Litter Containers)
+    // 3. 垃圾箱 (Litter Containers)
     if (turnedOnLitter) {
       if (z < 13.5) {
         setZoomNotification({
@@ -3198,21 +3166,7 @@ export default function AppMap() {
       }
     }
 
-    // 5. 路燈配電管線 (Street Lighting Conduits)
-    const turnedOnStreetLighting = !prev.streetLighting && layers.streetLighting;
-    if (turnedOnStreetLighting) {
-      if (z < 12) {
-        setZoomNotification({
-          show: true,
-          title: '已開啟路燈管線圖層',
-          message: '全市設有 65,000+ 筆地下照明配電管線，資料量較龐大載入需數秒，地圖已渲染亮黃色照明線網。',
-          targetZoom: 13.5
-        });
-        return;
-      }
-    }
-
-    // 6. 消防栓 (Fire Hydrants - 高密度聚合與放大提示)
+    // 4. 消防栓 (Fire Hydrants - 高密度聚合與放大提示)
     const turnedOnHydrants = !prev.fireHydrants && layers.fireHydrants;
     if (turnedOnHydrants) {
       if (z < 13.5) {
@@ -6458,48 +6412,6 @@ export default function AppMap() {
       });
     }
 
-    // Utilities: Water Distribution Mains (自來水管道)
-    if (layers.waterDistributionMains) {
-      style.sources['water_distribution_mains'] = { type: 'geojson', data: '/vancouver_water_distribution_mains.geojson' };
-      style.layers.push({
-        id: 'water-distribution-mains-layer',
-        type: 'line',
-        source: 'water_distribution_mains',
-        minzoom: 12,
-        paint: {
-          'line-color': '#0ea5e9',
-          'line-width': [
-            'interpolate', ['linear'], ['zoom'],
-            12, 1.2,
-            15, 2.5,
-            18, 4.5
-          ],
-          'line-opacity': 0.85
-        }
-      });
-    }
-
-    // Utilities: Sewer Mains (污水管道)
-    if (layers.sewerMains) {
-      style.sources['sewer_mains'] = { type: 'geojson', data: '/vancouver_sewer_mains.geojson' };
-      style.layers.push({
-        id: 'sewer-mains-layer',
-        type: 'line',
-        source: 'sewer_mains',
-        minzoom: 12,
-        paint: {
-          'line-color': '#14b8a6',
-          'line-width': [
-            'interpolate', ['linear'], ['zoom'],
-            12, 1.2,
-            15, 2.5,
-            18, 4.5
-          ],
-          'line-opacity': 0.85
-        }
-      });
-    }
-
     // Road: Traffic Speed Limits (限速路段)
     if (layers.trafficSpeedLimits) {
       style.sources['traffic_speed_limits'] = { type: 'geojson', data: '/vancouver_traffic_speed_limits.geojson' };
@@ -7041,37 +6953,6 @@ export default function AppMap() {
       });
     }
 
-    // Utilities: Street Lighting Conduits (路燈地下配電管線)
-    if (layers.streetLightingConduits) {
-      style.sources['street_lighting_conduits'] = { 
-        type: 'geojson', 
-        data: '/vancouver_street_lighting_conduits.geojson'
-      };
-      // 路燈配電管線外發光
-      style.layers.push({
-        id: 'street-lighting-glow-layer',
-        type: 'line',
-        source: 'street_lighting_conduits',
-        paint: {
-          'line-color': '#eab308',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 1.5, 14, 3, 17, 6],
-          'line-opacity': 0.65,
-          'line-blur': 1.5
-        }
-      });
-      // 路燈配電管線核心亮黃線條
-      style.layers.push({
-        id: 'street-lighting-layer',
-        type: 'line',
-        source: 'street_lighting_conduits',
-        paint: {
-          'line-color': '#fef08a',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 0.8, 14, 1.8, 17, 3.5],
-          'line-opacity': 0.95
-        }
-      });
-    }
-
     // Utilities: Power Outages (卑詩省停電即時情況 - BC Hydro)
     if (layers.powerOutages) {
       style.sources['power_outages'] = {
@@ -7126,39 +7007,6 @@ export default function AppMap() {
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff',
           'circle-opacity': 0.95
-        }
-      });
-    }
-
-    // Utilities: Street Lighting Poles (溫哥華市政公用路燈燈柱 - 58,000+ 燈柱)
-    if (layers.streetLighting) {
-      style.sources['street_lighting_poles'] = { 
-        type: 'geojson', 
-        data: '/vancouver_street_lighting_poles.geojson'
-      };
-      // 外層暖黃微光光暈
-      style.layers.push({
-        id: 'street-lighting-poles-glow',
-        type: 'circle',
-        source: 'street_lighting_poles',
-        paint: {
-          'circle-color': '#f59e0b',
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2, 14, 4, 16, 7, 18, 10],
-          'circle-opacity': 0.45,
-          'circle-blur': 0.8
-        }
-      });
-      // 內層路燈燈柱光點
-      style.layers.push({
-        id: 'street-lighting-poles-layer',
-        type: 'circle',
-        source: 'street_lighting_poles',
-        paint: {
-          'circle-color': '#fef08a',
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 1.2, 14, 2.2, 16, 3.5, 18, 5],
-          'circle-opacity': 0.95,
-          'circle-stroke-color': '#b45309',
-          'circle-stroke-width': 0.8
         }
       });
     }
@@ -7493,8 +7341,6 @@ export default function AppMap() {
     layers.snowRemovalRoutes,
     layers.marineTerminals,
     layers.crimeAreas,
-    layers.waterDistributionMains,
-    layers.sewerMains,
     layers.trafficSpeedLimits,
     layers.bikeRacks,
     layers.postalCodeFSA,
@@ -7504,8 +7350,6 @@ export default function AppMap() {
     layers.driveBC,
     layers.roadClosures,
     layers.roadConstruction,
-    layers.streetLighting,
-    layers.streetLightingConduits,
     layers.powerOutages,
     layers.beachWaterQuality,
     layers.fireHydrants,
@@ -7744,34 +7588,6 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
-          } else if (layerId === 'water-distribution-mains-layer') {
-            setSelectedStop(null);
-            const props = feature.properties || {};
-            const clickLon = e.lngLat?.lng ?? -123.1207;
-            const clickLat = e.lngLat?.lat ?? 49.2827;
-            setSelectedFacility({
-              id: `water_${clickLon}_${clickLat}`,
-              facility_type: 'water_distribution_mains',
-              name: 'Water Distribution Mains',
-              local_area: '溫哥華市區供水主幹管網',
-              lon: clickLon,
-              lat: clickLat,
-              properties: props
-            });
-          } else if (layerId === 'sewer-mains-layer') {
-            setSelectedStop(null);
-            const props = feature.properties || {};
-            const clickLon = e.lngLat?.lng ?? -123.1207;
-            const clickLat = e.lngLat?.lat ?? 49.2827;
-            setSelectedFacility({
-              id: `sewer_${clickLon}_${clickLat}`,
-              facility_type: 'sewer_mains',
-              name: 'Sewer Mains',
-              local_area: '溫哥華市政排水與污水管網',
-              lon: clickLon,
-              lat: clickLat,
-              properties: props
-            });
           } else if (layerId === 'contours-layer' || layerId === 'contours-label-layer') {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -7893,38 +7709,6 @@ export default function AppMap() {
           } else if (layerId.startsWith('beach-water')) {
             // 海灘水質不顯示 popup，所有資料已在探索-海灘中能看到，僅在地圖顯示顏色區塊
             return;
-          } else if (layerId.startsWith('street-lighting-poles')) {
-            setSelectedStop(null);
-            const props = feature.properties || {};
-            const poleCoords = feature.geometry?.type === 'Point' 
-              ? (feature.geometry.coordinates as [number, number]) 
-              : [e.lngLat?.lng ?? -123.1207, e.lngLat?.lat ?? 49.2827];
-            const block = props.block_number || '';
-            const node = props.node_number !== undefined ? props.node_number : '';
-            setSelectedFacility({
-              id: props.id || `pole_${block}_${node}`,
-              facility_type: 'street_lighting',
-              name: block ? `路燈燈柱 (${block} 號街區 #${node})` : '路燈燈柱',
-              local_area: props.local_area || props.geo_local_area || '溫哥華市政公用照明',
-              lon: poleCoords[0],
-              lat: poleCoords[1],
-              properties: props
-            });
-          } else if (layerId.startsWith('street-lighting')) {
-            setSelectedStop(null);
-            const props = feature.properties || {};
-            const clickLon = e.lngLat?.lng ?? -123.1207;
-            const clickLat = e.lngLat?.lat ?? 49.2827;
-            const wireset = props.wireset_type || '標準線組';
-            setSelectedFacility({
-              id: props.id || `conduit_${clickLon}_${clickLat}`,
-              facility_type: 'street_lighting_conduits',
-              name: 'Street Lighting Conduits',
-              local_area: props.local_area || '溫哥華市政路燈配電管網',
-              lon: clickLon,
-              lat: clickLat,
-              properties: props
-            });
           } else if (layerId.startsWith('fire-hydrants')) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -8037,7 +7821,6 @@ export default function AppMap() {
             const isTrafficSignal = layerId.startsWith('traffic-signals');
             const isTurnRestriction = layerId.startsWith('turn-restrictions');
             const isTraffic = layerId.startsWith('traffic-conditions');
-            const isStreetLighting = layerId.startsWith('street-lighting') || layerId.startsWith('street_lighting');
             const isCrosswalk = layerId.startsWith('traffic-crosswalks');
             const isLitter = layerId.startsWith('litter-containers');
             const isRecycling = layerId.startsWith('recycling');
@@ -8061,7 +7844,6 @@ export default function AppMap() {
             else if (isTurnRestriction) facilityType = 'turn_restrictions';
             else if (isPublicArt) facilityType = 'public_art';
             else if (isTraffic) facilityType = 'traffic_conditions';
-            else if (isStreetLighting) facilityType = 'street_lighting';
             else if (isVanWifi) facilityType = 'van_wifi';
             else if (isTideStation) facilityType = 'tide_stations';
             else if (isFuel) facilityType = 'fuel';
@@ -8082,7 +7864,6 @@ export default function AppMap() {
               else if (isTruckRestriction) facilityName = props.name || '貨車路線限制';
               else if (isPublicArt) facilityName = props.sitename || props.title_of_work || '公共藝術';
               else if (isTraffic) facilityName = '獅門大橋即時路況';
-              else if (isStreetLighting) facilityName = props.pole_number ? `路燈柱 #${props.pole_number}` : (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈');
               else if (isVanWifi) facilityName = props.site_name || 'VanWiFi 公共無線網絡';
               else if (isTideStation) facilityName = props.english_name || '潮汐水位';
               else if (isCrosswalk) facilityName = props.location || '行人穿越道';
@@ -10512,7 +10293,6 @@ export default function AppMap() {
                 className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[300px] sm:w-[335px]' :
               (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[320px] sm:w-[350px]' : 
-              (selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'street_lighting') ? 'w-[280px] sm:w-[310px]' :
               'w-[300px] sm:w-[335px]'
             } max-w-[calc(100vw-32px)] ${
               selectedFacility.facility_type === 'post_offices' 
@@ -10584,10 +10364,6 @@ export default function AppMap() {
                   if (t === 'parks_facilities') return { label: '公園設施', bg: 'bg-teal-600 text-white' };
                   if (t === 'community_gardens') return { label: '社區花園', bg: 'bg-lime-600 text-white' };
                   if (t === 'public_trees') return { label: '市區行道樹', bg: 'bg-emerald-700 text-white' };
-                  if (t === 'water_distribution_mains') return { label: '自來水管道', bg: 'bg-sky-600 text-white' };
-                  if (t === 'sewer_mains') return { label: '污水管線', bg: 'bg-teal-600 text-white' };
-                  if (t === 'street_lighting_conduits') return { label: '路燈電纜線', bg: 'bg-amber-500 text-white' };
-                  if (t === 'street_lighting') return { label: '路燈燈桿', bg: 'bg-amber-500 text-white' };
                   if (t === 'drinking_fountains') return { label: '飲水器', bg: 'bg-sky-600 text-white' };
                   if (t === 'public_washrooms') return { label: '公共洗手間', bg: 'bg-cyan-600 text-white' };
                   if (t === 'museums') return { label: '博物館', bg: 'bg-slate-700 text-white' };
@@ -10643,8 +10419,7 @@ export default function AppMap() {
                     road_construction: 'roadConstruction', public_washrooms: 'publicWashrooms',
                     drinking_fountains: 'drinkingFountains', beach_water_quality: 'beachWaterQuality',
                     border_crossing: 'borderCrossing', ski_resort: 'skiResorts', tide_stations: 'tideStations',
-                    marine_terminals: 'marineTerminals', water_distribution_mains: 'waterDistributionMains',
-                    sewer_mains: 'sewerMains', street_lighting: 'streetLighting', street_lighting_conduits: 'streetLightingConduits',
+                    marine_terminals: 'marineTerminals',
                     litter_containers: 'litterContainers', public_trees: 'publicTrees', museums: 'museums',
                     recycling: 'recycling', fire_hydrants: 'fireHydrants', aed: 'aed'
                   };
@@ -10794,15 +10569,6 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'fire_hydrants') {
                       return selectedFacility.properties?.street || selectedFacility.name;
                     }
-                    if (selectedFacility.facility_type === 'water_distribution_mains') {
-                      return 'Water Distribution Mains';
-                    }
-                    if (selectedFacility.facility_type === 'sewer_mains') {
-                      return 'Sewer Mains';
-                    }
-                    if (selectedFacility.facility_type === 'street_lighting_conduits') {
-                      return 'Street Lighting Conduits';
-                    }
                     if (selectedFacility.facility_type === 'tide_stations') {
                       return selectedFacility.properties?.english_name || selectedFacility.name?.replace(/[\u4e00-\u9fa5（）\(\)]+/g, '').trim() || selectedFacility.name;
                     }
@@ -10890,8 +10656,7 @@ export default function AppMap() {
                               road_construction: 'roadConstruction', public_washrooms: 'publicWashrooms',
                               drinking_fountains: 'drinkingFountains', beach_water_quality: 'beachWaterQuality',
                               border_crossing: 'borderCrossing', ski_resort: 'skiResorts', tide_stations: 'tideStations',
-                              marine_terminals: 'marineTerminals', water_distribution_mains: 'waterDistributionMains',
-                              sewer_mains: 'sewerMains', street_lighting: 'streetLighting', street_lighting_conduits: 'streetLightingConduits',
+                              marine_terminals: 'marineTerminals',
                               litter_containers: 'litterContainers', public_trees: 'publicTrees', museums: 'museums',
                               recycling: 'recycling', fire_hydrants: 'fireHydrants', aed: 'aed'
                             };
@@ -10907,14 +10672,11 @@ export default function AppMap() {
                           selectedFacility.facility_type === 'drivebc' ? 'bg-[#ea580c] shadow-[0_0_6px_rgba(234,88,12,0.5)]' :
                           selectedFacility.facility_type === 'road_closures' ? 'bg-red-600' :
                           selectedFacility.facility_type === 'road_construction' ? 'bg-orange-600' :
-                          (selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits') ? 'bg-amber-400' :
                           selectedFacility.facility_type === 'beach_water_quality' ? 'bg-teal-500' :
                           selectedFacility.facility_type === 'fire_hydrants' ? 'bg-red-600' :
                           selectedFacility.facility_type === 'zoning_districts' ? 'bg-indigo-600' :
                           selectedFacility.facility_type === 'van_wifi' ? 'bg-cyan-500' :
                           selectedFacility.facility_type === 'tide_stations' ? 'bg-blue-600' :
-                          selectedFacility.facility_type === 'water_distribution_mains' ? 'bg-sky-500' :
-                          selectedFacility.facility_type === 'sewer_mains' ? 'bg-teal-500' :
                           selectedFacility.facility_type === 'traffic_speed_limits' ? 'bg-amber-500' :
                           selectedFacility.facility_type === 'postal_code_fsa' ? 'bg-indigo-600' :
                           selectedFacility.facility_type === 'bike_racks' ? 'bg-emerald-800' :
@@ -10966,7 +10728,7 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                        {(selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark)) && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
@@ -11016,9 +10778,6 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'hospitals') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'disaster_hubs') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'van_wifi') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
-                              if (selectedFacility.facility_type === 'water_distribution_mains') return 'Vancouver, BC';
-                              if (selectedFacility.facility_type === 'sewer_mains') return 'Vancouver, BC';
-                              if (selectedFacility.facility_type === 'street_lighting_conduits') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'schools') return selectedFacility.properties?.address || selectedFacility.properties?.street_address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'police') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'fire_halls') return selectedFacility.properties?.geo_local_area || selectedFacility.local_area || 'Vancouver, BC';
@@ -16078,130 +15837,7 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* Water Distribution Mains (自來水管道) Details */}
-              {selectedFacility.facility_type === 'water_distribution_mains' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 4.1 淺藍區塊:左方是公共事業 */}
-                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-sky-950">
-                      公共事業
-                    </span>
-                  </div>
 
-                  {/* 4.3 淺藍區塊下的資料, 刪除英文 (Diameter, Material) */}
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.diameter_mm && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>管道管徑</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {selectedFacility.properties.diameter_mm} mm
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.material && (
-                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.diameter_mm ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                        <span>管材材質</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {selectedFacility.properties.material}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.lining_material && selectedFacility.properties.lining_material !== 'blank' && (
-                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.diameter_mm || selectedFacility.properties.material) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                        <span>內襯材料</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {selectedFacility.properties.lining_material}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.installation_date && (
-                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.diameter_mm || selectedFacility.properties.material || selectedFacility.properties.lining_material) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                        <span>鋪設安裝年份</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {selectedFacility.properties.installation_date}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Sewer Mains (污水管道) Details */}
-              {selectedFacility.facility_type === 'sewer_mains' && (() => {
-                const effluent = selectedFacility.properties.effluent_type || 'Sewer';
-                const effluentZh = 
-                  effluent === 'Storm' ? '雨水排放管網 (Storm)' :
-                  effluent === 'Sanitary' ? '生活污水管網 (Sanitary)' :
-                  effluent === 'Combined' ? '合流下水道 (Combined)' : effluent;
-
-                return (
-                  <div className="flex flex-col gap-2 text-xs">
-                    {/* 5.1 青綠區塊 (與膠囊標籤相同): 左方是公共事業 */}
-                    <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs text-teal-950">
-                        公共事業
-                      </span>
-                    </div>
-
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {selectedFacility.properties.street_name && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>所在街道</span>
-                          <span className="text-gray-800 text-right truncate max-w-[140px] sm:max-w-[165px]">
-                            {selectedFacility.properties.street_name}
-                          </span>
-                        </div>
-                      )}
-                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.street_name ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                        <span>下水道排水類型</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {effluentZh}
-                        </span>
-                      </div>
-                      {selectedFacility.properties.diameter_mm && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                          <span>管徑規格</span>
-                          <span className="text-gray-900 font-medium text-right">
-                            {selectedFacility.properties.diameter_mm} mm
-                          </span>
-                        </div>
-                      )}
-                      {selectedFacility.properties.material && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                          <span>管道結構材質</span>
-                          <span className="text-gray-900 font-medium text-right">
-                            {selectedFacility.properties.material}
-                          </span>
-                        </div>
-                      )}
-                      {selectedFacility.properties.pipe_use && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                          <span>管線功能用途</span>
-                          <span className="text-gray-900 font-medium text-right">
-                            {selectedFacility.properties.pipe_use}
-                          </span>
-                        </div>
-                      )}
-                      {selectedFacility.properties.service_status && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                          <span>管線營運狀態</span>
-                          <span className="text-gray-900 font-medium text-right">
-                            {selectedFacility.properties.service_status}
-                          </span>
-                        </div>
-                      )}
-                      {selectedFacility.properties.install_date && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                          <span>建造鋪設年份</span>
-                          <span className="text-gray-900 font-medium text-right">
-                            {selectedFacility.properties.install_date}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
 
               {/* Traffic Speed Limits (限速路段) Details */}
               {selectedFacility.facility_type === 'traffic_speed_limits' && (() => {
@@ -17094,97 +16730,7 @@ export default function AppMap() {
                 );
               })()}
 
-              {/* Street Lighting Poles (路燈燈柱) Details */}
-              {selectedFacility.facility_type === 'street_lighting' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-amber-950 text-xs">
-                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white shrink-0">
-                        公用路燈
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-amber-900 font-medium">
-                      溫哥華市政公用照明路燈柱 (Street Lighting Poles)
-                    </div>
-                  </div>
 
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.block_number && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>街區編號 (Block #)</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          #{selectedFacility.properties.block_number}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.node_number !== undefined && (
-                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.block_number ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                        <span>燈柱節點 (Node #)</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          #{selectedFacility.properties.node_number}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.local_area && (
-                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.block_number || selectedFacility.properties.node_number !== undefined) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                        <span>所屬社區分區</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {selectedFacility.properties.local_area}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                      <span>主管機關</span>
-                      <span className="text-gray-900 font-medium text-right">
-                        City of Vancouver Engineering Services
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                      <span>資料更新頻率</span>
-                      <span className="text-gray-900 font-medium text-right">
-                        每 3 個月更新 1 次 (Quarterly)
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                      <span>坐標位置</span>
-                      <span className="text-gray-900 font-medium text-right">
-                        {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Street Lighting Conduits (路燈地下配電管線) Details */}
-              {selectedFacility.facility_type === 'street_lighting_conduits' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 6.2 黃區塊:左方是公共事業 */}
-                  <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-amber-950">
-                      公共事業
-                    </span>
-                  </div>
-
-                  {/* 6.3 刪除英文Wireset, Underground Conduit & 6.4 刪除資料更新頻率, 點選位置, 主管機關 */}
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>線組規格</span>
-                      <span className="text-gray-900 font-medium text-right">
-                        {selectedFacility.properties.wireset_type || '標準規格'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                      <span>管線類型</span>
-                      <span className="text-gray-900 font-medium text-right">
-                        地下供電導管
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* Beach Water Quality (海灘水質) Details */}
               {selectedFacility.facility_type === 'beach_water_quality' && (

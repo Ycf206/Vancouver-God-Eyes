@@ -7,7 +7,7 @@ import {
   Clock, Users, AlertCircle, Wrench, Calendar as CalendarIcon, Info
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
-import { formatDateTime } from '@/utils/time';
+import { formatDateTime, formatDateOnly } from '@/utils/time';
 
 // Lucide calendar-arrow-right SVG component
 export const CalendarArrowRight = ({ className = "w-4 h-4", ...props }: React.SVGProps<SVGSVGElement>) => (
@@ -273,6 +273,18 @@ export default function PowerOutagesDrawer() {
       const d = typeof val === 'number' ? new Date(val) : new Date(val);
       if (isNaN(d.getTime())) return String(val);
       return formatDateTime(d, timeFormat, timeZone);
+    } catch {
+      return String(val);
+    }
+  };
+
+  // 格式化純日期輔助函式 (跟隨系統 yyyy-MM-dd)
+  const formatDate = (val?: number | string | null) => {
+    if (!val) return null;
+    try {
+      const d = typeof val === 'number' ? new Date(val) : new Date(val);
+      if (isNaN(d.getTime())) return String(val).slice(0, 10);
+      return formatDateOnly(d, timeZone);
     } catch {
       return String(val);
     }
@@ -626,6 +638,10 @@ export default function PowerOutagesDrawer() {
                 const dateOffFormatted = formatTime(item.dateOff);
                 const dateOnFormatted = formatTime(item.dateOn);
                 const lastUpdatedFormatted = formatTime(item.lastUpdated);
+                const itemDate = activeTab === 'restored' 
+                  ? (item.dateOn || item.dateOff) 
+                  : (item.dateOff || item.dateOn);
+                const displayDate = formatDate(itemDate);
 
                 return (
                   <div
@@ -644,7 +660,7 @@ export default function PowerOutagesDrawer() {
                         : 'border-[#262d3d] hover:border-[#38435a]'
                     }`}
                   >
-                    {/* 卡片頂部：行政區、以及 (只有現正停電) 外部連結與導航按鈕組 */}
+                    {/* 卡片頂部：行政區、日期、以及 (只有現正停電) 外部連結與導航按鈕組 */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
@@ -654,6 +670,12 @@ export default function PowerOutagesDrawer() {
                           {item.regionName && (
                             <span className="text-[9.5px] px-1.5 py-0.2 rounded bg-gray-800 text-gray-300 font-mono">
                               {item.regionName}
+                            </span>
+                          )}
+                          {displayDate && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#202736] text-amber-300/90 font-mono flex items-center gap-1">
+                              <CalendarIcon className="w-3 h-3 text-amber-400/80" />
+                              {displayDate}
                             </span>
                           )}
                         </div>
@@ -736,7 +758,7 @@ export default function PowerOutagesDrawer() {
                       {/* 停電日期 dateOff */}
                       {dateOffFormatted && (
                         <div className="flex items-center gap-1.5 font-mono text-[10.5px]">
-                          <span className="text-gray-500 shrink-0">停電時間:</span>
+                          <span className="text-gray-500 shrink-0">停電日期:</span>
                           <span className="text-gray-300">{dateOffFormatted}</span>
                         </div>
                       )}
@@ -745,7 +767,7 @@ export default function PowerOutagesDrawer() {
                       {(activeTab === 'restored' || activeTab === 'planned') && dateOnFormatted && (
                         <div className="flex items-center gap-1.5 font-mono text-[10.5px]">
                           <span className="text-gray-500 shrink-0">
-                            {activeTab === 'restored' ? '恢復供電時間:' : '預計恢復時間:'}
+                            {activeTab === 'restored' ? '恢復日期:' : '預計恢復日期:'}
                           </span>
                           <span className="text-emerald-400 font-medium">{dateOnFormatted}</span>
                         </div>
@@ -754,7 +776,7 @@ export default function PowerOutagesDrawer() {
                       {/* 最後更新 lastUpdated */}
                       {lastUpdatedFormatted && (
                         <div className="flex items-center gap-1.5 font-mono text-[10px] text-gray-500 pt-0.5 border-t border-[#1e2535]">
-                          <span>最後更新:</span>
+                          <span>最後更新日期:</span>
                           <span>{lastUpdatedFormatted}</span>
                         </div>
                       )}

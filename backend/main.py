@@ -2428,10 +2428,10 @@ _db_synced_curated_types = set()
 CURATED_STATIC_TYPES = (
     "bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
-    "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
-    "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa",
+    "one_way_streets", "snow_removal_routes", "crime_areas", 
+    "traffic_speed_limits", "bike_racks", "postal_code_fsa",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
-    "road_closures", "road_construction", "street_lighting", "street_lighting_poles", "street_lighting_conduits", "traffic_conditions",
+    "road_closures", "road_construction", "traffic_conditions",
     "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "traffic_alerts", "public_trees",
     "museums", "garbage_collection"
 )
@@ -2995,18 +2995,6 @@ def get_road_facilities_geojson(
         import beach_water_service
         return beach_water_service.get_beach_water_geojson()
 
-    # Handle Street Lighting Poles
-    if facility_type in ("street_lighting", "street_lighting_poles"):
-        poles_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_street_lighting_poles.geojson")
-        if os.path.exists(poles_path):
-            return FileResponse(poles_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
-
-    # Handle Street Lighting Conduits
-    if facility_type in ("street_lighting_conduits", "street_conduits"):
-        conduits_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_street_lighting_conduits.geojson")
-        if os.path.exists(conduits_path):
-            return FileResponse(conduits_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
-
     # Handle Banks (formerly ATM)
     if facility_type in ("banks", "atm"):
         banks_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_banks.geojson")
@@ -3479,9 +3467,6 @@ def explore_nearby_facilities(
         'tide_stations': ('潮汐水位', '🌊', 'tideStations'),
         'beach_water_quality': ('海灘水質', '🏖️', 'beachWaterQuality'),
         'zoning_districts': ('土地規劃', '📐', 'zoningDistricts'),
-        'street_lighting': ('路燈燈柱', '💡', 'streetLighting'),
-        'street_lighting_poles': ('路燈燈柱', '💡', 'streetLighting'),
-        'street_lighting_conduits': ('配電管線', '⚡', 'streetLightingConduits'),
         'road_closures': ('交通封閉', '🚫', 'roadClosures'),
         'road_construction': ('道路施工', '🚧', 'roadConstruction'),
         'traffic_conditions': ('獅門大橋', '🌉', 'trafficConditions')
@@ -4477,10 +4462,6 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "fire_hydrants": ["vancouver_fire_hydrants.geojson"],
     "drinking_fountains": ["vancouver_drinking_fountains.geojson"],
     "public_washrooms": ["vancouver_public_washrooms.geojson"],
-    "street_lighting": ["vancouver_street_lighting.geojson", "vancouver_street_lighting_poles.geojson"],
-    "street_lighting_conduits": ["vancouver_street_lighting_conduits.geojson"],
-    "water_distribution_mains": ["vancouver_water_distribution_mains.geojson"],
-    "sewer_mains": ["vancouver_sewer_mains.geojson"],
     "traffic_speed_limits": ["vancouver_traffic_speed_limits.geojson"],
     "traffic_crosswalks": ["vancouver_traffic_crosswalks.geojson"],
     "litter_containers": ["vancouver_litter_containers.geojson"],

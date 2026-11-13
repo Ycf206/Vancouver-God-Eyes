@@ -79,10 +79,7 @@ const DEFAULT_GEOJSON_LAYERS = [
   { id: 'fire_hydrants', name: '市政消防栓位置', filename: 'vancouver_fire_hydrants.geojson' },
   { id: 'drinking_fountains', name: '公共飲水台', filename: 'vancouver_drinking_fountains.geojson' },
   { id: 'public_washrooms', name: '公共洗手間', filename: 'vancouver_public_washrooms.geojson' },
-  { id: 'street_lighting', name: '路燈燈桿', filename: 'vancouver_street_lighting.geojson' },
-  { id: 'street_lighting_conduits', name: '路燈電網管道', filename: 'vancouver_street_lighting_conduits.geojson' },
-  { id: 'water_distribution_mains', name: '自來水主配水管道', filename: 'vancouver_water_distribution_mains.geojson' },
-  { id: 'sewer_mains', name: '市區下水道與排水分流管線', filename: 'vancouver_sewer_mains.geojson' },
+
   { id: 'traffic_speed_limits', name: '全路網限速路段', filename: 'vancouver_traffic_speed_limits.geojson' },
   { id: 'traffic_crosswalks', name: '行人斑馬線過路處', filename: 'vancouver_traffic_crosswalks.geojson' },
   { id: 'litter_containers', name: '公共垃圾桶與回收箱', filename: 'vancouver_litter_containers.geojson' },

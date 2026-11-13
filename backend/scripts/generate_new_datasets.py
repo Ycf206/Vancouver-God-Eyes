@@ -183,88 +183,6 @@ def generate_road_construction():
     }, indent=2)
     print(f"[OK] Saved {len(features)} road construction projects to backend and frontend")
 
-def generate_street_lighting():
-    generate_street_lighting_poles()
-    generate_street_lighting_conduits()
-
-def generate_street_lighting_poles():
-    print("Generating Street Lighting Poles (street-lighting-poles)...")
-    records = fetch_all_records("street-lighting-poles")
-    features = []
-    for idx, r in enumerate(records):
-        geom_field = r.get("geom", {})
-        geometry = geom_field.get("geometry") if isinstance(geom_field, dict) else None
-        pt = r.get("geo_point_2d") or {}
-        if not geometry:
-            continue
-        block = r.get("block_number") or ""
-        node = r.get("node_number")
-        area = r.get("geo_local_area") or ""
-        feat_id = f"pole_{block or 'na'}_{node if node is not None else idx+1}"
-        features.append({
-            "type": "Feature",
-            "id": feat_id,
-            "properties": {
-                "id": feat_id,
-                "facility_type": "street_lighting",
-                "name": f"路燈燈柱 ({block} 號街區 #{node})" if block else f"路燈燈柱 #{idx+1}",
-                "block_number": block,
-                "node_number": node,
-                "local_area": area,
-                "geo_local_area": area,
-                "geo_point_2d": pt,
-                "update_frequency": "每3個月更新 1 次 (Quarterly)"
-            },
-            "geometry": geometry
-        })
-    save_geojson_dual("vancouver_street_lighting_poles.geojson", {
-        "type": "FeatureCollection",
-        "generator": "VancouverGodsEye",
-        "total_count": len(features),
-        "updated_at": datetime.now(timezone.utc).isoformat(),
-        "update_frequency": "每3個月更新 1 次 (Quarterly)",
-        "features": features
-    })
-    print(f"[OK] Saved {len(features)} street lighting poles to backend and frontend")
-
-def generate_street_lighting_conduits():
-    print("Generating Street Lighting Conduits (street-lighting-conduits)...")
-    records = fetch_all_records("street-lighting-conduits")
-    features = []
-    for idx, r in enumerate(records):
-        geom_field = r.get("geom", {})
-        geometry = geom_field.get("geometry") if isinstance(geom_field, dict) else None
-        pt = r.get("geo_point_2d") or {}
-        
-        if not geometry:
-            continue
-
-        wireset = r.get("wireset_type") or "標準"
-        feat_id = f"conduit_{idx+1}"
-        features.append({
-            "type": "Feature",
-            "id": feat_id,
-            "properties": {
-                "id": feat_id,
-                "facility_type": "street_lighting_conduits",
-                "name": f"路燈地下配電管線 ({wireset})",
-                "wireset_type": wireset,
-                "geo_point_2d": pt,
-                "update_frequency": "每3個月更新 1 次 (Quarterly)"
-            },
-            "geometry": geometry
-        })
-    
-    save_geojson_dual("vancouver_street_lighting_conduits.geojson", {
-        "type": "FeatureCollection",
-        "generator": "VancouverGodsEye",
-        "total_count": len(features),
-        "updated_at": datetime.now(timezone.utc).isoformat(),
-        "update_frequency": "每3個月更新 1 次 (Quarterly)",
-        "features": features
-    })
-    print(f"[OK] Saved {len(features)} street lighting conduits to backend and frontend")
-
 def generate_traffic_conditions():
     print("Generating Traffic Conditions GeoJSON (Lions Gate Bridge ATIS)...")
     features = [
@@ -305,5 +223,4 @@ def generate_traffic_conditions():
 if __name__ == "__main__":
     generate_road_closures()
     generate_road_construction()
-    generate_street_lighting()
     generate_traffic_conditions()

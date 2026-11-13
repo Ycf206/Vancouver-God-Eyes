@@ -6,7 +6,7 @@ import {
   Milestone, Store, Trees, Landmark, Droplets, Clock, Sparkles, Navigation,
   CircleDollarSign, Toilet, Fuel, EvCharger, Hospital, TrainFront, ParkingMeter, Package, Waves, Fence, Repeat, BusFront, Dam,
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
-  UserShield, FireExtinguisher, Zap, Faucet, UtilityPole, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
+  UserShield, FireExtinguisher, Zap, ZapOff, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
   Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes
 } from 'lucide-react';
@@ -187,8 +187,7 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'hospitals' || lk === 'hospitals') return <Hospital className={`${cls} text-emerald-400`} />;
   if (c === 'disaster_hubs' || lk === 'disasterHubs') return <LifeBuoy className={`${cls} text-amber-400`} />;
   if (c === 'van_wifi' || lk === 'vanWifi') return <Wifi className={`${cls} text-cyan-400`} />;
-  if (c === 'water_distribution_mains' || lk === 'waterDistributionMains') return <Faucet className={`${cls} text-sky-400`} />;
-  if (c === 'street_lighting_conduits' || lk === 'streetLightingConduits' || lk === 'streetLighting') return <UtilityPole className={`${cls} text-amber-300`} />;
+  if (c === 'power_outages' || c === 'power_outage' || lk === 'powerOutages') return <ZapOff className={`${cls} text-amber-400`} />;
   if (c === 'local_area_boundary' || lk === 'localAreaBoundary') return <Grid3x2 className={`${cls} text-teal-400`} />;
   if (c === 'beach_water_quality' || lk === 'beachWaterQuality') return <Parasol className={`${cls} text-teal-300`} />;
   if (c === 'border_crossing' || lk === 'borderCrossing') return <Fence className={`${cls} text-cyan-400`} />;
@@ -345,17 +344,11 @@ export default function TopBar() {
     {
       id: 'utilities',
       label: '公共事業',
-      icon: Droplets,
-      iconColor: 'text-cyan-400',
+      icon: ZapOff,
+      iconColor: 'text-amber-400',
       matcher: (item: SearchTarget) => {
-        const targetKeys = [
-          'waterDistributionMains', 'sewerMains', 'streetLightingConduits',
-          'streetLighting'
-        ];
-        const targetCats = [
-          'water_distribution_mains', 'sewer_mains', 'street_lighting_conduits',
-          'street_lighting'
-        ];
+        const targetKeys = ['powerOutages'];
+        const targetCats = ['power_outages', 'power_outage', 'bchydro_outages'];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
           targetKeys.some(k => item.id?.startsWith(k));

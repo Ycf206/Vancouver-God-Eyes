@@ -88,10 +88,8 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   road_closures: 'roadClosures',
   road_construction: 'roadConstruction',
   snow_removal_routes: 'snowRemovalRoutes',
-  street_lighting: 'streetLighting',
-  street_lighting_conduits: 'streetLightingConduits',
-  water_distribution_mains: 'waterDistributionMains',
-  sewer_mains: 'sewerMains',
+  power_outages: 'powerOutages',
+  bchydro_outages_current: 'powerOutages',
   contours: 'contours',
   fire_halls: 'fireHalls',
   police: 'police',
@@ -191,10 +189,7 @@ const LAYER_CONTROLS_LIST = [
   { id: 'beachWaterQuality', name: '海灘水質', category: '環境', defaultColor: '#06b6d4' },
   { id: 'contours', name: '等高線高程', category: '地理', defaultColor: '#14b8a6' },
   { id: 'tideStations', name: '潮汐監測站', category: '地理', defaultColor: '#0ea5e9' },
-  { id: 'waterDistributionMains', name: '自來水管道', category: '公共事業', defaultColor: '#38bdf8' },
-  { id: 'sewerMains', name: '污水管道', category: '公共事業', defaultColor: '#14b8a6' },
-  { id: 'streetLighting', name: '路燈燈柱', category: '公共事業', defaultColor: '#f59e0b' },
-  { id: 'streetLightingConduits', name: '路燈電網管道', category: '公共事業', defaultColor: '#fbbf24' },
+  { id: 'powerOutages', name: '卑詩省停電即時情況', category: '公共事業', defaultColor: '#f97316' },
 ];
 
 // 系統 4 大標準分頁與按鈕類別 (對應主導航與探索面板)
@@ -213,7 +208,7 @@ function getSystemCategory(source: { id: string; category?: string; name?: strin
     'weather_monitoring', 'tides_hydrometric', 'beach_water', 'aurora_forecast', 'ski_resorts'
   ]);
   const utilitiesIds = new Set([
-    'water_distribution_mains', 'sewer_mains', 'street_lighting_conduits', 'street_lighting',
+    'bchydro_outages_current', 'bchydro_outages_restored', 'bchydro_outages_planned', 'power_outages', 'powerOutages',
     'fire_hydrants', 'aed', 'zoning_districts', 'contours'
   ]);
 

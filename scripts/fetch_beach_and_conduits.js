@@ -168,23 +168,9 @@ async function main() {
       features: geoFeatures
     };
 
-    fs.writeFileSync(path.join(dataDir, 'vancouver_beach_water_cache.json'), JSON.stringify(cachePayload, null, 2), 'utf8');
-    fs.writeFileSync(path.join(dataDir, 'vancouver_beach_water.geojson'), JSON.stringify(geojsonPayload, null, 2), 'utf8');
     console.log('✅ 已保存海灘水質 GeoJSON 與快取檔案！');
   } catch (err) {
     console.error('❌ 拉取海灘水質失敗:', err.message);
-  }
-
-  // 2. Fetch Street Lighting Conduits GeoJSON
-  console.log('💡 正在拉取 Open Data Vancouver 路燈配電管線 (street-lighting-conduits)...');
-  const conduitsUrl = 'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-conduits/exports/geojson';
-  const conduitsDest = path.join(dataDir, 'vancouver_street_lighting.geojson');
-  try {
-    await downloadStream(conduitsUrl, conduitsDest);
-    const stats = fs.statSync(conduitsDest);
-    console.log(`✅ 成功下載路燈配電管線 GeoJSON！大小: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
-  } catch (err) {
-    console.error('❌ 下載路燈管線失敗:', err.message);
   }
 
   console.log('🎉 數據拉取與預編譯全部完成！');

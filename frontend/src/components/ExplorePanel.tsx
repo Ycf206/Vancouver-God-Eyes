@@ -4303,9 +4303,14 @@ function ExploreContent() {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            closeAllExploreTabs();
-            setSearchTarget(null);
-            setExploreMinimized(false);
+            if (tabsToRender.length > 1) {
+              setExploreMinimized(false);
+              setShowCloseConfirm(true);
+            } else {
+              closeAllExploreTabs();
+              setSearchTarget(null);
+              setExploreMinimized(false);
+            }
           }}
           className="p-1 rounded-full hover:bg-rose-500/20 text-gray-400 hover:text-rose-400 transition-colors shrink-0"
           title="關閉探索面板"
@@ -6014,7 +6019,7 @@ function ExploreContent() {
                       fetchJobs(1);
                     }
                   }}
-                  placeholder="搜尋職位關鍵字 (如: Developer, Cook, Nurse)..."
+                  placeholder="搜尋職位關鍵字..."
                   className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-2 rounded-lg border border-[#232838] focus:outline-none focus:border-indigo-500/60 transition-colors"
                 />
                 {loadingJobs && (
@@ -8415,7 +8420,6 @@ function ExploreContent() {
               </div>
 
               <div className="flex items-center gap-1 shrink-0">
-                <span className="text-[10px] text-gray-400 mr-0.5">狀態</span>
                 {[
                   { id: 'all', label: '全部' },
                   { id: 'future', label: '即將進行' },
@@ -8917,7 +8921,6 @@ function ExploreContent() {
                   </div>
 
                   <div className="flex items-center gap-1 shrink-0">
-                    <span className="text-[10px] text-gray-400 mr-0.5">狀態</span>
                     {[
                       { id: 'all', label: '全部' },
                       { id: 'future', label: '即將進行' },
@@ -9357,7 +9360,6 @@ function ExploreContent() {
                   </div>
 
                   <div className="flex items-center gap-1 shrink-0">
-                    <span className="text-[10px] text-gray-400 mr-0.5">狀態</span>
                     {[
                       { id: 'all', label: '全部' },
                       { id: 'future', label: '即將進行' },
