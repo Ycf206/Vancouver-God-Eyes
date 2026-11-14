@@ -1560,6 +1560,7 @@ export default function AppMap() {
   const [evFilterOpen, setEvFilterOpen] = useState(true);
   const [showTimePeriodInfo, setShowTimePeriodInfo] = useState(false);
   const [timeInfoHovered, setTimeInfoHovered] = useState(false);
+  const [timeInfoPinned, setTimeInfoPinned] = useState(false);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
   const [mobileCoverageLegendOpen, setMobileCoverageLegendOpen] = useState(true);
   const [expandedMobileCarriers, setExpandedMobileCarriers] = useState<Partial<Record<MobileCarrierId, boolean>>>({});
@@ -1938,13 +1939,17 @@ export default function AppMap() {
     targetZoom: number;
   } | null>(null);
   const prevLayersRef = useRef(layers);
-  // 地圖右鍵自訂選單狀態
+  // 地圖右鍵 / 觸控長按自訂選單狀態
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
     lat: number;
     lon: number;
   } | null>(null);
+  const contextMenuRef = useRef<HTMLDivElement | null>(null);
+  const contextMenuOpenedAtRef = useRef<number>(0);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressStartRef = useRef<{ clientX: number; clientY: number } | null>(null);
   const [copiedCoordsToast, setCopiedCoordsToast] = useState(false);
   const [copiedFacilityToast, setCopiedFacilityToast] = useState(false);
   const [lionsGateRefreshTs, setLionsGateRefreshTs] = useState(Date.now());
@@ -2207,35 +2212,59 @@ export default function AppMap() {
       });
   }, [radiusExploration?.lat, radiusExploration?.lon, radiusExploration?.radiusM, radiusExploration?.active]);
 
+  const clearMapLongPress = useCallback(() => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+    longPressStartRef.current = null;
+  }, []);
+
+  useEffect(() => () => clearMapLongPress(), [clearMapLongPress]);
+
+  const openContextMenuAtClient = useCallback((clientX: number, clientY: number, lat: number, lon: number) => {
+    contextMenuOpenedAtRef.current = Date.now();
+    setContextMenu({
+      x: clientX,
+      y: clientY,
+      lat,
+      lon
+    });
+  }, []);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMapContextMenu = useCallback((e: any) => {
+    clearMapLongPress();
     if (e && e.lngLat) {
       if (e.preventDefault) e.preventDefault();
       if (e.originalEvent?.preventDefault) e.originalEvent.preventDefault();
-      const x = e.point?.x ?? e.originalEvent?.clientX ?? 0;
-      const y = e.point?.y ?? e.originalEvent?.clientY ?? 0;
-      setContextMenu({
-        x,
-        y,
-        lat: e.lngLat.lat,
-        lon: e.lngLat.lng
-      });
+      let clientX = e.originalEvent?.clientX;
+      let clientY = e.originalEvent?.clientY;
+      if (typeof clientX !== 'number' || typeof clientY !== 'number') {
+        const container = mapRef.current?.getMap?.()?.getContainer?.();
+        const rect = container?.getBoundingClientRect?.();
+        clientX = (rect?.left ?? 0) + (e.point?.x ?? 0);
+        clientY = (rect?.top ?? 0) + (e.point?.y ?? 0);
+      }
+      openContextMenuAtClient(clientX, clientY, e.lngLat.lat, e.lngLat.lng);
     }
-  }, []);
+  }, [clearMapLongPress, openContextMenuAtClient]);
 
-  // 點擊地圖外部或按下 ESC 時自動關閉右鍵選單
+  // 點擊或觸控選單外部或按下 ESC 時自動關閉右鍵選單
   useEffect(() => {
-    const handleGlobalClick = () => {
+    const handleGlobalPointerDown = (e: PointerEvent) => {
+      if (Date.now() - contextMenuOpenedAtRef.current < 350) return;
+      if (contextMenuRef.current && contextMenuRef.current.contains(e.target as Node)) return;
       setContextMenu(null);
     };
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setContextMenu(null);
     };
     if (contextMenu) {
-      window.addEventListener('click', handleGlobalClick);
+      window.addEventListener('pointerdown', handleGlobalPointerDown);
       window.addEventListener('keydown', handleKeyDown);
       return () => {
-        window.removeEventListener('click', handleGlobalClick);
+        window.removeEventListener('pointerdown', handleGlobalPointerDown);
         window.removeEventListener('keydown', handleKeyDown);
       };
     }
@@ -2543,6 +2572,7 @@ export default function AppMap() {
   useEffect(() => {
     setShowTimePeriodInfo(false);
     setTimeInfoHovered(false);
+    setTimeInfoPinned(false);
   }, [selectedFacility?.id]);
 
   // 實時動態切換單車徑篩選 (即時開關地圖上 4 類單車道)
@@ -8176,29 +8206,55 @@ export default function AppMap() {
     isExploreTrafficActive
   ]);
 
-  const getFloatingPanelPos = (offsetIdx: number) => {
-    switch (offsetIdx) {
-      case 0:
-        return 'top-[96px] left-4 md:left-[256px]';
-      case 1:
-        return 'top-[156px] md:top-[96px] left-4 md:left-[568px]';
-      case 2:
-        return 'top-[216px] md:top-[96px] left-4 md:left-[880px]';
-      case 3:
-        return 'top-[276px] md:top-[96px] left-4 md:left-[1190px]';
-      case 4:
-        return 'top-[336px] md:top-[96px] left-4 md:left-[1480px]';
-      default:
-        return 'top-[396px] md:top-[244px] left-4 md:left-[256px]';
-    }
-  };
-
   return (
     <div 
       className={`absolute top-[60px] bottom-0 right-0 z-0 transition-[left,width] duration-200 overflow-hidden ${
-        isLayerPanelOpen ? 'md:left-[240px] md:w-[calc(100%-240px)] left-0 w-full' : 'left-0 w-full'
+        isLayerPanelOpen ? 'lg:left-[240px] lg:w-[calc(100%-240px)] left-0 w-full' : 'left-0 w-full'
       }`}
     >
+      <div
+        className="relative w-full h-full"
+        onTouchStart={(e) => {
+          const targetEl = e.target as HTMLElement | null;
+          if (targetEl?.closest?.('.maplibregl-popup, .maplibregl-ctrl, .maplibregl-marker')) {
+            return;
+          }
+          if (e.touches.length !== 1) {
+            clearMapLongPress();
+            return;
+          }
+          const touch = e.touches[0];
+          longPressStartRef.current = { clientX: touch.clientX, clientY: touch.clientY };
+          if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+          longPressTimerRef.current = setTimeout(() => {
+            const map = mapRef.current?.getMap?.();
+            const start = longPressStartRef.current;
+            if (!map || !start) return;
+            const rect = map.getContainer().getBoundingClientRect();
+            const ptX = start.clientX - rect.left;
+            const ptY = start.clientY - rect.top;
+            const lngLat = map.unproject([ptX, ptY]);
+            if (lngLat) {
+              lastInteractiveItemClickRef.current = Date.now();
+              openContextMenuAtClient(start.clientX, start.clientY, lngLat.lat, lngLat.lng);
+            }
+            clearMapLongPress();
+          }, 520);
+        }}
+        onTouchMove={(e) => {
+          const start = longPressStartRef.current;
+          if (!start || e.touches.length !== 1) {
+            clearMapLongPress();
+            return;
+          }
+          const touch = e.touches[0];
+          if (Math.hypot(touch.clientX - start.clientX, touch.clientY - start.clientY) > 10) {
+            clearMapLongPress();
+          }
+        }}
+        onTouchEnd={clearMapLongPress}
+        onTouchCancel={clearMapLongPress}
+      >
       <Map
         ref={mapRef}
         canvasContextAttributes={{ preserveDrawingBuffer: true, antialias: true }}
@@ -8208,6 +8264,7 @@ export default function AppMap() {
         style={{ width: '100%', height: '100%' }}
         onDragStart={() => {
           isDraggingMapRef.current = true;
+          clearMapLongPress();
         }}
         onDragEnd={() => {
           isDraggingMapRef.current = false;
@@ -8221,6 +8278,7 @@ export default function AppMap() {
           updateScale();
         }}
         onZoomEnd={(e: any) => {
+          clearMapLongPress();
           updateScale();
           const z = e.viewState?.zoom;
           if (typeof z === 'number' && !isNaN(z) && Math.abs(z - currentZoomRef.current) > 0.15) {
@@ -12110,23 +12168,34 @@ export default function AppMap() {
                         </span>
                       </div>
 
-                      {/* 時段資訊觸碰鍵 (純 hover 觸發，不需點擊) */}
+                      {/* 時段資訊按鈕 (電腦端支援 Hover，手機與平板觸控支援點擊切換) */}
                       <div 
                         className="relative shrink-0"
-                        onMouseEnter={() => setTimeInfoHovered(true)}
-                        onMouseLeave={() => setTimeInfoHovered(false)}
+                        onPointerEnter={(e) => {
+                          if (e.pointerType !== 'touch') setTimeInfoHovered(true);
+                        }}
+                        onPointerLeave={(e) => {
+                          if (e.pointerType !== 'touch') setTimeInfoHovered(false);
+                        }}
                       >
-                        <div
-                          className="p-1 rounded-full text-blue-700 hover:text-blue-950 hover:bg-blue-600/20 transition-all cursor-pointer flex items-center justify-center"
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTimeInfoPinned((prev) => !prev);
+                          }}
+                          aria-expanded={timeInfoHovered || timeInfoPinned}
+                          className="p-1.5 -m-0.5 rounded-full text-blue-700 hover:text-blue-950 hover:bg-blue-600/20 transition-all cursor-pointer flex items-center justify-center"
                           title="查看時段說明"
                         >
                           <Info className="w-3.5 h-3.5" />
-                        </div>
+                        </button>
 
                         {/* 懸浮小資訊界面 */}
                         <div
-                          className={`absolute right-0 top-full mt-1.5 w-[220px] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
-                            timeInfoHovered ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+                          onClick={(e) => e.stopPropagation()}
+                          className={`absolute right-0 top-full mt-1.5 w-[220px] max-w-[calc(100vw-64px)] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
+                            (timeInfoHovered || timeInfoPinned) ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
                           }`}
                         >
                           <div className="flex items-center justify-between pb-1.5 border-b border-gray-700/60">
@@ -12422,23 +12491,34 @@ export default function AppMap() {
                         </span>
                       </div>
 
-                      {/* 時段資訊觸碰鍵 (純 hover 觸發，不需點擊) */}
+                      {/* 時段資訊按鈕 (電腦端支援 Hover，手機與平板觸控支援點擊切換) */}
                       <div 
                         className="relative shrink-0"
-                        onMouseEnter={() => setTimeInfoHovered(true)}
-                        onMouseLeave={() => setTimeInfoHovered(false)}
+                        onPointerEnter={(e) => {
+                          if (e.pointerType !== 'touch') setTimeInfoHovered(true);
+                        }}
+                        onPointerLeave={(e) => {
+                          if (e.pointerType !== 'touch') setTimeInfoHovered(false);
+                        }}
                       >
-                        <div
-                          className="p-1 rounded-full text-blue-700 hover:text-blue-950 hover:bg-blue-600/20 transition-all cursor-pointer flex items-center justify-center"
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTimeInfoPinned((prev) => !prev);
+                          }}
+                          aria-expanded={timeInfoHovered || timeInfoPinned}
+                          className="p-1.5 -m-0.5 rounded-full text-blue-700 hover:text-blue-950 hover:bg-blue-600/20 transition-all cursor-pointer flex items-center justify-center"
                           title="查看時段說明"
                         >
                           <Info className="w-3.5 h-3.5" />
-                        </div>
+                        </button>
 
                         {/* 懸浮小資訊界面 */}
                         <div
-                          className={`absolute right-0 top-full mt-1.5 w-[220px] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
-                            timeInfoHovered ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+                          onClick={(e) => e.stopPropagation()}
+                          className={`absolute right-0 top-full mt-1.5 w-[220px] max-w-[calc(100vw-64px)] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
+                            (timeInfoHovered || timeInfoPinned) ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
                           }`}
                         >
                           <div className="flex items-center justify-between pb-1.5 border-b border-gray-700/60">
@@ -18673,12 +18753,13 @@ export default function AppMap() {
       )}
 
       </Map>
+      </div>
 
       {/* 大數據圖層載入中提示 Toast (Heavy Layer Loading Toast) */}
       {Object.keys(loadingHeavyLayers).length > 0 && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[65] bg-[#141b26]/95 backdrop-blur-md text-cyan-300 rounded-full px-4 py-2 shadow-[0_10px_35px_rgba(0,0,0,0.6)] border border-cyan-500/50 flex items-center gap-2.5 animate-in fade-in slide-in-from-top-3 duration-200 select-none ring-1 ring-cyan-400/20">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[65] max-w-[calc(100vw-24px)] bg-[#141b26]/95 backdrop-blur-md text-cyan-300 rounded-full px-4 py-2 shadow-[0_10px_35px_rgba(0,0,0,0.6)] border border-cyan-500/50 flex items-center gap-2.5 animate-in fade-in slide-in-from-top-3 duration-200 select-none ring-1 ring-cyan-400/20">
           <div className="w-3.5 h-3.5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin shrink-0"></div>
-          <span className="text-xs font-semibold tracking-wide">
+          <span className="text-xs font-semibold tracking-wide truncate">
             正在載入 {Object.values(loadingHeavyLayers).join('、')} 數據...
           </span>
         </div>
@@ -18705,8 +18786,8 @@ export default function AppMap() {
               const map = mapRef.current?.getMap();
               if (map) {
                 const center = map.getCenter();
-                // 補償左側圖層面板展開時的視覺中央偏差（面板寬約 300px，向右補償 140px，無展開則為 0）
-                const offsetX = isLayerPanelOpen ? 140 : 0;
+                // 僅在左側面板於電腦版常駐並排（>=1024px）時補償視覺中央偏差
+                const offsetX = typeof window !== 'undefined' && window.innerWidth >= 1024 && isLayerPanelOpen ? 120 : 0;
                 map.flyTo({
                   center: [center.lng, center.lat],
                   zoom: zoomNotification.targetZoom,
@@ -18734,8 +18815,8 @@ export default function AppMap() {
         </div>
       )}
 
-      {/* 重設地圖視角至溫哥華地區按鈕 (Reset Map View to Vancouver) - 稍為移上一點 */}
-      <div className="absolute bottom-[180px] right-2.5 z-20 select-none">
+      {/* 重設地圖視角至溫哥華地區按鈕 (Reset Map View to Vancouver) - 行動與平板端上移避開探索列與縮放控制項 */}
+      <div className="absolute bottom-[calc(262px+env(safe-area-inset-bottom,0px))] lg:bottom-[180px] right-2.5 z-20 select-none">
         <button
           type="button"
           onClick={() => {
@@ -18747,22 +18828,22 @@ export default function AppMap() {
               duration: 1200
             });
           }}
-          className="group relative flex items-center justify-center w-[29px] h-[29px] bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded border border-[#2d3448] shadow-md backdrop-blur-md transition-all hover:border-emerald-500/60 hover:shadow-[0_0_10px_rgba(16,185,129,0.25)] active:scale-95 cursor-pointer"
+          className="group relative flex items-center justify-center w-9 h-9 lg:w-[29px] lg:h-[29px] bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded border border-[#2d3448] shadow-md backdrop-blur-md transition-all hover:border-emerald-500/60 hover:shadow-[0_0_10px_rgba(16,185,129,0.25)] active:scale-95 cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5 text-emerald-400 group-hover:-rotate-90 transition-transform duration-300 shrink-0" />
-          <span className="pointer-events-none absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="pointer-events-none hidden lg:block absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
             重設溫哥華視角
           </span>
         </button>
       </div>
 
-      {/* 3. 即時定位按鈕 (Geolocate Current Position) - 介於重設視角與縮放 + 按鈕之間 */}
-      <div className="absolute bottom-[144px] right-2.5 z-20 select-none">
+      {/* 3. 即時定位按鈕 (Geolocate Current Position) */}
+      <div className="absolute bottom-[calc(218px+env(safe-area-inset-bottom,0px))] lg:bottom-[144px] right-2.5 z-20 select-none">
         <button
           type="button"
           onClick={handleGeolocate}
           disabled={isLocating}
-          className={`group relative flex items-center justify-center w-[29px] h-[29px] rounded border shadow-md backdrop-blur-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 ${
+          className={`group relative flex items-center justify-center w-9 h-9 lg:w-[29px] lg:h-[29px] rounded border shadow-md backdrop-blur-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 ${
             isTrackingLocation || currentRealtimeLocation !== null
               ? 'bg-sky-500/25 border-sky-400 text-sky-300 shadow-[0_0_12px_rgba(14,165,233,0.5)] ring-1 ring-sky-400'
               : 'bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white border-[#2d3448] hover:border-sky-500/60 hover:shadow-[0_0_10px_rgba(14,165,233,0.3)]'
@@ -18776,14 +18857,14 @@ export default function AppMap() {
                 ? 'text-sky-300 animate-pulse'
                 : 'text-sky-400 group-hover:scale-110 transition-transform'
           }`} />
-          <span className="pointer-events-none absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="pointer-events-none hidden lg:block absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
             {isTrackingLocation || currentRealtimeLocation !== null ? '取消目前即時定位 (點擊解除)' : '即時定位目前位置'}
           </span>
         </button>
       </div>
 
-      {/* Google Earth 風格固定長度比例圖例 (Google Earth Style Fixed-Width Scale Ruler) - 手機版抬高至探索底欄上方避免被遮蔽 */}
-      <div className="absolute bottom-[calc(64px+env(safe-area-inset-bottom,0px))] sm:bottom-[38px] right-3 sm:right-14 z-20 pointer-events-none select-none">
+      {/* Google Earth 風格固定長度比例圖例 - 永遠置於縮放控制左側並於窄螢幕抬高至地圖版權標籤與探索底欄上方 */}
+      <div className="absolute bottom-[calc(116px+env(safe-area-inset-bottom,0px))] lg:bottom-[38px] right-14 z-20 pointer-events-none select-none">
         <div className="flex flex-col items-end">
           <div className="text-right text-[11px] font-sans font-semibold text-white tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)] mb-0.5 leading-none select-none">
             {scaleText}
@@ -18918,10 +18999,10 @@ export default function AppMap() {
                 setExploreSearchInput('');
               }}
               title="搜尋探索分頁"
-              className="group flex items-center justify-center h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-full text-xs font-medium transition-all duration-300 shrink-0 touch-manipulation cursor-pointer text-gray-300 hover:text-white hover:bg-white/10 border border-transparent mr-0.5"
+              className="group flex items-center justify-center h-9 sm:h-8.5 px-2.5 sm:px-3 rounded-full text-xs font-medium transition-all duration-300 shrink-0 touch-manipulation cursor-pointer text-gray-300 hover:text-white hover:bg-white/10 border border-transparent mr-0.5"
             >
               <Search className="w-3.5 h-3.5 shrink-0 text-emerald-400 group-hover:scale-110 transition-transform" />
-              <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px] text-emerald-300">
+              <span className="max-w-[75px] opacity-100 ml-1.5 lg:max-w-0 lg:overflow-hidden lg:opacity-0 lg:ml-0 lg:group-hover:max-w-[75px] lg:group-hover:opacity-100 lg:group-hover:ml-1.5 [@media(hover:none)]:!max-w-[75px] [@media(hover:none)]:!opacity-100 [@media(hover:none)]:!ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px] text-emerald-300">
                 搜尋分頁
               </span>
             </button>
@@ -18990,7 +19071,7 @@ export default function AppMap() {
                   }
                 }}
                 title={tab.label}
-                className={`group flex items-center justify-center h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-full text-xs font-medium transition-all duration-300 shrink-0 touch-manipulation cursor-pointer ${
+                className={`group flex items-center justify-center h-9 sm:h-8.5 px-2.5 sm:px-3 rounded-full text-xs font-medium transition-all duration-300 shrink-0 touch-manipulation cursor-pointer ${
                   isActive
                     ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
                     : 'text-gray-300 hover:text-white hover:bg-white/10 border border-transparent'
@@ -19000,7 +19081,7 @@ export default function AppMap() {
                 <span className={`transition-all duration-300 whitespace-nowrap text-[11px] ${
                   isActive 
                     ? 'max-w-[75px] opacity-100 ml-1.5' 
-                    : 'max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1.5'
+                    : 'max-w-[75px] opacity-100 ml-1.5 lg:max-w-0 lg:overflow-hidden lg:opacity-0 lg:ml-0 lg:group-hover:max-w-[75px] lg:group-hover:opacity-100 lg:group-hover:ml-1.5 [@media(hover:none)]:!max-w-[75px] [@media(hover:none)]:!opacity-100 [@media(hover:none)]:!ml-1.5'
                 }`}>
                   {tab.label}
                 </span>
@@ -19012,7 +19093,7 @@ export default function AppMap() {
 
       {/* 罪案地區圖例卡片 (Crime Rate Legend) */}
       {layers.crimeAreas && (
-        <div className="absolute bottom-6 left-4 z-20 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-[#2a2f3d] select-none max-w-[340px] animate-in fade-in duration-200">
+        <div className="absolute bottom-[calc(68px+env(safe-area-inset-bottom,0px))] left-2 sm:left-4 z-20 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-[#2a2f3d] select-none max-w-[calc(100vw-16px)] sm:max-w-[340px] animate-in fade-in duration-200">
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]"></span>
@@ -19055,8 +19136,8 @@ export default function AppMap() {
       {layers.trafficConditions && (
         <div 
           className={`absolute ${
-            layers.crimeAreas ? 'bottom-[155px]' : 'bottom-6'
-          } left-4 z-20 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3.5 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200 flex flex-col gap-1.5`}
+            layers.crimeAreas ? 'bottom-[calc(198px+env(safe-area-inset-bottom,0px))]' : 'bottom-[calc(68px+env(safe-area-inset-bottom,0px))]'
+          } left-2 sm:left-4 z-20 max-w-[calc(100vw-16px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3.5 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200 flex flex-col gap-1.5`}
         >
           <div className="flex items-center justify-between gap-3 text-[11px] font-semibold text-gray-200">
             <div className="flex items-center gap-1.5">
@@ -19481,9 +19562,19 @@ export default function AppMap() {
         );
       })()}
 
+      {/* 動態圖層篩選浮動面板流式容器 (Responsive Floating Filter Strip：電腦版自動並排折行、平板與手機不重疊不超出邊界) */}
+      <div
+        className={`fixed top-[68px] sm:top-[76px] right-2 sm:right-4 z-30 pointer-events-none flex flex-col sm:flex-row sm:flex-wrap items-start gap-2.5 max-h-[calc(100dvh-146px)] overflow-y-auto overflow-x-hidden transition-[left] duration-200 ${
+          isLayerPanelOpen ? 'left-2 sm:left-4 lg:left-[256px]' : 'left-2 sm:left-4'
+        }`}
+      >
       {/* 停車收費錶動態篩選器 (Parking Meter Filter Popup) */}
       {layers.parkingMeters && (
-        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-blue-500/50 select-none animate-in fade-in duration-200 ${getFloatingPanelPos(0)}`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(300px,calc(100vw-16px))] sm:w-[300px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-blue-500/50 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-blue-500/20 text-blue-400">
@@ -19622,9 +19713,11 @@ export default function AppMap() {
 
       {/* 摩托車停車位動態篩選器 (Motorcycle Parking Filter Popup) */}
       {layers.motorcycleParking && (
-        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-blue-500/50 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos(layers.parkingMeters ? 1 : 0)
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(300px,calc(100vw-16px))] sm:w-[300px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-blue-500/50 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-blue-500/20 text-blue-400">
@@ -19763,9 +19856,11 @@ export default function AppMap() {
 
       {/* 加油站品牌動態篩選器 (Gas Station Filter Popup) */}
       {layers.fuel && (
-        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0))
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(300px,calc(100vw-16px))] sm:w-[300px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-amber-500/20 text-amber-400">
@@ -19864,9 +19959,11 @@ export default function AppMap() {
 
       {/* 電動車充電站規格篩選器 (EV & Tesla Filter Popup) */}
       {(layers.evCharging || layers.tesla) && (
-        <div className={`fixed z-30 w-[310px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0))
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(310px,calc(100vw-16px))] sm:w-[310px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-emerald-500/20 text-emerald-400">
@@ -19975,9 +20072,11 @@ export default function AppMap() {
 
       {/* 共享汽車營運品牌圖例與篩選 (Car Sharing Legend & Filter Popup) */}
       {layers.carSharing && (
-        <div className={`fixed z-30 w-[250px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-cyan-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0))
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(250px,calc(100vw-16px))] sm:w-[250px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-cyan-500/40 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-cyan-500/20 text-cyan-400">
@@ -20098,9 +20197,11 @@ export default function AppMap() {
 
       {/* 單車徑路網圖例與篩選 (Bikeways Network Legend & Filter Popup) */}
       {layers.bikeways && (
-        <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(260px,calc(100vw-16px))] sm:w-[260px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-emerald-500/20 text-emerald-400">
@@ -20213,9 +20314,11 @@ export default function AppMap() {
 
       {/* 貨車路線資訊與地圖按鈕小界面 (Truck Routes Info & Map Modal Trigger) */}
       {layers.truckRoutes && (
-        <div className={`fixed z-30 w-[280px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-sky-500/50 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0))
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(280px,calc(100vw-16px))] sm:w-[280px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-sky-500/50 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-sky-500/20 text-sky-400">
@@ -20274,9 +20377,11 @@ export default function AppMap() {
 
       {/* 路口安全相機圖例與篩選 (Intersection Safety Cameras Legend & Filter Popup) */}
       {layers.safetyCameras && (
-        <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-rose-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0) + (layers.truckRoutes ? 1 : 0))
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(260px,calc(100vw-16px))] sm:w-[260px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-rose-500/40 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-rose-500/20 text-rose-400 flex items-center justify-center">
@@ -20396,18 +20501,11 @@ export default function AppMap() {
 
       {/* 私人停車場圖例與篩選 (ImPark Lots Legend & Filter Popup) */}
       {layers.impark && (
-        <div className={`fixed z-30 w-[270px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-red-500/50 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos(
-            (layers.parkingMeters ? 1 : 0) + 
-            (layers.motorcycleParking ? 1 : 0) + 
-            (layers.fuel ? 1 : 0) + 
-            ((layers.evCharging || layers.tesla) ? 1 : 0) + 
-            (layers.carSharing ? 1 : 0) + 
-            (layers.bikeways ? 1 : 0) +
-            (layers.truckRoutes ? 1 : 0) +
-            (layers.safetyCameras ? 1 : 0)
-          )
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(270px,calc(100vw-16px))] sm:w-[270px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-red-500/50 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-[#d9261c]/20 text-[#d9261c] flex items-center justify-center">
@@ -20561,19 +20659,11 @@ export default function AppMap() {
 
       {/* 郵寄服務圖例與篩選 (Courier Filter Popup: Canada Post, FedEx, UPS, Purolator, DHL) */}
       {layers.canadaPost && (
-        <div className={`fixed z-30 w-[270px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-purple-500/50 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos(
-            (layers.parkingMeters ? 1 : 0) + 
-            (layers.motorcycleParking ? 1 : 0) + 
-            (layers.fuel ? 1 : 0) + 
-            ((layers.evCharging || layers.tesla) ? 1 : 0) + 
-            (layers.carSharing ? 1 : 0) + 
-            (layers.bikeways ? 1 : 0) +
-            (layers.truckRoutes ? 1 : 0) +
-            (layers.safetyCameras ? 1 : 0) +
-            (layers.impark ? 1 : 0)
-          )
-        }`}>
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(270px,calc(100vw-16px))] sm:w-[270px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-purple-500/50 select-none animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="w-5 h-5 rounded-full bg-[#4D148C] text-white flex items-center justify-center font-bold text-[10px] shadow-sm">
@@ -20702,18 +20792,9 @@ export default function AppMap() {
       {/* YVR 機場內部地圖：客運大樓與樓層選擇器 */}
       {layers.airportIndoor && (
         <div
-          className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-sky-500/50 select-none animate-in fade-in duration-200 ${getFloatingPanelPos(
-            (layers.parkingMeters ? 1 : 0) +
-            (layers.motorcycleParking ? 1 : 0) +
-            (layers.fuel ? 1 : 0) +
-            ((layers.evCharging || layers.tesla) ? 1 : 0) +
-            (layers.carSharing ? 1 : 0) +
-            (layers.bikeways ? 1 : 0) +
-            (layers.truckRoutes ? 1 : 0) +
-            (layers.safetyCameras ? 1 : 0) +
-            (layers.impark ? 1 : 0) +
-            (layers.canadaPost ? 1 : 0)
-          )}`}
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(300px,calc(100vw-16px))] sm:w-[300px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-sky-500/50 select-none animate-in fade-in duration-200"
         >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2 min-w-0">
@@ -20943,19 +21024,9 @@ export default function AppMap() {
       {/* 流動網絡篩選面板 (Telus / Rogers / Virgin Plus / Bell / Freedom Mobile + 制式等級子篩選) */}
       {layers.mobileCoverage && (
         <div
-          className={`fixed z-30 w-[288px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-purple-500/40 select-none animate-in fade-in duration-200 ${getFloatingPanelPos(
-            (layers.parkingMeters ? 1 : 0) +
-            (layers.motorcycleParking ? 1 : 0) +
-            (layers.fuel ? 1 : 0) +
-            ((layers.evCharging || layers.tesla) ? 1 : 0) +
-            (layers.carSharing ? 1 : 0) +
-            (layers.bikeways ? 1 : 0) +
-            (layers.truckRoutes ? 1 : 0) +
-            (layers.safetyCameras ? 1 : 0) +
-            (layers.impark ? 1 : 0) +
-            (layers.canadaPost ? 1 : 0) +
-            (layers.airportIndoor ? 1 : 0)
-          )}`}
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(288px,calc(100vw-16px))] sm:w-[288px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-purple-500/40 select-none animate-in fade-in duration-200"
         >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -21260,10 +21331,11 @@ export default function AppMap() {
           )}
         </div>
       )}
+      </div>
 
       {/* 降水雷達地圖即時狀態 HUD (Floating Radar HUD) */}
       {isRadarActive && radarTilePath && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 bg-[#12151e]/90 backdrop-blur-md px-4 py-2 rounded-full border border-cyan-500/50 shadow-2xl flex items-center gap-3 select-none text-xs text-white animate-in fade-in duration-200">
+        <div className="fixed bottom-[calc(68px+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 z-30 max-w-[calc(100vw-16px)] bg-[#12151e]/90 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl sm:rounded-full border border-cyan-500/50 shadow-2xl flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 sm:gap-3 select-none text-xs text-white animate-in fade-in duration-200">
           <div className="flex items-center gap-1.5 text-cyan-400 font-bold">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
             <span>🌧️ 即時降水雷達回波</span>
@@ -21300,7 +21372,7 @@ export default function AppMap() {
         <div 
           onWheel={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
-          className="fixed top-[72px] left-4 md:left-[256px] z-30 w-[330px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-cyan-500/50 flex flex-col max-h-[calc(100vh-100px)] animate-in fade-in duration-150 select-none"
+          className={`fixed top-[68px] sm:top-[76px] ${isLayerPanelOpen ? 'left-2 sm:left-4 lg:left-[256px]' : 'left-2 sm:left-4'} z-30 w-[330px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-cyan-500/50 flex flex-col max-h-[calc(100dvh-146px)] animate-in fade-in duration-150 select-none`}
         >
           <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
             <div className="flex items-center gap-2">
@@ -22197,8 +22269,8 @@ export default function AppMap() {
                     <button
                       type="button"
                       onClick={() => setSeabusFreqHovered(v => !v)}
-                      onMouseEnter={() => setSeabusFreqHovered(true)}
-                      onMouseLeave={() => setSeabusFreqHovered(false)}
+                      onPointerEnter={(e) => { if (e.pointerType !== 'touch') setSeabusFreqHovered(true); }}
+                      onPointerLeave={(e) => { if (e.pointerType !== 'touch') setSeabusFreqHovered(false); }}
                       className="p-1 rounded text-cyan-300 hover:text-cyan-200 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-800/60 flex items-center justify-center cursor-pointer transition-colors shadow-xs"
                       title="班距頻率說明"
                     >
@@ -22814,7 +22886,7 @@ export default function AppMap() {
         <div 
           onWheel={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
-          className="fixed top-[72px] right-4 z-40 w-[420px] sm:w-[490px] md:w-[530px] max-w-[calc(100vw-24px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2c3244] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+          className="fixed top-[72px] right-3 sm:right-4 z-40 w-[calc(100vw-24px)] sm:w-[490px] md:w-[530px] max-w-[calc(100vw-24px)] lg:max-w-[calc(100vw-272px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2c3244] flex flex-col max-h-[calc(100dvh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
         >
           {/* Header */}
           <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
@@ -23424,9 +23496,9 @@ export default function AppMap() {
       )}
 
       {/* YVR 機場氣象攝影機 Modal (FAA WeatherCams) */}
-      {isAirportCameraModalOpen && (
-        <div className="fixed inset-0 z-[80] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 select-none animate-in fade-in duration-200">
-          <div className="bg-[#161922] border border-[#2a2f3d] rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      {isAirportCameraModalOpen && typeof document !== 'undefined' && createPortal((
+        <div className="fixed inset-0 z-[150] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 select-none animate-in fade-in duration-200">
+          <div className="bg-[#161922] border border-[#2a2f3d] rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90dvh]">
             {/* Header */}
             <div className="p-3 border-b border-[#262c3d] flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -23599,10 +23671,10 @@ export default function AppMap() {
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
 
       {/* 航線指南手冊大圖 Lightbox (Route Brochure Lightbox) */}
-      {enlargedBrochure && (
+      {enlargedBrochure && typeof document !== 'undefined' && createPortal((
         <div
           onClick={() => setEnlargedBrochure(null)}
           onWheel={(e) => e.stopPropagation()}
@@ -23613,7 +23685,7 @@ export default function AppMap() {
             onClick={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
-            className="relative w-[94vw] max-w-5xl h-[82vh] max-h-[82vh] bg-[#161922] border border-[#2a2f3d] rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+            className="relative w-[94vw] max-w-5xl h-[82dvh] max-h-[82dvh] bg-[#161922] border border-[#2a2f3d] rounded-2xl overflow-hidden shadow-2xl flex flex-col"
           >
             <div className="p-3 sm:p-4 border-b border-[#262c3d] bg-[#1a1f2b] flex items-center justify-between shrink-0">
               <span className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
@@ -23652,11 +23724,11 @@ export default function AppMap() {
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
 
       {/* 系統與 API 初始載入畫面 (API Data & Image Preloading Screen) */}
-      {isInitialApiLoading && (
-        <div className="fixed inset-0 z-[100] bg-[#0c0e14]/90 backdrop-blur-md flex flex-col items-center justify-center select-none transition-opacity duration-300">
+      {isInitialApiLoading && typeof document !== 'undefined' && createPortal((
+        <div className="fixed inset-0 z-[200] bg-[#0c0e14]/90 backdrop-blur-md flex flex-col items-center justify-center p-4 select-none transition-opacity duration-300">
           <div className="bg-[#161922] border border-[#2a2f3d] rounded-2xl p-6 shadow-2xl max-w-[360px] w-[90%] flex flex-col items-center gap-4">
             <div className="relative flex items-center justify-center w-14 h-14">
               <div className="absolute inset-0 rounded-full border-2 border-emerald-500/20"></div>
@@ -23687,17 +23759,18 @@ export default function AppMap() {
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
 
       {/* 自訂地圖右鍵選單 (Custom Map Context Menu) */}
-      {contextMenu && (
+      {contextMenu && typeof document !== 'undefined' && createPortal((
         <div 
+          ref={contextMenuRef}
           style={{ 
-            left: `${Math.min(contextMenu.x, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 250)}px`, 
-            top: `${Math.min(contextMenu.y, (typeof window !== 'undefined' ? window.innerHeight : 800) - 260)}px` 
+            left: `${Math.max(8, Math.min(contextMenu.x, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 236))}px`, 
+            top: `${Math.max(68, Math.min(contextMenu.y, (typeof window !== 'undefined' ? window.innerHeight : 800) - 300))}px` 
           }}
           onClick={(e) => e.stopPropagation()}
-          className="fixed z-50 w-56 bg-[#11141d] border border-[#2b354a] rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] p-1.5 flex flex-col gap-1 text-xs select-none animate-in fade-in zoom-in-95 duration-150"
+          className="fixed z-[90] w-56 max-h-[calc(100dvh-76px)] overflow-y-auto bg-[#11141d] border border-[#2b354a] rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] p-1.5 flex flex-col gap-1 text-xs select-none animate-in fade-in zoom-in-95 duration-150"
         >
           {/* Header with Coordinates and Neighbourhood */}
           <div className="px-2.5 py-1.5 bg-[#181d2a] rounded-lg border border-[#242d40] flex flex-col gap-0.5">
@@ -23844,7 +23917,7 @@ export default function AppMap() {
             </>
           )}
         </div>
-      )}
+      ), document.body)}
 
       {/* 複製經緯度成功 Toast 提示 */}
       {copiedCoordsToast && (
@@ -24347,7 +24420,7 @@ export default function AppMap() {
       )}
 
       {/* 系統維護模式全螢幕通知 (System Maintenance Fullscreen Notice) */}
-      {maintenanceState?.enabled && (
+      {maintenanceState?.enabled && typeof document !== 'undefined' && createPortal((
         <div className="fixed inset-0 z-[9999] bg-[#0c0e14] flex flex-col items-center justify-center p-6 text-center select-none animate-in fade-in duration-200">
           <div className="max-w-md w-full bg-[#141824] border border-amber-500/40 rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-5">
             <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
@@ -24375,7 +24448,7 @@ export default function AppMap() {
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
   );
 }

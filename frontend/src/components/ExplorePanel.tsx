@@ -12,7 +12,7 @@ import { Landmark,
   PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle,
   Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
   Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy, Ticket,
-  CircleChevronLeft, CircleChevronRight, Globe, BarChart2, ChartNoAxesCombined
+  CircleChevronLeft, CircleChevronRight, Globe, BarChart2, ChartNoAxesCombined, ArrowLeftRight
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
@@ -973,6 +973,13 @@ function ExploreContent() {
   const [showCloseConfirm, setShowCloseConfirm] = useState<boolean>(false);
   const [draggedTab, setDraggedTab] = useState<ExploreTabType | null>(null);
   const [dragOverTab, setDragOverTab] = useState<ExploreTabType | null>(null);
+  const [isTabReorderMode, setIsTabReorderMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    if ((openExploreTabs?.length ?? 0) <= 1 && isTabReorderMode) {
+      setIsTabReorderMode(false);
+    }
+  }, [openExploreTabs?.length, isTabReorderMode]);
   const [satelliteModalOpen, setSatelliteModalOpen] = useState<boolean>(false);
   const [satelliteChannel, setSatelliteChannel] = useState<'geocolor' | 'ir' | 'water_vapor'>('geocolor');
   const [satelliteRefreshKey, setSatelliteRefreshKey] = useState<number>(0);
@@ -4325,7 +4332,7 @@ function ExploreContent() {
 
   return (
     <div 
-      className="fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-50 sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-96px)] bottom-[calc(62px+env(safe-area-inset-bottom,0px))] sm:bottom-auto max-h-[calc(100dvh-130px)] sm:max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-[45] sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-88px)] lg:max-w-[calc(100vw-328px)] bottom-[calc(62px+env(safe-area-inset-bottom,0px))] sm:bottom-auto max-h-[calc(100dvh-130px)] sm:max-h-[calc(100dvh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 1. 當多於1個分頁時的關閉確認對話框 (Close Confirmation Dialog) */}
@@ -4366,21 +4373,29 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* 2. 瀏覽器風格多分頁導航標籤列，支援拖曳左右互換次序 (Draggable Tab Bar) */}
+      {/* 2. 瀏覽器風格多分頁導航標籤列，支援拖曳及觸控左右互換次序 */}
       <div className="flex items-center gap-1.5 pb-2 mb-2.5 border-b border-[#262b38] shrink-0 min-w-0">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-1 min-w-0 pr-1">
-          {tabsToRender.map((tabId) => {
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-1 min-w-0 pr-1 touch-pan-x">
+          {tabsToRender.map((tabId, tabIdx) => {
             const info = tabInfoMap[tabId] || { label: tabId, icon: Compass, color: 'text-emerald-400' };
             const TabIcon = info.icon;
             const isSelected = activeTab === tabId;
             const shortLabel = tabShortTitleMap[tabId] || info.label;
             const isDragging = draggedTab === tabId;
             const isDragOver = dragOverTab === tabId;
+            const moveTabBy = (delta: -1 | 1) => {
+              const targetIdx = tabIdx + delta;
+              if (targetIdx < 0 || targetIdx >= tabsToRender.length || !setOpenExploreTabs) return;
+              const nextTabs = [...tabsToRender];
+              const [item] = nextTabs.splice(tabIdx, 1);
+              nextTabs.splice(targetIdx, 0, item);
+              setOpenExploreTabs(nextTabs);
+            };
 
             return (
               <div
                 key={tabId}
-                draggable
+                draggable={!isTabReorderMode}
                 onDragStart={(e) => {
                   setDraggedTab(tabId);
                   e.dataTransfer.effectAllowed = 'move';
@@ -4420,13 +4435,17 @@ function ExploreContent() {
                   setDragOverTab(null);
                 }}
                 onClick={() => {
+                  if (isTabReorderMode) {
+                    setExploreTab(tabId);
+                    return;
+                  }
                   if (isSelected) {
                     setExploreMinimized(true);
                   } else {
                     setExploreTab(tabId);
                   }
                 }}
-                className={`group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-grab active:cursor-grabbing transition-all border shrink-0 select-none ${
+                className={`group flex items-center gap-1.5 px-2.5 py-1.5 min-h-[32px] rounded-lg text-xs font-semibold cursor-grab active:cursor-grabbing transition-all border shrink-0 select-none ${
                   isDragging ? 'opacity-40 scale-95' : ''
                 } ${
                   isDragOver ? 'ring-2 ring-emerald-400 border-emerald-400 scale-105' : ''
@@ -4437,24 +4456,68 @@ function ExploreContent() {
                 }`}
                 title={`可拖曳排序：${info.label}`}
               >
+                {isTabReorderMode && tabsToRender.length > 1 && (
+                  <button
+                    type="button"
+                    disabled={tabIdx === 0}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveTabBy(-1);
+                    }}
+                    className="p-0.5 rounded bg-white/5 hover:bg-emerald-500/20 text-gray-300 disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                    title="左移分頁"
+                  >
+                    <ChevronLeft className="w-3 h-3" />
+                  </button>
+                )}
                 <TabIcon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? info.color : 'text-gray-400 group-hover:text-gray-300'}`} />
                 <span className="whitespace-nowrap">{shortLabel}</span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleResetExplorationMapState(tabId);
-                    closeExploreTab(tabId);
-                  }}
-                  className="ml-0.5 p-0.5 rounded hover:bg-white/10 text-gray-400 hover:text-rose-400 transition-colors"
-                  title={`關閉 ${shortLabel} 分頁`}
-                >
-                  <X className="w-3 h-3" />
-                </button>
+                {isTabReorderMode && tabsToRender.length > 1 ? (
+                  <button
+                    type="button"
+                    disabled={tabIdx === tabsToRender.length - 1}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveTabBy(1);
+                    }}
+                    className="p-0.5 rounded bg-white/5 hover:bg-emerald-500/20 text-gray-300 disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                    title="右移分頁"
+                  >
+                    <ChevronRight className="w-3 h-3" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleResetExplorationMapState(tabId);
+                      closeExploreTab(tabId);
+                    }}
+                    className="ml-0.5 p-0.5 rounded hover:bg-white/10 text-gray-400 hover:text-rose-400 transition-colors"
+                    title={`關閉 ${shortLabel} 分頁`}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
               </div>
             );
           })}
         </div>
+
+        {tabsToRender.length > 1 && (
+          <button
+            type="button"
+            onClick={() => setIsTabReorderMode((prev) => !prev)}
+            className={`p-1 rounded-md transition-colors shrink-0 cursor-pointer ${
+              isTabReorderMode
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50'
+                : 'text-gray-400 hover:text-white hover:bg-[#252a38]'
+            }`}
+            title={isTabReorderMode ? '完成分頁排序' : '左右調整分頁順序 (觸控友善)'}
+          >
+            <ArrowLeftRight className="w-3.5 h-3.5" />
+          </button>
+        )}
 
         {/* 最小化按鈕 (一條橫線) */}
         <button
@@ -7697,8 +7760,10 @@ function ExploreContent() {
               {/* 感嘆號按鈕顯示數據說明 */}
               <button
                 type="button"
-                onClick={() => setShowCrashDisclaimer(!showCrashDisclaimer)}
-                onMouseEnter={() => setShowCrashDisclaimer(true)}
+                onClick={() => setShowCrashDisclaimer((prev) => !prev)}
+                onPointerEnter={(e) => {
+                  if (e.pointerType !== 'touch') setShowCrashDisclaimer(true);
+                }}
                 className="p-0.5 text-rose-400/80 hover:text-rose-300 transition-colors cursor-pointer rounded-full hover:bg-rose-950/50"
                 title="ICBC 數據說明"
               >
@@ -7707,7 +7772,9 @@ function ExploreContent() {
 
               {showCrashDisclaimer && (
                 <div 
-                  onMouseLeave={() => setShowCrashDisclaimer(false)}
+                  onPointerLeave={(e) => {
+                    if (e.pointerType !== 'touch') setShowCrashDisclaimer(false);
+                  }}
                   className="absolute right-0 top-6 w-[300px] sm:w-[360px] bg-[#141824] border border-rose-500/50 rounded-xl shadow-2xl p-3 z-50 text-[11px] leading-relaxed text-gray-200 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-md"
                 >
                   <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-rose-500/30">
@@ -10074,7 +10141,7 @@ function ExploreContent() {
                 <button
                   key={sub.id}
                   onClick={() => setAlertsSubTab(sub.id as any)}
-                  className={`flex items-center justify-center group py-1 px-2 rounded-lg transition-all duration-200 text-xs font-semibold select-none min-h-[30px] shrink-0 ${
+                  className={`flex items-center justify-center group py-1 px-2.5 rounded-lg transition-all duration-200 text-xs font-semibold select-none min-h-[34px] shrink-0 ${
                     isSelected
                       ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-sm ring-1 ring-rose-500/30'
                       : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838] hover:bg-[#1c2230]'
@@ -10082,7 +10149,13 @@ function ExploreContent() {
                   title={`${sub.label} (${sub.count})`}
                 >
                   <Icon className={`w-3.5 h-3.5 ${sub.color} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
-                  <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[70px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
+                  <span
+                    className={`transition-all duration-300 whitespace-nowrap text-[11px] ${
+                      isSelected
+                        ? 'max-w-[70px] opacity-100 ml-1.5'
+                        : 'max-w-[70px] opacity-100 ml-1.5 lg:max-w-0 lg:overflow-hidden lg:opacity-0 lg:ml-0 lg:group-hover:max-w-[70px] lg:group-hover:opacity-100 lg:group-hover:ml-1.5 [@media(hover:none)]:!max-w-[70px] [@media(hover:none)]:!opacity-100 [@media(hover:none)]:!ml-1.5'
+                    }`}
+                  >
                     {sub.label}
                   </span>
                   <span className={`text-[10px] ml-1 font-mono transition-colors ${
@@ -11562,9 +11635,9 @@ function ExploreContent() {
       )}
 
       {/* 10.7 外部職缺網頁前往確認對話框 */}
-      {externalJobConfirmation && (
+      {externalJobConfirmation && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[140] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[160] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
           onClick={() => setExternalJobConfirmation(null)}
         >
           <div 
@@ -11617,7 +11690,8 @@ function ExploreContent() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

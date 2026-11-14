@@ -443,7 +443,7 @@ export default function LayerPanel() {
         title={title}
         aria-label={title}
         aria-pressed={isActive}
-        className={`flex items-center justify-center w-full h-7 rounded border transition-all duration-150 cursor-pointer ${
+        className={`flex items-center justify-center w-full min-h-[36px] lg:min-h-0 lg:h-7 rounded border transition-all duration-150 cursor-pointer ${
           isActive
             ? 'bg-[#1a1f2e] border-emerald-500/60 text-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.15)]'
             : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-gray-200'
@@ -458,6 +458,13 @@ export default function LayerPanel() {
   const renderEntryButton = (entry: LayerCatalogEntry, forceIconOnly?: boolean) => {
     const Icon = ICON_MAP[entry.iconKey];
     const iconOnly = forceIconOnly ?? Boolean(entry.iconOnly);
+    const mobileCompactLabelMap: Record<string, string> = {
+      skytrainTrains: '列車',
+      skytrainRoutes: '車站',
+      skytrainFareZones: '車區',
+      airportIndoor: '航廈圖',
+    };
+    const compactLabel = mobileCompactLabelMap[entry.id] || entry.buttonLabel;
 
     if (entry.isSpecialAction && entry.isSpecialAction !== 'contours') {
       const specialStateMap = {
@@ -472,7 +479,7 @@ export default function LayerPanel() {
           key={entry.id}
           type="button"
           onClick={() => action.toggle()}
-          className={`group relative flex items-center justify-center h-7 rounded border text-[10.5px] transition-all duration-150 select-none cursor-pointer ${
+          className={`group relative flex flex-col lg:flex-row [@media(hover:none)]:flex-col items-center justify-center gap-0.5 lg:gap-0 [@media(hover:none)]:gap-0.5 px-1 py-1 lg:p-0 [@media(hover:none)]:px-1 [@media(hover:none)]:py-1 min-h-[40px] lg:min-h-0 lg:h-7 [@media(hover:none)]:min-h-[40px] rounded border text-[10.5px] transition-all duration-150 select-none cursor-pointer ${
             isSpecialActive
               ? `${entry.activeBg} ${entry.activeBorder} ${entry.colorClass} ${entry.activeShadow || ''} font-semibold`
               : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-white font-normal'
@@ -480,7 +487,10 @@ export default function LayerPanel() {
           title={entry.title || entry.name}
         >
           <Icon className={`w-3.5 h-3.5 shrink-0 ${isSpecialActive ? entry.colorClass : 'text-gray-500 group-hover:text-white'}`} />
-          <span className="pointer-events-none absolute bottom-full mb-1.5 hidden group-hover:flex items-center px-2 py-0.5 rounded bg-gray-900 border border-gray-700 text-white text-[10px] whitespace-nowrap shadow-lg z-50">
+          <span className="text-[9.5px] leading-none truncate max-w-full lg:hidden [@media(hover:none)]:inline">
+            {compactLabel}
+          </span>
+          <span className="pointer-events-none absolute bottom-full mb-1.5 hidden [@media(hover:hover)]:lg:group-hover:flex items-center px-2 py-0.5 rounded bg-gray-900 border border-gray-700 text-white text-[10px] whitespace-nowrap shadow-lg z-50">
             {entry.name}
           </span>
         </button>
@@ -514,7 +524,11 @@ export default function LayerPanel() {
         }}
         disabled={isDisabled}
         style={customStyle}
-        className={`flex items-center gap-1.5 px-2 h-7 rounded border text-[10.5px] transition-all duration-150 justify-center truncate ${
+        className={`flex items-center justify-center rounded border text-[10.5px] transition-all duration-150 truncate ${
+          iconOnly
+            ? 'flex-col lg:flex-row [@media(hover:none)]:flex-col gap-0.5 lg:gap-1.5 [@media(hover:none)]:gap-0.5 px-1 py-1 lg:px-2 lg:py-0 [@media(hover:none)]:px-1 [@media(hover:none)]:py-1 min-h-[40px] lg:min-h-0 lg:h-7 [@media(hover:none)]:min-h-[40px]'
+            : 'gap-1.5 px-2 min-h-[36px] lg:min-h-0 lg:h-7'
+        } ${
           isDisabled
             ? 'bg-[#151619] border-[#222327] text-gray-600 opacity-40 cursor-not-allowed font-normal'
             : isActive
@@ -527,7 +541,13 @@ export default function LayerPanel() {
           className={`w-3.5 h-3.5 shrink-0 ${isDisabled ? 'text-gray-600' : isActive ? '' : 'text-gray-500'}`}
           style={!isDisabled && isActive && customColor ? { color: customColor } : undefined}
         />
-        {!iconOnly && <span className="truncate">{entry.buttonLabel}</span>}
+        {iconOnly ? (
+          <span className="text-[9.5px] leading-none truncate max-w-full lg:hidden [@media(hover:none)]:inline">
+            {compactLabel}
+          </span>
+        ) : (
+          <span className="truncate">{entry.buttonLabel}</span>
+        )}
       </button>
     );
   };
@@ -586,9 +606,9 @@ export default function LayerPanel() {
     );
   };
 
-  // On mobile initial load, default to closed
+  // On mobile, landscape phone (<500px height), or tablet (<1024px) initial load, default to closed drawer
   React.useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+    if (typeof window !== 'undefined' && (window.innerWidth < 1024 || window.innerHeight < 500)) {
       if (isLayerPanelOpen) toggleLayerPanel();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -604,16 +624,16 @@ export default function LayerPanel() {
 
   return (
     <>
-      {/* Mobile Backdrop */}
+      {/* Mobile & Tablet Overlay Backdrop */}
       <div
         onClick={toggleLayerPanel}
-        className="fixed inset-0 top-[60px] z-40 bg-black/60 backdrop-blur-xs md:hidden animate-in fade-in duration-200"
+        className="fixed inset-0 top-[60px] z-40 bg-black/60 backdrop-blur-xs lg:hidden animate-in fade-in duration-200"
       />
 
       <div
         onWheel={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
-        className="fixed top-[60px] left-0 bottom-0 z-50 md:z-30 w-[280px] sm:w-[240px] bg-[#161719] border-r border-[#2d2e32] flex flex-col shadow-2xl select-none animate-in slide-in-from-left duration-150"
+        className="fixed top-[60px] left-0 bottom-0 z-50 lg:z-30 w-[280px] lg:w-[240px] bg-[#161719] border-r border-[#2d2e32] flex flex-col shadow-2xl select-none animate-in slide-in-from-left duration-150"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-3 h-10 border-b border-[#2d2e32] bg-[#1a1b1e] shrink-0">

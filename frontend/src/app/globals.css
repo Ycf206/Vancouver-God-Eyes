@@ -41,6 +41,13 @@ body {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* 行動端與平板（<1024px）將 MapLibre 右下控制項上移，避開底部探索 Dock 與安全區域 */
+@media (max-width: 1023px) {
+  .maplibregl-ctrl-bottom-right {
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
 /* MapLibre Scale Control Dark UI */
 .maplibregl-ctrl-scale {
   background-color: rgba(22, 23, 25, 0.9) !important;

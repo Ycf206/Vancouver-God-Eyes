@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { X, ShieldCheck, Sparkles, Bookmark, MessageSquare, Layers, Lock } from 'lucide-react';
 
@@ -13,7 +14,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInSuccess, setSignInSuccess] = useState(false);
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const handleGoogleSignIn = () => {
     setIsSigningIn(true);
@@ -28,17 +29,17 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     }, 1200);
   };
 
-  return (
+  return createPortal(
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[150] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div 
-        className="relative w-full max-w-md bg-[#131620] border border-[#262e42] rounded-2xl p-6 shadow-2xl flex flex-col gap-5 text-gray-200 animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-md max-h-[90dvh] bg-[#131620] border border-[#262e42] rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col gap-4 sm:gap-5 text-gray-200 animate-in zoom-in-95 duration-200 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#212738] pb-3">
+        <div className="flex items-center justify-between border-b border-[#212738] pb-3 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
               <Lock className="w-4 h-4" />
@@ -58,7 +59,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         </div>
 
         {/* Content & Benefits */}
-        <div className="flex flex-col gap-3.5">
+        <div className="flex flex-col gap-3.5 overflow-y-auto min-h-0 flex-1 pr-0.5 custom-scrollbar">
           <p className="text-xs text-gray-300 leading-relaxed">
             登入以解鎖專屬於您的個人化大溫都會地圖功能：
           </p>
@@ -136,7 +137,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         </div>
 
         {/* Footer Legal Terms Notice */}
-        <div className="pt-2 border-t border-[#1e2538] text-[10.5px] text-gray-500 text-center leading-relaxed">
+        <div className="pt-2 border-t border-[#1e2538] text-[10.5px] text-gray-500 text-center leading-relaxed shrink-0">
           點擊登入即代表您同意本站的{' '}
           <Link href="/terms" target="_blank" className="text-blue-400 hover:underline">
             服務條款
@@ -148,6 +149,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           。我們恪守加拿大 PIPEDA 規範，絕不向第三方出售個人數據。
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

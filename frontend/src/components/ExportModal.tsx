@@ -842,9 +842,9 @@ ${placemarksKML}
   if (!isExportModalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200 select-none">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200 select-none">
       <div 
-        className="w-[620px] max-w-[95vw] bg-[#161922] border border-[#2a2f3d] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-100 max-h-[90vh]"
+        className="w-[620px] max-w-[95vw] bg-[#161922] border border-[#2a2f3d] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-100 max-h-[90dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}

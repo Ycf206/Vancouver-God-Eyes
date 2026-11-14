@@ -197,8 +197,12 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
               {/* 英文聲明觸碰/懸浮按鈕 (參考停車錶提示風格) */}
               <div 
                 className="relative"
-                onMouseEnter={() => setShowEnglishNotice(true)}
-                onMouseLeave={() => setShowEnglishNotice(false)}
+                onPointerEnter={(e) => {
+                  if (e.pointerType !== 'touch') setShowEnglishNotice(true);
+                }}
+                onPointerLeave={(e) => {
+                  if (e.pointerType !== 'touch') setShowEnglishNotice(false);
+                }}
               >
                 <button
                   type="button"

@@ -485,7 +485,7 @@ export default function SettingsModal() {
 
   return (
     <div 
-      className="fixed top-[72px] right-4 z-50 w-[360px] max-w-[calc(100vw-32px)] bg-[#161922]/98 backdrop-blur-md text-gray-100 rounded-xl shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[72px] right-4 z-[110] w-[360px] max-w-[calc(100vw-32px)] bg-[#161922]/98 backdrop-blur-md text-gray-100 rounded-xl shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100dvh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 固定頂部標題列 (Fixed Header - 捲動內容時永不消失，X 按鈕隨時可點選) */}
