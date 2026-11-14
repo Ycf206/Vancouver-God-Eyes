@@ -63,7 +63,7 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   fireHalls: { label: '消防分局', url: '/api/geojson/road/fire_halls', category: '安全' },
   police: { label: '警察分局', url: '/api/geojson/road/police', category: '安全' },
   disasterHubs: { label: '災難應變中心', url: '/api/geojson/road/disaster_hubs', category: '安全' },
-  vanWifi: { label: 'VanWiFi 免費無線網路', url: '/api/geojson/road/van_wifi', category: '安全' },
+  vanWifi: { label: 'VanWiFi 免費無線網路', url: '/api/geojson/road/van_wifi', category: '生活' },
   hospitals: { label: '綜合急診醫院', url: '/api/geojson/road/hospitals', category: '安全' },
   crimeAreas: { label: '罪案發生率熱區', url: '/api/geojson/road/crime_areas', category: '安全' },
   tideStations: { label: '潮汐水位', url: '/api/tides/stations/geojson', category: '地理' },

@@ -142,6 +142,7 @@ const SEARCHABLE_LAYERS: Array<{
   { id: 'foodBanks', name: '食物援助', category: '生活', keywords: ['food bank', 'meal', '食物援助', '食物銀行'], icon: HeartHandshake },
   { id: 'drinkingFountains', name: '飲水機', category: '生活', keywords: ['drinking water', 'fountain', '飲水機', '裝水'], icon: Droplets },
   { id: 'publicWashrooms', name: '公共洗手間', category: '生活', keywords: ['washroom', 'toilet', 'restroom', '廁所', '洗手間', '公共洗手間'], icon: Toilet },
+  { id: 'vanWifi', name: 'VanWiFi', category: '生活', keywords: ['wifi', 'vanwifi', 'wireless', 'internet', '無線網路', '公共wifi'], icon: Wifi },
 
   // 自然 NATURE
   { id: 'parks', name: '公園', category: '自然', keywords: ['park', '公園', '綠地'], icon: Trees },
@@ -237,7 +238,7 @@ export default function LayerPanel() {
     const lifestyleKeys = [
       'schools', 'libraries', 'communityCentres', 'atm', 'aed', 'canadaPost',
       'publicArt', 'museums', 'foodVendors', 'foodBanks', 'recycling',
-      'garbageCollection', 'litterContainers', 'homelessShelters'
+      'garbageCollection', 'litterContainers', 'homelessShelters', 'vanWifi'
     ] as const;
     const natureKeys = [
       'parks', 'parksFacilities', 'communityGardens', 'publicTrees',
@@ -245,7 +246,7 @@ export default function LayerPanel() {
     ] as const;
     const governmentKeys = [
       'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
-      'disasterHubs', 'vanWifi'
+      'disasterHubs'
     ] as const;
     const utilitiesKeys = [
       'powerOutages'
@@ -758,6 +759,9 @@ export default function LayerPanel() {
               {/* Row 7: 垃圾箱 | 無家者庇護所 */}
               <LayerButton layerKey="litterContainers" label="垃圾箱" icon={Trash2} colorClass="text-amber-400" activeBg="bg-[#282115]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
               <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+
+              {/* Row 8: VanWiFi (垃圾箱下方) */}
+              <LayerButton layerKey="vanWifi" label="VanWiFi" icon={Wifi} colorClass="text-cyan-400" activeBg="bg-[#102632]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             </div>
           )}
         </div>
@@ -800,9 +804,6 @@ export default function LayerPanel() {
               {/* Row 3: 醫療 | 災害支援中心 */}
               <LayerButton layerKey="hospitals" label="醫療" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
               <LayerButton layerKey="disasterHubs" label="災害支援中心" icon={LifeBuoy} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-
-              {/* Row 4: VanWiFi */}
-              <LayerButton layerKey="vanWifi" label="VanWiFi" icon={Wifi} colorClass="text-cyan-400" activeBg="bg-[#102632]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             </div>
           )}
         </div>

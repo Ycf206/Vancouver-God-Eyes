@@ -23,8 +23,8 @@ DEFAULT_YVR_MAP_CONFIG_URL = "https://map.yvr.ca/config.json"
 LOCUSLABS_MANIFEST_TEMPLATE = "https://a.locuslabs.com/accounts/{account_id}/v5.json"
 
 TERMINAL_ZH_MAP = {
-    "yvr-mainterminal": "主客運大樓 (Main Terminal)",
-    "yvr-southterminal": "南客運大樓 (South Terminal)",
+    "yvr-mainterminal": "主客運大樓",
+    "yvr-southterminal": "南客運大樓",
 }
 
 

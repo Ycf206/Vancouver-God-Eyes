@@ -292,12 +292,12 @@ export default function TopBar() {
         const targetKeys = [
           'schools', 'libraries', 'communityCentres', 'banks', 'atm', 'aed', 'canadaPost',
           'publicArt', 'museums', 'foodVendors', 'foodBanks', 'recycling',
-          'garbageCollection', 'litterContainers', 'homelessShelters'
+          'garbageCollection', 'litterContainers', 'homelessShelters', 'vanWifi'
         ];
         const targetCats = [
           'schools', 'libraries', 'community_centres', 'banks', 'atm', 'aed', 'canada_post', 'fedex', 'purolator',
           'post_offices', 'public_art', 'museums', 'food_vendors', 'food_banks',
-          'recycling', 'garbage_collection', 'litter_containers', 'homeless_shelters'
+          'recycling', 'garbage_collection', 'litter_containers', 'homeless_shelters', 'van_wifi'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -331,11 +331,11 @@ export default function TopBar() {
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
-          'disasterHubs', 'vanWifi', 'borderCrossings'
+          'disasterHubs', 'borderCrossings'
         ];
         const targetCats = [
           'police', 'crime_areas', 'fire_halls', 'fire_hydrants', 'hospitals',
-          'disaster_hubs', 'van_wifi', 'border_crossing'
+          'disaster_hubs', 'border_crossing'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||

@@ -15,7 +15,15 @@ import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
 import { BUS_EXCHANGES, BusExchange, BusExchangeBay } from '@/data/busExchanges';
 import yvrAirlinesData from '@/data/yvrAirlines.json';
-import { YVR_CATEGORY_GROUPS, getYvrCategorySpec, formatYvrFloorId, registerYvrIndoorIcons } from '@/utils/yvrIndoorCategories';
+import {
+  YVR_CATEGORY_GROUPS,
+  getYvrCategorySpec,
+  formatYvrFloorId,
+  formatYvrTerminalZh,
+  formatYvrLevelNameZh,
+  formatYvrLevelDetailsZh,
+  registerYvrIndoorIcons,
+} from '@/utils/yvrIndoorCategories';
 import { 
   LocateFixed, Train, Compass, ZoomIn, ZoomOut, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
@@ -30,7 +38,7 @@ import {
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy,
   TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
-  Layers, Building2, Phone, ShieldCheck
+  Layers, Building2
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -1295,7 +1303,23 @@ export default function AppMap() {
 
   useEffect(() => {
     const justTurnedOn = layers.airportIndoor && !prevAirportIndoorRef.current;
+    const justTurnedOff = !layers.airportIndoor && prevAirportIndoorRef.current;
     prevAirportIndoorRef.current = !!layers.airportIndoor;
+
+    if (justTurnedOff) {
+      if (mapRef.current && (!searchTarget || searchTarget.category === 'airport_indoor')) {
+        mapRef.current.flyTo({
+          center: [-123.05, 49.25],
+          zoom: 11,
+          pitch: 0,
+          bearing: 0,
+          duration: 900,
+          essential: true,
+        });
+      }
+      return;
+    }
+
     if (!layers.airportIndoor) return;
 
     if (justTurnedOn && mapRef.current) {
@@ -5919,7 +5943,7 @@ export default function AppMap() {
       });
     }
 
-    // Government: VanWiFi (溫哥華官方公共免費無線網絡)
+    // Lifestyle: VanWiFi (溫哥華官方公共免費無線網絡)
     if (layers.vanWifi) {
       style.layers.push({
         id: 'van-wifi-cluster-layer',
@@ -17811,10 +17835,7 @@ export default function AppMap() {
                             )}
                             {phoneVal && (
                               <div className="flex justify-between items-center gap-2 text-gray-600">
-                                <span className="shrink-0 flex items-center gap-1">
-                                  <Phone className="w-3 h-3 text-gray-400" />
-                                  聯絡電話
-                                </span>
+                                <span className="shrink-0">聯絡電話</span>
                                 <a
                                   href={`tel:${phoneVal.replace(/[^+\d]/g, '')}`}
                                   className="text-sky-700 hover:text-sky-800 hover:underline font-medium font-mono text-right"
@@ -17825,10 +17846,7 @@ export default function AppMap() {
                             )}
                             {hasAfterSec && (
                               <div className="flex justify-between items-center gap-2 text-gray-600">
-                                <span className="shrink-0 flex items-center gap-1">
-                                  <ShieldCheck className="w-3 h-3 text-gray-400" />
-                                  禁區
-                                </span>
+                                <span className="shrink-0">禁區</span>
                                 <span
                                   className={`px-2 py-0.5 rounded font-semibold text-[10px] ${
                                     afterSecBool
@@ -17836,7 +17854,7 @@ export default function AppMap() {
                                       : 'bg-emerald-100 text-emerald-700 border border-emerald-200'
                                   }`}
                                 >
-                                  {afterSecBool ? '是 (安檢後禁區)' : '否 (非禁區)'}
+                                  {afterSecBool ? '是' : '否'}
                                 </span>
                               </div>
                             )}
@@ -19971,9 +19989,6 @@ export default function AppMap() {
                       <Building2 className="w-3 h-3 text-sky-400" />
                       客運大樓
                     </span>
-                    <span className="text-[10px] text-sky-400 font-medium truncate max-w-[165px]">
-                      {yvrIndoorActiveTerminal?.name || ''}
-                    </span>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5 mt-0.5">
                     {yvrIndoorTerminals.map((term) => {
@@ -19999,16 +20014,13 @@ export default function AppMap() {
                               });
                             }
                           }}
-                          className={`py-1.5 px-2 text-[11px] rounded-md font-medium transition-all flex flex-col items-center justify-center leading-tight border cursor-pointer ${
+                          className={`py-1.5 px-2 text-[11px] rounded-md font-medium transition-all flex items-center justify-center leading-tight border cursor-pointer ${
                             isActive
                               ? 'bg-sky-600 border-sky-400 text-white font-bold shadow-sm'
                               : 'bg-[#1e2330] border-[#293042] text-gray-300 hover:bg-[#282f40]'
                           }`}
                         >
-                          <span className="truncate max-w-full">{term.nameZh || term.name}</span>
-                          <span className={`text-[9px] truncate max-w-full ${isActive ? 'text-sky-100' : 'text-gray-400'}`}>
-                            {term.name}
-                          </span>
+                          <span className="truncate max-w-full">{formatYvrTerminalZh(term)}</span>
                         </button>
                       );
                     })}
@@ -20016,7 +20028,7 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* 樓層選擇：拖曳 Scrollbar 滑桿 + 捲動樓層清單 */}
+              {/* 樓層選擇：Scrollbar 滑桿 + 捲動樓層清單 */}
               {yvrIndoorActiveLevels.length > 0 && (() => {
                 const activeIdx = Math.max(
                   0,
@@ -20028,17 +20040,17 @@ export default function AppMap() {
                     <div className="flex items-center justify-between text-[11px]">
                       <span className="flex items-center gap-1 text-gray-300">
                         <Layers className="w-3 h-3 text-sky-400" />
-                        樓層切換 (拖動滑桿或點選)
+                        樓層切換
                       </span>
                       <span className="text-[10.5px] text-sky-400 font-bold">
-                        {currentLevel?.name || yvrIndoorResolvedFloorId}
+                        {formatYvrLevelNameZh(currentLevel?.name || yvrIndoorResolvedFloorId)}
                       </span>
                     </div>
 
                     {yvrIndoorActiveLevels.length > 1 && (
                       <div className="flex items-center gap-2 px-1 py-1 bg-[#1b202d] rounded-lg border border-[#293042]">
                         <span className="text-[10px] font-mono text-gray-400 shrink-0">
-                          {yvrIndoorActiveLevels[0]?.name}
+                          {formatYvrLevelNameZh(yvrIndoorActiveLevels[0]?.name)}
                         </span>
                         <input
                           type="range"
@@ -20057,10 +20069,9 @@ export default function AppMap() {
                             }
                           }}
                           className="w-full h-1.5 bg-[#2d364d] rounded-lg appearance-none cursor-pointer accent-sky-400"
-                          title="拖動選擇樓層"
                         />
                         <span className="text-[10px] font-mono text-gray-400 shrink-0">
-                          {yvrIndoorActiveLevels[yvrIndoorActiveLevels.length - 1]?.name}
+                          {formatYvrLevelNameZh(yvrIndoorActiveLevels[yvrIndoorActiveLevels.length - 1]?.name)}
                         </span>
                       </div>
                     )}
@@ -20068,6 +20079,7 @@ export default function AppMap() {
                     <div className="max-h-[116px] overflow-y-auto space-y-1 pr-1">
                       {yvrIndoorActiveLevels.map((lvl) => {
                         const isLvlActive = lvl.id === yvrIndoorResolvedFloorId;
+                        const detailsZh = formatYvrLevelDetailsZh(lvl.details);
                         return (
                           <button
                             key={lvl.id}
@@ -20090,10 +20102,10 @@ export default function AppMap() {
                                   isLvlActive ? 'bg-sky-400' : 'bg-gray-600'
                                 }`}
                               />
-                              <span className="truncate">{lvl.name}</span>
-                              {lvl.details && (
-                                <span className="text-[9.5px] text-gray-400 truncate max-w-[125px]">
-                                  · {lvl.details}
+                              <span className="truncate">{formatYvrLevelNameZh(lvl.name)}</span>
+                              {detailsZh && (
+                                <span className="text-[9.5px] text-gray-400 truncate max-w-[140px]">
+                                  · {detailsZh}
                                 </span>
                               )}
                             </div>
@@ -20150,9 +20162,11 @@ export default function AppMap() {
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
               <span className="truncate">
-                {yvrIndoorActiveTerminal?.nameZh || yvrIndoorActiveTerminal?.name || 'YVR'} ·{' '}
-                {yvrIndoorActiveLevels.find((l) => l.id === yvrIndoorResolvedFloorId)?.name ||
-                  formatYvrFloorId(yvrIndoorResolvedFloorId)}
+                {formatYvrTerminalZh(yvrIndoorActiveTerminal) || '溫哥華國際機場'} ·{' '}
+                {formatYvrLevelNameZh(
+                  yvrIndoorActiveLevels.find((l) => l.id === yvrIndoorResolvedFloorId)?.name ||
+                    yvrIndoorResolvedFloorId
+                )}
               </span>
               <button
                 type="button"

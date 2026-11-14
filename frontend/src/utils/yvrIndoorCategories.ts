@@ -178,6 +178,50 @@ export function formatYvrFloorId(floorId?: string | null): string {
   return raw;
 }
 
+export function formatYvrTerminalZh(term?: { id?: string; name?: string; nameZh?: string } | null): string {
+  if (!term) return '';
+  const idLow = String(term.id || '').toLowerCase();
+  if (idLow === 'yvr-mainterminal' || idLow.includes('main')) return '主客運大樓';
+  if (idLow === 'yvr-southterminal' || idLow.includes('south')) return '南客運大樓';
+  if (term.nameZh) {
+    return String(term.nameZh).replace(/\s*\([^)]*\)\s*/g, '').trim();
+  }
+  const rawName = String(term.name || term.id || '').trim();
+  if (/main\s*terminal/i.test(rawName)) return '主客運大樓';
+  if (/south\s*terminal/i.test(rawName)) return '南客運大樓';
+  return rawName;
+}
+
+export function formatYvrLevelNameZh(levelName?: string | null): string {
+  if (!levelName) return '';
+  const raw = String(levelName).trim();
+  const m = raw.match(/^(?:level|lvl)\s*(\d+)$/i);
+  if (m) return `${m[1]}樓`;
+  const mId = raw.match(/-level(\d+)$/i);
+  if (mId) return `${mId[1]}樓`;
+  return raw;
+}
+
+export function formatYvrLevelDetailsZh(details?: string | null): string {
+  if (!details) return '';
+  const raw = String(details).trim();
+  if (!raw) return '';
+  const low = raw.toLowerCase();
+  if (low === 'services plaza') return '服務廣場';
+  if (low === 'baggage claim') return '行李提取';
+  if (low === 'departures') return '離境層';
+  if (low === 'international arrivals') return '國際入境層';
+  if (low === 'domestic arrivals') return '國內入境層';
+  if (low === 'arrivals') return '入境層';
+  return raw
+    .replace(/Services Plaza/gi, '服務廣場')
+    .replace(/Baggage Claim/gi, '行李提取')
+    .replace(/International Arrivals/gi, '國際入境層')
+    .replace(/Domestic Arrivals/gi, '國內入境層')
+    .replace(/Departures/gi, '離境層')
+    .replace(/Arrivals/gi, '入境層');
+}
+
 /** Register crisp white Lucide SVG sprites for all YVR indoor iconKeys onto MapLibre. */
 export function registerYvrIndoorIcons(mapInstance: any): void {
   if (!mapInstance) return;
