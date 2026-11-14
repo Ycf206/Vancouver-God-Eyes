@@ -5628,7 +5628,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'consulates',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 4, 12, 7.5, 15, 10, 17, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': layerCustomColors?.consulates || '#4f46e5',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -5638,9 +5638,10 @@ export default function AppMap() {
         id: 'consulates-icon-layer',
         type: 'symbol',
         source: 'consulates',
+        minzoom: 14,
         layout: {
           'icon-image': 'lucide-castle',
-          'icon-size': ['interpolate', ['linear'], ['zoom'], 9, 0.24, 12, 0.42, 15, 0.56, 17, 0.65],
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 14, 0.22, 15, 0.36, 17, 0.46],
           'icon-allow-overlap': true,
           'icon-ignore-placement': true
         }

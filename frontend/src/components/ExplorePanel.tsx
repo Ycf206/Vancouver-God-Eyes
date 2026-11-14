@@ -11256,94 +11256,92 @@ function ExploreContent() {
       )}
 
       {/* Footer */}
-      <div className="mt-2.5 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
-        <div className="flex flex-col text-[10.5px] leading-tight text-gray-400 min-w-0 pr-2">
-          {activeTab === 'weather' && (
-            <span>
-              {weatherSubTab === 'marine'
-                ? `共有 ${tideStations.length || 7} 座海岸潮汐水位站`
-                : '共有 7 天氣象預報數據'}
-            </span>
-          )}
-          {activeTab === 'news' && (
-            <span>共有 {filteredNews.length} 則即時新聞</span>
-          )}
-          {activeTab === 'events' && (
-            <span>共有 {filteredEvents.length} 項活動資料</span>
-          )}
-          {activeTab === 'sports' && (
-            <span>
-              {sportsSubTab === 'hockey'
-                ? `共有 ${nhlGames.length} 場 Canucks 賽事 (符合條件 ${totalFilteredNhlGames} 場)`
-                : sportsSubTab === 'soccer'
-                ? `共有 ${whitecapsMatches.length} 場 Whitecaps 賽事 (符合條件 ${totalFilteredWhitecapsMatches} 場)`
-                : `共有 ${banditsGames.length} 場 Bandits 賽事 (符合條件 ${totalFilteredBanditsGames} 場)`}
-            </span>
-          )}
-          {activeTab === 'beach' && (
-            <span>共有 {beachList.length || 41} 座海灘水質檢測點</span>
-          )}
-          {activeTab === 'ski' && (
-            <span>共有 {skiResorts.length || 3} 座滑雪場</span>
-          )}
-          {activeTab === 'aurora' && (
-            <span>共有 3 天極光指數預測</span>
-          )}
-          {activeTab === 'jobs' && (
-            <span>共有 {jobTotalCount || jobsList.length} 個職位空缺</span>
-          )}
-          {activeTab === '311' && (
-            <span>共有 {filtered311Requests.length || requests311.length} 宗市政服務案件</span>
-          )}
-          {activeTab === 'shopping' && (() => {
-            const currentMerchant = flippMerchants.find(m => m.merchant === selectedMerchant) || flippMerchants[0];
-            const q = flippSearchQuery.trim().toLowerCase();
-            let count = currentMerchant ? currentMerchant.items.length : 0;
-            if (q && currentMerchant) {
-              count = currentMerchant.items.filter(it => it.name?.toLowerCase().includes(q) || it.brand?.toLowerCase().includes(q)).length;
-            }
-            return (
-              <span>共 {count} 件商品</span>
-            );
-          })()}
-          {activeTab === 'fuel' && (
-            <span>共有 {filteredFuelStations.length} 間油站</span>
-          )}
-          {(activeTab === 'ev' || activeTab === 'charging') && (
-            <span>共有 {filteredEvStations.length} 座充電站</span>
-          )}
-          {activeTab === 'ferry' && (
-            <span>共 {ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中</span>
-          )}
-          {(activeTab === 'cargo' || activeTab === 'shipping') && (
-            <span>共追蹤 {sortedShippingVessels.length} 艘港口商船</span>
-          )}
-          {activeTab === 'alerts' && (
-            <span>共 {filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報</span>
-          )}
-          {activeTab === 'traffic' && (() => {
-            const currentTabItemCount = trafficFilter === 'all'
-              ? filteredCorridors.length
-              : trafficFilter === 'major_roads'
-              ? filteredMajorRoads.length
-              : trafficFilter === 'severe'
-              ? filteredSevereRoads.length
-              : filteredTrafficAlerts.length;
-            return (
-              <span>共 {currentTabItemCount} 條主要幹道及橋隧</span>
-            );
-          })()}
-          {activeTab === 'border' && (
-            <span>共有 {borderCrossings.length || 5} 個陸路美加口岸</span>
-          )}
-          {activeTab === 'crashes' && (
-            <span>共 {filteredCrashes.length} 處車禍事故統計熱點</span>
-          )}
-          {activeTab === 'lottery' && (
-            <span>共有 {lotteryData ? Object.keys(lotteryData).length : 4} 項彩票開獎資訊</span>
-          )}
+      {!(activeTab === 'weather' && weatherSubTab !== 'marine') && (
+        <div className="mt-2.5 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
+          <div className="flex flex-col text-[10.5px] leading-tight text-gray-400 min-w-0 pr-2">
+            {activeTab === 'weather' && weatherSubTab === 'marine' && (
+              <span>共有 {tideStations.length || 7} 座海岸潮汐水位站</span>
+            )}
+            {activeTab === 'news' && (
+              <span>共有 {filteredNews.length} 則即時新聞</span>
+            )}
+            {activeTab === 'events' && (
+              <span>共有 {filteredEvents.length} 項活動資料</span>
+            )}
+            {activeTab === 'sports' && (
+              <span>
+                {sportsSubTab === 'hockey'
+                  ? `共有 ${nhlGames.length} 場 Canucks 賽事 (符合條件 ${totalFilteredNhlGames} 場)`
+                  : sportsSubTab === 'soccer'
+                  ? `共有 ${whitecapsMatches.length} 場 Whitecaps 賽事 (符合條件 ${totalFilteredWhitecapsMatches} 場)`
+                  : `共有 ${banditsGames.length} 場 Bandits 賽事 (符合條件 ${totalFilteredBanditsGames} 場)`}
+              </span>
+            )}
+            {activeTab === 'beach' && (
+              <span>共有 {beachList.length || 41} 座海灘水質檢測點</span>
+            )}
+            {activeTab === 'ski' && (
+              <span>共有 {skiResorts.length || 3} 座滑雪場</span>
+            )}
+            {activeTab === 'aurora' && (
+              <span>共有 3 天極光指數預測</span>
+            )}
+            {activeTab === 'jobs' && (
+              <span>共有 {jobTotalCount || jobsList.length} 個職位空缺</span>
+            )}
+            {activeTab === '311' && (
+              <span>共有 {filtered311Requests.length || requests311.length} 宗市政服務案件</span>
+            )}
+            {activeTab === 'shopping' && (() => {
+              const currentMerchant = flippMerchants.find(m => m.merchant === selectedMerchant) || flippMerchants[0];
+              const q = flippSearchQuery.trim().toLowerCase();
+              let count = currentMerchant ? currentMerchant.items.length : 0;
+              if (q && currentMerchant) {
+                count = currentMerchant.items.filter(it => it.name?.toLowerCase().includes(q) || it.brand?.toLowerCase().includes(q)).length;
+              }
+              return (
+                <span>共 {count} 件商品</span>
+              );
+            })()}
+            {activeTab === 'fuel' && (
+              <span>共有 {filteredFuelStations.length} 間油站</span>
+            )}
+            {(activeTab === 'ev' || activeTab === 'charging') && (
+              <span>共有 {filteredEvStations.length} 座充電站</span>
+            )}
+            {activeTab === 'ferry' && (
+              <span>共 {ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中</span>
+            )}
+            {(activeTab === 'cargo' || activeTab === 'shipping') && (
+              <span>共追蹤 {sortedShippingVessels.length} 艘港口商船</span>
+            )}
+            {activeTab === 'alerts' && (
+              <span>共 {filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報</span>
+            )}
+            {activeTab === 'traffic' && (() => {
+              const currentTabItemCount = trafficFilter === 'all'
+                ? filteredCorridors.length
+                : trafficFilter === 'major_roads'
+                ? filteredMajorRoads.length
+                : trafficFilter === 'severe'
+                ? filteredSevereRoads.length
+                : filteredTrafficAlerts.length;
+              return (
+                <span>共 {currentTabItemCount} 條主要幹道及橋隧</span>
+              );
+            })()}
+            {activeTab === 'border' && (
+              <span>共有 {borderCrossings.length || 5} 個陸路美加口岸</span>
+            )}
+            {activeTab === 'crashes' && (
+              <span>共 {filteredCrashes.length} 處車禍事故統計熱點</span>
+            )}
+            {activeTab === 'lottery' && (
+              <span>共有 {lotteryData ? Object.keys(lotteryData).length : 4} 項彩票開獎資訊</span>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 極光觀測預測圖 Lightbox Modal */}
 
