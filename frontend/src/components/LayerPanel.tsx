@@ -246,13 +246,14 @@ const MAP_STYLE_OPTIONS: Array<{
   type: MapStyleType;
   title: string;
   icon: React.ElementType;
-  keywords: string[];
 }> = [
-  { type: 'street', title: '街道地圖', icon: Map, keywords: ['street', 'map', '街道', '道路地圖', '底圖', '風格'] },
-  { type: 'satellite', title: '衛星影像', icon: Satellite, keywords: ['satellite', 'aerial', '衛星', '航拍', '影像', '底圖', '風格'] },
-  { type: 'light', title: '淺色風格', icon: Sun, keywords: ['light', '淺色', '亮色', '底圖', '風格'] },
-  { type: 'dark', title: '深色科技', icon: Moon, keywords: ['dark', 'night', '深色', '暗色', '科技', '底圖', '風格'] },
+  { type: 'street', title: '街道地圖', icon: Map },
+  { type: 'satellite', title: '衛星影像', icon: Satellite },
+  { type: 'light', title: '淺色風格', icon: Sun },
+  { type: 'dark', title: '深色科技', icon: Moon },
 ];
+
+type LayerFilterMode = 'all' | 'active';
 
 export default function LayerPanel() {
   const {
@@ -278,14 +279,17 @@ export default function LayerPanel() {
   } = useUIStore();
 
   const [layerSearchQuery, setLayerSearchQuery] = React.useState('');
-  const [searchCollapseOverrides, setSearchCollapseOverrides] = React.useState<Record<string, boolean>>({});
+  const [filterMode, setFilterMode] = React.useState<LayerFilterMode>('all');
+  const [transientCollapseOverrides, setTransientCollapseOverrides] = React.useState<Record<string, boolean>>({});
 
   const normalizedQuery = layerSearchQuery.trim().toLowerCase();
   const isSearching = normalizedQuery.length > 0;
+  const isActiveFilter = filterMode === 'active';
+  const isFiltering = isSearching || isActiveFilter;
 
   React.useEffect(() => {
-    setSearchCollapseOverrides({});
-  }, [normalizedQuery]);
+    setTransientCollapseOverrides({});
+  }, [normalizedQuery, filterMode]);
 
   const [collapsedCategories, setCollapsedCategories] = React.useState<Record<string, boolean>>(() => {
     if (typeof window !== 'undefined') {
@@ -300,8 +304,8 @@ export default function LayerPanel() {
   });
 
   const toggleCategory = (catId: string) => {
-    if (isSearching) {
-      setSearchCollapseOverrides((prev) => ({
+    if (isFiltering) {
+      setTransientCollapseOverrides((prev) => ({
         ...prev,
         [catId]: !prev[catId],
       }));
@@ -322,8 +326,9 @@ export default function LayerPanel() {
   };
 
   const activeLayerCount = React.useMemo(() => {
-    return Object.entries(layers).filter(([key, val]) => Boolean(val) && !disabledLayers?.[key]).length;
-  }, [layers, disabledLayers]);
+    const enabledCount = Object.entries(layers).filter(([key, val]) => Boolean(val) && !disabledLayers?.[key]).length;
+    return enabledCount + (contourInterval !== 'off' ? 1 : 0);
+  }, [layers, disabledLayers, contourInterval]);
 
   const categoryMetaMap = React.useMemo(() => {
     return Object.fromEntries(LAYER_CATEGORIES.map((c) => [c.id, c])) as Record<LayerCategoryId, (typeof LAYER_CATEGORIES)[number]>;
@@ -332,6 +337,18 @@ export default function LayerPanel() {
   const transportGroupLabelMap = React.useMemo(() => {
     return Object.fromEntries(TRANSPORT_GROUPS.map((g) => [g.id, g.label])) as Record<string, string>;
   }, []);
+
+  const isEntryActive = React.useCallback(
+    (entry: LayerCatalogEntry): boolean => {
+      if (entry.isSpecialAction === 'flightSchedule') return isFlightScheduleOpen;
+      if (entry.isSpecialAction === 'ferrySchedule') return isFerryScheduleOpen;
+      if (entry.isSpecialAction === 'maritimeSchedule') return isMaritimeScheduleOpen;
+      if (entry.isSpecialAction === 'contours') return contourInterval !== 'off';
+      if (entry.layerKey) return !disabledLayers?.[entry.layerKey] && Boolean(layers[entry.layerKey]);
+      return false;
+    },
+    [isFlightScheduleOpen, isFerryScheduleOpen, isMaritimeScheduleOpen, contourInterval, disabledLayers, layers]
+  );
 
   const matchesEntry = React.useCallback(
     (entry: LayerCatalogEntry): boolean => {
@@ -352,27 +369,24 @@ export default function LayerPanel() {
     [isSearching, normalizedQuery, categoryMetaMap, transportGroupLabelMap]
   );
 
-  const visibleEntries = React.useMemo(() => {
+  const basePanelEntries = React.useMemo(() => {
     return LAYER_CATALOG.filter((entry) => {
       if (entry.showInLayerPanel === false) return false;
       const hideKey = entry.layerKey || entry.id;
-      if (hiddenLayersInPanel?.[hideKey]) return false;
+      return !hiddenLayersInPanel?.[hideKey];
+    });
+  }, [hiddenLayersInPanel]);
+
+  const activePanelCount = React.useMemo(() => {
+    return basePanelEntries.filter(isEntryActive).length;
+  }, [basePanelEntries, isEntryActive]);
+
+  const visibleEntries = React.useMemo(() => {
+    return basePanelEntries.filter((entry) => {
+      if (isActiveFilter && !isEntryActive(entry)) return false;
       return matchesEntry(entry);
     });
-  }, [hiddenLayersInPanel, matchesEntry]);
-
-  const visibleStyles = React.useMemo(() => {
-    if (!isSearching) return MAP_STYLE_OPTIONS;
-    if ('底圖風格'.includes(normalizedQuery) || 'street / satellite'.includes(normalizedQuery)) {
-      return MAP_STYLE_OPTIONS;
-    }
-    return MAP_STYLE_OPTIONS.filter(
-      (s) =>
-        s.title.toLowerCase().includes(normalizedQuery) ||
-        s.type.toLowerCase().includes(normalizedQuery) ||
-        s.keywords.some((k) => k.toLowerCase().includes(normalizedQuery))
-    );
-  }, [isSearching, normalizedQuery]);
+  }, [basePanelEntries, isActiveFilter, isEntryActive, matchesEntry]);
 
   const entriesByCategory = React.useMemo(() => {
     const grouped: Record<LayerCategoryId, LayerCatalogEntry[]> = {
@@ -391,8 +405,7 @@ export default function LayerPanel() {
   }, [visibleEntries]);
 
   const categoryActiveCounts = React.useMemo(() => {
-    const counts: Record<LayerCategoryId | 'styles', number> = {
-      styles: 1,
+    const counts: Record<LayerCategoryId, number> = {
       transport: 0,
       road: 0,
       lifestyle: 0,
@@ -401,29 +414,18 @@ export default function LayerPanel() {
       utilities: 0,
       geography: 0,
     };
-    for (const entry of LAYER_CATALOG) {
-      if (entry.showInLayerPanel === false) continue;
-      const hideKey = entry.layerKey || entry.id;
-      if (hiddenLayersInPanel?.[hideKey]) continue;
-
-      let active = false;
-      if (entry.isSpecialAction === 'flightSchedule') active = isFlightScheduleOpen;
-      else if (entry.isSpecialAction === 'ferrySchedule') active = isFerryScheduleOpen;
-      else if (entry.isSpecialAction === 'maritimeSchedule') active = isMaritimeScheduleOpen;
-      else if (entry.isSpecialAction === 'contours') active = contourInterval !== 'off';
-      else if (entry.layerKey) active = !disabledLayers?.[entry.layerKey] && Boolean(layers[entry.layerKey]);
-
-      if (active) {
+    for (const entry of basePanelEntries) {
+      if (isEntryActive(entry)) {
         counts[entry.categoryId] += 1;
       }
     }
     return counts;
-  }, [layers, disabledLayers, hiddenLayersInPanel, isFlightScheduleOpen, isFerryScheduleOpen, isMaritimeScheduleOpen, contourInterval]);
+  }, [basePanelEntries, isEntryActive]);
 
-  const totalMatchesCount = (isSearching ? visibleEntries.length + (visibleStyles.length > 0 ? visibleStyles.length : 0) : 0);
+  const totalMatchesCount = isSearching ? visibleEntries.length : 0;
 
   const isCategoryCollapsed = (catId: string): boolean => {
-    if (isSearching) return !!searchCollapseOverrides[catId];
+    if (isFiltering) return !!transientCollapseOverrides[catId];
     return !!collapsedCategories[catId];
   };
 
@@ -432,9 +434,12 @@ export default function LayerPanel() {
     const isActive = mapStyleType === type;
     return (
       <button
+        type="button"
         onClick={() => setMapStyleType(type)}
         title={title}
-        className={`flex items-center justify-center w-full h-7 rounded border transition-all duration-150 tooltip ${
+        aria-label={title}
+        aria-pressed={isActive}
+        className={`flex items-center justify-center w-full h-7 rounded border transition-all duration-150 cursor-pointer ${
           isActive
             ? 'bg-[#1a1f2e] border-emerald-500/60 text-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.15)]'
             : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-gray-200'
@@ -542,7 +547,7 @@ export default function LayerPanel() {
     matchCount?: number;
   }) => {
     const isCollapsed = isCategoryCollapsed(id);
-    const activeCount = categoryActiveCounts[id as keyof typeof categoryActiveCounts] || 0;
+    const activeCount = categoryActiveCounts[id as LayerCategoryId] || 0;
 
     return (
       <button
@@ -561,7 +566,7 @@ export default function LayerPanel() {
               {matchCount}
             </span>
           )}
-          {!isSearching && isCollapsed && activeCount > 0 && id !== 'styles' && (
+          {!isSearching && (isCollapsed || isActiveFilter) && activeCount > 0 && (
             <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
               {activeCount}
             </span>
@@ -590,8 +595,8 @@ export default function LayerPanel() {
   }
 
   const visibleCategorySections = LAYER_CATEGORIES.filter((cat) => entriesByCategory[cat.id].length > 0);
-  const showStylesSection = !isSearching || visibleStyles.length > 0;
-  const hasAnySearchResults = visibleStyles.length > 0 || visibleCategorySections.length > 0;
+  const hasAnyVisibleResults = visibleCategorySections.length > 0;
+  const activeStyleTitle = MAP_STYLE_OPTIONS.find((s) => s.type === mapStyleType)?.title ?? '';
 
   return (
     <>
@@ -614,6 +619,7 @@ export default function LayerPanel() {
           </div>
           <div className="flex items-center gap-1.5">
             <button
+              type="button"
               onClick={resetAllLayers}
               disabled={activeLayerCount === 0}
               className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium transition-all ${
@@ -627,6 +633,7 @@ export default function LayerPanel() {
               <span>全關 ({activeLayerCount})</span>
             </button>
             <button
+              type="button"
               onClick={toggleLayerPanel}
               className="text-gray-400 hover:text-white p-1 hover:bg-[#26282e] rounded transition-colors"
               title="收合面板"
@@ -636,8 +643,8 @@ export default function LayerPanel() {
           </div>
         </div>
 
-        {/* Sticky Layer Quick Search Bar */}
-        <div className="px-2.5 py-2 border-b border-[#26282d] bg-[#161719] shrink-0">
+        {/* Sticky Layer Quick Search & Capsule Filter Bar */}
+        <div className="px-2.5 py-2 border-b border-[#26282d] bg-[#161719] shrink-0 flex flex-col gap-1.5">
           <div className="relative flex items-center">
             <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 pointer-events-none" />
             <input
@@ -668,50 +675,92 @@ export default function LayerPanel() {
               </div>
             )}
           </div>
+
+          <div className="flex items-center gap-1" role="tablist" aria-label="圖層顯示篩選">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={filterMode === 'all'}
+              onClick={() => setFilterMode('all')}
+              className={`flex items-center justify-center gap-1 px-2.5 h-6 rounded-full border text-[10.5px] transition-all cursor-pointer shrink-0 ${
+                filterMode === 'all'
+                  ? 'bg-[#222733] border-slate-500/60 text-white font-semibold shadow-xs'
+                  : 'bg-[#12141a] border-[#262933] text-gray-400 hover:text-gray-200 hover:bg-[#1c1f28]'
+              }`}
+            >
+              <span>全部</span>
+              <span className="text-[9.5px] font-mono opacity-75">({basePanelEntries.length})</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={filterMode === 'active'}
+              onClick={() => setFilterMode(filterMode === 'active' ? 'all' : 'active')}
+              className={`flex-1 flex items-center justify-center gap-1 px-2 h-6 rounded-full border text-[10.5px] transition-all cursor-pointer min-w-0 ${
+                filterMode === 'active'
+                  ? 'bg-emerald-500/15 border-emerald-500/60 text-emerald-300 font-semibold shadow-[0_0_8px_rgba(16,185,129,0.18)]'
+                  : activePanelCount > 0
+                    ? 'bg-[#12141a] border-emerald-500/30 text-emerald-400/90 hover:bg-emerald-500/10 hover:text-emerald-300'
+                    : 'bg-[#12141a] border-[#262933] text-gray-500 hover:text-gray-300 hover:bg-[#1c1f28]'
+              }`}
+              title="切換只檢視目前開啟中的圖層"
+            >
+              <span className="truncate">僅顯示已開啟</span>
+              <span
+                className={`text-[9.5px] font-mono px-1 rounded-full shrink-0 ${
+                  activePanelCount > 0
+                    ? filterMode === 'active'
+                      ? 'bg-emerald-500/25 text-emerald-200'
+                      : 'bg-emerald-500/15 text-emerald-300'
+                    : 'text-gray-500'
+                }`}
+              >
+                {activePanelCount}
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Scrollable Body with custom scrollbar */}
-        <div className="flex-1 overflow-y-auto px-2.5 py-2.5 flex flex-col gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3036] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#42454d]">
-          {/* Empty Search State */}
-          {isSearching && !hasAnySearchResults && (
+        <div className="flex-1 min-h-0 overflow-y-auto px-2.5 py-2.5 flex flex-col gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3036] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#42454d]">
+          {/* Empty Search / Active-Filter State */}
+          {isFiltering && !hasAnyVisibleResults && (
             <div className="flex flex-col items-center justify-center py-10 px-3 text-center gap-2.5 bg-[#12141a]/80 border border-[#26282d] rounded-xl">
-              <Search className="w-6 h-6 text-gray-500" />
+              {isSearching ? <Search className="w-6 h-6 text-gray-500" /> : <Layers className="w-6 h-6 text-gray-500" />}
               <div className="text-xs font-semibold text-gray-300">
-                找不到與「{layerSearchQuery.trim()}」相符的圖層
+                {isSearching
+                  ? `找不到與「${layerSearchQuery.trim()}」相符的${isActiveFilter ? '已開啟' : ''}圖層`
+                  : '目前沒有已開啟的圖層'}
               </div>
               <p className="text-[10.5px] text-gray-500 leading-relaxed">
-                可嘗試搜尋圖層名稱、分類（交通 / 道路 / 安全 / 能源）或英文關鍵字
+                {isSearching
+                  ? '可嘗試搜尋圖層名稱、分類（交通 / 道路 / 安全 / 能源）或英文關鍵字'
+                  : '開啟任意圖層後，即可於此分頁快速統一檢視或關閉'}
               </p>
-              <button
-                type="button"
-                onClick={() => setLayerSearchQuery('')}
-                className="px-3 py-1 rounded-lg bg-[#1c1f29] hover:bg-[#252936] border border-[#2e3444] text-emerald-400 text-[11px] font-semibold transition-colors cursor-pointer"
-              >
-                清除搜尋
-              </button>
+              <div className="flex items-center gap-1.5">
+                {isSearching && (
+                  <button
+                    type="button"
+                    onClick={() => setLayerSearchQuery('')}
+                    className="px-3 py-1 rounded-lg bg-[#1c1f29] hover:bg-[#252936] border border-[#2e3444] text-emerald-400 text-[11px] font-semibold transition-colors cursor-pointer"
+                  >
+                    清除搜尋
+                  </button>
+                )}
+                {isActiveFilter && (
+                  <button
+                    type="button"
+                    onClick={() => setFilterMode('all')}
+                    className="px-3 py-1 rounded-lg bg-[#1c1f29] hover:bg-[#252936] border border-[#2e3444] text-sky-300 text-[11px] font-semibold transition-colors cursor-pointer"
+                  >
+                    切換至全部
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
-          {/* 1. Map Styles (底圖風格) */}
-          {showStylesSection && (
-            <div className="flex flex-col gap-1.5">
-              <CategoryHeader
-                id="styles"
-                title="底圖風格"
-                english="STREET / SATELLITE"
-                matchCount={isSearching ? visibleStyles.length : undefined}
-              />
-              {!isCategoryCollapsed('styles') && (
-                <div className="grid grid-cols-4 gap-1 animate-in fade-in duration-150">
-                  {visibleStyles.map((styleOpt) => (
-                    <StyleButton key={styleOpt.type} type={styleOpt.type} title={styleOpt.title} icon={styleOpt.icon} />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 2..8 Layer Categories (In-place Category Filtering + Auto-Expand) */}
+          {/* Layer Categories (In-place Category Filtering + Auto-Expand) */}
           {visibleCategorySections.map((cat, idx) => {
             const entries = entriesByCategory[cat.id];
             const visuals = CATEGORY_VISUALS[cat.id];
@@ -719,11 +768,10 @@ export default function LayerPanel() {
             const isGeography = cat.id === 'geography';
             const contoursEntry = isGeography ? entries.find((e) => e.isSpecialAction === 'contours') : undefined;
             const regularEntries = isGeography ? entries.filter((e) => e.isSpecialAction !== 'contours') : entries;
-            const showDivider = showStylesSection || idx > 0;
 
             return (
               <React.Fragment key={cat.id}>
-                {showDivider && <div className="w-full h-px bg-[#26282d]" />}
+                {idx > 0 && <div className="w-full h-px bg-[#26282d]" />}
 
                 <div className={`flex flex-col ${isGeography ? 'gap-2 pb-2' : 'gap-1.5'}`}>
                   <CategoryHeader
@@ -837,6 +885,19 @@ export default function LayerPanel() {
               </React.Fragment>
             );
           })}
+        </div>
+
+        {/* Fixed Footer: Map Styles (底圖風格) */}
+        <div className="px-2.5 py-2 border-t border-[#26282d] bg-[#1a1b1e] shrink-0 flex flex-col gap-1.5">
+          <div className="flex items-center justify-between text-[10px]">
+            <span className="font-bold tracking-wider text-gray-400">底圖風格</span>
+            <span className="text-[9.5px] font-medium text-emerald-400">{activeStyleTitle}</span>
+          </div>
+          <div className="grid grid-cols-4 gap-1">
+            {MAP_STYLE_OPTIONS.map((styleOpt) => (
+              <StyleButton key={styleOpt.type} type={styleOpt.type} title={styleOpt.title} icon={styleOpt.icon} />
+            ))}
+          </div>
         </div>
       </div>
     </>
