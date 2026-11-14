@@ -107,6 +107,7 @@ const SEARCHABLE_LAYERS: Array<{
   { id: 'marineTerminals', name: '航運碼頭', category: '交通', keywords: ['terminal', 'port', '碼頭', '港口'], icon: Anchor },
   { id: 'maritimeSchedule', name: '船運班次', category: '交通', keywords: ['shipping', 'cargo', 'maritime schedule', '船運班次', '商船班次', '航運'], icon: Calendar, isSpecialAction: true },
   { id: 'airports', name: '機場', category: '交通', keywords: ['airport', 'yvr', '機場', '起降'], icon: Plane },
+  { id: 'airportIndoor', name: '機場內部地圖', category: '交通', keywords: ['airport indoor', 'yvr map', 'terminal', 'gate', 'lounge', '機場內部', '機場地圖', '航廈', '登機口'], icon: Map },
   { id: 'flightSchedule', name: '機場起降時刻', category: '交通', keywords: ['flight', 'schedule', '航班', '時刻表', '飛機'], icon: Calendar, isSpecialAction: true },
   { id: 'busExchanges', name: '巴士轉車站', category: '交通', keywords: ['bus exchange', 'loop', '巴士轉車站', '轉車站', '轉運站'], icon: Repeat },
   { id: 'skytrainStations', name: '天車站', category: '交通', keywords: ['station', 'skytrain station', '車站', '天車站'], icon: TrainFront },
@@ -150,18 +151,18 @@ const SEARCHABLE_LAYERS: Array<{
   { id: 'publicTrees', name: '樹木', category: '自然', keywords: ['public tree', '樹木'], icon: TreePine },
   { id: 'shoreline', name: '海岸線', category: '自然', keywords: ['shoreline', 'coast', '海岸', '海濱'], icon: Waves },
 
-  // 政府 GOVERNMENT
-  { id: 'police', name: '警察', category: '政府', keywords: ['police', '警察', '警局'], icon: UserShield },
-  { id: 'fireHalls', name: '消防', category: '政府', keywords: ['fire', '消防', '消防局'], icon: FireExtinguisher },
+  // 安全 SECURITY
+  { id: 'police', name: '警察', category: '安全', keywords: ['police', '警察', '警局'], icon: UserShield },
+  { id: 'fireHalls', name: '消防', category: '安全', keywords: ['fire', '消防', '消防局'], icon: FireExtinguisher },
 
-  // 公共事業 UTILITIES
-  { id: 'powerOutages', name: '停電', category: '公共事業', keywords: ['power outage', 'outage', 'bc hydro', 'blackout', '停電', '供電', '斷電'], icon: ZapOff },
+  // 能源 ENERGY
+  { id: 'powerOutages', name: '停電', category: '能源', keywords: ['power outage', 'outage', 'bc hydro', 'blackout', '停電', '供電', '斷電'], icon: ZapOff },
 
   // 地理 GEOGRAPHY
   { id: 'localAreaBoundary', name: '社區界線', category: '地理', keywords: ['neighbourhood', 'boundary', '社區', '分區界線'], icon: MapPin },
   { id: 'postalCodeFSA', name: '郵遞區號 (FSA)', category: '地理', keywords: ['fsa', 'postal code', '郵區', '郵遞區號'], icon: Mail },
   { id: 'zoningDistricts', name: '土地規劃區', category: '地理', keywords: ['zoning', '土地分區', '地政', '規劃'], icon: LandPlot },
-  { id: 'beachWaterQuality', name: '泳灘水質', category: '地理', keywords: ['beach', 'water quality', '水質', '海灘', '泳灘'], icon: Droplets },
+  { id: 'beachWaterQuality', name: '泳灘水質', category: '自然', keywords: ['beach', 'water quality', '水質', '海灘', '泳灘'], icon: Droplets },
   { id: 'propertyBoundaries', name: '土地地界線', category: '地理', keywords: ['property', 'boundary', '地界', '土地邊界'], icon: Layers },
 ];
 
@@ -223,7 +224,7 @@ export default function LayerPanel() {
     const transportKeys = [
       'bus', 'busRoutes', 'skytrainTrains', 'skytrainRoutes',
       'seabusVehicles', 'seabusRoutes', 'bcferriesVehicles', 'bcferriesRoutes',
-      'maritimeShipping', 'marineTerminals', 'airports'
+      'maritimeShipping', 'marineTerminals', 'airports', 'airportIndoor'
     ] as const;
     const roadKeys = [
       'parkingMeters', 'impark', 'motorcycleParking', 'accessibleParking',
@@ -240,7 +241,7 @@ export default function LayerPanel() {
     ] as const;
     const natureKeys = [
       'parks', 'parksFacilities', 'communityGardens', 'publicTrees',
-      'drinkingFountains', 'publicWashrooms'
+      'drinkingFountains', 'publicWashrooms', 'beachWaterQuality'
     ] as const;
     const governmentKeys = [
       'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
@@ -250,7 +251,7 @@ export default function LayerPanel() {
       'powerOutages'
     ] as const;
     const geographyKeys = [
-      'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'beachWaterQuality'
+      'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts'
     ] as const;
 
     const count = (keys: readonly (keyof typeof layers)[]) => keys.filter((k) => layers[k]).length;
@@ -632,9 +633,10 @@ export default function LayerPanel() {
               </div>
 
               {/* 航空 */}
-              <div className="grid grid-cols-[48px_1fr_1fr] gap-1 items-center">
+              <div className="grid grid-cols-[48px_1fr_1fr_1fr] gap-1 items-center">
                 <span className="text-[11px] font-medium text-sky-400 pl-0.5">航空</span>
                 <LayerButton layerKey="airports" label="機場" title="機場" icon={Plane} iconOnly colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
+                <LayerButton layerKey="airportIndoor" label="機場內部地圖" title="機場內部地圖" icon={Map} iconOnly colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
                 <button
                   type="button"
                   onClick={() => toggleFlightSchedule()}
@@ -774,6 +776,7 @@ export default function LayerPanel() {
               <LayerButton layerKey="publicTrees" label="樹木" icon={TreePine} title="街道樹木" colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
               <LayerButton layerKey="drinkingFountains" label="飲水器" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#142533]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
               <LayerButton layerKey="publicWashrooms" label="公共洗手間" icon={Toilet} colorClass="text-cyan-400" activeBg="bg-[#13272e]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
+              <LayerButton layerKey="beachWaterQuality" label="海灘水質" icon={Parasol} title="海灘水質" colorClass="text-teal-300" activeBg="bg-[#0e2a2a]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
             </div>
           )}
         </div>
@@ -781,9 +784,9 @@ export default function LayerPanel() {
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* 6. Government Row (政府) */}
+        {/* 6. Security Row (安全) */}
         <div className="flex flex-col gap-1.5">
-          <CategoryHeader id="government" title="政府" english="GOVERNMENT" icon={Landmark} colorClass="text-rose-400" subColorClass="text-rose-400/70" />
+          <CategoryHeader id="government" title="安全" english="SECURITY" icon={ShieldAlert} colorClass="text-rose-400" subColorClass="text-rose-400/70" />
           {!collapsedCategories['government'] && (
             <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
               {/* Row 1: 警察 | 罪案地區 */}
@@ -807,9 +810,9 @@ export default function LayerPanel() {
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* 7. Utilities Row (公共事業) */}
+        {/* 7. Energy Row (能源) */}
         <div className="flex flex-col gap-1.5">
-          <CategoryHeader id="utilities" title="公共事業" english="UTILITIES" icon={Zap} colorClass="text-cyan-400" subColorClass="text-cyan-400/70" />
+          <CategoryHeader id="utilities" title="能源" english="ENERGY" icon={Zap} colorClass="text-cyan-400" subColorClass="text-cyan-400/70" />
           {!collapsedCategories['utilities'] && (
             <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
               <LayerButton layerKey="powerOutages" label="停電" icon={ZapOff} title="卑詩省停電即時情況" colorClass="text-amber-400" activeBg="bg-[#2d1b14]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.2)]" />
@@ -825,15 +828,14 @@ export default function LayerPanel() {
           <CategoryHeader id="geography" title="地理" english="GEOGRAPHY" icon={Earth} colorClass="text-teal-400" subColorClass="text-teal-500/70" />
           {!collapsedCategories['geography'] && (
             <div className="flex flex-col gap-2 animate-in fade-in duration-150">
-              {/* 區域邊界、郵遞編號、土地規劃、海灘水質 */}
+              {/* 區域邊界、郵遞編號、土地規劃 */}
               <div className="grid grid-cols-2 gap-1">
                 {/* Row 1: 區域邊界 | 郵遞編號 */}
                 <LayerButton layerKey="localAreaBoundary" label="區域邊界" icon={Grid3x2} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
                 <LayerButton layerKey="postalCodeFSA" label="郵遞編號" icon={Mail} colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
 
-                {/* Row 2: 土地規劃 | 海灘水質 */}
+                {/* Row 2: 土地規劃 */}
                 <LayerButton layerKey="zoningDistricts" label="土地規劃" icon={LandPlot} title="土地規劃分區" colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
-                <LayerButton layerKey="beachWaterQuality" label="海灘水質" icon={Parasol} title="海灘水質" colorClass="text-teal-300" activeBg="bg-[#0e2a2a]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
               </div>
 
               {/* 等高線文字與狀態標籤 */}

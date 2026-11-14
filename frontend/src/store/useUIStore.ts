@@ -73,6 +73,7 @@ export interface UIState {
     aed: boolean;
     homelessShelters: boolean;
     airports: boolean;
+    airportIndoor: boolean;
     carSharing: boolean;
     contours: boolean;
     localAreaBoundary: boolean;
@@ -205,6 +206,12 @@ export interface UIState {
     freeOnly: boolean;
   };
   setEvChargingFilter: (filter: Partial<{ speed: 'all' | 'fast' | 'slow'; connector: string; freeOnly: boolean }>) => void;
+  airportIndoorFilter: {
+    terminalId: string;
+    floorId: string;
+    categoryFilter: string;
+  };
+  setAirportIndoorFilter: (filter: Partial<{ terminalId: string; floorId: string; categoryFilter: string }>) => void;
   isRadarActive: boolean;
   setIsRadarActive: (active: boolean) => void;
   radarFrameTime: number;
@@ -323,6 +330,7 @@ export const useUIStore = create<UIState>()(
         aed: false,
         homelessShelters: false,
         airports: true,
+        airportIndoor: false,
         contours: false,
         localAreaBoundary: false,
         fuel: false,
@@ -511,6 +519,7 @@ export const useUIStore = create<UIState>()(
               (layer === 'evCharging' && (st.category === 'ev_charging' || String(st.id ?? '').startsWith('ev_'))) ||
               (layer === 'vanWifi' && (st.category === 'van_wifi' || String(st.id ?? '').startsWith('vanwifi_'))) ||
               (layer === 'airports' && st.category === 'airports') ||
+              (layer === 'airportIndoor' && st.category === 'airport_indoor') ||
               ((layer === 'bcferriesTerminals' || layer === 'bcferriesRoutes') && st.category === 'ferry_terminal') ||
               (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
               (layer === 'maritimeShipping' && st.category === 'maritime_vessel') ||
@@ -612,6 +621,11 @@ export const useUIStore = create<UIState>()(
               creditCardOnly: false,
               timePeriod: 'auto',
             },
+            airportIndoorFilter: {
+              terminalId: 'yvr-mainterminal',
+              floorId: 'yvr-mainterminal-level3',
+              categoryFilter: 'all',
+            },
           };
         }),
       parkingMeterFilter: {
@@ -657,6 +671,18 @@ export const useUIStore = create<UIState>()(
         set((state) => ({
           evChargingFilter: {
             ...state.evChargingFilter,
+            ...filter,
+          },
+        })),
+      airportIndoorFilter: {
+        terminalId: 'yvr-mainterminal',
+        floorId: 'yvr-mainterminal-level3',
+        categoryFilter: 'all',
+      },
+      setAirportIndoorFilter: (filter) =>
+        set((state) => ({
+          airportIndoorFilter: {
+            ...state.airportIndoorFilter,
             ...filter,
           },
         })),

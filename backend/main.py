@@ -1512,6 +1512,28 @@ def get_yvr_news():
         print(f"Error serving yvr news: {e}")
         return []
 
+
+@app.get("/api/yvr/indoor-pois")
+def get_yvr_indoor_pois(refresh: bool = False):
+    """
+    取得溫哥華國際機場 (YVR) 內部地圖設施、客運大樓與樓層資料 (每日由 OCI 背景排程經 map.yvr.ca 動態解析 LocusLabs API 快取)。
+    """
+    try:
+        import dynamic_layers_service
+        file_path = os.path.join(dynamic_layers_service.DATA_DIR, "yvr_indoor_pois.json")
+        if refresh or not os.path.exists(file_path):
+            dynamic_layers_service.refresh_yvr_indoor()
+        if os.path.exists(file_path):
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return JSONResponse(
+                content=data,
+                headers={"Cache-Control": "public, max-age=300, stale-while-revalidate=600"},
+            )
+    except Exception as e:
+        print(f"Error serving yvr indoor pois: {e}")
+    return JSONResponse(content={"terminals": [], "pois": [], "total_count": 0}, status_code=200)
+
 @app.get("/api/sports/canucks-schedule")
 def get_sports_canucks_schedule(season: Optional[str] = None, refresh: bool = False, force: bool = False):
     """
@@ -4795,6 +4817,12 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
         yn_runtime = _unix_to_iso(_oci_runtime_ts.get("yvr_news_rss"))
         oci_live_updates["yvr_news_rss"] = (_max_iso_ts(yn_runtime, yn_ts), yn_cnt if yn_cnt > 0 else None)
 
+    if "yvr_indoor" in src_by_id:
+        yi_file = os.path.join(data_dir, "yvr_indoor_pois.json")
+        yi_cnt, yi_ts = _extract_disk_file_meta(yi_file)
+        yi_runtime = _unix_to_iso(_oci_runtime_ts.get("yvr_indoor"))
+        oci_live_updates["yvr_indoor"] = (_max_iso_ts(yi_runtime, yi_ts), yi_cnt if yi_cnt > 0 else None)
+
     for sid, (live_iso, live_cnt) in oci_live_updates.items():
         s = src_by_id.get(sid)
         if not s:
@@ -5118,6 +5146,11 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         cnt = dynamic_layers_service.refresh_bchydro_outages("planned")
         _oci_runtime_ts["bchydro_planned"] = time.time()
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 BC Hydro 預期停電，共載入 {cnt} 筆記錄。")
+    if sid in ("yvr_indoor", "yvr_indoor_map"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_yvr_indoor()
+        _oci_runtime_ts["yvr_indoor"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 YVR 機場內部地圖設施，共載入 {cnt} 筆位置資料。")
     return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
 
 
@@ -5151,7 +5184,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
             # 判斷是否為批次觸發
             if source_id == 'all_oci' or (source_id == 'all' and target_runner == 'oci'):
                 target_name = "全部 OCI 伺服器即時服務"
-                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss"):
+                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss", "yvr_indoor"):
                     try:
                         _refresh_single_oci_service(idx_s)
                     except Exception:

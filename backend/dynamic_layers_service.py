@@ -206,6 +206,20 @@ def refresh_bchydro_outages(outage_type: str = "all") -> int:
         return 0
 
 
+def refresh_yvr_indoor() -> int:
+    """每日 1 次刷新 YVR 機場內部地圖設施與樓層資訊 (經 map.yvr.ca 動態解析 LocusLabs pois-3.0-yvr.json)."""
+    file_path = os.path.join(DATA_DIR, "yvr_indoor_pois.json")
+    try:
+        from scripts.layers.update_yvr_indoor import fetch_and_save_yvr_indoor
+        cnt = fetch_and_save_yvr_indoor()
+        log_data_source_update("yvr_indoor", "YVR 機場內部地圖", cnt, "yvr_indoor_pois.json", file_path)
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_yvr_indoor 異常: {e}")
+        log_data_source_update("yvr_indoor", "YVR 機場內部地圖", None, "yvr_indoor_pois.json", file_path, error=e)
+        return 0
+
+
 async def run_dynamic_layers_background_loop():
     """
     OCI 常駐後台背景更新排程 (動態圖層與高頻資料):
@@ -213,8 +227,10 @@ async def run_dynamic_layers_background_loop():
     - escooter (Lime 共享滑板車): 每 1 小時 (3600s)
     - service_requests_311 (3-1-1 市政工單): 每 12 小時 (43200s)
     - food_vendors (街頭熟食餐車): 每 24 小時 (86400s)
+    - bchydro_* (BC Hydro 停電): 每 1 小時 (3600s)
+    - yvr_indoor (YVR 機場內部地圖): 每日 1 次 (86400s)
     """
-    print("🚲🛴🍔 [Dynamic Layers Service] 常駐快取排程服務啟動 (Mobi/Lime 每小時, 3-1-1 每 12 小時, 餐車每 24 小時)...")
+    print("🚲🛴🍔 [Dynamic Layers Service] 常駐快取排程服務啟動 (Mobi/Lime 每小時, 3-1-1 每 12 小時, 餐車/YVR 內部地圖每日)...")
     loop = asyncio.get_event_loop()
 
     # 啟動時先暫停 5 秒讓核心網路服務綁定完成
@@ -237,6 +253,9 @@ async def run_dynamic_layers_background_loop():
         if not _is_layer_recent("bchydro_outages_current.json", 3600):
             print("⚡ [Dynamic Layers] 初始預熱 BC Hydro 停電即時數據...")
             await loop.run_in_executor(None, refresh_bchydro_outages, "all")
+        if not _is_layer_recent("yvr_indoor_pois.json", 86400):
+            print("🗺️ [Dynamic Layers] 初始預熱 YVR 機場內部地圖數據...")
+            await loop.run_in_executor(None, refresh_yvr_indoor)
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] 初始預熱異常: {e}")
 
@@ -246,6 +265,7 @@ async def run_dynamic_layers_background_loop():
     last_311_time = time.time()
     last_food_time = time.time()
     last_bchydro_time = time.time()
+    last_yvr_indoor_time = time.time()
 
     while True:
         try:
@@ -292,6 +312,12 @@ async def run_dynamic_layers_background_loop():
                 last_bchydro_time = now
                 print("⚡ [Dynamic Layers] 觸發排程: BC Hydro 停電即時數據同步 (Current, Restored, Planned)...")
                 await loop.run_in_executor(None, refresh_bchydro_outages, "all")
+
+            # 6. YVR 機場內部地圖設施與樓層資訊 (每 86400 秒 = 每日 1 次)
+            if now - last_yvr_indoor_time >= 86400:
+                last_yvr_indoor_time = now
+                print("🗺️ [Dynamic Layers] 觸發排程: YVR 機場內部地圖數據同步...")
+                await loop.run_in_executor(None, refresh_yvr_indoor)
 
         except asyncio.CancelledError:
             print("🛑 [Dynamic Layers Service] 常駐背景排程已停止。")

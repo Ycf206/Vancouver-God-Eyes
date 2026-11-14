@@ -38,13 +38,13 @@ const JS_DOW_TO_DAY: Record<number, string> = {
 function parseStringSchedule(s: string): Record<string, string | null> | null {
   const weekDayKeys = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const dayIndices: Record<string, number> = {
-    monday: 0, mon: 0, mondays: 0, '週一': 0, '一': 0,
-    tuesday: 1, tue: 1, tues: 1, tuesdays: 1, '週二': 1, '二': 1,
-    wednesday: 2, wed: 2, wednesdays: 2, '週三': 2, '三': 2,
-    thursday: 3, thu: 3, thur: 3, thurs: 3, thursdays: 3, '週四': 3, '四': 3,
-    friday: 4, fri: 4, fridays: 4, '週五': 4, '五': 4,
-    saturday: 5, sat: 5, saturdays: 5, '週六': 5, '六': 5,
-    sunday: 6, sun: 6, sundays: 6, '週日': 6, '日': 6
+    monday: 0, mon: 0, mondays: 0, mo: 0, '週一': 0, '一': 0,
+    tuesday: 1, tue: 1, tues: 1, tuesdays: 1, tu: 1, '週二': 1, '二': 1,
+    wednesday: 2, wed: 2, wednesdays: 2, we: 2, '週三': 2, '三': 2,
+    thursday: 3, thu: 3, thur: 3, thurs: 3, thursdays: 3, th: 3, '週四': 3, '四': 3,
+    friday: 4, fri: 4, fridays: 4, fr: 4, '週五': 4, '五': 4,
+    saturday: 5, sat: 5, saturdays: 5, sa: 5, '週六': 5, '六': 5,
+    sunday: 6, sun: 6, sundays: 6, su: 6, '週日': 6, '日': 6
   };
 
   const result: Record<string, string | null> = {
@@ -61,8 +61,8 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
   const parseDaysSpec = (spec: string): string[] => {
     if (!spec) return [];
     const list: string[] = [];
-    const rangeMatch = spec.match(/([a-zA-Z\u4e00-\u9fa5]+)\s*(?:to|-|–|—|至)\s*([a-zA-Z\u4e00-\u9fa5]+)/i);
-    if (rangeMatch) {
+    const rangeRegex = /([a-zA-Z\u4e00-\u9fa5]+)\s*(?:to|-|–|—|至)\s*([a-zA-Z\u4e00-\u9fa5]+)/gi;
+    for (const rangeMatch of spec.matchAll(rangeRegex)) {
       const d1 = rangeMatch[1].toLowerCase().replace(/週/g, '');
       const d2 = rangeMatch[2].toLowerCase().replace(/週/g, '');
       const i1 = dayIndices[d1];
@@ -70,7 +70,9 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
       if (i1 !== undefined && i2 !== undefined) {
         let cur = i1;
         while (true) {
-          list.push(weekDayKeys[cur]);
+          if (!list.includes(weekDayKeys[cur])) {
+            list.push(weekDayKeys[cur]);
+          }
           if (cur === i2) break;
           cur = (cur + 1) % 7;
         }
@@ -85,6 +87,12 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     }
     return list;
   };
+
+  // 0. 24/7 or 24 hours
+  if (/^\s*(?:24\s*\/\s*7|24\s*hours?|open\s*24\s*hours?)\s*$/i.test(s)) {
+    weekDayKeys.forEach(d => result[d] = '00:00 - 24:00');
+    return result;
+  }
 
   // 1. 7 days a week / daily / 365 days / everyday (7天相同營業時間)
   if (/(?:7\s*days\s*a\s*week|seven\s*days\s*a\s*week|daily|every\s*day|everyday|365\s*days|7\s*days\/week)/i.test(s)) {
@@ -111,7 +119,7 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
           continue;
         }
       }
-      const mDaysTime = chunk.match(/^([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+?)\s*[:,\-–—~]?\s*(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*(?:[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\s*(?:AM|PM|am|pm)))$/i);
+      const mDaysTime = chunk.match(/^([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+?)\s*[:,\-–—~]?\s*(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*(?:[-–—~至to]+\s*(?:\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|lastflight|last\s*flight)|\s*(?:AM|PM|am|pm)))$/i);
       if (mDaysTime) {
         const days = parseDaysSpec(mDaysTime[1]);
         if (days.length > 0) {
@@ -120,7 +128,7 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
           continue;
         }
       }
-      const mTimeDays = chunk.match(/^(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*(?:[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\s*(?:AM|PM|am|pm)))\s*[,:\-–—~]?\s*(?:on\s+)?([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+)$/i);
+      const mTimeDays = chunk.match(/^(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*(?:[-–—~至to]+\s*(?:\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|lastflight|last\s*flight)|\s*(?:AM|PM|am|pm)))\s*[,:\-–—~]?\s*(?:on\s+)?([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+)$/i);
       if (mTimeDays) {
         const days = parseDaysSpec(mTimeDays[2]);
         if (days.length > 0) {
@@ -190,7 +198,7 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
   }
 
   // 5. Days followed by time (e.g. 'Monday to Friday 10:00-14:00' or 'Mon - Fri, 8:30am - 4:30pm')
-  const rDaysFirst = /([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+?)\s*[,:\-–—~]?\s*(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm))/gi;
+  const rDaysFirst = /([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+?)\s*[,:\-–—~]?\s*(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*(?:\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|lastflight|last\s*flight)|\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm))/gi;
   while ((match = rDaysFirst.exec(s)) !== null) {
     const daysSpec = match[1].trim();
     const time = match[2].trim();

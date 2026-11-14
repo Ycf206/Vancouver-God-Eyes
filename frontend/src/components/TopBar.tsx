@@ -115,7 +115,7 @@ type QuickGroupTab = 'all' | 'poi' | 'transit' | 'road' | 'area';
 function inferUiGroup(item: SearchTarget): Exclude<QuickGroupTab, 'all'> {
   if (item.ui_group) return item.ui_group;
   const c = item.category;
-  if (['skytrain', 'seabus', 'bus_route', 'bus_stop', 'bus_exchange', 'ferry_terminal', 'ferry_vehicle', 'airports', 'maritime_vessel', 'marine_terminals', 'railways'].includes(c)) {
+  if (['skytrain', 'seabus', 'bus_route', 'bus_stop', 'bus_exchange', 'ferry_terminal', 'ferry_vehicle', 'airports', 'airport_indoor', 'maritime_vessel', 'marine_terminals', 'railways'].includes(c)) {
     return 'transit';
   }
   if (['address', 'coordinate', 'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'garbage_collection', 'crime_areas'].includes(c)) {
@@ -142,6 +142,7 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'maritime_vessel' || lk === 'maritimeShipping') return <ShipCargo className={`${cls} text-cyan-400`} />;
   if (c === 'marine_terminals' || lk === 'marineTerminals') return <Anchor className={`${cls} text-cyan-500`} />;
   if (c === 'airports' || lk === 'airports') return <Plane className={`${cls} text-indigo-400`} />;
+  if (c === 'airport_indoor' || lk === 'airportIndoor') return <MapIcon className={`${cls} text-sky-400`} />;
   if (c === 'parking_meters' || lk === 'parkingMeters') return <ParkingMeter className={`${cls} text-blue-400`} />;
   if (c === 'impark' || lk === 'impark') return <ParkingMeter className={`${cls} text-blue-500`} />;
   if (c === 'motorcycle_parking' || lk === 'motorcycleParking') return <Motorbike className={`${cls} text-blue-400`} />;
@@ -243,11 +244,11 @@ export default function TopBar() {
         const targetKeys = [
           'bus', 'busRoutes', 'busStops', 'busExchanges', 'skytrainTrains', 'skytrainRoutes', 'skytrainStops',
           'seabusVehicles', 'seabusRoutes', 'seabusStops', 'bcferriesVehicles', 'bcferriesRoutes',
-          'bcferriesTerminals', 'maritimeShipping', 'marineTerminals', 'airports', 'railways'
+          'bcferriesTerminals', 'maritimeShipping', 'marineTerminals', 'airports', 'airportIndoor', 'railways'
         ];
         const targetCats = [
           'bus_route', 'bus_stop', 'bus_exchange', 'skytrain', 'seabus', 'bcferries', 'ferry_terminal',
-          'ferry_vehicle', 'transit', 'airports', 'marine_terminals', 'maritimeShipping', 'flights', 'maritime_vessel', 'railways'
+          'ferry_vehicle', 'transit', 'airports', 'airport_indoor', 'marine_terminals', 'maritimeShipping', 'flights', 'maritime_vessel', 'railways'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -324,7 +325,7 @@ export default function TopBar() {
     },
     {
       id: 'government',
-      label: '政府',
+      label: '安全',
       icon: Landmark,
       iconColor: 'text-blue-400',
       matcher: (item: SearchTarget) => {
@@ -343,7 +344,7 @@ export default function TopBar() {
     },
     {
       id: 'utilities',
-      label: '公共事業',
+      label: '能源',
       icon: ZapOff,
       iconColor: 'text-amber-400',
       matcher: (item: SearchTarget) => {
@@ -361,10 +362,10 @@ export default function TopBar() {
       iconColor: 'text-teal-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
-          'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'beachWaterQuality', 'contours', 'tides'
+          'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'contours', 'tides'
         ];
         const targetCats = [
-          'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'beach_water_quality', 'contours', 'tide_stations', 'address', 'coordinate'
+          'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'contours', 'tide_stations', 'address', 'coordinate'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -1091,6 +1092,7 @@ export default function TopBar() {
                             item.category === 'ferry_vehicle' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
                             item.category === 'seabus' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
                             item.category === 'airports' ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60 font-bold' :
+                            item.category === 'airport_indoor' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60 font-bold' :
                             item.category === 'border_crossing' ? 'bg-cyan-950/80 text-cyan-300 border-cyan-800/60 font-bold' :
                             item.category === 'fire_halls' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
                             item.category === 'police' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :

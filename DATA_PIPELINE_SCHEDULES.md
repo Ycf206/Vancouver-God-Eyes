@@ -43,6 +43,7 @@
 | `traffic_conditions` | **TomTom 即時交通路況** | 每 2 分鐘 | `*/2 * * * *` | OCI 後端 | TomTom Traffic Flow API (實時探針) | 後端記憶體快取 `traffic_conditions` | 呼叫 TomTom 流量 API 抓取 65 條主要幹道時速與延誤時間，向量路網座標比對並計算各向壅塞等級 (綠/黃/紅/深紅)，推送前端即時路網。 |
 | `translink_realtime` | **TransLink 大眾運輸即時動態** | 每 30 秒 | `*/30 * * * * *` | OCI 後端 | TransLink Open API (RTTI & GTFS-RT) | 後端記憶體快取 `translink_vehicles` | 透過 GTFS Realtime Protocol 抓取全大溫 1,400+ 輛行駛中公車、天車即時 GPS 座標、車號與延誤秒數，前端透過插值動畫平滑移動。 |
 | `flight_schedules` | **YVR 國際機場航班** | 每 2 分鐘 | `*/2 * * * *` | OCI 後端 | YVR Airport Flight Schedule API | 後端記憶體快取 `yvr_flights` | 抓取全日客貨運航班起降動態、準點/延誤狀態、登機門與行李轉盤，支援 Explore 航班看板搜尋。 |
+| `yvr_indoor` | **YVR 機場內部地圖** | 每日 1 次 | `0 4 * * *` | OCI 後端 | `map.yvr.ca/config.json` -> LocusLabs `pois-3.0-yvr.json` | `/public/yvr_indoor_pois.json` & `backend/data/yvr_indoor_pois.json` | 由 OCI 常駐排程每日動態解析 LocusLabs manifest 取得最新客運大樓、樓層邊界與 1,260+ 機場設施點位資料。 |
 | `maritime_shipping` | **AIS 港口船舶動態** | 每 1 分鐘 | `*/1 * * * *` | OCI 後端 | AISStream WebSocket / 溫哥華港務局 | 後端記憶體快取 `ais_ships` | 監控布勒內灣、英吉利灣、菲沙河各類貨輪、郵輪、拖船與渡輪，即時計算船舶航速、航向角與吃水資訊。 |
 | `weather_monitoring` | **加拿大環境部 SWOB 氣象站** | 每 10 分鐘 | `*/10 * * * *` | OCI 後端 | ECCC MSC GeoMet API & RainViewer | 後端記憶體快取 `eccc_weather` | 抓取氣溫、濕度、風向風速、氣壓實測數值，並疊加北美多普勒雷達降水回波瓦片與氣象衛星雲圖。 |
 | `traffic_cameras` | **交通即時攝影機** | 每 5 分鐘 | `*/5 * * * *` | OCI 後端 | DriveBC Open511 & 溫哥華市府監控網 | `/public/vancouver_traffic_cameras.geojson` | 抓取大溫主要幹道與橋樑即時快照與視訊流，校正坐標後生成即時影像預覽。 |

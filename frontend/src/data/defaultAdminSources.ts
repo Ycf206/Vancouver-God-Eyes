@@ -19,7 +19,7 @@ export interface AdminSourceItem {
   enabled?: boolean;
   hidden_in_layer_panel?: boolean;
   workflow_file?: string | null;
-  category: '道路' | '天氣' | '生活' | '公共事業' | string;
+  category: '道路' | '天氣' | '生活' | '能源' | string;
   source_links?: SourceLink[];
   source_url?: string;
 }
@@ -851,7 +851,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "卑詩心臟與中風基金會公共場所 AED 登錄庫 -> 標記市政廳、運動館、天車站詳細擺放樓層位置 -> 寫入 /public/vancouver_aed.geojson",
     "runner": "github_actions",
     "workflow_file": "update-aed.yml",
-    "category": "公共事業",
+    "category": "能源",
     "source_links": [
       {
         "label": "BC PAD 官網爬取網頁",
@@ -873,7 +873,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "市府城市規劃署 (City Planning Department) 分區法規 GeoJSON -> 區分住宅區 (RS/RT/RM)、商業區 (C) 與工業綜合區 -> 寫入 /public/vancouver_zoning_districts.geojson",
     "runner": "github_actions",
     "workflow_file": "update-zoning-districts.yml",
-    "category": "公共事業",
+    "category": "能源",
     "source_links": [
       {
         "label": "OpenData 土地規劃 API",
@@ -983,7 +983,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "溫哥華消防局 (VFRS) 與供水維護處 -> 提取全市消防栓編號、水壓出水量與供水幹管管徑 -> 寫入 /public/vancouver_fire_hydrants.geojson",
     "runner": "github_actions",
     "workflow_file": "update-fire-hydrants.yml",
-    "category": "公共事業",
+    "category": "能源",
     "source_links": [
       {
         "label": "OpenData 消防栓 API",
@@ -1159,7 +1159,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "LiDAR 空載光學雷達高程模型 (DEM) -> 向量化提取 1米、2米與10米地形等高線 -> 寫入 /public/vancouver_contours.geojson",
     "runner": "github_actions",
     "workflow_file": "update-contours.yml",
-    "category": "公共事業",
+    "category": "能源",
     "source_links": [
       {
         "label": "1m 等高線 API",
@@ -1539,7 +1539,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "BC Hydro Current Outages API -> 取得全省停電多邊形與各區緊急廣播 -> OCI 常駐排程每小時寫入 bchydro_outages_current.json 及 bchydro_outages_map.geojson",
     "runner": "oci",
     "workflow_file": "",
-    "category": "公共事業",
+    "category": "能源",
     "source_links": [
       {
         "type": "api",
@@ -1562,7 +1562,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "BC Hydro Restored Outages API -> 過去 14 天內已修復之供電歷史 -> OCI 常駐排程每小時寫入 bchydro_outages_restored.json",
     "runner": "oci",
     "workflow_file": "",
-    "category": "公共事業",
+    "category": "能源",
     "source_links": [
       {
         "type": "api",
@@ -1585,7 +1585,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "BC Hydro Planned Outages API -> 未來預計維修工程停電計劃 -> OCI 常駐排程每小時寫入 bchydro_outages_planned.json",
     "runner": "oci",
     "workflow_file": "",
-    "category": "公共事業",
+    "category": "能源",
     "source_links": [
       {
         "type": "api",
@@ -1594,5 +1594,33 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://www.bchydro.com/power-outages/app/outages-list-data-planned.json"
+  },
+  {
+    "id": "yvr_indoor",
+    "name": "溫哥華國際機場 (YVR) 內部地圖與設施資料",
+    "type": "json",
+    "cron_expr": "0 4 * * *",
+    "schedule_interval": "每日 1 次",
+    "record_count": 1263,
+    "unit": "筆機場室內設施點位",
+    "last_updated": "2026-11-13T18:22:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "YVR 官方互動地圖 map.yvr.ca/config.json -> LocusLabs v5 manifest 動態解析最新版 pois-3.0-yvr.json 與 venueData-yvr.json -> OCI 常駐排程每日 1 次自動寫入 yvr_indoor_pois.json (含客運大樓、樓層與營業時間)",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "交通",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "YVR 機場互動室內地圖",
+        "url": "https://map.yvr.ca/"
+      },
+      {
+        "type": "api",
+        "label": "YVR Map Dynamic Config",
+        "url": "https://map.yvr.ca/config.json"
+      }
+    ],
+    "source_url": "https://map.yvr.ca/config.json"
   }
 ];

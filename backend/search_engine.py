@@ -365,11 +365,20 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "碼頭": ("ferry_terminal", "marine_terminals"),
     "bc ferries": ("ferry_terminal", "ferry_vehicle"),
     "ferry": ("ferry_terminal", "ferry_vehicle"),
-    "機場": ("airports",),
-    "飛機場": ("airports",),
+    "機場": ("airports", "airport_indoor"),
+    "飛機場": ("airports", "airport_indoor"),
     "水上飛機": ("airports",),
-    "airport": ("airports",),
-    "yvr": ("airports",),
+    "airport": ("airports", "airport_indoor"),
+    "yvr": ("airports", "airport_indoor"),
+    "機場內部": ("airport_indoor",),
+    "客運大樓": ("airport_indoor",),
+    "登機口": ("airport_indoor",),
+    "候機": ("airport_indoor",),
+    "免稅": ("airport_indoor",),
+    "貴賓室": ("airport_indoor",),
+    "gate": ("airport_indoor",),
+    "terminal": ("airport_indoor",),
+    "lounge": ("airport_indoor",),
     "機場停車場": ("airports",),
     "yvr parking": ("airports",),
     "parkade": ("airports",),
@@ -461,6 +470,7 @@ CATEGORY_TIER_BONUS: dict[str, int] = {
     "local_area_boundary": 30,
     "beach_water_quality": 30,
     "marine_terminals": 28,
+    "airport_indoor": 24,
     # Tier 2 (+20): Bus Routes, Energy, Parking Lots, Mobility Share, Couriers, Washrooms, Live Overlays
     "bus_route": 22,
     "ferry_vehicle": 22,
@@ -530,6 +540,7 @@ CATEGORY_UI_GROUP: dict[str, str] = {
     "bus_exchange": "transit",
     "ferry_vehicle": "transit",
     "airports": "transit",
+    "airport_indoor": "transit",
     "maritime_vessel": "transit",
     "marine_terminals": "transit",
     "railways": "transit",
@@ -1331,6 +1342,105 @@ class LayerSearchEngine:
                 extra_keywords="yvr cyvr vancouver airport 溫哥華機場 國際機場 飛機場 richmond sea island",
                 exact_codes=["yvr", "cyvr"],
             )
+
+        # 1.5 YVR Airport Indoor Map POIs (from yvr_indoor_pois.json)
+        indoor_path = os.path.join(self.data_dir, "yvr_indoor_pois.json")
+        if not os.path.exists(indoor_path):
+            alt_indoor = os.path.join(os.path.dirname(self.data_dir), "frontend", "public", "yvr_indoor_pois.json")
+            if os.path.exists(alt_indoor):
+                indoor_path = alt_indoor
+        if os.path.exists(indoor_path):
+            try:
+                with open(indoor_path, "r", encoding="utf-8") as f:
+                    indoor_data = json.load(f)
+                indoor_pois = indoor_data.get("pois", []) if isinstance(indoor_data, dict) else []
+                indoor_cat_icons = {
+                    "eat": ("🍽️", "機場餐飲"),
+                    "shop": ("🛍️", "機場商店"),
+                    "gate": ("🛫", "機場登機門"),
+                    "security": ("🛡️", "機場安檢/海關"),
+                    "baggage": ("🧳", "機場行李"),
+                    "restroom": ("🚻", "機場洗手間"),
+                    "relax": ("🛋️", "機場貴賓室/休憩"),
+                    "services": ("🛎️", "機場服務"),
+                    "transport": ("🚕", "機場交通"),
+                    "portal": ("🛗", "機場通道/電梯"),
+                    "checkin": ("🎫", "報到櫃檯"),
+                    "ticketing": ("🎫", "票務櫃檯"),
+                    "hotel": ("🏨", "機場飯店"),
+                    "parking": ("🅿️", "機場停車"),
+                    "art": ("🎨", "機場藝術"),
+                }
+                for poi in indoor_pois:
+                    if not isinstance(poi, dict):
+                        continue
+                    lat = poi.get("latitude")
+                    lon = poi.get("longitude")
+                    name = str(poi.get("name") or "").strip()
+                    if not name or lat is None or lon is None:
+                        continue
+                    try:
+                        f_lat = float(lat)
+                        f_lon = float(lon)
+                    except (TypeError, ValueError):
+                        continue
+
+                    cat = str(poi.get("category") or "services").strip()
+                    prefix = cat.split(".")[0].lower()
+                    icon, badge = indoor_cat_icons.get(prefix, ("🗺️", "機場設施"))
+                    floor_label = str(poi.get("floorLabel") or poi.get("floorId") or "").strip()
+                    landmark = str(poi.get("nearbyLandmark") or "").strip()
+                    sub_parts = [p for p in (floor_label, landmark) if p]
+                    sub = " · ".join(sub_parts) if sub_parts else "YVR 溫哥華國際機場內部"
+
+                    kw_items = poi.get("keywords") or []
+                    kw_str = " ".join(str(k) for k in kw_items if k)
+                    desc_str = str(poi.get("description") or "")[:180]
+                    gate_val = str(poi.get("gate") or "").strip()
+                    extra_kw = f"yvr 機場 機場內部 airport indoor {floor_label} {cat} {landmark} {gate_val} {kw_str} {desc_str}"
+
+                    exact_codes = []
+                    if gate_val:
+                        exact_codes.append(gate_val.lower())
+                    m_gate = re.search(r"\bgate\s+([a-z]\d+[a-z]?)\b", name, re.I)
+                    if m_gate:
+                        exact_codes.append(m_gate.group(1).lower())
+
+                    self._add_doc(
+                        snap,
+                        item_id=f"yvr_indoor_{poi.get('poiId', name)}_{poi.get('floorId', '')}",
+                        title=name,
+                        subtitle=sub,
+                        category="airport_indoor",
+                        badge=badge,
+                        icon=icon,
+                        lon=f_lon,
+                        lat=f_lat,
+                        zoom=18,
+                        layer_key="airportIndoor",
+                        meta={
+                            "poiId": poi.get("poiId"),
+                            "name": name,
+                            "category": cat,
+                            "terminalId": poi.get("terminalId"),
+                            "floorId": poi.get("floorId"),
+                            "floorLabel": floor_label,
+                            "latitude": f_lat,
+                            "longitude": f_lon,
+                            "operationHours": poi.get("operationHours"),
+                            "phone": poi.get("phone"),
+                            "isAfterSecurity": poi.get("isAfterSecurity"),
+                            "description": poi.get("description"),
+                            "nearbyLandmark": poi.get("nearbyLandmark"),
+                            "gate": poi.get("gate"),
+                            "links": poi.get("links") or [],
+                        },
+                        addr_text=floor_label,
+                        extra_keywords=extra_kw,
+                        exact_codes=exact_codes or None,
+                    )
+            except Exception as exc:
+                print(f"[SearchEngine] YVR indoor index warning: {exc}")
 
         # 2. BC Ferries Terminals
         for term in SEARCH_BC_FERRY_TERMINALS:

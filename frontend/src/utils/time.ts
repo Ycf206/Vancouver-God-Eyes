@@ -84,8 +84,9 @@ export function formatOpeningHours(
     if (ampm === 'am' && hour === 12) hour = 0;
 
     if (format === '12h') {
-      const period = hour >= 12 ? 'PM' : 'AM';
-      let h12 = hour % 12;
+      const normalizedHour = hour === 24 ? 0 : hour;
+      const period = normalizedHour >= 12 ? 'PM' : 'AM';
+      let h12 = normalizedHour % 12;
       if (h12 === 0) h12 = 12;
       return `${String(h12).padStart(2, '0')}:${min} ${period}`;
     } else {
@@ -93,14 +94,21 @@ export function formatOpeningHours(
     }
   }
 
-  // Mixed named and numeric time ranges: e.g. "6:00am - Midnight", "10:00 am - Dusk", "7:00 am - Dusk"
-  const rTimeWord = /(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*(?:[-–—~至]+|\bto\b)\s*(midnight|dusk|dawn|noon)/i;
+  // Mixed named and numeric time ranges: e.g. "6:00am - Midnight", "10:00 am - Dusk", "00:00-lastFlight"
+  const rTimeWord = /(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*(?:[-–—~至]+|\bto\b)\s*(midnight|dusk|dawn|noon|lastflight|last\s*flight)/i;
   const mTimeWord = s.match(rTimeWord);
   if (mTimeWord) {
     const t = parseSingleTimeToken(mTimeWord[1]);
-    const wordZh: Record<string, string> = { midnight: '午夜', dusk: '日落', dawn: '日出', noon: '中午' };
-    const w = wordZh[mTimeWord[2].toLowerCase()] || mTimeWord[2];
-    if (t) return s.replace(mTimeWord[0], `${t} - ${w}`);
+    const wordZh: Record<string, string> = {
+      midnight: '午夜',
+      dusk: '日落',
+      dawn: '日出',
+      noon: '中午',
+      lastflight: '末班機',
+      'last flight': '末班機',
+    };
+    const w = wordZh[mTimeWord[2].toLowerCase().trim()] || mTimeWord[2];
+    if (t) return s.replace(mTimeWord[0], `${t} – ${w}`);
   }
 
   // e.g. "Dawn - 10:15pm", "Dawn to 10:15 pm", "Dawn - 11:00 pm"

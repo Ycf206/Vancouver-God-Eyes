@@ -15,6 +15,7 @@ import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
 import { BUS_EXCHANGES, BusExchange, BusExchangeBay } from '@/data/busExchanges';
 import yvrAirlinesData from '@/data/yvrAirlines.json';
+import { YVR_CATEGORY_GROUPS, getYvrCategorySpec, formatYvrFloorId, registerYvrIndoorIcons } from '@/utils/yvrIndoorCategories';
 import { 
   LocateFixed, Train, Compass, ZoomIn, ZoomOut, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
@@ -28,7 +29,8 @@ import {
   Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy,
-  TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction
+  TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
+  Layers, Building2, Phone, ShieldCheck
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -351,6 +353,7 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   fireHydrants: { label: '消防栓', prefixes: ['fire-hydrants', 'fire_hydrants'] },
   zoningDistricts: { label: '土地規劃', prefixes: ['zoning-districts', 'zoning_districts'] },
   publicTrees: { label: '街道樹木', prefixes: ['public-trees', 'public_trees'] },
+  airportIndoor: { label: '機場內部地圖', prefixes: ['yvr-indoor'] },
 };
 
 const SKI_RESORT_POINTS = [
@@ -920,7 +923,9 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'power-outages-polygon-fill',
   'power-outages-polygon-outline',
   'power-outages-point-glow',
-  'power-outages-point-core'
+  'power-outages-point-core',
+  'yvr-indoor-pois-layer',
+  'yvr-indoor-pois-symbol-layer'
 ];
 
 // Lucide: calendar-arrow-right
@@ -1052,7 +1057,9 @@ export default function AppMap() {
     setActiveJobSkillModal,
     layerCustomColors,
     setPowerOutagesOpen,
-    setSelectedOutageId
+    setSelectedOutageId,
+    airportIndoorFilter,
+    setAirportIndoorFilter
   } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
@@ -1242,6 +1249,186 @@ export default function AppMap() {
   const [currentRealtimeLocation, setCurrentRealtimeLocation] = useState<{ lat: number; lon: number } | null>(null);
   const geolocationWatchIdRef = useRef<number | null>(null);
   const hasInitialFlyRef = useRef(false);
+
+  // YVR 機場內部地圖 (LocusLabs POIs + VenueData 樓層圖資)
+  const [yvrIndoorData, setYvrIndoorData] = useState<{
+    updated_at?: string;
+    total_count?: number;
+    terminals: Array<{
+      id: string;
+      name: string;
+      nameZh?: string;
+      defaultLevelId?: string;
+      centroid?: [number, number] | null;
+      levels: Array<{
+        id: string;
+        name: string;
+        details?: string;
+        ordinal: number;
+        poiCount: number;
+        boundsPolygon?: [number, number][];
+      }>;
+    }>;
+    pois: Array<{
+      poiId: string;
+      name: string;
+      category: string;
+      terminalId: string;
+      floorId: string;
+      floorLabel?: string;
+      latitude: number;
+      longitude: number;
+      operationHours?: any;
+      phone?: string | null;
+      isAfterSecurity?: boolean | null;
+      description?: string | null;
+      nearbyLandmark?: string | null;
+      gate?: string | null;
+      isNavigable?: boolean;
+      links?: Array<{ url: string; type?: string; displayName?: string }>;
+      keywords?: string[];
+    }>;
+  } | null>(null);
+  const [yvrIndoorLoading, setYvrIndoorLoading] = useState(false);
+  const [yvrIndoorPanelOpen, setYvrIndoorPanelOpen] = useState(true);
+  const prevAirportIndoorRef = useRef(false);
+
+  useEffect(() => {
+    const justTurnedOn = layers.airportIndoor && !prevAirportIndoorRef.current;
+    prevAirportIndoorRef.current = !!layers.airportIndoor;
+    if (!layers.airportIndoor) return;
+
+    if (justTurnedOn && mapRef.current) {
+      const m = mapRef.current.getMap?.();
+      if (m) registerYvrIndoorIcons(m);
+      if (searchTarget?.category !== 'airport_indoor') {
+        mapRef.current.flyTo({
+          center: [-123.1782, 49.1948],
+          zoom: 16.4,
+          duration: 1100
+        });
+      }
+    }
+
+    if (!yvrIndoorData && !yvrIndoorLoading) {
+      setYvrIndoorLoading(true);
+      fetch('/api/yvr/indoor-pois')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && Array.isArray(data.pois)) {
+            setYvrIndoorData(data);
+          }
+        })
+        .catch((err) => console.error('[YVR Indoor] 載入失敗:', err))
+        .finally(() => setYvrIndoorLoading(false));
+    }
+  }, [layers.airportIndoor, yvrIndoorData, yvrIndoorLoading, searchTarget]);
+
+  const yvrIndoorTerminals = useMemo(() => yvrIndoorData?.terminals || [], [yvrIndoorData]);
+
+  const yvrIndoorActiveTerminal = useMemo(() => {
+    if (yvrIndoorTerminals.length === 0) return null;
+    return (
+      yvrIndoorTerminals.find((t) => t.id === airportIndoorFilter.terminalId) ||
+      yvrIndoorTerminals.find((t) => t.id === 'yvr-mainterminal') ||
+      yvrIndoorTerminals[0]
+    );
+  }, [yvrIndoorTerminals, airportIndoorFilter.terminalId]);
+
+  const yvrIndoorActiveLevels = useMemo(
+    () => yvrIndoorActiveTerminal?.levels || [],
+    [yvrIndoorActiveTerminal]
+  );
+
+  const yvrIndoorResolvedFloorId = useMemo(() => {
+    if (yvrIndoorActiveLevels.length === 0) return airportIndoorFilter.floorId;
+    if (yvrIndoorActiveLevels.some((l) => l.id === airportIndoorFilter.floorId)) {
+      return airportIndoorFilter.floorId;
+    }
+    return yvrIndoorActiveTerminal?.defaultLevelId || yvrIndoorActiveLevels[0].id;
+  }, [yvrIndoorActiveLevels, airportIndoorFilter.floorId, yvrIndoorActiveTerminal]);
+
+  const yvrIndoorBoundsGeoJson = useMemo(() => {
+    if (!layers.airportIndoor) return null;
+    const activeLvl = yvrIndoorActiveLevels.find((l) => l.id === yvrIndoorResolvedFloorId);
+    const poly = activeLvl?.boundsPolygon;
+    if (!poly || poly.length < 3) return null;
+    const ring = [...poly];
+    const first = ring[0];
+    const last = ring[ring.length - 1];
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+      ring.push([first[0], first[1]]);
+    }
+    return {
+      type: 'FeatureCollection' as const,
+      features: [
+        {
+          type: 'Feature' as const,
+          geometry: { type: 'Polygon' as const, coordinates: [ring] },
+          properties: {
+            terminalId: yvrIndoorActiveTerminal?.id || '',
+            floorId: yvrIndoorResolvedFloorId,
+          },
+        },
+      ],
+    };
+  }, [layers.airportIndoor, yvrIndoorActiveLevels, yvrIndoorResolvedFloorId, yvrIndoorActiveTerminal]);
+
+  const yvrIndoorPoisGeoJson = useMemo(() => {
+    if (!layers.airportIndoor || !yvrIndoorData?.pois) {
+      return { type: 'FeatureCollection' as const, features: [] };
+    }
+    const catFilter = airportIndoorFilter.categoryFilter || 'all';
+    const features = yvrIndoorData.pois
+      .filter((poi) => {
+        if (poi.floorId !== yvrIndoorResolvedFloorId) return false;
+        if (catFilter !== 'all') {
+          const spec = getYvrCategorySpec(poi.category);
+          if (spec.group !== catFilter) return false;
+        }
+        return true;
+      })
+      .map((poi) => {
+        const spec = getYvrCategorySpec(poi.category);
+        return {
+          type: 'Feature' as const,
+          geometry: {
+            type: 'Point' as const,
+            coordinates: [poi.longitude, poi.latitude],
+          },
+          properties: {
+            id: poi.poiId,
+            poiId: poi.poiId,
+            facility_type: 'airport_indoor',
+            name: poi.name,
+            category: poi.category,
+            terminalId: poi.terminalId,
+            floorId: poi.floorId,
+            floorLabel: poi.floorLabel || formatYvrFloorId(poi.floorId),
+            operationHours:
+              typeof poi.operationHours === 'string'
+                ? poi.operationHours
+                : poi.operationHours
+                ? JSON.stringify(poi.operationHours)
+                : '',
+            phone: poi.phone ?? '',
+            isAfterSecurity: typeof poi.isAfterSecurity === 'boolean' ? poi.isAfterSecurity : '',
+            description: poi.description ?? '',
+            nearbyLandmark: poi.nearbyLandmark ?? '',
+            gate: poi.gate ?? '',
+            links_json: JSON.stringify(poi.links || []),
+            iconKey: spec.iconKey,
+            color: spec.color,
+            group: spec.group,
+            groupZh: spec.groupZh,
+          },
+        };
+      });
+    return {
+      type: 'FeatureCollection' as const,
+      features,
+    };
+  }, [layers.airportIndoor, yvrIndoorData, yvrIndoorResolvedFloorId, airportIndoorFilter.categoryFilter]);
 
   const stopGeolocation = useCallback(() => {
     if (geolocationWatchIdRef.current !== null) {
@@ -2131,6 +2318,7 @@ export default function AppMap() {
         else if (type === 'traffic_signals' && !layers.trafficSignals) facilityClosed = true;
         else if (type === 'turn_restrictions' && !layers.turnRestrictions) facilityClosed = true;
         else if (type === 'railways' && !layers.railways) facilityClosed = true;
+        else if (type === 'airport_indoor' && !layers.airportIndoor) facilityClosed = true;
         else if (type === 'job' && (!isExploreOpen || !openExploreTabs?.includes('jobs'))) facilityClosed = true;
 
         if (facilityClosed) {
@@ -2258,6 +2446,8 @@ export default function AppMap() {
       } else if (searchTarget.category === 'aed' && !layers.aed) {
         setSearchTarget(null);
       } else if (searchTarget.category === 'airports' && !layers.airports) {
+        setSearchTarget(null);
+      } else if (searchTarget.category === 'airport_indoor' && !layers.airportIndoor) {
         setSearchTarget(null);
       } else if (searchTarget.category === 'ferry_terminal' && !layers.bcferriesRoutes) {
         setSearchTarget(null);
@@ -3735,21 +3925,40 @@ export default function AppMap() {
       setSelectedFlight(null);
       setSelectedAirport(null);
       const facType = searchTarget.meta?.facility_type || searchTarget.meta?.properties?.facility_type || (searchTarget.category === 'road' ? (String(searchTarget.id ?? '').startsWith('fuel_') ? 'fuel' : 'ev_charging') : searchTarget.category);
+      const propsObj = searchTarget.meta?.properties || searchTarget.meta || {};
       if (facType === 'canada_post') {
         setCourierFilter(prev => prev.canadaPost ? prev : { ...prev, canadaPost: true });
       } else if (facType === 'fedex') {
         setCourierFilter(prev => prev.fedex ? prev : { ...prev, fedex: true });
       } else if (facType === 'purolator') {
         setCourierFilter(prev => prev.purolator ? prev : { ...prev, purolator: true });
+      } else if (facType === 'airport_indoor') {
+        const targetTerminalId = propsObj.terminalId || (String(propsObj.floorId || '').startsWith('yvr-southterminal') ? 'yvr-southterminal' : 'yvr-mainterminal');
+        const targetFloorId = propsObj.floorId || `${targetTerminalId}-level3`;
+        setAirportIndoorFilter({
+          terminalId: targetTerminalId,
+          floorId: targetFloorId,
+          categoryFilter: 'all',
+        });
+        if (mapRef.current) {
+          mapRef.current.flyTo({
+            center: [searchTarget.lon, searchTarget.lat],
+            zoom: 18,
+            duration: 1200,
+          });
+        }
       }
       setSelectedFacility({
         id: searchTarget.id,
         facility_type: facType,
         name: searchTarget.title,
-        local_area: searchTarget.meta?.local_area || '',
+        local_area:
+          facType === 'airport_indoor'
+            ? (propsObj.floorLabel || (propsObj.floorId ? formatYvrFloorId(propsObj.floorId) : '') || searchTarget.meta?.local_area || '')
+            : (searchTarget.meta?.local_area || ''),
         lon: searchTarget.lon,
         lat: searchTarget.lat,
-        properties: searchTarget.meta?.properties || searchTarget.meta || {}
+        properties: propsObj
       });
     }
   }, [searchTarget]);
@@ -3853,19 +4062,21 @@ export default function AppMap() {
   const isMarineTideActive = Boolean(isExploreOpen && exploreTab === 'weather' && weatherSubTab === 'marine');
   const isExploreTrafficActive = Boolean(isExploreOpen && exploreTab === 'traffic');
 
-  // 確保海岸潮汐水位站 Lucide: dam 圖示已注入 MapLibre
+  // 確保海岸潮汐水位站 Lucide: dam 及 YVR 機場內部設施圖示已注入 MapLibre
   useEffect(() => {
     const map = mapRef.current?.getMap();
     if (!map) return;
     registerDamIcon(map);
+    registerYvrIndoorIcons(map);
     const handleStyleData = () => {
       registerDamIcon(map);
+      registerYvrIndoorIcons(map);
     };
     map.on('styledata', handleStyleData);
     return () => {
       map.off('styledata', handleStyleData);
     };
-  }, [mapStyleType, isMarineTideActive]);
+  }, [mapStyleType, isMarineTideActive, layers.airportIndoor]);
 
   const mapStyle = useMemo(() => {
     // Determine Base and Label Tiles based on mapStyleType
@@ -7425,6 +7636,7 @@ export default function AppMap() {
         }}
         onLoad={(e: any) => {
           registerDamIcon(e.target);
+          registerYvrIndoorIcons(e.target);
           updateScale();
           const z = e.target?.getZoom ? e.target.getZoom() : e.viewState?.zoom;
           if (typeof z === 'number' && !isNaN(z) && Math.abs(z - currentZoomRef.current) > 0.15) {
@@ -7741,6 +7953,47 @@ export default function AppMap() {
               lon: clickLon,
               lat: clickLat,
               properties: props
+            });
+          } else if (layerId === 'yvr-indoor-pois-layer' || layerId === 'yvr-indoor-pois-symbol-layer') {
+            setSelectedStop(null);
+            setSelectedTerminal(null);
+            setSelectedFlight(null);
+            setSelectedAirport(null);
+            setSelectedYvrAirport(null);
+            const props = feature.properties || {};
+            const poiCoords = feature.geometry?.type === 'Point'
+              ? (feature.geometry.coordinates as [number, number])
+              : [e.lngLat?.lng ?? -123.1782, e.lngLat?.lat ?? 49.1948];
+            let parsedLinks: Array<{ url: string; type?: string; displayName?: string }> = Array.isArray(props.links) ? props.links : [];
+            if (typeof props.links_json === 'string' && props.links_json.trim()) {
+              try {
+                const tmp = JSON.parse(props.links_json);
+                if (Array.isArray(tmp)) parsedLinks = tmp;
+              } catch {
+                // ignore malformed json
+              }
+            }
+            const parsedAfterSec =
+              props.isAfterSecurity === true || props.isAfterSecurity === 'true'
+                ? true
+                : props.isAfterSecurity === false || props.isAfterSecurity === 'false'
+                ? false
+                : null;
+            setSelectedFacility({
+              id: props.poiId || props.id || `yvr_poi_${poiCoords[0]}_${poiCoords[1]}`,
+              facility_type: 'airport_indoor',
+              name: props.name || '機場設施',
+              local_area: props.floorLabel || (props.floorId ? formatYvrFloorId(props.floorId) : '') || '',
+              lon: poiCoords[0],
+              lat: poiCoords[1],
+              properties: {
+                ...props,
+                isAfterSecurity: parsedAfterSec,
+                operationHours: props.operationHours || null,
+                phone: props.phone || null,
+                description: props.description || null,
+                links: parsedLinks,
+              },
             });
           } else if (layerId.startsWith('public-trees')) {
             setSelectedStop(null);
@@ -9671,6 +9924,89 @@ export default function AppMap() {
           </Source>
         )}
 
+        {/* YVR 機場內部地圖：航廈樓層外框與室內設施圓點 + Lucide 圖示 */}
+        {layers.airportIndoor && yvrIndoorBoundsGeoJson && (
+          <Source id="yvr-indoor-bounds-source" type="geojson" data={yvrIndoorBoundsGeoJson}>
+            <Layer
+              id="yvr-indoor-bounds-fill"
+              type="fill"
+              paint={{
+                'fill-color': '#0ea5e9',
+                'fill-opacity': 0.08,
+              }}
+            />
+            <Layer
+              id="yvr-indoor-bounds-outline"
+              type="line"
+              paint={{
+                'line-color': '#38bdf8',
+                'line-width': 2,
+                'line-opacity': 0.65,
+                'line-dasharray': [3, 2],
+              }}
+            />
+          </Source>
+        )}
+
+        {layers.airportIndoor && (
+          <Source id="yvr-indoor-pois-source" type="geojson" data={yvrIndoorPoisGeoJson}>
+            {selectedFacility?.facility_type === 'airport_indoor' && selectedFacility?.id && (
+              <Layer
+                id="yvr-indoor-pois-selected-halo"
+                type="circle"
+                filter={['==', ['get', 'poiId'], String(selectedFacility.id)]}
+                paint={{
+                  'circle-radius': ['interpolate', ['linear'], ['zoom'], 14, 14, 17, 20, 19, 24],
+                  'circle-color': '#38bdf8',
+                  'circle-opacity': 0.32,
+                  'circle-stroke-width': 2.2,
+                  'circle-stroke-color': '#ffffff',
+                }}
+              />
+            )}
+            <Layer
+              id="yvr-indoor-pois-layer"
+              type="circle"
+              paint={{
+                'circle-radius': ['interpolate', ['linear'], ['zoom'], 13, 4.5, 15, 7, 17, 11.5, 19, 14],
+                'circle-color': ['coalesce', ['get', 'color'], '#0ea5e9'],
+                'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 13, 1, 16, 1.8, 18, 2.2],
+                'circle-stroke-color': '#ffffff',
+                'circle-opacity': 0.96,
+              }}
+            />
+            <Layer
+              id="yvr-indoor-pois-symbol-layer"
+              type="symbol"
+              minzoom={15.2}
+              layout={{
+                'icon-image': ['get', 'iconKey'],
+                'icon-size': ['interpolate', ['linear'], ['zoom'], 15.2, 0.36, 17, 0.54, 19, 0.7],
+                'icon-allow-overlap': true,
+                'icon-ignore-placement': true,
+              }}
+            />
+            <Layer
+              id="yvr-indoor-pois-label-layer"
+              type="symbol"
+              minzoom={17.5}
+              layout={{
+                'text-field': ['get', 'name'],
+                'text-size': 10.5,
+                'text-offset': [0, 1.65],
+                'text-anchor': 'top',
+                'text-max-width': 11,
+                'text-optional': true,
+              }}
+              paint={{
+                'text-color': '#f8fafc',
+                'text-halo-color': '#0f172a',
+                'text-halo-width': 1.6,
+              }}
+            />
+          </Source>
+        )}
+
         {/* 滑雪場標記 (當開啟探索且分頁為滑雪時，在地圖上為 3 個滑雪場加上圖示，按下即彈去該地點) */}
         {((isExploreOpen && exploreTab === 'ski') || (searchTarget && searchTarget.category === 'ski_resort')) && mapSkiResorts.map((resort) => {
           const isSelected = selectedFacility?.id === `ski_${resort.id}` || searchTarget?.id === `ski_${resort.id}`;
@@ -10398,6 +10734,7 @@ export default function AppMap() {
                   if (t === 'crime_areas') return { label: '社區治安', bg: 'bg-red-700 text-white' };
                   if (t === 'traffic_alerts' || t === 'traffic_incident') return { label: '即時通報', bg: 'bg-amber-600 text-white' };
                   if (t === 'drivebc') return { label: 'BC Drive', bg: 'bg-[#ea580c] text-white' };
+                  if (t === 'airport_indoor') return { label: '機場', bg: 'bg-sky-600 text-white' };
                   if (t === 'job') return { label: '工作', bg: 'bg-indigo-600 text-white' };
                   return null;
                 })();
@@ -10419,7 +10756,7 @@ export default function AppMap() {
                     road_construction: 'roadConstruction', public_washrooms: 'publicWashrooms',
                     drinking_fountains: 'drinkingFountains', beach_water_quality: 'beachWaterQuality',
                     border_crossing: 'borderCrossing', ski_resort: 'skiResorts', tide_stations: 'tideStations',
-                    marine_terminals: 'marineTerminals',
+                    marine_terminals: 'marineTerminals', airport_indoor: 'airportIndoor',
                     litter_containers: 'litterContainers', public_trees: 'publicTrees', museums: 'museums',
                     recycling: 'recycling', fire_hydrants: 'fireHydrants', aed: 'aed'
                   };
@@ -10491,6 +10828,9 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'purolator') {
                       const p = selectedFacility.properties || {};
                       return p.locationName || p.name || selectedFacility.name || 'Purolator';
+                    }
+                    if (selectedFacility.facility_type === 'airport_indoor') {
+                      return selectedFacility.properties?.name || selectedFacility.name || '機場設施';
                     }
                     if (selectedFacility.facility_type === 'tide_stations') {
                       const raw = selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.properties?.name_en || selectedFacility.name || '';
@@ -10569,6 +10909,9 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'fire_hydrants') {
                       return selectedFacility.properties?.street || selectedFacility.name;
                     }
+                    if (selectedFacility.facility_type === 'airport_indoor') {
+                      return selectedFacility.properties?.name || selectedFacility.name || '機場設施';
+                    }
                     if (selectedFacility.facility_type === 'tide_stations') {
                       return selectedFacility.properties?.english_name || selectedFacility.name?.replace(/[\u4e00-\u9fa5（）\(\)]+/g, '').trim() || selectedFacility.name;
                     }
@@ -10609,6 +10952,9 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'purolator') {
                       const p = selectedFacility.properties || {};
                       return p.locationName || p.name || selectedFacility.name || 'Purolator';
+                    }
+                    if (selectedFacility.facility_type === 'airport_indoor') {
+                      return selectedFacility.properties?.name || selectedFacility.name || '機場設施';
                     }
                     if (selectedFacility.facility_type === 'tide_stations') {
                       const raw = selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.properties?.name_en || selectedFacility.name || '';
@@ -10670,6 +11016,7 @@ export default function AppMap() {
                           (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'bg-orange-500 shadow-[0_0_6px_rgba(234,88,12,0.5)]' :
                           (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
                           selectedFacility.facility_type === 'drivebc' ? 'bg-[#ea580c] shadow-[0_0_6px_rgba(234,88,12,0.5)]' :
+                          selectedFacility.facility_type === 'airport_indoor' ? 'bg-sky-500 shadow-[0_0_6px_rgba(14,165,233,0.5)]' :
                           selectedFacility.facility_type === 'road_closures' ? 'bg-red-600' :
                           selectedFacility.facility_type === 'road_construction' ? 'bg-orange-600' :
                           selectedFacility.facility_type === 'beach_water_quality' ? 'bg-teal-500' :
@@ -10840,6 +11187,9 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'libraries') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'food_vendors') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'food_banks') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'airport_indoor') {
+                                return selectedFacility.properties?.floorLabel || (selectedFacility.properties?.floorId ? formatYvrFloorId(selectedFacility.properties.floorId) : '') || selectedFacility.local_area || '';
+                              }
                               if (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') {
                                 const rawStreet = selectedFacility.properties?.street || selectedFacility.local_area || '';
                                 const match = rawStreet.match(/\(([^)]+)\)/);
@@ -17371,6 +17721,160 @@ export default function AppMap() {
                 );
               })()}
 
+              {/* YVR 機場內部設施 (LocusLabs POI) */}
+              {selectedFacility.facility_type === 'airport_indoor' && (() => {
+                const p = selectedFacility.properties || {};
+
+                const cleanStr = (v: any): string | null => {
+                  if (v === null || v === undefined) return null;
+                  const s = String(v).trim();
+                  if (!s || s.toLowerCase() === 'null' || s.toLowerCase() === 'undefined') return null;
+                  return s;
+                };
+
+                let rawHours: any = p.operationHours;
+                if (typeof rawHours === 'string') {
+                  const trimmed = rawHours.trim();
+                  if (!trimmed || trimmed.toLowerCase() === 'null' || trimmed.toLowerCase() === 'undefined') {
+                    rawHours = null;
+                  } else if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+                    try {
+                      rawHours = JSON.parse(trimmed);
+                    } catch {
+                      rawHours = trimmed;
+                    }
+                  } else {
+                    rawHours = trimmed;
+                  }
+                }
+                const hasOpHours =
+                  rawHours !== null &&
+                  rawHours !== undefined &&
+                  (typeof rawHours !== 'string' || rawHours.length > 0) &&
+                  (!Array.isArray(rawHours) || rawHours.length > 0) &&
+                  (typeof rawHours !== 'object' || Object.keys(rawHours).length > 0);
+
+                const phoneVal = cleanStr(p.phone);
+                const descVal = cleanStr(p.description);
+
+                let afterSecBool: boolean | null = null;
+                if (p.isAfterSecurity === true || String(p.isAfterSecurity).toLowerCase() === 'true') {
+                  afterSecBool = true;
+                } else if (p.isAfterSecurity === false || String(p.isAfterSecurity).toLowerCase() === 'false') {
+                  afterSecBool = false;
+                }
+                const hasAfterSec = afterSecBool !== null;
+
+                let rawLinks: any[] = [];
+                if (Array.isArray(p.links)) {
+                  rawLinks = p.links;
+                } else if (typeof p.links_json === 'string' && p.links_json.trim()) {
+                  try {
+                    const parsed = JSON.parse(p.links_json);
+                    if (Array.isArray(parsed)) rawLinks = parsed;
+                  } catch {
+                    // ignore
+                  }
+                }
+                const seenLinkUrls = new Set<string>();
+                const validLinks: Array<{ url: string; displayName?: string }> = [];
+                for (const item of rawLinks) {
+                  const rawUrl = typeof item === 'string' ? item : item?.url;
+                  const norm = cleanStr(rawUrl);
+                  if (!norm) continue;
+                  const finalUrl = /^https?:\/\//i.test(norm) ? norm : `https://${norm.replace(/^\/+/, '')}`;
+                  if (!seenLinkUrls.has(finalUrl)) {
+                    seenLinkUrls.add(finalUrl);
+                    validLinks.push({
+                      url: finalUrl,
+                      displayName: typeof item === 'object' ? cleanStr(item?.displayName) || undefined : undefined,
+                    });
+                  }
+                }
+
+                const hasTopFields = Boolean(hasOpHours || phoneVal || hasAfterSec);
+                const hasGrayBoxContent = Boolean(hasTopFields || descVal);
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {hasGrayBoxContent && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
+                        {hasTopFields && (
+                          <div className="flex flex-col gap-1.5">
+                            {hasOpHours && (
+                              <FacilityWeeklyHoursSchedule
+                                label="營業時間"
+                                hours={rawHours}
+                                timeFormat={timeFormat}
+                                theme="blue"
+                              />
+                            )}
+                            {phoneVal && (
+                              <div className="flex justify-between items-center gap-2 text-gray-600">
+                                <span className="shrink-0 flex items-center gap-1">
+                                  <Phone className="w-3 h-3 text-gray-400" />
+                                  聯絡電話
+                                </span>
+                                <a
+                                  href={`tel:${phoneVal.replace(/[^+\d]/g, '')}`}
+                                  className="text-sky-700 hover:text-sky-800 hover:underline font-medium font-mono text-right"
+                                >
+                                  {formatPhoneNumber(phoneVal)}
+                                </a>
+                              </div>
+                            )}
+                            {hasAfterSec && (
+                              <div className="flex justify-between items-center gap-2 text-gray-600">
+                                <span className="shrink-0 flex items-center gap-1">
+                                  <ShieldCheck className="w-3 h-3 text-gray-400" />
+                                  禁區
+                                </span>
+                                <span
+                                  className={`px-2 py-0.5 rounded font-semibold text-[10px] ${
+                                    afterSecBool
+                                      ? 'bg-rose-100 text-rose-700 border border-rose-200'
+                                      : 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                                  }`}
+                                >
+                                  {afterSecBool ? '是 (安檢後禁區)' : '否 (非禁區)'}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        {descVal && (
+                          <div className={hasTopFields ? 'pt-2 border-t border-gray-200' : ''}>
+                            <span className="text-[10px] text-gray-500 block mb-1">詳細資料</span>
+                            <p className="text-gray-700 leading-relaxed whitespace-pre-line">{descVal}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {validLinks.length > 0 && (
+                      <div className="pt-0.5 flex flex-col gap-1.5">
+                        {validLinks.map((lk, idx) => (
+                          <a
+                            key={`yvr-link-${idx}`}
+                            href={lk.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 px-3 bg-sky-600 hover:bg-sky-700 text-white rounded-md font-medium text-xs transition-colors shadow-sm"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                            <span>
+                              {validLinks.length > 1 && lk.displayName
+                                ? `前往機場設施網頁 (${lk.displayName})`
+                                : '前往機場設施網頁'}
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
               {/* 設施通用坐標與複製按鈕 */}
               <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2.5 mt-2.5 border-t border-gray-100 font-mono">
                 <span className="flex items-center gap-1 text-gray-600">
@@ -19409,6 +19913,251 @@ export default function AppMap() {
               <button 
                 onClick={() => setCourierLegendOpen(true)}
                 className="text-[10px] text-purple-400 hover:underline cursor-pointer"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* YVR 機場內部地圖：客運大樓與樓層選擇器 */}
+      {layers.airportIndoor && (
+        <div
+          className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-sky-500/50 select-none animate-in fade-in duration-200 ${getFloatingPanelPos(
+            (layers.parkingMeters ? 1 : 0) +
+            (layers.motorcycleParking ? 1 : 0) +
+            (layers.fuel ? 1 : 0) +
+            ((layers.evCharging || layers.tesla) ? 1 : 0) +
+            (layers.carSharing ? 1 : 0) +
+            (layers.bikeways ? 1 : 0) +
+            (layers.truckRoutes ? 1 : 0) +
+            (layers.safetyCameras ? 1 : 0) +
+            (layers.impark ? 1 : 0) +
+            (layers.canadaPost ? 1 : 0)
+          )}`}
+        >
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="p-1 rounded bg-sky-500/20 text-sky-400 shrink-0">
+                <MapIcon className="w-3.5 h-3.5" />
+              </span>
+              <span className="font-bold text-xs text-white truncate">YVR 機場內部樓層</span>
+              <span className="text-[10px] font-mono bg-sky-500/20 text-sky-300 border border-sky-500/30 px-1.5 py-0.5 rounded shrink-0">
+                {yvrIndoorPoisGeoJson.features.length} 項
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setYvrIndoorPanelOpen(!yvrIndoorPanelOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors shrink-0"
+              title={yvrIndoorPanelOpen ? '收合' : '展開'}
+            >
+              {yvrIndoorPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {yvrIndoorLoading && !yvrIndoorData ? (
+            <div className="py-4 text-center text-[11px] text-sky-300 animate-pulse">
+              正在載入 YVR 機場室內地圖資料...
+            </div>
+          ) : yvrIndoorPanelOpen ? (
+            <div className="flex flex-col gap-2.5 text-xs">
+              {/* 客運大樓選擇 */}
+              {yvrIndoorTerminals.length > 0 && (
+                <div className="flex flex-col gap-1 pb-2 border-b border-[#262b38]">
+                  <div className="flex items-center justify-between text-[11px] text-gray-300">
+                    <span className="flex items-center gap-1">
+                      <Building2 className="w-3 h-3 text-sky-400" />
+                      客運大樓
+                    </span>
+                    <span className="text-[10px] text-sky-400 font-medium truncate max-w-[165px]">
+                      {yvrIndoorActiveTerminal?.name || ''}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5 mt-0.5">
+                    {yvrIndoorTerminals.map((term) => {
+                      const isActive = yvrIndoorActiveTerminal?.id === term.id;
+                      return (
+                        <button
+                          key={term.id}
+                          type="button"
+                          onClick={() => {
+                            const nextFloorId = term.defaultLevelId || term.levels[0]?.id || '';
+                            setAirportIndoorFilter({
+                              terminalId: term.id,
+                              floorId: nextFloorId,
+                            });
+                            if (selectedFacility?.facility_type === 'airport_indoor') {
+                              setSelectedFacility(null);
+                            }
+                            if (term.centroid && mapRef.current) {
+                              mapRef.current.flyTo({
+                                center: term.centroid,
+                                zoom: term.id.includes('south') ? 17.2 : 16.4,
+                                duration: 900,
+                              });
+                            }
+                          }}
+                          className={`py-1.5 px-2 text-[11px] rounded-md font-medium transition-all flex flex-col items-center justify-center leading-tight border cursor-pointer ${
+                            isActive
+                              ? 'bg-sky-600 border-sky-400 text-white font-bold shadow-sm'
+                              : 'bg-[#1e2330] border-[#293042] text-gray-300 hover:bg-[#282f40]'
+                          }`}
+                        >
+                          <span className="truncate max-w-full">{term.nameZh || term.name}</span>
+                          <span className={`text-[9px] truncate max-w-full ${isActive ? 'text-sky-100' : 'text-gray-400'}`}>
+                            {term.name}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* 樓層選擇：拖曳 Scrollbar 滑桿 + 捲動樓層清單 */}
+              {yvrIndoorActiveLevels.length > 0 && (() => {
+                const activeIdx = Math.max(
+                  0,
+                  yvrIndoorActiveLevels.findIndex((l) => l.id === yvrIndoorResolvedFloorId)
+                );
+                const currentLevel = yvrIndoorActiveLevels[activeIdx];
+                return (
+                  <div className="flex flex-col gap-1.5 pb-2 border-b border-[#262b38]">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="flex items-center gap-1 text-gray-300">
+                        <Layers className="w-3 h-3 text-sky-400" />
+                        樓層切換 (拖動滑桿或點選)
+                      </span>
+                      <span className="text-[10.5px] text-sky-400 font-bold">
+                        {currentLevel?.name || yvrIndoorResolvedFloorId}
+                      </span>
+                    </div>
+
+                    {yvrIndoorActiveLevels.length > 1 && (
+                      <div className="flex items-center gap-2 px-1 py-1 bg-[#1b202d] rounded-lg border border-[#293042]">
+                        <span className="text-[10px] font-mono text-gray-400 shrink-0">
+                          {yvrIndoorActiveLevels[0]?.name}
+                        </span>
+                        <input
+                          type="range"
+                          min={0}
+                          max={yvrIndoorActiveLevels.length - 1}
+                          step={1}
+                          value={activeIdx}
+                          onChange={(e) => {
+                            const idx = Number(e.target.value);
+                            const nextLvl = yvrIndoorActiveLevels[idx];
+                            if (nextLvl) {
+                              setAirportIndoorFilter({ floorId: nextLvl.id });
+                              if (selectedFacility?.facility_type === 'airport_indoor') {
+                                setSelectedFacility(null);
+                              }
+                            }
+                          }}
+                          className="w-full h-1.5 bg-[#2d364d] rounded-lg appearance-none cursor-pointer accent-sky-400"
+                          title="拖動選擇樓層"
+                        />
+                        <span className="text-[10px] font-mono text-gray-400 shrink-0">
+                          {yvrIndoorActiveLevels[yvrIndoorActiveLevels.length - 1]?.name}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="max-h-[116px] overflow-y-auto space-y-1 pr-1">
+                      {yvrIndoorActiveLevels.map((lvl) => {
+                        const isLvlActive = lvl.id === yvrIndoorResolvedFloorId;
+                        return (
+                          <button
+                            key={lvl.id}
+                            type="button"
+                            onClick={() => {
+                              setAirportIndoorFilter({ floorId: lvl.id });
+                              if (selectedFacility?.facility_type === 'airport_indoor') {
+                                setSelectedFacility(null);
+                              }
+                            }}
+                            className={`w-full flex items-center justify-between px-2 py-1 rounded-md text-[11px] transition-colors border cursor-pointer ${
+                              isLvlActive
+                                ? 'bg-sky-600/25 border-sky-400/70 text-white font-semibold'
+                                : 'bg-[#1b1f2b] border-[#262c3d] text-gray-300 hover:bg-[#242a3a]'
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span
+                                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                  isLvlActive ? 'bg-sky-400' : 'bg-gray-600'
+                                }`}
+                              />
+                              <span className="truncate">{lvl.name}</span>
+                              {lvl.details && (
+                                <span className="text-[9.5px] text-gray-400 truncate max-w-[125px]">
+                                  · {lvl.details}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[10px] font-mono text-gray-400 shrink-0 ml-1">
+                              {lvl.poiCount}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* 設施類別篩選 */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between text-[11px] text-gray-300">
+                  <span>設施類別篩選</span>
+                  {airportIndoorFilter.categoryFilter !== 'all' && (
+                    <button
+                      type="button"
+                      onClick={() => setAirportIndoorFilter({ categoryFilter: 'all' })}
+                      className="text-[10px] text-sky-400 hover:underline cursor-pointer"
+                    >
+                      重設
+                    </button>
+                  )}
+                </div>
+                <div className="max-h-[78px] overflow-y-auto flex flex-wrap gap-1 pr-1">
+                  {YVR_CATEGORY_GROUPS.map((grp) => {
+                    const isCatActive = (airportIndoorFilter.categoryFilter || 'all') === grp.id;
+                    return (
+                      <button
+                        key={grp.id}
+                        type="button"
+                        onClick={() => setAirportIndoorFilter({ categoryFilter: grp.id })}
+                        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] border transition-colors cursor-pointer ${
+                          isCatActive
+                            ? 'bg-sky-600 border-sky-400 text-white font-semibold'
+                            : 'bg-[#1b1f2b] border-[#293042] text-gray-300 hover:bg-[#252b3b]'
+                        }`}
+                      >
+                        <span
+                          className="w-1.5 h-1.5 rounded-full shrink-0"
+                          style={{ backgroundColor: grp.color }}
+                        />
+                        <span>{grp.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300">
+              <span className="truncate">
+                {yvrIndoorActiveTerminal?.nameZh || yvrIndoorActiveTerminal?.name || 'YVR'} ·{' '}
+                {yvrIndoorActiveLevels.find((l) => l.id === yvrIndoorResolvedFloorId)?.name ||
+                  formatYvrFloorId(yvrIndoorResolvedFloorId)}
+              </span>
+              <button
+                type="button"
+                onClick={() => setYvrIndoorPanelOpen(true)}
+                className="text-[10px] text-sky-400 hover:underline cursor-pointer shrink-0 ml-2"
               >
                 展開
               </button>

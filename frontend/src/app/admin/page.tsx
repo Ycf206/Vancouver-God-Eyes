@@ -73,6 +73,7 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   safety_cameras: 'safetyCameras',
   car_sharing: 'carSharing',
   flight_schedules: 'airports',
+  yvr_indoor: 'airportIndoor',
   maritime_shipping: 'maritimeShipping',
   marine_terminals: 'marineTerminals',
   fuel_prices: 'fuel',
@@ -143,6 +144,7 @@ const LAYER_CONTROLS_LIST = [
   { id: 'maritimeShipping', name: '船運船隻', category: '交通', defaultColor: '#06b6d4' },
   { id: 'marineTerminals', name: '船運碼頭', category: '交通', defaultColor: '#06b6d4' },
   { id: 'airports', name: '機場', category: '交通', defaultColor: '#38bdf8' },
+  { id: 'airportIndoor', name: '機場內部地圖 (YVR)', category: '交通', defaultColor: '#38bdf8' },
   // 道路
   { id: 'trafficConditions', name: '路況色帶', category: '道路', defaultColor: '#f97316' },
   { id: 'trafficAlerts', name: '即時路況通報', category: '道路', defaultColor: '#ef4444' },
@@ -186,19 +188,19 @@ const LAYER_CONTROLS_LIST = [
   { id: 'disasterHubs', name: '災害支援中心', category: '安全', defaultColor: '#f59e0b' },
   { id: 'aed', name: 'AED 急救心臟去顫器', category: '安全', defaultColor: '#ef4444' },
   // 環境與地理
-  { id: 'beachWaterQuality', name: '海灘水質', category: '環境', defaultColor: '#06b6d4' },
+  { id: 'beachWaterQuality', name: '海灘水質', category: '自然', defaultColor: '#06b6d4' },
   { id: 'contours', name: '等高線高程', category: '地理', defaultColor: '#14b8a6' },
   { id: 'tideStations', name: '潮汐監測站', category: '地理', defaultColor: '#0ea5e9' },
-  { id: 'powerOutages', name: '卑詩省停電即時情況', category: '公共事業', defaultColor: '#f97316' },
+  { id: 'powerOutages', name: '卑詩省停電即時情況', category: '能源', defaultColor: '#f97316' },
 ];
 
 // 系統 4 大標準分頁與按鈕類別 (對應主導航與探索面板)
-const SYSTEM_CATEGORIES = ['道路', '天氣', '生活', '公共事業'] as const;
+const SYSTEM_CATEGORIES = ['道路', '天氣', '生活', '能源'] as const;
 
-function getSystemCategory(source: { id: string; category?: string; name?: string }): '道路' | '天氣' | '生活' | '公共事業' {
+function getSystemCategory(source: { id: string; category?: string; name?: string }): '道路' | '天氣' | '生活' | '能源' {
   const roadIds = new Set([
     'traffic_conditions', 'traffic_cameras', 'translink_realtime', 'snow_removal_routes',
-    'fuel_prices', 'border_wait_times', 'flight_schedules', 'maritime_shipping',
+    'fuel_prices', 'border_wait_times', 'flight_schedules', 'yvr_indoor', 'maritime_shipping',
     'parking_meters', 'impark_parking', 'motorcycle_parking', 'bikeways',
     'ev_charging', 'traffic_speed_limits', 'traffic_crosswalks', 'one_way_streets',
     'shared_bikes', 'escooter', 'truck_routes', 'traffic_signals',
@@ -208,13 +210,14 @@ function getSystemCategory(source: { id: string; category?: string; name?: strin
     'weather_monitoring', 'tides_hydrometric', 'beach_water', 'aurora_forecast', 'ski_resorts'
   ]);
   const utilitiesIds = new Set([
+    'bchydro_current', 'bchydro_restored', 'bchydro_planned',
     'bchydro_outages_current', 'bchydro_outages_restored', 'bchydro_outages_planned', 'power_outages', 'powerOutages',
     'fire_hydrants', 'aed', 'zoning_districts', 'contours'
   ]);
 
   if (roadIds.has(source.id)) return '道路';
   if (weatherIds.has(source.id)) return '天氣';
-  if (utilitiesIds.has(source.id)) return '公共事業';
+  if (utilitiesIds.has(source.id)) return '能源';
   return '生活';
 }
 
@@ -1915,7 +1918,7 @@ export default function AdminPage() {
                   { id: '道路', label: '道路', count: sources.filter(s => getSystemCategory(s) === '道路').length },
                   { id: '天氣', label: '天氣', count: sources.filter(s => getSystemCategory(s) === '天氣').length },
                   { id: '生活', label: '生活', count: sources.filter(s => getSystemCategory(s) === '生活').length },
-                  { id: '公共事業', label: '公共事業', count: sources.filter(s => getSystemCategory(s) === '公共事業').length },
+                  { id: '能源', label: '能源', count: sources.filter(s => getSystemCategory(s) === '能源').length },
                 ].map(item => (
                   <button
                     key={item.id}
@@ -2033,7 +2036,7 @@ export default function AdminPage() {
                                 '道路': 'bg-amber-500/15 text-amber-300 border-amber-500/30',
                                 '天氣': 'bg-sky-500/15 text-sky-300 border-sky-500/30',
                                 '生活': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-                                '公共事業': 'bg-violet-500/15 text-violet-300 border-violet-500/30'
+                                '能源': 'bg-violet-500/15 text-violet-300 border-violet-500/30'
                               };
                               return (
                                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold border whitespace-nowrap ${catColors[cat] || 'bg-[#1d2433] text-gray-300 border-[#2f3950]'}`}>
@@ -2534,7 +2537,7 @@ export default function AdminPage() {
               </div>
 
               <div className="flex items-center gap-1.5 bg-[#161a29] p-1 rounded-xl border border-[#2a334d] text-xs overflow-x-auto scrollbar-none">
-                {['all', '交通', '道路', '民生', '安全', '公共事業', '地理', '環境'].map((cat) => (
+                {['all', '交通', '道路', '民生', '安全', '能源', '地理', '環境'].map((cat) => (
                   <button
                     key={cat}
                     type="button"
