@@ -3,7 +3,7 @@
   "season": 2026,
   "season_id": "MLS-SEA-0001KA",
   "source_url": "https://stats-api.mlssoccer.com/matches/seasons/MLS-SEA-0001KA?match_date[gte]=2026-01-01&match_date[lte]=2026-12-31&team_id=MLS-CLU-00000C&per_page=120&sort=planned_kickoff_time:asc,home_team_name:asc",
-  "updated_at": "2026-11-11T20:36:38.315137-07:00",
+  "updated_at": "2026-11-13T21:23:28.280610-07:00",
   "totalMatches": 88,
   "matches": [
     {

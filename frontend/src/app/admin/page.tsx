@@ -2458,27 +2458,7 @@ export default function AdminPage() {
         {/* 3.3 分頁: 圖層控制 (面板顯示、圖層資料開關、主題色彩修改) */}
         {mainTab === 'layers' && (
           <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col space-y-4 p-5">
-            {/* Header info & Reset All */}
-            <div className="bg-sky-950/30 p-3.5 rounded-xl border border-sky-500/30 text-xs text-sky-200 flex items-start justify-between gap-3">
-              <div className="flex items-start gap-2.5">
-                <Sliders className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-                <div className="leading-relaxed">
-                  管理員可在此自訂全域各圖層在左側控制面板之顯示/隱藏、直接開關底圖圖層資料，以及隨選調整圖層專屬主題顏色（包含控制按鈕、地圖圓點、色帶與彈出視窗）。
-                </div>
-              </div>
-              {Object.keys(layerCustomColors).length > 0 && (
-                <button
-                  type="button"
-                  onClick={handleResetAllLayerColors}
-                  className="px-3 py-1.5 rounded-lg bg-[#232b3f] hover:bg-rose-950/60 hover:text-rose-300 border border-gray-700 text-gray-300 text-xs shrink-0 cursor-pointer transition-colors font-medium flex items-center gap-1.5"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>還原所有預設色彩 ({Object.keys(layerCustomColors).length})</span>
-                </button>
-              )}
-            </div>
-
-            {/* Search and Category Filter */}
+            {/* Search, Category Filter & Reset All */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="relative flex-1 max-w-md">
                 <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -2491,19 +2471,32 @@ export default function AdminPage() {
                 />
               </div>
 
-              <div className="flex items-center gap-1.5 bg-[#161a29] p-1 rounded-xl border border-[#2a334d] text-xs overflow-x-auto scrollbar-none">
-                {['all', ...LAYER_CATEGORIES.map((c) => c.title)].map((cat) => (
+              <div className="flex items-center gap-2 flex-wrap">
+                {Object.keys(layerCustomColors).length > 0 && (
                   <button
-                    key={cat}
                     type="button"
-                    onClick={() => setLayerCategoryFilter(cat)}
-                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0 font-medium ${
-                      layerCategoryFilter === cat ? 'bg-sky-600 text-white shadow-sm' : 'text-gray-400 hover:text-white hover:bg-[#202738]'
-                    }`}
+                    onClick={handleResetAllLayerColors}
+                    className="px-3 py-1.5 rounded-lg bg-[#232b3f] hover:bg-rose-950/60 hover:text-rose-300 border border-gray-700 text-gray-300 text-xs shrink-0 cursor-pointer transition-colors font-medium flex items-center gap-1.5"
                   >
-                    {cat === 'all' ? '全部圖層' : cat}
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>還原所有預設色彩 ({Object.keys(layerCustomColors).length})</span>
                   </button>
-                ))}
+                )}
+
+                <div className="flex items-center gap-1.5 bg-[#161a29] p-1 rounded-xl border border-[#2a334d] text-xs overflow-x-auto scrollbar-none">
+                  {['all', ...LAYER_CATEGORIES.map((c) => c.title)].map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setLayerCategoryFilter(cat)}
+                      className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0 font-medium ${
+                        layerCategoryFilter === cat ? 'bg-sky-600 text-white shadow-sm' : 'text-gray-400 hover:text-white hover:bg-[#202738]'
+                      }`}
+                    >
+                      {cat === 'all' ? '全部圖層' : cat}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 

@@ -1,7 +1,7 @@
 {
   "success": true,
   "season": "20262027",
-  "updated_at": "2026-11-11T20:36:36.999525-07:00",
+  "updated_at": "2026-11-13T21:22:41.661056-07:00",
   "clubTimezone": "America/Vancouver",
   "totalGames": 88,
   "games": [
@@ -2466,7 +2466,7 @@
       "easternUTCOffset": "-05:00",
       "venueUTCOffset": "-07:00",
       "venueTimezone": "America/Vancouver",
-      "gameState": "FUT",
+      "gameState": "LIVE",
       "gameScheduleState": "OK",
       "tvBroadcasts": [
         {
@@ -2507,7 +2507,8 @@
         "logo": "https://assets.nhle.com/logos/nhl/svg/NYR_light.svg",
         "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYR_dark.svg",
         "awaySplitSquad": false,
-        "radioLink": "https://d2igy0yla8zi0u.cloudfront.net/NYR/20262027/NYR-radio.m3u8"
+        "radioLink": "https://d2igy0yla8zi0u.cloudfront.net/NYR/20262027/NYR-radio.m3u8",
+        "score": 5
       },
       "homeTeam": {
         "id": 23,
@@ -2525,15 +2526,14 @@
         "logo": "https://assets.nhle.com/logos/nhl/svg/VAN_light.svg",
         "darkLogo": "https://assets.nhle.com/logos/nhl/svg/VAN_dark.svg",
         "homeSplitSquad": false,
-        "radioLink": "https://d2igy0yla8zi0u.cloudfront.net/VAN/20262027/VAN-radio.m3u8"
+        "radioLink": "https://d2igy0yla8zi0u.cloudfront.net/VAN/20262027/VAN-radio.m3u8",
+        "score": 1
       },
       "periodDescriptor": {
-        "number": 1,
+        "number": 3,
         "periodType": "REG",
         "maxRegulationPeriods": 3
       },
-      "ticketsLink": "https://www.ticketmaster.ca/event/11006503F0ADBB93?brand=canucks&artistid=806037&wt.mc_id=NHL_TEAM_VAN_SCHEDULE_GM10&utm_source=NHL.com&utm_medium=client_PM&utm_campaign=NHL_TEAM_VAN&utm_content=SCHEDULE_GM10",
-      "ticketsLinkFr": "https://www.ticketmaster.ca/event/11006503F0ADBB93?brand=canucks&artistid=806037&wt.mc_id=NHL_TEAM_VAN_SCHEDULE_GM10&utm_source=NHL.com&utm_medium=client_PM&utm_campaign=NHL_TEAM_VAN&utm_content=SCHEDULE_GM10",
       "gameCenterLink": "/gamecenter/nyr-vs-van/2026/11/13/2026020310"
     },
     {

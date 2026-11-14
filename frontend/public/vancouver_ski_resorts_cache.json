@@ -1,6 +1,6 @@
 {
-  "_cache_timestamp": 1794533215.5996723,
-  "updated_at": "2026-11-13 01:26 UTC",
+  "_cache_timestamp": 1794632060.8091824,
+  "updated_at": "2026-11-14 04:54 UTC",
   "update_frequency": "每 1 日更新 (Daily)",
   "count": 3,
   "resorts": [
@@ -33,12 +33,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Thu",
-        "date": "12.11.2026",
-        "temp_min": "2",
-        "temp_max": "6",
-        "condition": "cloudy",
-        "weather_text": "Am Donnerstag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen 2 bis 6 Grad."
+        "day": "Sat",
+        "date": "14.11.2026",
+        "temp_min": "-1",
+        "temp_max": "3",
+        "condition": "rain",
+        "weather_text": "Am Samstag fällt verbreitet Regen aus dichten Wolken. Die Temperaturen erreichen -1 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -71,12 +71,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Thu",
-        "date": "12.11.2026",
-        "temp_min": "2",
-        "temp_max": "6",
-        "condition": "cloudy",
-        "weather_text": "Am Donnerstag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen 2 bis 6 Grad."
+        "day": "Sat",
+        "date": "14.11.2026",
+        "temp_min": "-1",
+        "temp_max": "3",
+        "condition": "rain",
+        "weather_text": "Am Samstag fällt verbreitet Regen aus dichten Wolken. Die Temperaturen erreichen -1 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     },
@@ -109,12 +109,12 @@
       "last_snow": "-",
       "night_skiing": true,
       "today_weather": {
-        "day": "Thu",
-        "date": "12.11.2026",
-        "temp_min": "2",
-        "temp_max": "6",
-        "condition": "cloudy",
-        "weather_text": "Am Donnerstag scheint immer wieder die Sonne durch harmlose Wolken. Die Temperaturen erreichen 2 bis 6 Grad."
+        "day": "Sat",
+        "date": "14.11.2026",
+        "temp_min": "-1",
+        "temp_max": "3",
+        "condition": "rain",
+        "weather_text": "Am Samstag fällt verbreitet Regen aus dichten Wolken. Die Temperaturen erreichen -1 bis 3 Grad."
       },
       "data_source": "Skiresort.info / Skiresort.com Live Data API (每日更新)"
     }

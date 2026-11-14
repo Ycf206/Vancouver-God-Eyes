@@ -6929,8 +6929,9 @@ function ExploreContent() {
                         </span>
                       )}
                       {req.local_area && (
-                        <span className="px-2 py-0.5 rounded bg-cyan-950/40 text-cyan-300 border border-cyan-800/30">
-                          📍 {req.local_area}
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-950/40 text-cyan-300 border border-cyan-800/30">
+                          <MapPin className="w-3 h-3 shrink-0" />
+                          <span>{req.local_area}</span>
                         </span>
                       )}
                       {req.channel && (
@@ -7042,18 +7043,25 @@ function ExploreContent() {
           'Supervalu': 'https://www.coastgrocery.ca/gibsons',
         };
 
-        // 格式化日期為系統格式 yyyy-MM-dd
+        // 保留 Flipp API 原生傳單日曆日期 (yyyy-MM-dd)，避免 -05:00/-04:00 轉成本地時區造成跨日偏移
         const formatFlippDate = (isoStr?: string | null): string => {
           if (!isoStr) return '';
+          const trimmed = isoStr.trim();
+          const dateMatch = trimmed.match(/^(\d{4}-\d{2}-\d{2})/);
+          if (dateMatch) {
+            return dateMatch[1];
+          }
           try {
-            const dt = new Date(isoStr);
-            if (isNaN(dt.getTime())) return isoStr.slice(0, 10);
-            const y = dt.getFullYear();
-            const m = String(dt.getMonth() + 1).padStart(2, '0');
-            const d = String(dt.getDate()).padStart(2, '0');
-            return `${y}-${m}-${d}`;
+            const dt = new Date(trimmed);
+            if (isNaN(dt.getTime())) return trimmed.slice(0, 10);
+            return new Intl.DateTimeFormat('en-CA', {
+              timeZone: 'America/Toronto',
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+            }).format(dt);
           } catch {
-            return isoStr.slice(0, 10);
+            return trimmed.slice(0, 10);
           }
         };
 

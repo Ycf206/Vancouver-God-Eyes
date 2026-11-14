@@ -10,7 +10,7 @@
       "schedule_interval": "每 2 分鐘",
       "record_count": 65,
       "unit": "條監測幹道與橋樑",
-      "last_updated": "2026-11-11T04:00:13Z",
+      "last_updated": "2026-11-14T04:33:01Z",
       "status": "healthy",
       "data_pipeline_notes": "TomTom Traffic Flow API (即時探針) -> 向量路網座標比對 -> 計算通過延誤、平均時速與各向壅塞等級 -> 寫入 traffic_conditions 快取 -> 推送前端地圖與探索路況",
       "runner": "oci",
@@ -78,9 +78,9 @@
       "type": "api",
       "cron_expr": "*/30 * * * * *",
       "schedule_interval": "每 30 秒",
-      "record_count": 557,
+      "record_count": 572,
       "unit": "輛運作中巴士與天車",
-      "last_updated": "2026-11-11T05:08:42Z",
+      "last_updated": "2026-11-14T04:53:41Z",
       "status": "healthy",
       "data_pipeline_notes": "TransLink RTTI GTFS-RT API -> 解析巴士 GPS、班次準點率、天車位置與海上巴士 -> 整合緊急廣播警報 (Alerts) -> 平滑插值座標更新地圖車輛標記",
       "runner": "oci",
@@ -132,7 +132,7 @@
       "schedule_interval": "每 15 分鐘",
       "record_count": 5,
       "unit": "處潮汐與主要水文站",
-      "last_updated": "2026-11-11T05:08:02Z",
+      "last_updated": "2026-11-14T04:53:05Z",
       "status": "healthy",
       "data_pipeline_notes": "加拿大漁業及海洋部 (DFO CHS REST API) & 國家水文網 (NHN) -> 讀取 Point Atkinson、Vancouver Harbour 等潮位水深 -> 計算高低潮時間與菲沙河即時流量",
       "runner": "oci",
@@ -176,7 +176,7 @@
       "schedule_interval": "每 15 分鐘",
       "record_count": 3,
       "unit": "座滑雪度假村",
-      "last_updated": "2026-11-11T05:08:02Z",
+      "last_updated": "2026-11-14T04:51:49Z",
       "status": "healthy",
       "data_pipeline_notes": "Cypress Mountain、Grouse Mountain、Mount Seymour 官方雪報 API/網頁爬蟲 -> 解析即時新雪量、積雪厚度、開放纜車數與夜滑狀態 -> 更新地圖與探索滑雪卡片",
       "runner": "oci",
@@ -198,7 +198,7 @@
       "schedule_interval": "每 1 分鐘",
       "record_count": 65,
       "unit": "間油站點價格",
-      "last_updated": "2026-11-11T05:08:03Z",
+      "last_updated": "2026-11-14T04:52:57Z",
       "status": "healthy",
       "data_pipeline_notes": "GasBuddy & 加拿大能源情報聚合接口 -> 取得溫哥華市區各品牌 (Chevron, Shell, Petro-Canada 等) 87/91/柴油即時公升單價 -> 計算比價排名與市區油價均線",
       "runner": "oci",
@@ -218,9 +218,9 @@
       "type": "api",
       "cron_expr": "* * * * *",
       "schedule_interval": "每 1 分鐘",
-      "record_count": 147,
+      "record_count": 176,
       "unit": "架起降航班動態",
-      "last_updated": "2026-11-10T22:08:10.087780-07:00",
+      "last_updated": "2026-11-13T21:53:17.859979-07:00",
       "status": "healthy",
       "data_pipeline_notes": "YVR Airport Open Flight Data API -> 篩選客貨運起飛與降落時刻表 -> 比對航班準點/延誤/取消狀態、登機門與行李轉盤 -> 提供即時看板與地圖航空走廊展示",
       "runner": "oci",
@@ -268,7 +268,7 @@
       "schedule_interval": "每 1 分鐘",
       "record_count": 36,
       "unit": "艘在港航行船隻",
-      "last_updated": "2026-11-11T05:08:51Z",
+      "last_updated": "2026-11-14T04:53:45Z",
       "status": "healthy",
       "data_pipeline_notes": "AISStream WebSocket & 溫哥華港務局航標數據 -> 監控布勒內灣、英吉利灣、菲沙河各類貨櫃輪、油輪、拖船與渡輪 -> 實時繪製船舶航速、航向角與吃水資訊",
       "runner": "oci",
@@ -313,7 +313,7 @@
       "schedule_interval": "每 5 分鐘",
       "record_count": 5,
       "unit": "處主要陸路海關通道",
-      "last_updated": "2026-11-11T05:08:02Z",
+      "last_updated": "2026-11-14T04:52:55Z",
       "status": "healthy",
       "data_pipeline_notes": "加拿大邊境服務局 (CBSA BWT) & 美國 CBP 即時關口等候 API -> 追蹤和平拱門 (Peace Arch)、太平洋公路、亞博斯福等口岸之標準車道與 NEXUS 車道預估排隊分鐘數",
       "runner": "oci",
@@ -335,7 +335,7 @@
       "schedule_interval": "每 2 小時",
       "record_count": 4,
       "unit": "組 3 小時地磁 Kp 走勢",
-      "last_updated": "2026-11-11T05:08:02Z",
+      "last_updated": "2026-11-14T04:31:39Z",
       "status": "healthy",
       "data_pipeline_notes": "美國 NOAA SWPC 空間天氣預報中心 API -> 讀取行星 K 指數 (Planetary Kp-index) 與地磁風暴等級 (G-Scale) -> 計算溫哥華觀測機率 -> 抓取最新北美 Viewline 雲圖",
       "runner": "oci",
@@ -357,7 +357,7 @@
       "schedule_interval": "每 5 分鐘",
       "record_count": 80,
       "unit": "則即時新聞快訊",
-      "last_updated": "2026-11-11T05:08:02Z",
+      "last_updated": "2026-11-14T04:52:54Z",
       "status": "healthy",
       "data_pipeline_notes": "整合 CTV News Vancouver、CBC News Canada、604 Now、CityNews Vancouver、Global News BC、Daily Hive 與 The Georgia Straight 之多來源 RSS 即時新聞流 -> 自動過濾非本地新聞與重複項目 -> 依時效性排序與繁體中文在地化標籤分類 -> 寫入快取供探索面板即時瀏覽與官方連結閱讀",
       "runner": "oci",
@@ -389,9 +389,9 @@
       "type": "api",
       "cron_expr": "*/30 * * * *",
       "schedule_interval": "每 30 分鐘",
-      "record_count": 72,
+      "record_count": 66,
       "unit": "場文娛體育市政活動",
-      "last_updated": "2026-11-11T05:08:02Z",
+      "last_updated": "2026-11-14T04:46:48Z",
       "status": "healthy",
       "data_pipeline_notes": "整合 Daily Hive Vancouver (listed/events)、Eventbrite 溫哥華精選活動與 Destination Vancouver (溫哥華旅遊局) 官方活動資訊庫 -> 智能解析活動時段、地點坐標、票價類型、主辦單位與官方購票連結 -> 提供今日/本週末/日期範圍多維度篩選與一鍵地圖定位",
       "runner": "oci",
@@ -1102,7 +1102,7 @@
       "schedule_interval": "每 1 小時",
       "record_count": 262,
       "unit": "處站點與可用車位",
-      "last_updated": "2026-11-14T02:46:16.580Z",
+      "last_updated": "2026-11-14T04:54:36.189Z",
       "status": "healthy",
       "data_pipeline_notes": "Mobi Entities API 取得站點位置 -> 配合各站 Station Detail API 即時更新單車與還車槽數 -> OCI 常駐排程寫入 /backend/data/vancouver_shared_bikes.geojson",
       "runner": "oci",
@@ -1130,7 +1130,7 @@
       "schedule_interval": "每 1 小時",
       "record_count": 251,
       "unit": "處滑板車站點",
-      "last_updated": "2026-11-14T02:46:17.069Z",
+      "last_updated": "2026-11-14T04:54:36.666Z",
       "status": "healthy",
       "data_pipeline_notes": "Lime 外部查詢代理 API -> 取得站點資訊與即時可用滑板車/還車槽數 -> OCI 常駐排程寫入 /backend/data/vancouver_escooter.geojson",
       "runner": "oci",
@@ -1225,7 +1225,7 @@
       "type": "api",
       "cron_expr": "0 */12 * * *",
       "schedule_interval": "每 12 小時",
-      "record_count": 1000,
+      "record_count": 1096508,
       "unit": "筆即時案件",
       "last_updated": "2026-11-14T00:04:24.639Z",
       "status": "healthy",
@@ -1249,7 +1249,7 @@
       "schedule_interval": "每 12 小時",
       "record_count": 32,
       "unit": "家大溫超市商戶",
-      "last_updated": "2026-11-10T18:09:44.998675-07:00",
+      "last_updated": "2026-11-13T17:03:46.188641-07:00",
       "status": "healthy",
       "data_pipeline_notes": "Flipp Enterprise API -> 取得大溫各大超級市場 (Costco, T&T, Superstore, Walmart, Safeway, No Frills 等) 即時週傳單及單項商品與價格 -> 寫入 vancouver_flipp_flyers.json -> 探索購物分頁 0ms 極速展示",
       "runner": "oci",
@@ -1605,6 +1605,706 @@
   ],
   "logs": [
     {
+      "id": "log-1794628010687",
+      "timestamp": "2026-11-14T03:46:50.685071+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 預期停電",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 544 筆資料至 bchydro_outages_planned.json。",
+      "record_count": 544
+    },
+    {
+      "id": "log-1794628009887",
+      "timestamp": "2026-11-14T03:46:49.886231+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 恢復供電 (14天)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3654 筆資料至 bchydro_outages_restored.json。",
+      "record_count": 3654
+    },
+    {
+      "id": "log-1794628007785",
+      "timestamp": "2026-11-14T03:46:47.783705+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 現正停電與警報",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 12 筆資料至 bchydro_outages_current.json。",
+      "record_count": 12
+    },
+    {
+      "id": "log-1794628007479",
+      "timestamp": "2026-11-14T03:46:47.477470+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 251
+    },
+    {
+      "id": "sync-1794628007476-escooter",
+      "timestamp": "2026-11-14T03:46:47.426Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+    },
+    {
+      "id": "log-1794627993774",
+      "timestamp": "2026-11-14T03:46:33.773313+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794627993769-shared_bikes",
+      "timestamp": "2026-11-14T03:46:33.692Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
+      "id": "sync-1794625513215-consulates",
+      "timestamp": "2026-11-14T03:05:13.151Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "各國駐卑詩省領事館 (Consulates)",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [各國駐卑詩省領事館 (Consulates)] 資料同步完成，共載入 84 筆記錄。"
+    },
+    {
+      "id": "sync-1794625390035-consulates",
+      "timestamp": "2026-11-14T03:03:09.977Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "各國駐卑詩省領事館 (Consulates)",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [各國駐卑詩省領事館 (Consulates)] 資料同步完成，共載入 84 筆記錄。"
+    },
+    {
+      "id": "sync-1794625317904-consulates",
+      "timestamp": "2026-11-14T03:01:57.849Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "consulates",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [consulates] 資料同步完成，共載入 83 筆記錄。"
+    },
+    {
+      "id": "log-1794624379549",
+      "timestamp": "2026-11-14T02:46:19.547876+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 預期停電",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 544 筆資料至 bchydro_outages_planned.json。",
+      "record_count": 544
+    },
+    {
+      "id": "log-1794624379182",
+      "timestamp": "2026-11-14T02:46:19.181000+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 恢復供電 (14天)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3651 筆資料至 bchydro_outages_restored.json。",
+      "record_count": 3651
+    },
+    {
+      "id": "log-1794624377343",
+      "timestamp": "2026-11-14T02:46:17.341642+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 現正停電與警報",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 11 筆資料至 bchydro_outages_current.json。",
+      "record_count": 11
+    },
+    {
+      "id": "log-1794624377104",
+      "timestamp": "2026-11-14T02:46:17.103881+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 251
+    },
+    {
+      "id": "sync-1794624377102-escooter",
+      "timestamp": "2026-11-14T02:46:17.069Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+    },
+    {
+      "id": "log-1794624376663",
+      "timestamp": "2026-11-14T02:46:16.662239+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794624376658-shared_bikes",
+      "timestamp": "2026-11-14T02:46:16.580Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
+      "id": "sync-1794621289248-yvr_indoor",
+      "timestamp": "2026-11-14T01:54:49Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "溫哥華國際機場 (YVR) 內部地圖與設施資料",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [溫哥華國際機場 (YVR) 內部地圖與設施資料] 資料同步完成，共載入 1,263 筆記錄。"
+    },
+    {
+      "id": "sync-1794620126080-yvr_indoor",
+      "timestamp": "2026-11-14T01:35:25Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "溫哥華國際機場 (YVR) 內部地圖與設施資料",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [溫哥華國際機場 (YVR) 內部地圖與設施資料] 資料同步完成，共載入 1,263 筆記錄。"
+    },
+    {
+      "id": "sync-1794619320735-yvr_indoor",
+      "timestamp": "2026-11-14T01:22:00Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "yvr_indoor",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [yvr_indoor] 資料同步完成，共載入 1,263 筆記錄。"
+    },
+    {
+      "id": "log-1794618284590",
+      "timestamp": "2026-11-14T01:04:44.576356+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 預期停電",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 541 筆資料至 bchydro_outages_planned.json。",
+      "record_count": 541
+    },
+    {
+      "id": "log-1794618283921",
+      "timestamp": "2026-11-14T01:04:43.920241+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 恢復供電 (14天)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3642 筆資料至 bchydro_outages_restored.json。",
+      "record_count": 3642
+    },
+    {
+      "id": "log-1794618282019",
+      "timestamp": "2026-11-14T01:04:42.018590+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 現正停電與警報",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 17 筆資料至 bchydro_outages_current.json。",
+      "record_count": 17
+    },
+    {
+      "id": "log-1794618281827",
+      "timestamp": "2026-11-14T01:04:41.826399+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每小時即時車況)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每小時即時車況) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 251
+    },
+    {
+      "id": "sync-1794618281825-escooter",
+      "timestamp": "2026-11-14T01:04:41.769Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+    },
+    {
+      "id": "log-1794618281502",
+      "timestamp": "2026-11-14T01:04:41.501310+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每小時即時車位)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每小時即時車位) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794618281495-shared_bikes",
+      "timestamp": "2026-11-14T01:04:41.336Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
+      "id": "log-1794614669551",
+      "timestamp": "2026-11-14T00:04:29.549964+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 預期停電",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 536 筆資料至 bchydro_outages_planned.json。",
+      "record_count": 536
+    },
+    {
+      "id": "log-1794614669000",
+      "timestamp": "2026-11-14T00:04:28.999022+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 恢復供電 (14天)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3633 筆資料至 bchydro_outages_restored.json。",
+      "record_count": 3633
+    },
+    {
+      "id": "log-1794614666404",
+      "timestamp": "2026-11-14T00:04:26.403766+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 現正停電與警報",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 19 筆資料至 bchydro_outages_current.json。",
+      "record_count": 19
+    },
+    {
+      "id": "log-1794614666025",
+      "timestamp": "2026-11-14T00:04:26.023996+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "街頭熟食餐車",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：街頭熟食餐車 (food_vendors)，成功更新 3 筆資料至 vancouver_food_vendors.geojson。",
+      "record_count": 3
+    },
+    {
+      "id": "sync-1794614666015-food_vendors",
+      "timestamp": "2026-11-14T00:04:25.992Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "街頭餐車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [街頭餐車] 資料同步完成，共載入 3 筆記錄。"
+    },
+    {
+      "id": "log-1794614664729",
+      "timestamp": "2026-11-14T00:04:24.728392+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "3-1-1 市政服務請求",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：3-1-1 市政服務請求 (service_requests_311)，成功更新 1000 筆資料至 vancouver_311.json。",
+      "record_count": 1000
+    },
+    {
+      "id": "sync-1794614664727-service_requests_311",
+      "timestamp": "2026-11-14T00:04:24.639Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "3-1-1",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+    },
+    {
+      "id": "log-1794614658693",
+      "timestamp": "2026-11-14T00:04:18.691933+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 251
+    },
+    {
+      "id": "sync-1794614658690-escooter",
+      "timestamp": "2026-11-14T00:04:18.618Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+    },
+    {
+      "id": "log-1794614658009",
+      "timestamp": "2026-11-14T00:04:18.007696+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794614658001-shared_bikes",
+      "timestamp": "2026-11-14T00:04:17.914Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
+      "id": "log-1794543683293",
+      "timestamp": "2026-11-13T04:21:23.291153+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 預期停電",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 511 筆資料至 bchydro_outages_planned.json。",
+      "record_count": 511
+    },
+    {
+      "id": "log-1794543682848",
+      "timestamp": "2026-11-13T04:21:22.846617+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 恢復供電 (14天)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3632 筆資料至 bchydro_outages_restored.json。",
+      "record_count": 3632
+    },
+    {
+      "id": "log-1794543680632",
+      "timestamp": "2026-11-13T04:21:20.630893+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 現正停電與警報",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 19 筆資料至 bchydro_outages_current.json。",
+      "record_count": 19
+    },
+    {
+      "id": "log-1794543680421",
+      "timestamp": "2026-11-13T04:21:20.419463+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 251
+    },
+    {
+      "id": "sync-1794543680417-escooter",
+      "timestamp": "2026-11-13T04:21:20.358Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+    },
+    {
+      "id": "log-1794543679883",
+      "timestamp": "2026-11-13T04:21:19.881692+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794543679876-shared_bikes",
+      "timestamp": "2026-11-13T04:21:19.795Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
+      "id": "sync-1794531608461-service_requests_311",
+      "timestamp": "2026-11-13T01:00:08.273Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "3-1-1",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+    },
+    {
+      "id": "log-1794530645243",
+      "timestamp": "2026-11-13T00:44:05.242153+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 預期停電",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 512 筆資料至 bchydro_outages_planned.json。",
+      "record_count": 512
+    },
+    {
+      "id": "log-1794530644314",
+      "timestamp": "2026-11-13T00:44:04.312110+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 恢復供電 (14天)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3589 筆資料至 bchydro_outages_restored.json。",
+      "record_count": 3589
+    },
+    {
+      "id": "log-1794530641363",
+      "timestamp": "2026-11-13T00:44:01.361924+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 現正停電與警報",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 45 筆資料至 bchydro_outages_current.json。",
+      "record_count": 45
+    },
+    {
+      "id": "log-1794530641071",
+      "timestamp": "2026-11-13T00:44:01.069361+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 251
+    },
+    {
+      "id": "sync-1794530641067-escooter",
+      "timestamp": "2026-11-13T00:44:01.022Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+    },
+    {
+      "id": "log-1794530639543",
+      "timestamp": "2026-11-13T00:43:59.542018+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794530639537-shared_bikes",
+      "timestamp": "2026-11-13T00:43:59.473Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
+      "id": "sync-1794489086474-service_requests_311",
+      "timestamp": "2026-11-12T13:11:26.347Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "3-1-1",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+    },
+    {
+      "id": "log-1794487332963",
+      "timestamp": "2026-11-12T12:42:12.962522+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 預期停電",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 520 筆資料至 bchydro_outages_planned.json。",
+      "record_count": 520
+    },
+    {
+      "id": "log-1794487332725",
+      "timestamp": "2026-11-12T12:42:12.724392+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 恢復供電 (14天)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3467 筆資料至 bchydro_outages_restored.json。",
+      "record_count": 3467
+    },
+    {
+      "id": "log-1794487331194",
+      "timestamp": "2026-11-12T12:42:11.193201+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "BC Hydro 現正停電與警報",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 35 筆資料至 bchydro_outages_current.json。",
+      "record_count": 35
+    },
+    {
+      "id": "log-1794487330879",
+      "timestamp": "2026-11-12T12:42:10.878086+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 250 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 250
+    },
+    {
+      "id": "sync-1794487330876-escooter",
+      "timestamp": "2026-11-12T12:42:10.826Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 250 筆記錄。"
+    },
+    {
+      "id": "log-1794487330197",
+      "timestamp": "2026-11-12T12:42:10.196942+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794487330193-shared_bikes",
+      "timestamp": "2026-11-12T12:42:10.135Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
+      "id": "log-1794458234955",
+      "timestamp": "2026-11-12T04:37:14.952675+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 250 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 250
+    },
+    {
+      "id": "sync-1794458234950-escooter",
+      "timestamp": "2026-11-12T04:37:14.852Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 250 筆記錄。"
+    },
+    {
+      "id": "log-1794458234096",
+      "timestamp": "2026-11-12T04:37:14.095814+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794458234092-shared_bikes",
+      "timestamp": "2026-11-12T04:37:13.857Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
+      "id": "log-1794457799884",
+      "timestamp": "2026-11-12T04:29:59.883714+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "街頭熟食餐車",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：街頭熟食餐車 (food_vendors)，成功更新 1 筆資料至 vancouver_food_vendors.geojson。",
+      "record_count": 1
+    },
+    {
+      "id": "sync-1794457799874-food_vendors",
+      "timestamp": "2026-11-12T04:29:59.861Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "街頭餐車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [街頭餐車] 資料同步完成，共載入 1 筆記錄。"
+    },
+    {
+      "id": "log-1794454610205",
+      "timestamp": "2026-11-12T03:36:50.204538+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "3-1-1 市政服務請求",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：3-1-1 市政服務請求 (service_requests_311)，成功更新 1000 筆資料至 vancouver_311.json。",
+      "record_count": 1000
+    },
+    {
+      "id": "sync-1794454610204-service_requests_311",
+      "timestamp": "2026-11-12T03:36:50.126Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "3-1-1",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+    },
+    {
+      "id": "log-1794454602884",
+      "timestamp": "2026-11-12T03:36:42.883449+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Lime 共享滑板車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 250 筆資料至 vancouver_escooter.geojson。",
+      "record_count": 250
+    },
+    {
+      "id": "sync-1794454602882-escooter",
+      "timestamp": "2026-11-12T03:36:42.831Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享滑板車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享滑板車] 資料同步完成，共載入 250 筆記錄。"
+    },
+    {
+      "id": "log-1794454602200",
+      "timestamp": "2026-11-12T03:36:42.198611+00:00",
+      "action": "OCI_DAEMON_SYNC",
+      "source_name": "Mobi 共享單車 (每月全量站點)",
+      "runner": "oci",
+      "status": "success",
+      "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+      "record_count": 262
+    },
+    {
+      "id": "sync-1794454602193-shared_bikes",
+      "timestamp": "2026-11-12T03:36:42.112Z",
+      "action": "LAYER_DATA_SYNC",
+      "source_name": "共享單車",
+      "runner": "local_or_oci",
+      "status": "success",
+      "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+    },
+    {
       "id": "sync-1794373408065-escooter",
       "timestamp": "2026-11-11T05:03:27.971Z",
       "action": "LAYER_DATA_SYNC",
@@ -1794,339 +2494,6 @@
       "runner": "github_actions",
       "status": "success",
       "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42550021339-shared_bikes",
-      "timestamp": "2026-11-09T02:17:13Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42549194761-escooter",
-      "timestamp": "2026-11-09T02:08:20Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42531113726-shared_bikes",
-      "timestamp": "2026-11-08T22:37:59Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42530817062-escooter",
-      "timestamp": "2026-11-08T22:33:58Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42511384284-shared_bikes",
-      "timestamp": "2026-11-08T18:43:43Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42510727386-escooter",
-      "timestamp": "2026-11-08T18:35:30Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42491028683-service_requests_311",
-      "timestamp": "2026-11-08T14:42:00Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "3-1-1",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-311.yml 執行成功，目前共 1324622 筆即時案件。"
-    },
-    {
-      "id": "gh-run-42487556005-shared_bikes",
-      "timestamp": "2026-11-08T14:00:37Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42487305846-escooter",
-      "timestamp": "2026-11-08T13:56:45Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42482362204-food_vendors",
-      "timestamp": "2026-11-08T12:54:21Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "街頭餐車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-food-vendors.yml 執行成功，目前共 10 處街頭餐車與熟食攤位。"
-    },
-    {
-      "id": "gh-run-42456476873-shared_bikes",
-      "timestamp": "2026-11-08T06:52:50Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42456070754-escooter",
-      "timestamp": "2026-11-08T06:46:27Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42445091355-service_requests_311",
-      "timestamp": "2026-11-08T04:02:10Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "3-1-1",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 手動觸發] 工作流 update-311.yml 執行成功，目前共 1324622 筆即時案件。"
-    },
-    {
-      "id": "gh-run-42444838162-tnt_eflyers",
-      "timestamp": "2026-11-08T03:58:23Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "大統華T&T",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 手動觸發] 工作流 update-tnt-eflyers.yml 執行成功，目前共 8 張高清海報頁面。"
-    },
-    {
-      "id": "sync-1794104893122-service_requests_311",
-      "timestamp": "2026-11-08T02:28:12.926Z",
-      "action": "LAYER_DATA_SYNC",
-      "source_name": "3-1-1",
-      "runner": "local_or_oci",
-      "status": "success",
-      "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
-    },
-    {
-      "id": "gh-run-42428269591-shared_bikes",
-      "timestamp": "2026-11-08T00:07:33Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42427925605-escooter",
-      "timestamp": "2026-11-08T00:02:57Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42411940288-shared_bikes",
-      "timestamp": "2026-11-07T20:38:23Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42411752139-escooter",
-      "timestamp": "2026-11-07T20:35:31Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42392600394-shared_bikes",
-      "timestamp": "2026-11-07T16:43:11Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42392476047-escooter",
-      "timestamp": "2026-11-07T16:41:08Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42382285792-service_requests_311",
-      "timestamp": "2026-11-07T14:35:37Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "3-1-1",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-311.yml 執行成功，目前共 1324622 筆即時案件。"
-    },
-    {
-      "id": "gh-run-42373258484-food_vendors",
-      "timestamp": "2026-11-07T12:37:09Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "街頭餐車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-food-vendors.yml 執行成功，目前共 10 處街頭餐車與熟食攤位。"
-    },
-    {
-      "id": "gh-run-42365886280-shared_bikes",
-      "timestamp": "2026-11-07T10:54:45Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42365189279-escooter",
-      "timestamp": "2026-11-07T10:44:33Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42336311761-shared_bikes",
-      "timestamp": "2026-11-07T03:59:00Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42333753904-escooter",
-      "timestamp": "2026-11-07T03:23:29Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42314809342-shared_bikes",
-      "timestamp": "2026-11-06T23:54:15Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42312758907-escooter",
-      "timestamp": "2026-11-06T23:34:39Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42296324088-tnt_eflyers",
-      "timestamp": "2026-11-06T21:24:04Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "大統華T&T",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 手動觸發] 工作流 update-tnt-eflyers.yml 執行成功，目前共 8 張高清海報頁面。"
-    },
-    {
-      "id": "gh-run-42282685361-shared_bikes",
-      "timestamp": "2026-11-06T19:47:52Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42271879837-escooter",
-      "timestamp": "2026-11-06T18:34:45Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42243878807-service_requests_311",
-      "timestamp": "2026-11-06T15:32:24Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "3-1-1",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-311.yml 執行成功，目前共 1324622 筆即時案件。"
-    },
-    {
-      "id": "gh-run-42229058808-food_vendors",
-      "timestamp": "2026-11-06T13:53:17Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "街頭餐車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-food-vendors.yml 執行成功，目前共 10 處街頭餐車與熟食攤位。"
-    },
-    {
-      "id": "gh-run-42219166481-shared_bikes",
-      "timestamp": "2026-11-06T12:38:39Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享單車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-    },
-    {
-      "id": "gh-run-42211761483-escooter",
-      "timestamp": "2026-11-06T11:39:09Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "共享滑板車",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-    },
-    {
-      "id": "gh-run-42169671049-tnt_eflyers",
-      "timestamp": "2026-11-06T05:39:33Z",
-      "action": "GITHUB_WORKFLOW_SYNC",
-      "source_name": "大統華T&T",
-      "runner": "github_actions",
-      "status": "success",
-      "detail": "[GitHub Actions · 排程自動執行] 工作流 update-tnt-eflyers.yml 執行成功，目前共 8 張高清海報頁面。"
     }
   ],
   "schedule_retention_days": 5
