@@ -66,6 +66,7 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   vanWifi: { label: 'VanWiFi 免費無線網路', url: '/api/geojson/road/van_wifi', category: '生活' },
   hospitals: { label: '綜合急診醫院', url: '/api/geojson/road/hospitals', category: '安全' },
   crimeAreas: { label: '罪案發生率熱區', url: '/api/geojson/road/crime_areas', category: '安全' },
+  consulates: { label: '各國領事館', url: '/vancouver_consulates.geojson', category: '安全' },
   tideStations: { label: '潮汐水位', url: '/api/tides/stations/geojson', category: '地理' },
   banks: { label: '銀行分行與據點', url: '/vancouver_banks.geojson', category: '生活' },
   atm: { label: '銀行分行與據點', url: '/vancouver_banks.geojson', category: '生活' },

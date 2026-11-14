@@ -1622,5 +1622,33 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://map.yvr.ca/config.json"
+  },
+  {
+    "id": "consulates",
+    "name": "各國駐卑詩省領事館 (Consulates)",
+    "type": "geojson",
+    "cron_expr": "0 6 1 */3 *",
+    "schedule_interval": "每 3 個月",
+    "record_count": 84,
+    "unit": "處領事館點位",
+    "last_updated": "2026-11-14T03:05:13.151Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Consular Corps of B.C. Directory (gov.bc.ca) -> BC Address Geocoder 經緯度轉換 -> GitHub Actions 每 3 個月定時更新寫入 vancouver_consulates.geojson 並同步 OCI",
+    "runner": "github_actions",
+    "workflow_file": "update-consulates.yml",
+    "category": "安全",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Consular Corps of B.C. 目錄",
+        "url": "https://www2.gov.bc.ca/gov/content/governments/organizational-structure/office-of-the-premier/intergovernmental-relations-secretariat/protocol/consular-corps/directory"
+      },
+      {
+        "type": "api",
+        "label": "BC Address Geocoder API",
+        "url": "https://geocoder.api.gov.bc.ca/addresses.json"
+      }
+    ],
+    "source_url": "https://www2.gov.bc.ca/gov/content/governments/organizational-structure/office-of-the-premier/intergovernmental-relations-secretariat/protocol/consular-corps/directory"
   }
 ];

@@ -73,6 +73,7 @@
 | `public_art` | **戶外公共藝術雕塑** | 每月 1 號 03:00 (`0 3 1 * *`) | `update-datasets.yml` | `backend/scripts/update_open_data.py` | `frontend/public/vancouver_public_art.geojson` | 登記戶外壁畫、雕塑作品、創作者生平與文化理念。 |
 | `museums` | **博物館與歷史場館** | 每月 1 號 03:00 (`0 3 1 * *`) | `update-datasets.yml` | `backend/scripts/update_open_data.py` | `frontend/public/vancouver_museums.geojson` | 標示溫哥華各文博館門票、營業時間與展覽主題。 |
 | `impark` | **ImPark 商業停車場** | 每月 1 號 03:00 (`0 3 1 * *`) | `update-datasets.yml` | `backend/scripts/fetch_impark.py` | `frontend/public/vancouver_impark.geojson` | 抓取商業停車場收費費率、車位總數與營業時間。 |
+| `consulates` | **各國駐卑詩省領事館** | 每 3 個月 1 號 06:00 (`0 6 1 */3 *`) | `update-consulates.yml` | `backend/scripts/layers/update_consulates.py` | `frontend/public/vancouver_consulates.geojson` | 爬取 Consular Corps of B.C. 官方目錄，經 GeoBC Geocoder 地址轉換並更新圖層。 |
 
 ---
 

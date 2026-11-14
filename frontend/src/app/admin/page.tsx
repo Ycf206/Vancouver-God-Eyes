@@ -126,6 +126,7 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   zoning_districts: 'zoningDistricts',
   public_trees: 'publicTrees',
   museums: 'museums',
+  consulates: 'consulates',
 };
 
 // 圖層控制管理清單 (支援開關、面板顯示與主題色彩微調)
@@ -187,6 +188,7 @@ const LAYER_CONTROLS_LIST = [
   { id: 'fireHydrants', name: '市政消防栓', category: '安全', defaultColor: '#ef4444' },
   { id: 'disasterHubs', name: '災害支援中心', category: '安全', defaultColor: '#f59e0b' },
   { id: 'aed', name: 'AED 急救心臟去顫器', category: '安全', defaultColor: '#ef4444' },
+  { id: 'consulates', name: '各國領事館', category: '安全', defaultColor: '#4f46e5' },
   // 環境與地理
   { id: 'beachWaterQuality', name: '海灘水質', category: '自然', defaultColor: '#06b6d4' },
   { id: 'contours', name: '等高線高程', category: '地理', defaultColor: '#14b8a6' },

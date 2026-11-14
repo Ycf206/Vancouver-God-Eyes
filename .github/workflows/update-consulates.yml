@@ -1,0 +1,110 @@
+name: "Update 各國領事館 (每3個月)"
+
+on:
+  schedule:
+    - cron: '0 6 1 */3 *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-consulates
+  cancel-in-progress: true
+
+jobs:
+  update-consulates:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch latest layer cache from data branch
+        run: |
+          git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+          git checkout refs/remotes/origin/data -- backend/data/vancouver_consulates.geojson frontend/public/vancouver_consulates.geojson 2>/dev/null || true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run layer update script (領事館)
+        run: |
+          python backend/scripts/layers/update_consulates.py
+
+      - name: Commit and push updated data to data branch
+        id: git_push
+        run: |
+          set -e
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          mkdir -p /tmp/wf_stage
+          for f in backend/data/vancouver_consulates.geojson frontend/public/vancouver_consulates.geojson; do
+            if [ -f "$f" ]; then
+              mkdir -p "/tmp/wf_stage/$(dirname "$f")"
+              cp -f "$f" "/tmp/wf_stage/$f"
+            fi
+          done
+
+          git reset --hard HEAD
+          git clean -fd
+
+          has_changes="false"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+            if git show-ref --verify --quiet refs/remotes/origin/data; then
+              git checkout -f -B data refs/remotes/origin/data
+            else
+              git checkout -f -B data
+            fi
+
+            for f in backend/data/vancouver_consulates.geojson frontend/public/vancouver_consulates.geojson; do
+              if [ -f "/tmp/wf_stage/$f" ]; then
+                mkdir -p "$(dirname "$f")"
+                cp -f "/tmp/wf_stage/$f" "$f"
+              fi
+            done
+
+            git add backend/data/vancouver_consulates.geojson frontend/public/vancouver_consulates.geojson
+            if git diff -I '"updated_at"' -I '"generated_at"' --staged --quiet; then
+              echo "No substantive feature changes detected for 各國領事館."
+              git reset --hard HEAD >/dev/null 2>&1 || true
+              has_changes="false"
+              break
+            fi
+
+            git commit -m "chore(data): auto-update 各國領事館 (consulates) [skip ci]"
+            if git push origin HEAD:data; then
+              has_changes="true"
+              break
+            fi
+
+            echo "Push conflict on data branch (attempt $attempt), retrying..."
+            sleep $((attempt * 2))
+          done
+
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+
+      - name: Sync data and update timestamp on OCI VM
+        if: success()
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步 [各國領事館] 更新狀態與圖資至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            mkdir -p backend/data frontend/public
+            if [ "${{ steps.git_push.outputs.has_changes }}" = "true" ]; then
+              git fetch origin data:refs/remotes/origin/data 2>/dev/null || git fetch origin data 2>/dev/null || true
+              git checkout refs/remotes/origin/data -- backend/data/vancouver_consulates.geojson frontend/public/vancouver_consulates.geojson 2>/dev/null || git checkout origin/data -- backend/data/vancouver_consulates.geojson frontend/public/vancouver_consulates.geojson 2>/dev/null || true
+            fi
+            python3 backend/scripts/record_workflow_sync.py --source "consulates" --workflow "update-consulates.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "consulates" --workflow "update-consulates.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
+            echo "✅ OCI 伺服器 [各國領事館] 資料與後台時間戳同步完成！"

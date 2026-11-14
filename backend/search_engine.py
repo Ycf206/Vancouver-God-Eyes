@@ -287,6 +287,18 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "治安": ("crime_areas",),
     "罪案": ("crime_areas",),
     "crime": ("crime_areas",),
+    "領事館": ("consulates",),
+    "總領事館": ("consulates",),
+    "名譽領事館": ("consulates",),
+    "領事": ("consulates",),
+    "大使館": ("consulates",),
+    "簽證": ("consulates",),
+    "護照": ("consulates",),
+    "consulate": ("consulates",),
+    "consulates": ("consulates",),
+    "consular": ("consulates",),
+    "consul": ("consulates",),
+    "embassy": ("consulates",),
     # Energy, Parking & Mobility
     "油站": ("fuel",),
     "加油站": ("fuel",),
@@ -466,6 +478,7 @@ CATEGORY_TIER_BONUS: dict[str, int] = {
     "community_centres": 32,
     "police": 32,
     "fire_halls": 32,
+    "consulates": 32,
     "banks": 30,
     "local_area_boundary": 30,
     "beach_water_quality": 30,
@@ -881,6 +894,7 @@ GEOJSON_LAYER_CONFIGS: list[tuple[str, str, str, str, str, str, int, Optional[st
     ("police", "police", "police", "警察局", "👮", "police", 16, None),
     ("fire_halls", "fire_halls", "fire_halls", "消防局", "🚒", "fireHalls", 16, None),
     ("disaster_hubs", "disaster_hubs", "disaster_hubs", "災害支援中心", "🛟", "disasterHubs", 16, None),
+    ("consulates", "consulates", "consulates", "領事館", "🏰", "consulates", 16, None),
     ("aed", "aed", "aed", "AED 去顫器", "💓", "aed", 17, None),
     ("parks", "parks", "parks", "公園", "🌲", "parks", 15, None),
     ("parks_facilities", "parks_facilities", "parks_facilities", "公園設施", "🛝", "parksFacilities", 16, None),
@@ -966,6 +980,7 @@ _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
     "beach_water_quality": "海灘 泳灘 沙灘 水質 大腸桿菌 beach swimming",
     "police": "警察局 警局 報案 治安 police vpd",
     "fire_halls": "消防局 消防隊 救火 fire hall rescue",
+    "consulates": "領事館 總領事館 名譽領事館 大使館 外交 簽證 護照 consulate consulates consular consul embassy",
     "hospitals": "醫院 醫療機構 診所 急症 急診 upcc hospital clinic emergency",
     "disaster_hubs": "災害支援中心 緊急集合點 防災 disaster hub earthquake",
     "aed": "aed 自動體外心臟去顫器 急救 defibrillator",
@@ -2077,6 +2092,15 @@ class LayerSearchEngine:
                     if not street_h:
                         continue
                     title = f"消防栓 · {street_h}"
+                elif fstem == "consulates":
+                    title = str(props.get("office_name") or raw_name or "領事館").strip()
+                    c_en = str(props.get("country") or "").strip()
+                    if c_en:
+                        exact_codes.append(c_en)
+                    c_zh_all = str(props.get("country_zh") or "").strip()
+                    for ztok in c_zh_all.split():
+                        exact_codes.append(ztok)
+                        exact_codes.append(f"{ztok}領事館")
 
                 if not title:
                     title = badge_zh
@@ -2175,6 +2199,14 @@ class LayerSearchEngine:
                         props.get("clearance"),
                         props.get("fsa"),
                         props.get("zone_code"),
+                        props.get("country"),
+                        props.get("country_zh"),
+                        props.get("office_name"),
+                        props.get("head_of_post"),
+                        props.get("rank"),
+                        props.get("city"),
+                        props.get("email"),
+                        props.get("fax"),
                         alias_kw,
                     )
                     if v

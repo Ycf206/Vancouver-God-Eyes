@@ -194,6 +194,7 @@ FILENAME_TO_SOURCE_ID = {
     "vancouver_fedex.geojson": "fedex",
     "vancouver_purolator.geojson": "purolator",
     "vancouver_crashes.json": "vancouver_crashes",
+    "vancouver_consulates.geojson": "consulates",
 }
 
 

@@ -84,6 +84,7 @@ export interface UIState {
     maritimeShipping: boolean;
     marineTerminals: boolean;
     crimeAreas: boolean;
+    consulates: boolean;
     trafficSpeedLimits: boolean;
     bikeRacks: boolean;
     postalCodeFSA: boolean;
@@ -340,6 +341,7 @@ export const useUIStore = create<UIState>()(
         maritimeShipping: true,
         marineTerminals: true,
         crimeAreas: false,
+        consulates: false,
         trafficSpeedLimits: false,
         bikeRacks: false,
         postalCodeFSA: false,
@@ -520,6 +522,7 @@ export const useUIStore = create<UIState>()(
               (layer === 'vanWifi' && (st.category === 'van_wifi' || String(st.id ?? '').startsWith('vanwifi_'))) ||
               (layer === 'airports' && st.category === 'airports') ||
               (layer === 'airportIndoor' && st.category === 'airport_indoor') ||
+              (layer === 'consulates' && st.category === 'consulates') ||
               ((layer === 'bcferriesTerminals' || layer === 'bcferriesRoutes') && st.category === 'ferry_terminal') ||
               (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
               (layer === 'maritimeShipping' && st.category === 'maritime_vessel') ||

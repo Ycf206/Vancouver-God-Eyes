@@ -8,7 +8,7 @@ import {
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
   UserShield, FireExtinguisher, Zap, ZapOff, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
-  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes
+  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle
 } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
@@ -187,6 +187,7 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'fire_halls' || lk === 'fireHalls') return <FireExtinguisher className={`${cls} text-rose-400`} />;
   if (c === 'hospitals' || lk === 'hospitals') return <Hospital className={`${cls} text-emerald-400`} />;
   if (c === 'disaster_hubs' || lk === 'disasterHubs') return <LifeBuoy className={`${cls} text-amber-400`} />;
+  if (c === 'consulates' || lk === 'consulates') return <Castle className={`${cls} text-indigo-400`} />;
   if (c === 'van_wifi' || lk === 'vanWifi') return <Wifi className={`${cls} text-cyan-400`} />;
   if (c === 'power_outages' || c === 'power_outage' || lk === 'powerOutages') return <ZapOff className={`${cls} text-amber-400`} />;
   if (c === 'local_area_boundary' || lk === 'localAreaBoundary') return <Grid3x2 className={`${cls} text-teal-400`} />;
@@ -331,11 +332,11 @@ export default function TopBar() {
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
-          'disasterHubs', 'borderCrossings'
+          'disasterHubs', 'borderCrossings', 'consulates'
         ];
         const targetCats = [
           'police', 'crime_areas', 'fire_halls', 'fire_hydrants', 'hospitals',
-          'disaster_hubs', 'border_crossing'
+          'disaster_hubs', 'border_crossing', 'consulates'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -1096,6 +1097,7 @@ export default function TopBar() {
                             item.category === 'border_crossing' ? 'bg-cyan-950/80 text-cyan-300 border-cyan-800/60 font-bold' :
                             item.category === 'fire_halls' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
                             item.category === 'police' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
+                            item.category === 'consulates' ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60 font-bold' :
                             item.category === 'hospitals' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
                             item.category === 'disaster_hubs' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
                             item.category === 'fuel' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :

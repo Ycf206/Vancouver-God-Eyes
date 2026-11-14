@@ -14,7 +14,7 @@ import {
   BusFront, Repeat, TrainFront, ShipCargo, Plane, Road, ParkingMeter, Motorbike, Milestone,
   EvCharger, TrainTrack, TrafficCone, LineSquiggle, HouseHeart, UserRoundGroup, Package,
   CircleDollarSign, Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet,
-  UserShield, FireExtinguisher, Zap, ZapOff, Earth, Grid3x2, Parasol, FunnelX, Construction
+  UserShield, FireExtinguisher, Zap, ZapOff, Earth, Grid3x2, Parasol, FunnelX, Construction, Castle
 } from 'lucide-react';
 
 // 自定義倒 U 型單車架 SVG 元件 (LetterU)
@@ -155,6 +155,7 @@ const SEARCHABLE_LAYERS: Array<{
   // 安全 SECURITY
   { id: 'police', name: '警察', category: '安全', keywords: ['police', '警察', '警局'], icon: UserShield },
   { id: 'fireHalls', name: '消防', category: '安全', keywords: ['fire', '消防', '消防局'], icon: FireExtinguisher },
+  { id: 'consulates', name: '領事館', category: '安全', keywords: ['consulate', 'consulates', 'consular', 'embassy', '領事館', '總領事館', '大使館', '簽證'], icon: Castle },
 
   // 能源 ENERGY
   { id: 'powerOutages', name: '停電', category: '能源', keywords: ['power outage', 'outage', 'bc hydro', 'blackout', '停電', '供電', '斷電'], icon: ZapOff },
@@ -246,7 +247,7 @@ export default function LayerPanel() {
     ] as const;
     const governmentKeys = [
       'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
-      'disasterHubs'
+      'disasterHubs', 'consulates'
     ] as const;
     const utilitiesKeys = [
       'powerOutages'
@@ -804,6 +805,9 @@ export default function LayerPanel() {
               {/* Row 3: 醫療 | 災害支援中心 */}
               <LayerButton layerKey="hospitals" label="醫療" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
               <LayerButton layerKey="disasterHubs" label="災害支援中心" icon={LifeBuoy} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+
+              {/* Row 4: 領事館 */}
+              <LayerButton layerKey="consulates" label="領事館" icon={Castle} colorClass="text-indigo-400" activeBg="bg-[#1b1c32]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
             </div>
           )}
         </div>

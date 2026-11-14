@@ -1,0 +1,2948 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 84,
+  "updated_at": "2026-11-14T03:05:13.151Z",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "consulate_afghanistan_burnaby_e7226f",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.93874,
+          49.225715
+        ]
+      },
+      "properties": {
+        "id": "consulate_afghanistan_burnaby_e7226f",
+        "facility_type": "consulates",
+        "name": "Consulate General of Afghanistan",
+        "office_name": "Consulate General of Afghanistan",
+        "country": "Afghanistan",
+        "country_zh": "阿富汗",
+        "subcity": null,
+        "city": "Burnaby",
+        "local_area": "Burnaby",
+        "address": "7825 Edmonds Street, Burnaby, BC V3N 1B9",
+        "head_of_post": "Ramin Manawi",
+        "rank": "Consul General",
+        "phone": "604 553-3158",
+        "fax": "604 553-4726",
+        "email": "afghanconsulvan@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/afghanistan/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_albania_vancouver_369afc",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117452,
+          49.284596
+        ]
+      },
+      "properties": {
+        "id": "consulate_albania_vancouver_369afc",
+        "facility_type": "consulates",
+        "name": "Consulate of Albania",
+        "office_name": "Consulate of Albania",
+        "country": "Albania",
+        "country_zh": "阿爾巴尼亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 306 - 595 Howe Street, Vancouver, BC V6C 2T5",
+        "head_of_post": "Edison Heba",
+        "rank": "Honorary Consul",
+        "phone": "604 808-5081",
+        "fax": null,
+        "email": "edison.heba@telus.net",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/albania-albanie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_argentina_vancouver_ae5a46",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117745,
+          49.278551
+        ]
+      },
+      "properties": {
+        "id": "consulate_argentina_vancouver_ae5a46",
+        "facility_type": "consulates",
+        "name": "Consulate General of Argentina",
+        "office_name": "Consulate General of Argentina",
+        "country": "Argentina",
+        "country_zh": "阿根廷",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "407 - 860 Homer Street, Vancouver, BC V6B 2W5",
+        "head_of_post": "Ricardo Arredondo",
+        "rank": "Consul General",
+        "phone": null,
+        "fax": null,
+        "email": "cgvan@mrecic.gov.ar",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/argentina-argentine/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_australia_vancouver_f0c80a",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122183,
+          49.285866
+        ]
+      },
+      "properties": {
+        "id": "consulate_australia_vancouver_f0c80a",
+        "facility_type": "consulates",
+        "name": "Consulate of Australia",
+        "office_name": "Consulate of Australia",
+        "country": "Australia",
+        "country_zh": "澳洲 澳大利亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 2050, 1075 West Georgia Street, Vancouver, BC V6E 3C9",
+        "head_of_post": "Luke Walsh",
+        "rank": "Honorary Consul",
+        "phone": "604 694-6160 ext. 6170",
+        "fax": "604 608-9671",
+        "email": "Vancouver.Consular@austrade.gov.au",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/australia-australie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_austria_vancouver_991f1a",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117452,
+          49.284596
+        ]
+      },
+      "properties": {
+        "id": "consulate_austria_vancouver_991f1a",
+        "facility_type": "consulates",
+        "name": "Consulate General of Austria",
+        "office_name": "Consulate General of Austria",
+        "country": "Austria",
+        "country_zh": "奧地利",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "1100 - 595 Howe Street, Vancouver, BC V6C 2T5",
+        "head_of_post": "David Haber",
+        "rank": "Honorary Consul General",
+        "phone": "604 687-3338",
+        "fax": "888 665-4615",
+        "email": "austrianconsulatebc@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/austria-autriche/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_barbados_langley_114262",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.668814,
+          49.140504
+        ]
+      },
+      "properties": {
+        "id": "consulate_barbados_langley_114262",
+        "facility_type": "consulates",
+        "name": "Consulate of Barbados",
+        "office_name": "Consulate of Barbados",
+        "country": "Barbados",
+        "country_zh": "巴貝多",
+        "subcity": null,
+        "city": "Langley",
+        "local_area": "Langley",
+        "address": "19984 76 Avenue, Langley, BC V2Y 1S1",
+        "head_of_post": "Marilyn Elaine Moseley",
+        "rank": "Honorary Consul",
+        "phone": "604 533-4622",
+        "fax": "604 533-9864",
+        "email": null,
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/barbados-barbade/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_belgium_vancouver_bb1e7c",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.108955,
+          49.26194
+        ]
+      },
+      "properties": {
+        "id": "consulate_belgium_vancouver_bb1e7c",
+        "facility_type": "consulates",
+        "name": "Consulate of Belgium",
+        "office_name": "Consulate of Belgium",
+        "country": "Belgium",
+        "country_zh": "比利時",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "166 West 10th Avenue, Vancouver, BC V5Y 1R8",
+        "head_of_post": "Monique Poncelet",
+        "rank": "Honorary Consul",
+        "phone": "604 879-7782",
+        "fax": "604 879-7260",
+        "email": "moniqueponcelet@shaw.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/belgium-belgique/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_bosnia_and_herzegovina_vancouver_50f5e4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121466,
+          49.285243
+        ]
+      },
+      "properties": {
+        "id": "consulate_bosnia_and_herzegovina_vancouver_50f5e4",
+        "facility_type": "consulates",
+        "name": "Consulate of Bosnia and Herzegovina",
+        "office_name": "Consulate of Bosnia and Herzegovina",
+        "country": "Bosnia and Herzegovina",
+        "country_zh": "波士尼亞與赫塞哥維納 波斯尼亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 2400, 1055 West Georgia Street, Vancouver, BC V6E 3P3",
+        "head_of_post": null,
+        "rank": null,
+        "phone": "778-302-7546",
+        "fax": null,
+        "email": "consul@bcbih.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/bosnia_herzegovina-bosnie_herzegovine/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_brazil_vancouver_c2c8ef",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122119,
+          49.286891
+        ]
+      },
+      "properties": {
+        "id": "consulate_brazil_vancouver_c2c8ef",
+        "facility_type": "consulates",
+        "name": "Consulate General of Brazil",
+        "office_name": "Consulate General of Brazil",
+        "country": "Brazil",
+        "country_zh": "巴西",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1050, 1111 Melville Street, Vancouver, BC V6E 3V6",
+        "head_of_post": "Nestor José Forster Junior",
+        "rank": "Consul General",
+        "phone": "604 696-5311",
+        "fax": "604 696-5366",
+        "email": "cg.vancouver@itamaraty.gov.br",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/brazil-bresil/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_bulgaria_richmond_8b614b",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125781,
+          49.194345
+        ]
+      },
+      "properties": {
+        "id": "consulate_bulgaria_richmond_8b614b",
+        "facility_type": "consulates",
+        "name": "Consulate of Bulgaria",
+        "office_name": "Consulate of Bulgaria",
+        "country": "Bulgaria",
+        "country_zh": "保加利亞",
+        "subcity": null,
+        "city": "Richmond",
+        "local_area": "Richmond",
+        "address": "2571 Smith Street, Richmond, BC V6X 2J1",
+        "head_of_post": "Byong Gil Suh",
+        "rank": "Honorary Consul",
+        "phone": "604 657-5578",
+        "fax": "604 273-5356",
+        "email": "ronsuh@hotmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/bulgaria-bulgarie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_chile_vancouver_9be77d",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124646,
+          49.287156
+        ]
+      },
+      "properties": {
+        "id": "consulate_chile_vancouver_9be77d",
+        "facility_type": "consulates",
+        "name": "Consulate General of Chile",
+        "office_name": "Consulate General of Chile",
+        "country": "Chile",
+        "country_zh": "智利",
+        "subcity": "Vancouver",
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1610, 1185 West Georgia Street, Vancouver, BC V6E 4E6",
+        "head_of_post": "Allan Najum",
+        "rank": "Consul General",
+        "phone": "604 681-9162",
+        "fax": "604 687-0624",
+        "email": "vancouver@consulado.gob.cl",
+        "website": null,
+        "fact_sheet_url": null,
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_chile_victoria_096e19",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.33609,
+          48.46909
+        ]
+      },
+      "properties": {
+        "id": "consulate_chile_victoria_096e19",
+        "facility_type": "consulates",
+        "name": "Consulate of Chile",
+        "office_name": "Consulate of Chile",
+        "country": "Chile",
+        "country_zh": "智利",
+        "subcity": "Victoria",
+        "city": "Victoria",
+        "local_area": "Victoria",
+        "address": "115 - 3954 Cedar Hill Road, Victoria, BC V8N 3B9",
+        "head_of_post": "Leopoldo Eric Bustos-Arevalo",
+        "rank": "Honorary Consul",
+        "phone": "778 433-4502",
+        "fax": null,
+        "email": "hconsulofchile@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/chile-chili/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_china_vancouver_e7f18a",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138735,
+          49.255566
+        ]
+      },
+      "properties": {
+        "id": "consulate_china_vancouver_e7f18a",
+        "facility_type": "consulates",
+        "name": "Consulate of China",
+        "office_name": "Consulate of China",
+        "country": "China",
+        "country_zh": "中國 中華人民共和國",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "3380 Granville Street, Vancouver, BC V6H 3K3",
+        "head_of_post": "Fengshan Fu",
+        "rank": "Consul General",
+        "phone": "604 734-7492",
+        "fax": "604 736-4343",
+        "email": "china.vancouver@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/china-chine/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_colombia_vancouver_8174ee",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123286,
+          49.285364
+        ]
+      },
+      "properties": {
+        "id": "consulate_colombia_vancouver_8174ee",
+        "facility_type": "consulates",
+        "name": "Consulate General of Colombia",
+        "office_name": "Consulate General of Colombia",
+        "country": "Colombia",
+        "country_zh": "哥倫比亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1340, 1090 West Georgia Street, Vancouver, BC V6E 3V7",
+        "head_of_post": "Jorge Humberto Ojeda Bueno",
+        "rank": "Consul General",
+        "phone": "604 558-1775",
+        "fax": "604 566-9740",
+        "email": "cvancouver@cancilleria.gov.co",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/colombia-colombie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_costa_rica_north_vancouver_55c2a5",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142042,
+          49.303655
+        ]
+      },
+      "properties": {
+        "id": "consulate_costa_rica_north_vancouver_55c2a5",
+        "facility_type": "consulates",
+        "name": "Consulate General of Costa Rica",
+        "office_name": "Consulate General of Costa Rica",
+        "country": "Costa Rica",
+        "country_zh": "哥斯大黎加",
+        "subcity": null,
+        "city": "North Vancouver",
+        "local_area": "North Vancouver",
+        "address": "PO Box 16076, North Vancouver, BC V7J 3S9",
+        "head_of_post": "Antonio Arreaga-Valdés",
+        "rank": "Honorary Consul General",
+        "phone": "604 983-2152",
+        "fax": null,
+        "email": "consulado.vancouvercr@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/costa_rica/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_c_te_d_ivoire_vancouver_c39eed",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.197802,
+          49.2322
+        ]
+      },
+      "properties": {
+        "id": "consulate_c_te_d_ivoire_vancouver_c39eed",
+        "facility_type": "consulates",
+        "name": "Consulate of Côte d'Ivoire",
+        "office_name": "Consulate of Côte d'Ivoire",
+        "country": "Côte d'Ivoire",
+        "country_zh": "象牙海岸 科特迪瓦",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "48 - 4100 Salish Drive, Vancouver, BC V6N 3M2",
+        "head_of_post": "John Bell",
+        "rank": "Honorary Consul",
+        "phone": "778 241-7922",
+        "fax": "604 266-6529",
+        "email": null,
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/cote_divoire/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_croatia_vancouver_b09fcb",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120385,
+          49.281395
+        ]
+      },
+      "properties": {
+        "id": "consulate_croatia_vancouver_b09fcb",
+        "facility_type": "consulates",
+        "name": "Consulate of Croatia",
+        "office_name": "Consulate of Croatia",
+        "country": "Croatia",
+        "country_zh": "克羅埃西亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "5th Floor, 720 Robson Street, Vancouver, BC V6Z 1A1",
+        "head_of_post": "Manjot S. Hallen",
+        "rank": "Honorary Consul",
+        "phone": "604 737-3300",
+        "fax": "604 737-3017",
+        "email": "mhallen@warnetthallen.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/croatia-croatie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_cyprus_vancouver_aa1662",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.243162,
+          49.268434
+        ]
+      },
+      "properties": {
+        "id": "consulate_cyprus_vancouver_aa1662",
+        "facility_type": "consulates",
+        "name": "Consulate of Cyprus",
+        "office_name": "Consulate of Cyprus",
+        "country": "Cyprus",
+        "country_zh": "賽普勒斯",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "1950 Allison Road, Vancouver, BC, V6T 1T3",
+        "head_of_post": "Kiriaki Kaity Arsoniadis",
+        "rank": "Honorary Consul",
+        "phone": "604 808-5253",
+        "fax": null,
+        "email": "katekaity@icloud.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/cyprus-chypre/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_czechia_vancouver_a11aa9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111446,
+          49.288119
+        ]
+      },
+      "properties": {
+        "id": "consulate_czechia_vancouver_a11aa9",
+        "facility_type": "consulates",
+        "name": "Consulate of Czechia",
+        "office_name": "Consulate of Czechia",
+        "country": "Czechia",
+        "country_zh": "捷克",
+        "subcity": "Vancouver",
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 36, 404-999 Canada Place, Vancouver, BC V6C 3E2",
+        "head_of_post": "Russell Banzet",
+        "rank": "Honorary Consul",
+        "phone": "604 830-4529",
+        "fax": null,
+        "email": "Vancouver.Honorary@mzv.gov.cz",
+        "website": null,
+        "fact_sheet_url": null,
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_czechia_victoria_0fdc7a",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.33389,
+          48.424557
+        ]
+      },
+      "properties": {
+        "id": "consulate_czechia_victoria_0fdc7a",
+        "facility_type": "consulates",
+        "name": "Consulate of Czechia",
+        "office_name": "Consulate of Czechia",
+        "country": "Czechia",
+        "country_zh": "捷克",
+        "subcity": "Victoria",
+        "city": "Victoria",
+        "local_area": "Victoria",
+        "address": "1652 Mountbatten Place, Victoria, BC V8S 5J9",
+        "head_of_post": "Olena Lenka Storzer",
+        "rank": "Honorary Consul",
+        "phone": "250 888-1974",
+        "fax": null,
+        "email": "victoriacanada.honorary@mzv.gov.cz",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/czechia-tchequie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_denmark_vancouver_7494c3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132479,
+          49.266504
+        ]
+      },
+      "properties": {
+        "id": "consulate_denmark_vancouver_7494c3",
+        "facility_type": "consulates",
+        "name": "Consulate of Denmark",
+        "office_name": "Consulate of Denmark",
+        "country": "Denmark",
+        "country_zh": "丹麥",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 300, 1275 West 6th Avenue, Vancouver, BC V6H 1A6",
+        "head_of_post": "Mikkel Høegholm Strøjer",
+        "rank": "Honorary Consul",
+        "phone": "604 676-1505",
+        "fax": "604 985-2855",
+        "email": "vancouver@umgate.dk",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/denmark-danemark/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_el_salvador_vancouver_965c27",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122119,
+          49.286891
+        ]
+      },
+      "properties": {
+        "id": "consulate_el_salvador_vancouver_965c27",
+        "facility_type": "consulates",
+        "name": "Consulate General of El Salvador",
+        "office_name": "Consulate General of El Salvador",
+        "country": "El Salvador",
+        "country_zh": "薩爾瓦多",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 602, 1111 Melville Street, Vancouver, BC V6E 3V6",
+        "head_of_post": "Cesar Augusto Orellana Murillos",
+        "rank": "Consul General",
+        "phone": "604 732-8142",
+        "fax": "604 696-0038",
+        "email": "consuladovancouver@rree.gob.sv",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/el_salvador-salvador/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_estonia_vancouver_fdc517",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.173887,
+          49.239215
+        ]
+      },
+      "properties": {
+        "id": "consulate_estonia_vancouver_fdc517",
+        "facility_type": "consulates",
+        "name": "Consulate of Estonia",
+        "office_name": "Consulate of Estonia",
+        "country": "Estonia",
+        "country_zh": "愛沙尼亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "3062 West 36th Ave, Vancouver, BC V6N 2R5",
+        "head_of_post": "Evaleen Jaager Roy",
+        "rank": "Honorary Consul",
+        "phone": "604 889-3969",
+        "fax": null,
+        "email": "ejaager@outlook.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/estonia-estonie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_fiji_burnaby_3bc3a0",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.977873,
+          49.24562
+        ]
+      },
+      "properties": {
+        "id": "consulate_fiji_burnaby_3bc3a0",
+        "facility_type": "consulates",
+        "name": "Consulate of Fiji",
+        "office_name": "Consulate of Fiji",
+        "country": "Fiji",
+        "country_zh": "斐濟",
+        "subcity": null,
+        "city": "Burnaby",
+        "local_area": "Burnaby",
+        "address": "4307 Percival Avenue, Burnaby, BC V5G 3S4",
+        "head_of_post": "Pradeep Keshva Naicker",
+        "rank": "Honorary Consul",
+        "phone": "604 230-4448",
+        "fax": null,
+        "email": null,
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/fiji-fidji/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_finland_vancouver_f99bcd",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125269,
+          49.286642
+        ]
+      },
+      "properties": {
+        "id": "consulate_finland_vancouver_f99bcd",
+        "facility_type": "consulates",
+        "name": "Consulate of Finland",
+        "office_name": "Consulate of Finland",
+        "country": "Finland",
+        "country_zh": "芬蘭",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1480, 1188 West Georgia Street, Vancouver, BC V6E 4A2",
+        "head_of_post": "Tom Nyberg",
+        "rank": "Honorary Consul",
+        "phone": "604 688-4483",
+        "fax": null,
+        "email": "vancouver.ott@gov.fi",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/finland-finlande/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_france_vancouver_825c53",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121902,
+          49.287299
+        ]
+      },
+      "properties": {
+        "id": "consulate_france_vancouver_825c53",
+        "facility_type": "consulates",
+        "name": "Consulate General of France",
+        "office_name": "Consulate General of France",
+        "country": "France",
+        "country_zh": "法國 法蘭西",
+        "subcity": "Vancouver",
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1100, 1130 West Pender St, Vancouver, BC V6E 4A4",
+        "head_of_post": "Raphaël Dang",
+        "rank": "Consul General",
+        "phone": "604 637-5300",
+        "fax": "604 637-5301",
+        "email": "barbara.clerc-renaud@diplomatie.gouv.fr",
+        "website": null,
+        "fact_sheet_url": null,
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_france_victoria_16b213",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.351935,
+          48.469514
+        ]
+      },
+      "properties": {
+        "id": "consulate_france_victoria_16b213",
+        "facility_type": "consulates",
+        "name": "Consulate of France",
+        "office_name": "Consulate of France",
+        "country": "France",
+        "country_zh": "法國 法蘭西",
+        "subcity": "Victoria",
+        "city": "Victoria",
+        "local_area": "Victoria",
+        "address": "3949 Margot Place, Victoria, BC V8P 3M2",
+        "head_of_post": "Geoffroy de Nanteuil",
+        "rank": "Honorary Consul",
+        "phone": "250 886-0457",
+        "fax": null,
+        "email": "consulhonorairefrance@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/france/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_germany_vancouver_201095",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111446,
+          49.288119
+        ]
+      },
+      "properties": {
+        "id": "consulate_germany_vancouver_201095",
+        "facility_type": "consulates",
+        "name": "Consulate General of Germany",
+        "office_name": "Consulate General of Germany",
+        "country": "Germany",
+        "country_zh": "德國",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 704, 999 Canada Place, Vancouver, BC V6C 3E1",
+        "head_of_post": "Susanne Olberg",
+        "rank": "Consul General",
+        "phone": "604 684-8377",
+        "fax": "604 684-8334",
+        "email": "info@vancouver.diplo.de",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/germany-allemagne/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_ghana_surrey_cc2ab7",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.821419,
+          49.125595
+        ]
+      },
+      "properties": {
+        "id": "consulate_ghana_surrey_cc2ab7",
+        "facility_type": "consulates",
+        "name": "Consulate General of Ghana",
+        "office_name": "Consulate General of Ghana",
+        "country": "Ghana",
+        "country_zh": "迦納",
+        "subcity": null,
+        "city": "Surrey",
+        "local_area": "Surrey",
+        "address": "6771 144th Street, Surrey, BC V3S 0T3",
+        "head_of_post": "Joseph Yaw Frimpong",
+        "rank": "Honorary Consul",
+        "phone": "604 441-4576",
+        "fax": null,
+        "email": "honconsulgeneral@shaw.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/ghana/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_greece_vancouver_bff007",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114004,
+          49.284999
+        ]
+      },
+      "properties": {
+        "id": "consulate_greece_vancouver_bff007",
+        "facility_type": "consulates",
+        "name": "Consulate General of Greece",
+        "office_name": "Consulate General of Greece",
+        "country": "Greece",
+        "country_zh": "希臘",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 500, 688 West Hastings Street, Vancouver, BC V6B 1P1",
+        "head_of_post": "Dimitrios Skoutas",
+        "rank": "Consul General",
+        "phone": "604 681-1381",
+        "fax": "604 681-6656",
+        "email": "vancouver@mfa.gr",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/greece-grece/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_guatemala_vancouver_339dbc",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125269,
+          49.286642
+        ]
+      },
+      "properties": {
+        "id": "consulate_guatemala_vancouver_339dbc",
+        "facility_type": "consulates",
+        "name": "Consulate General of Guatemala",
+        "office_name": "Consulate General of Guatemala",
+        "country": "Guatemala",
+        "country_zh": "瓜地馬拉",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1270, 1188 West Georgia Street, Vancouver, BC V6E 4A2",
+        "head_of_post": "Mynor Joel Aguirre Medina",
+        "rank": "Consul General",
+        "phone": "604 412-2401",
+        "fax": null,
+        "email": "consvancouver@minex.gob.gt",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/guatemala/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_hungary_vancouver_1854dc",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124909,
+          49.280039
+        ]
+      },
+      "properties": {
+        "id": "consulate_hungary_vancouver_1854dc",
+        "facility_type": "consulates",
+        "name": "Vice-Consulate of Hungary",
+        "office_name": "Vice-Consulate of Hungary",
+        "country": "Hungary",
+        "country_zh": "匈牙利",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 701, 808 Nelson Street, Vancouver, BC V6Z 2H2",
+        "head_of_post": "János Jakó",
+        "rank": "Consul General (Toronto)",
+        "phone": "604 258-9658",
+        "fax": "604 623-2921",
+        "email": "mission.van@mfa.gov.hu",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/hungary-hongrie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_iceland_west_vancouver_048b82",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118809,
+          49.346571
+        ]
+      },
+      "properties": {
+        "id": "consulate_iceland_west_vancouver_048b82",
+        "facility_type": "consulates",
+        "name": "Consulate General of Iceland",
+        "office_name": "Consulate General of Iceland",
+        "country": "Iceland",
+        "country_zh": "冰島",
+        "subcity": null,
+        "city": "West Vancouver",
+        "local_area": "West Vancouver",
+        "address": "308 Moyne Drive, West Vancouver, BC V7S 1J5",
+        "head_of_post": "Glenn Sigurdson",
+        "rank": "Honorary Consul General",
+        "phone": "604 688-4678",
+        "fax": null,
+        "email": null,
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/iceland-islande/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_india_vancouver_583a8a",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114363,
+          49.286522
+        ]
+      },
+      "properties": {
+        "id": "consulate_india_vancouver_583a8a",
+        "facility_type": "consulates",
+        "name": "Consulate General of India",
+        "office_name": "Consulate General of India",
+        "country": "India",
+        "country_zh": "印度",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 201, 325 Howe Street, Vancouver, BC V6C 1Z7",
+        "head_of_post": "Masakui Rungsung",
+        "rank": "Consul General",
+        "phone": "604 662-8811",
+        "fax": "604 682-3556",
+        "email": "cg.vancouver@mea.gov.in",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/india-inde/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_indonesia_vancouver_7cecef",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132013,
+          49.290261
+        ]
+      },
+      "properties": {
+        "id": "consulate_indonesia_vancouver_7cecef",
+        "facility_type": "consulates",
+        "name": "Consulate General of Indonesia",
+        "office_name": "Consulate General of Indonesia",
+        "country": "Indonesia",
+        "country_zh": "印尼 印度尼西亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "1630 Alberni Street, Vancouver, BC V6G 1A6",
+        "head_of_post": "Nina Kurnia Widhi",
+        "rank": "Consul General",
+        "phone": "604 682-8855",
+        "fax": "604 662-8396",
+        "email": "congen@indonesiavancouver.org",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/indonesia-indonesie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_ireland_vancouver_6de936",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119724,
+          49.287611
+        ]
+      },
+      "properties": {
+        "id": "consulate_ireland_vancouver_6de936",
+        "facility_type": "consulates",
+        "name": "Consulate General of Ireland",
+        "office_name": "Consulate General of Ireland",
+        "country": "Ireland",
+        "country_zh": "愛爾蘭",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1300, 1095 West Pender Street, Vancouver, BC V6E 2M6",
+        "head_of_post": "Catherine Geagan",
+        "rank": "Consul General",
+        "phone": "604 696-3266",
+        "fax": null,
+        "email": "vancouvercg@dfa.ie",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/ireland-irlande/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_italy_vancouver_5f237f",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122089,
+          49.287611
+        ]
+      },
+      "properties": {
+        "id": "consulate_italy_vancouver_5f237f",
+        "facility_type": "consulates",
+        "name": "Consulate General of Italy",
+        "office_name": "Consulate General of Italy",
+        "country": "Italy",
+        "country_zh": "義大利",
+        "subcity": "Vancouver",
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 840 - 1140 West Pender Street, Vancouver, BC V6E 4G1",
+        "head_of_post": "Paolo Miraglia Del Giudice",
+        "rank": "Consul General",
+        "phone": "604 684-7288",
+        "fax": "604 685-4263",
+        "email": "segreteria.vancouver@esteri.it",
+        "website": null,
+        "fact_sheet_url": null,
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_italy_kelowna_c33ed9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.486558,
+          49.885561
+        ]
+      },
+      "properties": {
+        "id": "consulate_italy_kelowna_c33ed9",
+        "facility_type": "consulates",
+        "name": "Consulate of Italy",
+        "office_name": "Consulate of Italy",
+        "country": "Italy",
+        "country_zh": "義大利",
+        "subcity": "Kelowna",
+        "city": "Kelowna",
+        "local_area": "Kelowna",
+        "address": "770 Lawrence Avenue, Kelowna, BC V1Y 6L9",
+        "head_of_post": "Silvia Milicia",
+        "rank": "Honorary Consular Agent",
+        "phone": "778 680-0400",
+        "fax": null,
+        "email": "agenteconsolarekelowna@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/italy-italie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_jamaica_vancouver_8a8919",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126103,
+          49.263866
+        ]
+      },
+      "properties": {
+        "id": "consulate_jamaica_vancouver_8a8919",
+        "facility_type": "consulates",
+        "name": "Consulate of Jamaica",
+        "office_name": "Consulate of Jamaica",
+        "country": "Jamaica",
+        "country_zh": "牙買加",
+        "subcity": "Vancouver",
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "999 West Broadway, Suite 720, Vancouver, BC V5Z 1K5",
+        "head_of_post": "June Nellie Petal Francis",
+        "rank": "Honorary Consul",
+        "phone": "672 755-7175",
+        "fax": null,
+        "email": "jamaicahonoraryconsulvan@gmail.com",
+        "website": null,
+        "fact_sheet_url": null,
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_japan_vancouver_e9a044",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121984,
+          49.288851
+        ]
+      },
+      "properties": {
+        "id": "consulate_japan_vancouver_e9a044",
+        "facility_type": "consulates",
+        "name": "Consulate General of Japan",
+        "office_name": "Consulate General of Japan",
+        "country": "Japan",
+        "country_zh": "日本",
+        "subcity": "Vancouver",
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 900,1177 West Hastings Street, Vancouver, BC V6E 2K9",
+        "head_of_post": "Yoshiaki Takahashi",
+        "rank": "Consul General",
+        "phone": "604 684-5868",
+        "fax": "604 684-6939",
+        "email": "cgj-office@vc.mofa.go.jp",
+        "website": null,
+        "fact_sheet_url": null,
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_japan_victoria_4fa8da",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.471695,
+          48.45133
+        ]
+      },
+      "properties": {
+        "id": "consulate_japan_victoria_4fa8da",
+        "facility_type": "consulates",
+        "name": "Consulate of Japan",
+        "office_name": "Consulate of Japan",
+        "country": "Japan",
+        "country_zh": "日本",
+        "subcity": "Victoria",
+        "city": "Victoria",
+        "local_area": "Victoria",
+        "address": "2588 Crystalview Drive, Victoria, BC V9B 6M9",
+        "head_of_post": "David Byng",
+        "rank": "Honorary Consul General",
+        "phone": "250 889-1016",
+        "fax": null,
+        "email": "davidabyng@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/japan-japon/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_kazakhstan_vancouver_ab62dc",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116065,
+          49.287225
+        ]
+      },
+      "properties": {
+        "id": "consulate_kazakhstan_vancouver_ab62dc",
+        "facility_type": "consulates",
+        "name": "Consulate of Kazakhstan",
+        "office_name": "Consulate of Kazakhstan",
+        "country": "Kazakhstan",
+        "country_zh": "哈薩克",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1508 - 999 West Hastings Street, Vancouver, BC V6C 2W2",
+        "head_of_post": "Darren E.C. Klinck",
+        "rank": "Honorary Consul",
+        "phone": "604 354-3476",
+        "fax": null,
+        "email": "dklinck@westcottcapital.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/kazakhstan/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_kenya_abbotsford_9ec54b",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.439083,
+          49.054546
+        ]
+      },
+      "properties": {
+        "id": "consulate_kenya_abbotsford_9ec54b",
+        "facility_type": "consulates",
+        "name": "Consulate of Kenya",
+        "office_name": "Consulate of Kenya",
+        "country": "Kenya",
+        "country_zh": "肯亞",
+        "subcity": null,
+        "city": "Abbotsford",
+        "local_area": "Abbotsford",
+        "address": "2864 Cottonwood Street, Abbotsford, BC V4X 1K5",
+        "head_of_post": "George Imbenzi",
+        "rank": "Honorary Consul",
+        "phone": "778 786-2562",
+        "fax": "778 857-1467",
+        "email": "vancouver@mofat.go.kr",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/kenya/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_korea_south_vancouver_c5b425",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123286,
+          49.285364
+        ]
+      },
+      "properties": {
+        "id": "consulate_korea_south_vancouver_c5b425",
+        "facility_type": "consulates",
+        "name": "Consulate General of Korea",
+        "office_name": "Consulate General of Korea",
+        "country": "Korea (South)",
+        "country_zh": "南韓 韓國 大韓民國",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1600, 1090 West Georgia Street, Vancouver, BC V6E 3V7",
+        "head_of_post": "Kwangsuk Lee",
+        "rank": "Consul General",
+        "phone": "604 681-9581",
+        "fax": "604 681-4864",
+        "email": "vancouver@mofa.go.kr",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/republic_korea-republique_coree/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_laos_richmond_a220fb",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.135107,
+          49.172559
+        ]
+      },
+      "properties": {
+        "id": "consulate_laos_richmond_a220fb",
+        "facility_type": "consulates",
+        "name": "Consulate of Laos",
+        "office_name": "Consulate of Laos",
+        "country": "Laos",
+        "country_zh": "寮國 老撾",
+        "subcity": null,
+        "city": "Richmond",
+        "local_area": "Richmond",
+        "address": "5080 - 8171 Ackroyd Road, Richmond, BC V6X 3K1",
+        "head_of_post": "John Phanthoupheng",
+        "rank": "Honorary Consul",
+        "phone": "236 235-5828",
+        "fax": null,
+        "email": "esavics@shaw.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/laos/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_lebanon_port_moody_d2c01d",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.83317,
+          49.296323
+        ]
+      },
+      "properties": {
+        "id": "consulate_lebanon_port_moody_d2c01d",
+        "facility_type": "consulates",
+        "name": "Consulate of Lebanon",
+        "office_name": "Consulate of Lebanon",
+        "country": "Lebanon",
+        "country_zh": "黎巴嫩",
+        "subcity": null,
+        "city": "Port Moody",
+        "local_area": "Port Moody",
+        "address": "84 Timbercrest Drive, Port Moody, BC V3H 4T1",
+        "head_of_post": "Nicholas Kahwaji",
+        "rank": "Honorary Consul",
+        "phone": "604 773-1462",
+        "fax": "604 461-9528",
+        "email": "Nick.Kahwaji@VanLebConsulate.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/lebanon-liban/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_lithuania_vancouver_cc4878",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.067103,
+          49.275088
+        ]
+      },
+      "properties": {
+        "id": "consulate_lithuania_vancouver_cc4878",
+        "facility_type": "consulates",
+        "name": "Consulate of Lithuania",
+        "office_name": "Consulate of Lithuania",
+        "country": "Lithuania",
+        "country_zh": "立陶宛",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "1088 Salsbury Drive, Vancouver, BC V5L 4A7",
+        "head_of_post": "Christopher Juras",
+        "rank": "Honorary Consul",
+        "phone": "604 786-2046",
+        "fax": null,
+        "email": "chrisjuras@telus.net%20",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/lithuania-lituanie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_malaysia_vancouver_f1da3b",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123378,
+          49.28633
+        ]
+      },
+      "properties": {
+        "id": "consulate_malaysia_vancouver_f1da3b",
+        "facility_type": "consulates",
+        "name": "Consulate General of Malaysia",
+        "office_name": "Consulate General of Malaysia",
+        "country": "Malaysia",
+        "country_zh": "馬來西亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1805, 1111 West Georgia Street, Vancouver, BC V6E 4M3",
+        "head_of_post": "Ahmad Shazril Bin Suhaimi",
+        "rank": "Consul General",
+        "phone": "604 685-9550",
+        "fax": "604 685-9520",
+        "email": "mwvancouver@kln.gov.my",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/malaysia-malaisie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_mali_richmond_7f3173",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.167129,
+          49.146335
+        ]
+      },
+      "properties": {
+        "id": "consulate_mali_richmond_7f3173",
+        "facility_type": "consulates",
+        "name": "Consulate General of Mali",
+        "office_name": "Consulate General of Mali",
+        "country": "Mali",
+        "country_zh": "馬利",
+        "subcity": null,
+        "city": "Richmond",
+        "local_area": "Richmond",
+        "address": "9115 Jaskow G.T., Richmond, BC V7E 5H6",
+        "head_of_post": "Francis Tin",
+        "rank": "Honorary Consul General",
+        "phone": null,
+        "fax": "604 277-2984",
+        "email": null,
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/mali/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_mauritius_vancouver_d324f9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114792,
+          49.286695
+        ]
+      },
+      "properties": {
+        "id": "consulate_mauritius_vancouver_d324f9",
+        "facility_type": "consulates",
+        "name": "Consulate of Mauritius",
+        "office_name": "Consulate of Mauritius",
+        "country": "Mauritius",
+        "country_zh": "模里西斯",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "2902-837 West Hastings Street, Vancouver, BC V6C 3N7",
+        "head_of_post": "Nittin K. Reebye",
+        "rank": "Honorary Consul",
+        "phone": "778 861-5224",
+        "fax": null,
+        "email": "reebyenittin@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/mauritius-maurice/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_mexico_vancouver_fdf612",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121984,
+          49.288851
+        ]
+      },
+      "properties": {
+        "id": "consulate_mexico_vancouver_fdf612",
+        "facility_type": "consulates",
+        "name": "Consulate General of Mexico",
+        "office_name": "Consulate General of Mexico",
+        "country": "Mexico",
+        "country_zh": "墨西哥",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 411 - 1177 West Hastings Street, Vancouver, BC V6E 2K3",
+        "head_of_post": "Julián Adem Díaz de León",
+        "rank": "Consul General",
+        "phone": "604 684-1859",
+        "fax": "604 684-2485",
+        "email": "consulmexvan@sre.gob.mx",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/mexico-mexique/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_monaco_vancouver_d77253",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124157,
+          49.285945
+        ]
+      },
+      "properties": {
+        "id": "consulate_monaco_vancouver_d77253",
+        "facility_type": "consulates",
+        "name": "Consulate of Monaco",
+        "office_name": "Consulate of Monaco",
+        "country": "Monaco",
+        "country_zh": "摩納哥",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 6004, 1128 West Georgia Street, Vancouver, BC V6E 0A8",
+        "head_of_post": "Jacques Becker",
+        "rank": "Honorary Consul",
+        "phone": "778 379-0460",
+        "fax": null,
+        "email": "consul@monaco-vancouver.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/monaco/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_mongolia_vancouver_8e99ba",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139825,
+          49.238722
+        ]
+      },
+      "properties": {
+        "id": "consulate_mongolia_vancouver_8e99ba",
+        "facility_type": "consulates",
+        "name": "Consulate of Mongolia",
+        "office_name": "Consulate of Mongolia",
+        "country": "Mongolia",
+        "country_zh": "蒙古",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "1518 West 36th Ave, Vancouver, BC V6M 1J8",
+        "head_of_post": "Charles Scott McVean Shepherd",
+        "rank": "Honorary Consul",
+        "phone": "604 805-4041",
+        "fax": null,
+        "email": "sshepherdcdn@icloud.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/mongolia-mongolie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_morocco_white_rock_235174",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.80537,
+          49.021719
+        ]
+      },
+      "properties": {
+        "id": "consulate_morocco_white_rock_235174",
+        "facility_type": "consulates",
+        "name": "Consulate of Morocco",
+        "office_name": "Consulate of Morocco",
+        "country": "Morocco",
+        "country_zh": "摩洛哥",
+        "subcity": null,
+        "city": "White Rock",
+        "local_area": "White Rock",
+        "address": "15046 Victoria Avenue, White Rock, BC V4B 1G3",
+        "head_of_post": "Christa Kucey",
+        "rank": "Honorary Consul",
+        "phone": "604 725-1980",
+        "fax": null,
+        "email": "ckucey@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/morocco-maroc/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_nepal_victoria_42267a",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.384428,
+          48.421697
+        ]
+      },
+      "properties": {
+        "id": "consulate_nepal_victoria_42267a",
+        "facility_type": "consulates",
+        "name": "Consulate General of Nepal",
+        "office_name": "Consulate General of Nepal",
+        "country": "Nepal",
+        "country_zh": "尼泊爾",
+        "subcity": null,
+        "city": "Victoria",
+        "local_area": "Victoria",
+        "address": "30 Dallas Road, Victoria, BC V8V 0A2",
+        "head_of_post": "Christopher Considine",
+        "rank": "Honorary Consul General",
+        "phone": "250 381-7788",
+        "fax": "250 381-1042",
+        "email": "cmconsidine@considinelaw.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/nepal/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_netherlands_vancouver_e29b82",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119734,
+          49.286134
+        ]
+      },
+      "properties": {
+        "id": "consulate_netherlands_vancouver_e29b82",
+        "facility_type": "consulates",
+        "name": "Consulate General of the Netherlands",
+        "office_name": "Consulate General of the Netherlands",
+        "country": "Netherlands",
+        "country_zh": "荷蘭",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Three Bentall Centre, Suite 883, 595 Burrard Street, P.O. Box 49068, Vancouver, BC V7X 1C4",
+        "head_of_post": "Sebastiaan Messerschmidt",
+        "rank": "Consul General",
+        "phone": "604 684-6448",
+        "fax": "604 684-3549",
+        "email": "van@minbuza.nl",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/netherlands-pays_bas/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_new_zealand_vancouver_eb198a",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119619,
+          49.286878
+        ]
+      },
+      "properties": {
+        "id": "consulate_new_zealand_vancouver_eb198a",
+        "facility_type": "consulates",
+        "name": "Consulate General of New Zealand",
+        "office_name": "Consulate General of New Zealand",
+        "country": "New Zealand",
+        "country_zh": "紐西蘭 新西蘭",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 2250, 1050 West Pender Street, Vancouver, BC V6E 3S7",
+        "head_of_post": "Rhea Cowell",
+        "rank": "Consul General",
+        "phone": "604 684-7388",
+        "fax": "604 684-7333",
+        "email": "vancouveroffice@nzte.govt.nz",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/new_zealand-nouvelle_zelande/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_norway_vancouver_897bb1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125269,
+          49.286642
+        ]
+      },
+      "properties": {
+        "id": "consulate_norway_vancouver_897bb1",
+        "facility_type": "consulates",
+        "name": "Consulate General of Norway",
+        "office_name": "Consulate General of Norway",
+        "country": "Norway",
+        "country_zh": "挪威",
+        "subcity": "Vancouver",
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1480, 1188 West Georgia Street, Vancouver, BC V6E 4A2",
+        "head_of_post": "Randall J. Kaardal",
+        "rank": "Honorary Consul General",
+        "phone": "604 682-7977",
+        "fax": "604 685-8434",
+        "email": "nor-congeneral@telus.net",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/norway-norvege/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_pakistan_vancouver_9f4f7b",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126339,
+          49.288228
+        ]
+      },
+      "properties": {
+        "id": "consulate_pakistan_vancouver_9f4f7b",
+        "facility_type": "consulates",
+        "name": "Consulate General of Pakistan",
+        "office_name": "Consulate General of Pakistan",
+        "country": "Pakistan",
+        "country_zh": "巴基斯坦",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "201 - 1281 West Georgia Street, Vancouver, BC V6E 3J7",
+        "head_of_post": "Shahzad Hussain",
+        "rank": "Consul General",
+        "phone": "604 569-1415",
+        "fax": "604 569-2180",
+        "email": "parepvancouver@mofa.gov.pk",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/pakistan/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_panama_vancouver_8d51f7",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11936,
+          49.28507
+        ]
+      },
+      "properties": {
+        "id": "consulate_panama_vancouver_8d51f7",
+        "facility_type": "consulates",
+        "name": "Consulate General of Panama",
+        "office_name": "Consulate General of Panama",
+        "country": "Panama",
+        "country_zh": "巴拿馬",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 500, 666 Burrard Street, Vancouver, BC V6C 3P6",
+        "head_of_post": "Max Alfredo Gomez Arauz",
+        "rank": "Consul General",
+        "phone": "778 370-1415",
+        "fax": null,
+        "email": "panamaconsulatebc@outlook.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/panama/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_paraguay_burnaby_fb60cc",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.909512,
+          49.258718
+        ]
+      },
+      "properties": {
+        "id": "consulate_paraguay_burnaby_fb60cc",
+        "facility_type": "consulates",
+        "name": "Consulate of Paraguay",
+        "office_name": "Consulate of Paraguay",
+        "country": "Paraguay",
+        "country_zh": "巴拉圭",
+        "subcity": null,
+        "city": "Burnaby",
+        "local_area": "Burnaby",
+        "address": "8812 Centaurus Circle, Burnaby, BC V3J 1C1",
+        "head_of_post": "Luis Fernando Villalba Ocampo",
+        "rank": "Honorary Consul",
+        "phone": "604 440-1644",
+        "fax": null,
+        "email": "lvillalb@capilanou.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/paraguay/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_peru_vancouver_b5fc95",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125684,
+          49.286157
+        ]
+      },
+      "properties": {
+        "id": "consulate_peru_vancouver_b5fc95",
+        "facility_type": "consulates",
+        "name": "Consulate General of Peru",
+        "office_name": "Consulate General of Peru",
+        "country": "Peru",
+        "country_zh": "秘魯",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "502 – 1166 Alberni Street, Vancouver, BC V7X V6E 3Z3",
+        "head_of_post": "Francisco Javier Pella Plenge",
+        "rank": "Consul General",
+        "phone": "604 662-8880",
+        "fax": "604 662-3564",
+        "email": "infovan@conpervan.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/peru-perou/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_philippines_vancouver_5ce8b0",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111446,
+          49.288119
+        ]
+      },
+      "properties": {
+        "id": "consulate_philippines_vancouver_5ce8b0",
+        "facility_type": "consulates",
+        "name": "Consulate General of the Philippines",
+        "office_name": "Consulate General of the Philippines",
+        "country": "Philippines",
+        "country_zh": "菲律賓",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 660, 999 Canada Place, Vancouver, BC V6C 3E1",
+        "head_of_post": "Gina Jamoralin",
+        "rank": "Consul General",
+        "phone": "604 685-7645",
+        "fax": "604 685-9945",
+        "email": "vancouverpcg@telus.net",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/philippines/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_poland_vancouver_d75ad0",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121984,
+          49.288851
+        ]
+      },
+      "properties": {
+        "id": "consulate_poland_vancouver_d75ad0",
+        "facility_type": "consulates",
+        "name": "Consulate General of Poland",
+        "office_name": "Consulate General of Poland",
+        "country": "Poland",
+        "country_zh": "波蘭",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1600, 1177 West Hastings Street, Vancouver, BC V6E 2K3",
+        "head_of_post": "Aleksandra Kucy",
+        "rank": "Consul General",
+        "phone": "604 688-3530",
+        "fax": "604 688-3537",
+        "email": "vancouver.info@msz.gov.pl",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/poland-pologne/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_portugal_vancouver_455dca",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119777,
+          49.284324
+        ]
+      },
+      "properties": {
+        "id": "consulate_portugal_vancouver_455dca",
+        "facility_type": "consulates",
+        "name": "Consulate General of Portugal",
+        "office_name": "Consulate General of Portugal",
+        "country": "Portugal",
+        "country_zh": "葡萄牙",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 920, 925 West Georgia, Vancouver, BC V6C 3L2",
+        "head_of_post": "Duarte Cunha de Eça Valente",
+        "rank": "Consul General",
+        "phone": "604 688-6514",
+        "fax": "604 685-7042",
+        "email": "consulado.vancouver@mne.pt",
+        "website": "https://www.vancouver.consuladoportugal.mne.pt/en/",
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/portugal/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_romania_vancouver_a510be",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11898,
+          49.286537
+        ]
+      },
+      "properties": {
+        "id": "consulate_romania_vancouver_a510be",
+        "facility_type": "consulates",
+        "name": "Consulate General of Romania",
+        "office_name": "Consulate General of Romania",
+        "country": "Romania",
+        "country_zh": "羅馬尼亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 855 - 555 Burrard Street, Vancouver, BC V7X 1M8",
+        "head_of_post": "Gabriel Rotaru",
+        "rank": "Consul General",
+        "phone": "604 564-9186",
+        "fax": "604 633-0757",
+        "email": "consulado.vancouver@mne.pt",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/romania-roumanie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_senegal_vancouver_0c4233",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118014,
+          49.287709
+        ]
+      },
+      "properties": {
+        "id": "consulate_senegal_vancouver_0c4233",
+        "facility_type": "consulates",
+        "name": "Consulate of Senegal",
+        "office_name": "Consulate of Senegal",
+        "country": "Senegal",
+        "country_zh": "塞內加爾",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 300, 1055 West Hastings Street, Vancouver, BC V6E 2E9",
+        "head_of_post": "David Varty",
+        "rank": "Honorary Consul",
+        "phone": "604 684-5356",
+        "fax": "604 608-3256",
+        "email": "dvarty@vartylaw.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/senegal/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_serbia_delta_f97c22",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.019313,
+          49.137954
+        ]
+      },
+      "properties": {
+        "id": "consulate_serbia_delta_f97c22",
+        "facility_type": "consulates",
+        "name": "Consulate of Serbia",
+        "office_name": "Consulate of Serbia",
+        "country": "Serbia",
+        "country_zh": "塞爾維亞",
+        "subcity": null,
+        "city": "Delta",
+        "local_area": "Delta",
+        "address": "7411 Vantage Way,  Delta, BC V4G 1C9",
+        "head_of_post": "Peter Vladikovic",
+        "rank": "Honorary Consul",
+        "phone": "604 940-3838",
+        "fax": "604 946-5418",
+        "email": "consul@serbianconsulate.bc.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/serbia-serbie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 99,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_singapore_vancouver_c17104",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125684,
+          49.286157
+        ]
+      },
+      "properties": {
+        "id": "consulate_singapore_vancouver_c17104",
+        "facility_type": "consulates",
+        "name": "Consulate General of Singapore",
+        "office_name": "Consulate General of Singapore",
+        "country": "Singapore",
+        "country_zh": "新加坡",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1405, 1166 Alberni Street, Vancouver, BC V6E 3Z3",
+        "head_of_post": "Terrance Salman",
+        "rank": "Honorary Consul General",
+        "phone": "604 622-5281",
+        "fax": "604 685-2471",
+        "email": "vansgmfa@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/singapore-singapour/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_slovak_republic_richmond_6725d4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116623,
+          49.15048
+        ]
+      },
+      "properties": {
+        "id": "consulate_slovak_republic_richmond_6725d4",
+        "facility_type": "consulates",
+        "name": "Consulate of the Slovak Republic",
+        "office_name": "Consulate of the Slovak Republic",
+        "country": "Slovak Republic",
+        "country_zh": "斯洛伐克",
+        "subcity": null,
+        "city": "Richmond",
+        "local_area": "Richmond",
+        "address": "8691 Allison Street, Richmond, BC V6Y 3H9",
+        "head_of_post": "Pavol Hollosy",
+        "rank": "Honorary Consul",
+        "phone": "604 277-5774",
+        "fax": null,
+        "email": "phollosy@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/slovakia-slovaquie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_slovenia_west_vancouver_7741d2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.262597,
+          49.348613
+        ]
+      },
+      "properties": {
+        "id": "consulate_slovenia_west_vancouver_7741d2",
+        "facility_type": "consulates",
+        "name": "Consulate of Slovenia",
+        "office_name": "Consulate of Slovenia",
+        "country": "Slovenia",
+        "country_zh": "斯洛維尼亞",
+        "subcity": null,
+        "city": "West Vancouver",
+        "local_area": "West Vancouver",
+        "address": "5361A Montiverdi Place, West Vancouver, BC V7W 2W8",
+        "head_of_post": "Margaret Rudolf",
+        "rank": "Honorary Consul",
+        "phone": "778 919-4701",
+        "fax": null,
+        "email": "sloveniaconsulbc@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/slovenia-slovenie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_solomon_islands_vancouver_fc577e",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11936,
+          49.28507
+        ]
+      },
+      "properties": {
+        "id": "consulate_solomon_islands_vancouver_fc577e",
+        "facility_type": "consulates",
+        "name": "Consulate General of Solomon Islands",
+        "office_name": "Consulate General of Solomon Islands",
+        "country": "Solomon Islands",
+        "country_zh": "所羅門群島",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 500, 666 Burrard Street, Vancouver, BC V6C 3P6",
+        "head_of_post": "Ashwant Dwivedi",
+        "rank": "Honorary Consul General",
+        "phone": "604 638-6548",
+        "fax": "604 637-9616",
+        "email": "dwivedi@siconsulate.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/solomon_islands-iles_salomon/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_spain_north_vancouver_6cc727",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117828,
+          49.329829
+        ]
+      },
+      "properties": {
+        "id": "consulate_spain_north_vancouver_6cc727",
+        "facility_type": "consulates",
+        "name": "Consulate of Spain",
+        "office_name": "Consulate of Spain",
+        "country": "Spain",
+        "country_zh": "西班牙",
+        "subcity": null,
+        "city": "North Vancouver",
+        "local_area": "North Vancouver",
+        "address": "2185 Capilano Road, North Vancouver, BC V7P 3C1",
+        "head_of_post": "Ana Isabel Barrado Gil",
+        "rank": "Honorary Consul",
+        "phone": "604 770-2207",
+        "fax": null,
+        "email": "ch.vancouver@maec.es",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/spain-espagne/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_sri_lanka_surrey_74446a",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.783818,
+          49.152681
+        ]
+      },
+      "properties": {
+        "id": "consulate_sri_lanka_surrey_74446a",
+        "facility_type": "consulates",
+        "name": "Consulate of Sri Lanka",
+        "office_name": "Consulate of Sri Lanka",
+        "country": "Sri Lanka",
+        "country_zh": "斯里蘭卡",
+        "subcity": null,
+        "city": "Surrey",
+        "local_area": "Surrey",
+        "address": "25 - 8250 158th Street, Surrey, BC V4N 0R5",
+        "head_of_post": "James (Jim) Bennett",
+        "rank": "Honorary Consul",
+        "phone": "236 513-4744",
+        "fax": null,
+        "email": "srilankaconsul@gmail.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/sri_lanka/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_sweden_vancouver_2d67f1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125269,
+          49.286642
+        ]
+      },
+      "properties": {
+        "id": "consulate_sweden_vancouver_2d67f1",
+        "facility_type": "consulates",
+        "name": "Consulate of Sweden",
+        "office_name": "Consulate of Sweden",
+        "country": "Sweden",
+        "country_zh": "瑞典",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 1480, 1188 West Georgia Street, Vancouver, BC V6E 4A2",
+        "head_of_post": "Jenny Hippel",
+        "rank": "Honorary Consul",
+        "phone": "604 683-5838",
+        "fax": "604 687-8237",
+        "email": "vancouver@swedishconsulates.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/sweden-suede/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_switzerland_vancouver_5594ab",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111446,
+          49.288119
+        ]
+      },
+      "properties": {
+        "id": "consulate_switzerland_vancouver_5594ab",
+        "facility_type": "consulates",
+        "name": "Consulate General of Switzerland",
+        "office_name": "Consulate General of Switzerland",
+        "country": "Switzerland",
+        "country_zh": "瑞士",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 790, 999 Canada Place, Vancouver, BC V6C 3E1",
+        "head_of_post": "Thomas Peter Schneider",
+        "rank": "Consul General",
+        "phone": "604 684-2231",
+        "fax": "604 684-2806",
+        "email": "vancouver@eda.admin.ch",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/switzerland-suisse/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_thailand_vancouver_00af6d",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126963,
+          49.280474
+        ]
+      },
+      "properties": {
+        "id": "consulate_thailand_vancouver_00af6d",
+        "facility_type": "consulates",
+        "name": "Consulate General of Thailand",
+        "office_name": "Consulate General of Thailand",
+        "country": "Thailand",
+        "country_zh": "泰國",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "1040 Burrard Street, Vancouver, BC V6Z 2R9",
+        "head_of_post": "Nattanipa Burusapat",
+        "rank": "Consul General",
+        "phone": "604 687-1143",
+        "fax": "604 687-4434",
+        "email": "info@thaiconsulatevancouver.ca",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/thailand-thailande/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_tunisia_vancouver_ef8571",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119208,
+          49.283976
+        ]
+      },
+      "properties": {
+        "id": "consulate_tunisia_vancouver_ef8571",
+        "facility_type": "consulates",
+        "name": "Consulate of Tunisia",
+        "office_name": "Consulate of Tunisia",
+        "country": "Tunisia",
+        "country_zh": "突尼西亞",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 900, 885 West Georgia Street, Vancouver, BC V6C 3H1",
+        "head_of_post": "Lyall Knott",
+        "rank": "Honorary Consul",
+        "phone": "604 643-3129",
+        "fax": "604 687-6314",
+        "email": "lknott@cwilson.com",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/tunisia-tunisie/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_t_rkiye_vancouver_a04709",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123378,
+          49.28633
+        ]
+      },
+      "properties": {
+        "id": "consulate_t_rkiye_vancouver_a04709",
+        "facility_type": "consulates",
+        "name": "Consulate General of Türkiye",
+        "office_name": "Consulate General of Türkiye",
+        "country": "Türkiye",
+        "country_zh": "土耳其",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 303, 1111 West Georgia Street, Vancouver, BC V6E 4M3",
+        "head_of_post": null,
+        "rank": "Consul General",
+        "phone": "604 416-0366",
+        "fax": "604 416-0355",
+        "email": "consulate.vancouver@mfa.gov.tr",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/turkiye/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_ukraine_vancouver_2fb430",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12283,
+          49.280317
+        ]
+      },
+      "properties": {
+        "id": "consulate_ukraine_vancouver_2fb430",
+        "facility_type": "consulates",
+        "name": "Consulate of Ukraine",
+        "office_name": "Consulate of Ukraine",
+        "country": "Ukraine",
+        "country_zh": "烏克蘭",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 807, 938 Howe Street, Vancouver, BC V6Z 1N9",
+        "head_of_post": null,
+        "rank": null,
+        "phone": "604 331-2505",
+        "fax": "604 331-2515",
+        "email": null,
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/ukraine/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_united_kingdom_vancouver_7c5e9c",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122119,
+          49.286891
+        ]
+      },
+      "properties": {
+        "id": "consulate_united_kingdom_vancouver_7c5e9c",
+        "facility_type": "consulates",
+        "name": "Consulate General of the United Kingdom",
+        "office_name": "Consulate General of the United Kingdom",
+        "country": "United Kingdom",
+        "country_zh": "英國 聯合王國",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 800, 1111 Melville Street, Vancouver, BC V6E 3V6",
+        "head_of_post": "Danial Shaikh",
+        "rank": "Consul General",
+        "phone": "604 683-4421",
+        "fax": "604 681-0693",
+        "email": "bcgvancouver@fcdo.gov.uk",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/united_kingdom-royaume_uni/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_united_states_of_america_vancouver_0c648f",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122793,
+          49.274038
+        ]
+      },
+      "properties": {
+        "id": "consulate_united_states_of_america_vancouver_0c648f",
+        "facility_type": "consulates",
+        "name": "Consulate General of the United States of America",
+        "office_name": "Consulate General of the United States of America",
+        "country": "United States of America",
+        "country_zh": "美國",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "112-1231 Pacific Boulevard, Vancouver, BC V6Z 0E2",
+        "head_of_post": "Shawn Crowley",
+        "rank": "Consul General",
+        "phone": "604 685-4311",
+        "fax": "604 685-5285",
+        "email": "vancouverNIV@state.gov, vancouverK@state.gov, vancouverACS@state.gov",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/us-eu/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_uruguay_vancouver_db9a13",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111446,
+          49.288119
+        ]
+      },
+      "properties": {
+        "id": "consulate_uruguay_vancouver_db9a13",
+        "facility_type": "consulates",
+        "name": "Consulate of Uruguay",
+        "office_name": "Consulate of Uruguay",
+        "country": "Uruguay",
+        "country_zh": "烏拉圭",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 610, 999 Canada Place, Vancouver, BC V6C 3T4",
+        "head_of_post": "Ricky Brar",
+        "rank": "Honorary Consul",
+        "phone": "855 927-2476",
+        "fax": null,
+        "email": "cdvancouver@mrree.gub.uy",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/uruguay/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "consulate_vietnam_vancouver_5224ec",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118823,
+          49.281101
+        ]
+      },
+      "properties": {
+        "id": "consulate_vietnam_vancouver_5224ec",
+        "facility_type": "consulates",
+        "name": "Consulate General of Vietnam",
+        "office_name": "Consulate General of Vietnam",
+        "country": "Vietnam",
+        "country_zh": "越南",
+        "subcity": null,
+        "city": "Vancouver",
+        "local_area": "Vancouver",
+        "address": "Suite 800, 605 Robson Street, Vancouver, BC V6B 5J3",
+        "head_of_post": "Thu Kieu Phan",
+        "rank": "Consul General",
+        "phone": "604 629-0189",
+        "fax": "604 681-2906",
+        "email": "consul.vancouver@mofa.gov.vn",
+        "website": null,
+        "fact_sheet_url": "https://www.international.gc.ca/country-pays/vietnam/index.aspx?lang=eng",
+        "hours": null,
+        "services": null,
+        "social": null,
+        "geocode_score": 100,
+        "source": "Consular Corps of B.C. (gov.bc.ca)"
+      }
+    }
+  ]
+}

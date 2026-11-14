@@ -38,7 +38,7 @@ import {
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy,
   TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
-  Layers, Building2
+  Layers, Building2, Castle
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -59,6 +59,26 @@ const registerDamIcon = (mapInstance: any) => {
     }
   };
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(LUCIDE_DAM_SVG);
+};
+
+// Lucide: castle SVG icon for MapLibre consulates symbol layer
+const LUCIDE_CASTLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5V3"/><path d="M14 5V3"/><path d="M15 21v-3a3 3 0 0 0-6 0v3"/><path d="M18 3v8"/><path d="M18 5H6"/><path d="M22 11H2"/><path d="M22 9v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9"/><path d="M6 3v8"/></svg>`;
+
+const registerCastleIcon = (mapInstance: any) => {
+  if (!mapInstance) return;
+  const targetMap = mapInstance.getMap ? mapInstance.getMap() : mapInstance;
+  if (!targetMap || typeof targetMap.hasImage !== 'function' || targetMap.hasImage('lucide-castle')) return;
+  const img = new Image(32, 32);
+  img.onload = () => {
+    try {
+      if (targetMap && typeof targetMap.hasImage === 'function' && !targetMap.hasImage('lucide-castle')) {
+        targetMap.addImage('lucide-castle', img);
+      }
+    } catch {
+      // ignore
+    }
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(LUCIDE_CASTLE_SVG);
 };
 
 const LetterXIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
@@ -933,7 +953,10 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'power-outages-point-glow',
   'power-outages-point-core',
   'yvr-indoor-pois-layer',
-  'yvr-indoor-pois-symbol-layer'
+  'yvr-indoor-pois-symbol-layer',
+  'consulates-layer',
+  'consulates-icon-layer',
+  'consulates-symbol-layer'
 ];
 
 // Lucide: calendar-arrow-right
@@ -2343,6 +2366,7 @@ export default function AppMap() {
         else if (type === 'turn_restrictions' && !layers.turnRestrictions) facilityClosed = true;
         else if (type === 'railways' && !layers.railways) facilityClosed = true;
         else if (type === 'airport_indoor' && !layers.airportIndoor) facilityClosed = true;
+        else if (type === 'consulates' && !layers.consulates) facilityClosed = true;
         else if (type === 'job' && (!isExploreOpen || !openExploreTabs?.includes('jobs'))) facilityClosed = true;
 
         if (facilityClosed) {
@@ -4091,9 +4115,11 @@ export default function AppMap() {
     const map = mapRef.current?.getMap();
     if (!map) return;
     registerDamIcon(map);
+    registerCastleIcon(map);
     registerYvrIndoorIcons(map);
     const handleStyleData = () => {
       registerDamIcon(map);
+      registerCastleIcon(map);
       registerYvrIndoorIcons(map);
     };
     map.on('styledata', handleStyleData);
@@ -4283,6 +4309,9 @@ export default function AppMap() {
     }
     if (layers.police) {
       style.sources['police'] = { type: 'geojson', data: '/vancouver_police.geojson' };
+    }
+    if (layers.consulates) {
+      style.sources['consulates'] = { type: 'geojson', data: '/vancouver_consulates.geojson' };
     }
     if (layers.disasterHubs) {
       style.sources['disaster-hubs'] = { type: 'geojson', data: '/vancouver_disaster_hubs.geojson' };
@@ -5584,6 +5613,32 @@ export default function AppMap() {
         },
         paint: {
           'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Government Facilities: Consulates (各國領事館 - Lucide: castle)
+    if (layers.consulates) {
+      style.layers.push({
+        id: 'consulates-layer',
+        type: 'circle',
+        source: 'consulates',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 4, 12, 7.5, 15, 10, 17, 12],
+          'circle-color': layerCustomColors?.consulates || '#4f46e5',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'consulates-icon-layer',
+        type: 'symbol',
+        source: 'consulates',
+        layout: {
+          'icon-image': 'lucide-castle',
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 9, 0.24, 12, 0.42, 15, 0.56, 17, 0.65],
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true
         }
       });
     }
@@ -7537,6 +7592,7 @@ export default function AppMap() {
     safetyCamerasFilter.redLightOnly,
     layers.fireHalls,
     layers.police,
+    layers.consulates,
     layers.disasterHubs,
     layers.communityCentres,
     layers.canadaPost,
@@ -7660,6 +7716,7 @@ export default function AppMap() {
         }}
         onLoad={(e: any) => {
           registerDamIcon(e.target);
+          registerCastleIcon(e.target);
           registerYvrIndoorIcons(e.target);
           updateScale();
           const z = e.target?.getZoom ? e.target.getZoom() : e.viewState?.zoom;
@@ -8057,6 +8114,7 @@ export default function AppMap() {
             layerId.startsWith('marine-terminals') ||
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('police') ||
+            layerId.startsWith('consulates') ||
             layerId.startsWith('disaster-hubs') ||
             layerId.startsWith('community-centres') ||
             layerId.startsWith('canada-post') ||
@@ -8113,6 +8171,7 @@ export default function AppMap() {
             let facilityType = props.facility_type || derivedFacilityType || 'fac';
             if (layerId.startsWith('fedex')) facilityType = 'fedex';
             else if (layerId.startsWith('purolator')) facilityType = 'purolator';
+            else if (layerId.startsWith('consulates')) facilityType = 'consulates';
             else if (isImpark) facilityType = 'impark';
             else if (isMuseums) facilityType = 'museums';
             else if (isGarbage) facilityType = 'garbage_collection';
@@ -10759,6 +10818,7 @@ export default function AppMap() {
                   if (t === 'traffic_alerts' || t === 'traffic_incident') return { label: '即時通報', bg: 'bg-amber-600 text-white' };
                   if (t === 'drivebc') return { label: 'BC Drive', bg: 'bg-[#ea580c] text-white' };
                   if (t === 'airport_indoor') return { label: '機場', bg: 'bg-sky-600 text-white' };
+                  if (t === 'consulates') return { label: '領事館', bg: 'bg-indigo-600 text-white' };
                   if (t === 'job') return { label: '工作', bg: 'bg-indigo-600 text-white' };
                   return null;
                 })();
@@ -10769,7 +10829,7 @@ export default function AppMap() {
                   const typeToKeyMap: Record<string, string> = {
                     parks: 'parks', libraries: 'libraries', community_centres: 'communityCentres',
                     schools: 'schools', police: 'police', fire_halls: 'fireHalls', hospitals: 'hospitals',
-                    disaster_hubs: 'disasterHubs', food_banks: 'foodBanks', food_vendors: 'foodVendors',
+                    disaster_hubs: 'disasterHubs', consulates: 'consulates', food_banks: 'foodBanks', food_vendors: 'foodVendors',
                     fuel: 'fuel', ev_charging: 'evCharging', tesla: 'tesla', parking_meters: 'parkingMeters',
                     motorcycle_parking: 'motorcycleParking', accessible_parking: 'accessibleParking',
                     car_sharing: 'carSharing', shared_bikes: 'sharedBikes', escooter: 'escooter',
@@ -10990,6 +11050,10 @@ export default function AppMap() {
                     return selectedFacility.name || '';
                   })();
 
+                  if (selectedFacility.facility_type === 'consulates') {
+                    return selectedFacility.properties?.office_name || selectedFacility.properties?.name || selectedFacility.name || '領事館';
+                  }
+
                   // 0.4 標題的英文確保統一每個英文字中首個英文字母大階 (如 Heather Street, 13th Ave…)
                   title = formatTitleCase(title);
                   if (selectedFacility.facility_type === 'road_closures') {
@@ -11099,7 +11163,7 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                        {(selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'consulates' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark)) && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
@@ -11151,6 +11215,7 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'van_wifi') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'schools') return selectedFacility.properties?.address || selectedFacility.properties?.street_address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'police') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'consulates') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'fire_halls') return selectedFacility.properties?.geo_local_area || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'fire_hydrants') {
                                 const area = selectedFacility.properties?.geo_local_area || selectedFacility.local_area;
@@ -12524,6 +12589,175 @@ export default function AppMap() {
                   )}
                 </div>
               )}
+
+              {/* Consulates (領事館) Details */}
+              {selectedFacility.facility_type === 'consulates' && (() => {
+                const p = selectedFacility.properties || {};
+                const officeTitle = p.office_name || p.name || selectedFacility.name || '領事館';
+                const headOfPost = p.head_of_post || null;
+                const rank = p.rank || null;
+                const hours = p.hours || null;
+                let servicesList: string[] = [];
+                if (Array.isArray(p.services)) {
+                  servicesList = p.services.filter(Boolean).map(String);
+                } else if (typeof p.services === 'string' && p.services.trim()) {
+                  servicesList = p.services.split(/\r?\n|;/).map((s: string) => s.trim()).filter(Boolean);
+                }
+                const phones: string[] = p.phone
+                  ? String(p.phone).split(/\r?\n|;|,/).map((s: string) => s.trim()).filter(Boolean)
+                  : [];
+                const faxList: string[] = p.fax
+                  ? String(p.fax).split(/\r?\n|;|,/).map((s: string) => s.trim()).filter(Boolean)
+                  : [];
+                const emails: string[] = p.email
+                  ? String(p.email).split(/\r?\n|;|,/).map((s: string) => s.trim()).filter(Boolean)
+                  : [];
+                const social = p.social || null;
+                const website = p.website || null;
+                const factSheetUrl = p.fact_sheet_url || null;
+
+                const hasTopInfo = Boolean(headOfPost || rank || hours || servicesList.length > 0);
+                const hasContactInfo = Boolean(phones.length > 0 || faxList.length > 0 || emails.length > 0 || social);
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {(hasTopInfo || hasContactInfo) && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        {headOfPost && (
+                          <div className="flex justify-between items-start text-gray-600 gap-2">
+                            <span className="shrink-0">館長 / 代表</span>
+                            <span className="text-gray-900 font-medium text-right break-words">
+                              {headOfPost}
+                            </span>
+                          </div>
+                        )}
+
+                        {rank && (
+                          <div className={`flex justify-between items-start text-gray-600 gap-2 ${headOfPost ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span className="shrink-0">職銜</span>
+                            <span className="text-gray-800 font-medium text-right break-words">
+                              {rank}
+                            </span>
+                          </div>
+                        )}
+
+                        {hours && (
+                          <div className={`${(headOfPost || rank) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <FacilityWeeklyHoursSchedule
+                              label="開放時間"
+                              hours={hours}
+                              timeFormat={timeFormat}
+                              theme="blue"
+                            />
+                          </div>
+                        )}
+
+                        {servicesList.length > 0 && (
+                          <div className={`flex flex-col gap-1 ${(headOfPost || rank || hours) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span className="text-gray-600 font-medium">服務</span>
+                            <ul className="flex flex-col gap-0.5 text-gray-800 pl-3 list-disc leading-snug">
+                              {servicesList.map((srv, idx) => (
+                                <li key={idx}>{srv}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {hasTopInfo && hasContactInfo && (
+                          <div className="border-t border-gray-200/80 my-0.5" />
+                        )}
+
+                        {phones.length > 0 && (
+                          <div className="flex justify-between items-start text-gray-600 gap-2">
+                            <span className="shrink-0">聯絡電話</span>
+                            <div className="flex flex-col items-end gap-0.5">
+                              {phones.map((ph, idx) => (
+                                <a
+                                  key={idx}
+                                  href={`tel:${ph.replace(/[^\d+]/g, '')}`}
+                                  className="font-bold text-rose-600 font-mono hover:underline text-right"
+                                >
+                                  {formatPhoneNumber(ph)}
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {faxList.length > 0 && (
+                          <div className={`flex justify-between items-start text-gray-600 gap-2 ${phones.length > 0 ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span className="shrink-0">傳真</span>
+                            <div className="flex flex-col items-end gap-0.5 font-mono text-gray-800 font-medium">
+                              {faxList.map((fx, idx) => (
+                                <span key={idx}>{formatPhoneNumber(fx)}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {emails.length > 0 && (
+                          <div className={`flex justify-between items-start text-gray-600 gap-2 ${(phones.length > 0 || faxList.length > 0) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span className="shrink-0 mt-0.5">電子郵件</span>
+                            <div className="flex flex-col items-end gap-1 min-w-0">
+                              {emails.map((em, idx) => (
+                                <div key={idx} className="flex items-center gap-1.5 min-w-0 justify-end">
+                                  <a
+                                    href={`mailto:${em}`}
+                                    className="text-gray-800 hover:text-indigo-600 font-medium break-all text-right text-[10.5px] leading-tight"
+                                  >
+                                    {em}
+                                  </a>
+                                  <a
+                                    href={`mailto:${em}`}
+                                    className="p-1 rounded bg-white hover:bg-indigo-50 text-indigo-600 border border-gray-200 transition-colors shadow-2xs shrink-0"
+                                    title={`發送郵件至 ${em}`}
+                                  >
+                                    <Mail className="w-3 h-3" />
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {social && (
+                          <div className={`flex justify-between items-center text-gray-600 gap-2 ${(phones.length > 0 || faxList.length > 0 || emails.length > 0) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span className="shrink-0">社交帳號</span>
+                            {String(social).startsWith('http') ? (
+                              <a
+                                href={String(social)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-indigo-600 hover:underline font-medium truncate max-w-[175px]"
+                              >
+                                {String(social)}
+                              </a>
+                            ) : (
+                              <span className="text-gray-800 font-medium truncate max-w-[175px]">{String(social)}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {(website || factSheetUrl) && (
+                      <div className="pt-1 border-t border-gray-100">
+                        <a
+                          href={website || factSheetUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
+                        >
+                          <span className="truncate">
+                            {website ? `前往 ${officeTitle} 官方網頁` : '前往 Global Affairs Canada 資料頁'}
+                          </span>
+                          <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Disaster Support Hubs (災害支援中心 - 海嘯與地震避難集合點) Details */}
               {selectedFacility.facility_type === 'disaster_hubs' && (
