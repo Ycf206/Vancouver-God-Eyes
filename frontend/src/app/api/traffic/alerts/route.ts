@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { getServerBackendUrl } from '@/utils/serverBackend';
 
 export async function GET(request: NextRequest) {
-  const backendUrl = process.env.INTERNAL_BACKEND_URL || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : 'http://backend:8000');
+  const backendUrl = getServerBackendUrl();
   const t = request.nextUrl.searchParams.get('t') || Date.now().toString();
 
   // Try proxying to backend first
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 2000);
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 2000);
     const res = await fetch(`${backendUrl}/api/traffic/alerts?t=${t}`, {
       signal: controller.signal,
       headers: { 'Accept': 'application/json' }
     });
-    clearTimeout(timeout);
     if (res.ok) {
       const data = await res.json();
       if (data && data.features) {
@@ -27,6 +25,8 @@ export async function GET(request: NextRequest) {
     }
   } catch {
     // Backend offline or error
+  } finally {
+    clearTimeout(timeout);
   }
 
   // 無資料或無 API Key 時嚴格回傳空白，絕不使用任何假事故或 Rollback 靜態快取

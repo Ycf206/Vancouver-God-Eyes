@@ -28,14 +28,13 @@ export async function GET(request: Request) {
   ].filter(Boolean) as string[];
 
   for (const bUrl of backendCandidates) {
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 12000);
     try {
-      const controller = new AbortController();
-      const tid = setTimeout(() => controller.abort(), 12000);
       const res = await fetch(`${bUrl}/api/sports/canucks-schedule?season=${season}${isRefresh ? '&refresh=true' : ''}`, {
         signal: controller.signal,
         cache: 'no-store'
       });
-      clearTimeout(tid);
       if (res.ok) {
         const json = await res.json();
         if (json && Array.isArray(json.games) && json.games.length > 0) {
@@ -44,7 +43,9 @@ export async function GET(request: Request) {
           });
         }
       }
-    } catch {}
+    } catch {} finally {
+      clearTimeout(tid);
+    }
   }
 
   // 2. 嘗試讀取本地磁碟快取

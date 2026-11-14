@@ -401,7 +401,7 @@ export default function TopBar() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          setRecentSearches(parsed.slice(0, 8));
+          setRecentSearches(parsed.slice(0, MAX_RECENT_SEARCHES));
         }
       }
     } catch (e) {
@@ -412,7 +412,7 @@ export default function TopBar() {
   const saveRecentSearch = useCallback((target: SearchTarget) => {
     setRecentSearches(prev => {
       const filtered = prev.filter(x => x.id !== target.id);
-      const updated = [target, ...filtered].slice(0, 8);
+      const updated = [target, ...filtered].slice(0, MAX_RECENT_SEARCHES);
       try {
         localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
       } catch (e) {
@@ -1004,7 +1004,7 @@ export default function TopBar() {
 
         {/* 搜尋下拉選單 (Dropdown Results) */}
         {isOpen && query.trim().length > 0 && (
-          <div className="absolute top-[44px] left-0 w-full bg-[#1e2025]/95 backdrop-blur-md border border-[#373a40] rounded-lg shadow-2xl overflow-hidden z-[100] max-h-[500px] max-h-[75vh] flex flex-col">
+          <div className="absolute top-[44px] left-0 w-full bg-[#1e2025]/95 backdrop-blur-md border border-[#373a40] rounded-lg shadow-2xl overflow-hidden z-[100] max-h-[75vh] flex flex-col">
             {/* 分類快速篩選標籤列 */}
             <div className="flex items-center justify-between px-3 py-1.5 border-b border-[#2d2e34] bg-[#191a1e]/90 text-[11px] shrink-0 gap-2 overflow-x-auto [scrollbar-width:none]">
               <div className="flex items-center gap-1 shrink-0">

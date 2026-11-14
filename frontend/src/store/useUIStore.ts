@@ -27,7 +27,6 @@ export interface UIState {
   mapStyleType: MapStyleType;
   setMapStyleType: (type: MapStyleType) => void;
   layers: {
-    traffic: boolean;
     bus: boolean;
     busRoutes: boolean;
     busExchanges: boolean;
@@ -156,16 +155,10 @@ export interface UIState {
   setActiveJobSkillModal: (job: any | null) => void;
   weatherSubTab: 'city' | 'monitoring' | 'models' | 'marine';
   setWeatherSubTab: (subTab: 'city' | 'monitoring' | 'models' | 'marine') => void;
-  isAdminAuthenticated: boolean;
-  setAdminAuthenticated: (auth: boolean) => void;
   fuelLayerAutoEnabled: boolean;
   setFuelLayerAutoEnabled: (val: boolean) => void;
   isSettingsModalOpen: boolean;
   setSettingsModalOpen: (open: boolean) => void;
-  toggleSettingsModal: () => void;
-  isAdminModalOpen: boolean;
-  setAdminModalOpen: (open: boolean) => void;
-  toggleAdminModal: () => void;
   isExploreOpen: boolean;
   isExploreMinimized: boolean;
   setExploreOpen: (open: boolean) => void;
@@ -180,7 +173,6 @@ export interface UIState {
   closeAllExploreTabs: () => void;
   isExportModalOpen: boolean;
   setExportModalOpen: (open: boolean) => void;
-  toggleExportModal: () => void;
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
   disableLayer: (layer: keyof UIState['layers']) => void;
@@ -234,7 +226,6 @@ export interface UIState {
   setSearchTarget: (target: SearchTarget | null) => void;
   isLayerPanelOpen: boolean;
   toggleLayerPanel: () => void;
-  setLayerPanelOpen: (open: boolean) => void;
   isFlightScheduleOpen: boolean;
   toggleFlightSchedule: () => void;
   setFlightScheduleOpen: (open: boolean) => void;
@@ -249,8 +240,6 @@ export interface UIState {
   setPowerOutagesOpen: (open: boolean) => void;
   selectedOutageId: number | string | null;
   setSelectedOutageId: (id: number | string | null) => void;
-  selectedFlightId: string | null;
-  setSelectedFlightId: (id: string | null) => void;
   selectedCrash: { location: string; count: number; lat: number; lon: number } | null;
   setSelectedCrash: (crash: { location: string; count: number; lat: number; lon: number } | null) => void;
   // 11.3 獨立圖層開關: 顯示或隱藏在圖層控制中界面中
@@ -269,6 +258,28 @@ export interface UIState {
 }
 
 
+function applyCoupledTransitLayers(
+  layers: UIState['layers'],
+  layer: keyof UIState['layers'],
+  active: boolean
+): UIState['layers'] {
+  const updated = { ...layers, [layer]: active };
+  if (layer === 'skytrainRoutes' || layer === 'skytrainStops') {
+    updated.skytrainRoutes = active;
+    updated.skytrainStops = active;
+  } else if (layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
+    updated.bcferriesRoutes = active;
+    updated.bcferriesTerminals = active;
+  } else if (layer === 'busRoutes' || layer === 'busStops') {
+    updated.busRoutes = active;
+    updated.busStops = active;
+  } else if (layer === 'seabusRoutes' || layer === 'seabusStops') {
+    updated.seabusRoutes = active;
+    updated.seabusStops = active;
+  }
+  return updated;
+}
+
 export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
@@ -284,7 +295,6 @@ export const useUIStore = create<UIState>()(
           },
         })),
       layers: {
-        traffic: true,
         bus: true,
         busRoutes: true,
         busExchanges: true,
@@ -393,22 +403,15 @@ export const useUIStore = create<UIState>()(
         public_events: '每 30 分鐘',
         vancouver_news: '每 5 分鐘',
         vancouver_311: '每日更新 1 次',
-        tnt_flyers: '每週五更新 1 次',
         crashes: '每月更新 1 次',
       },
       setAdminSourceIntervals: (intervals) => set((state) => ({ adminSourceIntervals: { ...state.adminSourceIntervals, ...intervals } })),
       weatherSubTab: 'city',
       setWeatherSubTab: (subTab) => set({ weatherSubTab: subTab }),
-      isAdminAuthenticated: false,
-      setAdminAuthenticated: (auth) => set({ isAdminAuthenticated: auth }),
       fuelLayerAutoEnabled: false,
       setFuelLayerAutoEnabled: (val) => set({ fuelLayerAutoEnabled: val }),
       isSettingsModalOpen: false,
       setSettingsModalOpen: (open) => set({ isSettingsModalOpen: open }),
-      toggleSettingsModal: () => set((state) => ({ isSettingsModalOpen: !state.isSettingsModalOpen })),
-      isAdminModalOpen: false,
-      setAdminModalOpen: (open) => set({ isAdminModalOpen: open }),
-      toggleAdminModal: () => set((state) => ({ isAdminModalOpen: !state.isAdminModalOpen })),
       isExploreOpen: false,
       isExploreMinimized: false,
       setExploreOpen: (open) => set({ isExploreOpen: open, isExploreMinimized: false }),
@@ -501,7 +504,6 @@ export const useUIStore = create<UIState>()(
       }),
       isExportModalOpen: false,
       setExportModalOpen: (open) => set({ isExportModalOpen: open }),
-      toggleExportModal: () => set((state) => ({ isExportModalOpen: !state.isExportModalOpen })),
       toggleLayer: (layer) =>
         set((state) => {
           if (state.disabledLayers && state.disabledLayers[layer]) {
@@ -538,72 +540,20 @@ export const useUIStore = create<UIState>()(
               nextSearchTarget = null;
             }
           }
-          const updatedLayers = {
-            ...state.layers,
-            [layer]: nextActive,
-          };
-          if (layer === 'skytrainRoutes' || layer === 'skytrainStops') {
-            updatedLayers.skytrainRoutes = nextActive;
-            updatedLayers.skytrainStops = nextActive;
-          } else if (layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
-            updatedLayers.bcferriesRoutes = nextActive;
-            updatedLayers.bcferriesTerminals = nextActive;
-          } else if (layer === 'busRoutes' || layer === 'busStops') {
-            updatedLayers.busRoutes = nextActive;
-            updatedLayers.busStops = nextActive;
-          } else if (layer === 'seabusRoutes' || layer === 'seabusStops') {
-            updatedLayers.seabusRoutes = nextActive;
-            updatedLayers.seabusStops = nextActive;
-          }
+          const updatedLayers = applyCoupledTransitLayers(state.layers, layer, nextActive);
           return {
             layers: updatedLayers,
             searchTarget: nextSearchTarget,
           };
         }),
       enableLayer: (layer: keyof UIState['layers']) =>
-        set((state) => {
-          const updatedLayers = {
-            ...state.layers,
-            [layer]: true,
-          };
-          if (layer === 'skytrainRoutes' || layer === 'skytrainStops') {
-            updatedLayers.skytrainRoutes = true;
-            updatedLayers.skytrainStops = true;
-          } else if (layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
-            updatedLayers.bcferriesRoutes = true;
-            updatedLayers.bcferriesTerminals = true;
-          } else if (layer === 'busRoutes' || layer === 'busStops') {
-            updatedLayers.busRoutes = true;
-            updatedLayers.busStops = true;
-          } else if (layer === 'seabusRoutes' || layer === 'seabusStops') {
-            updatedLayers.seabusRoutes = true;
-            updatedLayers.seabusStops = true;
-          }
-          return {
-            layers: updatedLayers,
-          };
-        }),
+        set((state) => ({
+          layers: applyCoupledTransitLayers(state.layers, layer, true),
+        })),
       disableLayer: (layer: keyof UIState['layers']) =>
-        set((state) => {
-          const updatedLayers = {
-            ...state.layers,
-            [layer]: false,
-          };
-          if (layer === 'skytrainRoutes' || layer === 'skytrainStops') {
-            updatedLayers.skytrainRoutes = false;
-            updatedLayers.skytrainStops = false;
-          } else if (layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
-            updatedLayers.bcferriesRoutes = false;
-            updatedLayers.bcferriesTerminals = false;
-          } else if (layer === 'busRoutes' || layer === 'busStops') {
-            updatedLayers.busRoutes = false;
-            updatedLayers.busStops = false;
-          } else if (layer === 'seabusRoutes' || layer === 'seabusStops') {
-            updatedLayers.seabusRoutes = false;
-            updatedLayers.seabusStops = false;
-          }
-          return { layers: updatedLayers };
-        }),
+        set((state) => ({
+          layers: applyCoupledTransitLayers(state.layers, layer, false),
+        })),
       resetAllLayers: () =>
         set((state) => {
           const allFalseLayers = Object.keys(state.layers).reduce((acc, k) => {
@@ -614,6 +564,8 @@ export const useUIStore = create<UIState>()(
             layers: allFalseLayers,
             contourInterval: 'off',
             searchTarget: null,
+            isPowerOutagesOpen: false,
+            selectedOutageId: null,
             parkingMeterFilter: {
               maxRate: 20,
               creditCardOnly: false,
@@ -706,20 +658,7 @@ export const useUIStore = create<UIState>()(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updates: any = { searchTarget: target };
         if (target === null && state.autoEnabledSearchLayer) {
-          const restored = { ...state.layers, [state.autoEnabledSearchLayer]: false };
-          if (state.autoEnabledSearchLayer === 'skytrainRoutes' || state.autoEnabledSearchLayer === 'skytrainStops') {
-            restored.skytrainRoutes = false;
-            restored.skytrainStops = false;
-          } else if (state.autoEnabledSearchLayer === 'bcferriesRoutes' || state.autoEnabledSearchLayer === 'bcferriesTerminals') {
-            restored.bcferriesRoutes = false;
-            restored.bcferriesTerminals = false;
-          } else if (state.autoEnabledSearchLayer === 'busRoutes' || state.autoEnabledSearchLayer === 'busStops') {
-            restored.busRoutes = false;
-            restored.busStops = false;
-          } else if (state.autoEnabledSearchLayer === 'seabusRoutes' || state.autoEnabledSearchLayer === 'seabusStops') {
-            restored.seabusRoutes = false;
-            restored.seabusStops = false;
-          }
+          const restored = applyCoupledTransitLayers(state.layers, state.autoEnabledSearchLayer, false);
           updates.layers = restored;
           updates.autoEnabledSearchLayer = null;
         }
@@ -727,7 +666,6 @@ export const useUIStore = create<UIState>()(
       }),
       isLayerPanelOpen: true,
       toggleLayerPanel: () => set((state) => ({ isLayerPanelOpen: !state.isLayerPanelOpen })),
-      setLayerPanelOpen: (open) => set({ isLayerPanelOpen: open }),
       isFlightScheduleOpen: false,
       toggleFlightSchedule: () => set((state) => ({ isFlightScheduleOpen: !state.isFlightScheduleOpen })),
       setFlightScheduleOpen: (open) => set({ isFlightScheduleOpen: open }),
@@ -742,8 +680,6 @@ export const useUIStore = create<UIState>()(
       setPowerOutagesOpen: (open) => set({ isPowerOutagesOpen: open }),
       selectedOutageId: null,
       setSelectedOutageId: (id) => set({ selectedOutageId: id }),
-      selectedFlightId: null,
-      setSelectedFlightId: (id) => set({ selectedFlightId: id }),
       selectedCrash: null,
       setSelectedCrash: (crash) => set({ selectedCrash: crash }),
       hiddenLayersInPanel: {},

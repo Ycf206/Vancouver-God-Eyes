@@ -189,7 +189,7 @@ FILENAME_TO_SOURCE_ID = {
     "vancouver_traffic_signals.geojson": "traffic_signals",
     "vancouver_traffic_turn_restrictions.geojson": "turn_restrictions",
     "vancouver_311.json": "service_requests_311",
-    "tnt_eflyers.json": "tnt_eflyers",
+    "vancouver_consulates.geojson": "consulates",
     "vancouver_railways.geojson": "vancouver_railways",
     "vancouver_fedex.geojson": "fedex",
     "vancouver_purolator.geojson": "purolator",
@@ -286,14 +286,26 @@ def save_layer_geojson(filename, data_or_features, is_feature_list=True):
             if "total_count" not in fc and "features" in fc:
                 fc["total_count"] = len(fc["features"])
 
+    def _atomic_write_json(target_path, payload):
+        import tempfile
+        target_dir = os.path.dirname(target_path)
+        os.makedirs(target_dir, exist_ok=True)
+        fd, tmp_path = tempfile.mkstemp(dir=target_dir, prefix=".layer_", suffix=".tmp")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2)
+            os.replace(tmp_path, target_path)
+        except Exception:
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+            raise
+
     backend_path = os.path.join(BACKEND_DATA_DIR, filename)
-    with open(backend_path, "w", encoding="utf-8") as f:
-        json.dump(fc, f, ensure_ascii=False, indent=2)
+    _atomic_write_json(backend_path, fc)
 
     if os.path.exists(FRONTEND_DATA_DIR):
         frontend_path = os.path.join(FRONTEND_DATA_DIR, filename)
-        with open(frontend_path, "w", encoding="utf-8") as f:
-            json.dump(fc, f, ensure_ascii=False, indent=2)
+        _atomic_write_json(frontend_path, fc)
 
     feat_count = len(fc.get("features", [])) if isinstance(fc, dict) else len(data_or_features)
     source_id = FILENAME_TO_SOURCE_ID.get(filename)
@@ -316,6 +328,25 @@ def load_existing_geojson(filename):
                 pass
     return None
 
+def _extract_lon_lat(geom):
+    """Extracts a representative (lon, lat) point from Point, LineString, MultiLineString, Polygon, or MultiPolygon."""
+    gtype = (geom or {}).get("type", "")
+    coords = (geom or {}).get("coordinates", [])
+    pt = None
+    if gtype == "Point":
+        pt = coords
+    elif gtype in ("LineString", "MultiPoint") and coords:
+        pt = coords[0]
+    elif gtype in ("MultiLineString", "Polygon") and coords and coords[0]:
+        pt = coords[0][0]
+    elif gtype == "MultiPolygon" and coords and coords[0] and coords[0][0]:
+        pt = coords[0][0][0]
+    elif isinstance(coords, (list, tuple)) and len(coords) >= 2 and isinstance(coords[0], (int, float)):
+        pt = coords
+    if isinstance(pt, (list, tuple)) and len(pt) >= 2 and isinstance(pt[0], (int, float)) and isinstance(pt[1], (int, float)):
+        return float(pt[0]), float(pt[1])
+    return None, None
+
 def sync_facility_to_db(facility_type, features):
     """Optional helper to sync road facilities into database if database module is loaded."""
     try:
@@ -326,14 +357,18 @@ def sync_facility_to_db(facility_type, features):
         db = database.SessionLocal()
         try:
             db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
-            for feat in features:
+            seen_ids = set()
+            for idx, feat in enumerate(features):
                 props = feat.get("properties", {})
-                coords = feat.get("geometry", {}).get("coordinates", [])
-                if len(coords) < 2:
+                lon, lat = _extract_lon_lat(feat.get("geometry"))
+                if lon is None or lat is None:
                     continue
-                lon, lat = coords[0], coords[1]
+                fid = str(feat.get("id") or props.get("id") or f"{facility_type}_{idx}")
+                if fid in seen_ids:
+                    continue
+                seen_ids.add(fid)
                 fac = models.RoadFacility(
-                    id=str(feat.get("id") or props.get("id")),
+                    id=fid,
                     facility_type=facility_type,
                     name=props.get("name", "Unknown"),
                     local_area=props.get("local_area") or "",
@@ -345,7 +380,7 @@ def sync_facility_to_db(facility_type, features):
                 )
                 db.add(fac)
             db.commit()
-            print(f"🗄️ 已同步至資料庫 road_facilities [{facility_type}]")
+            print(f"🗄️ 已同步至資料庫 road_facilities [{facility_type}] ({len(seen_ids)} 筆)")
         finally:
             db.close()
     except Exception:

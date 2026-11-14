@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
     if (body.PageSize !== undefined) {
       const parsedSize = Number(body.PageSize);
-      body.PageSize = Number.isFinite(parsedSize) ? Math.min(Math.max(Math.trunc(parsedSize), 1), 50) : 20;
+      body.PageSize = Number.isFinite(parsedSize) ? Math.min(Math.max(Math.trunc(parsedSize), 1), 100) : 20;
     }
     if (body.Page !== undefined) {
       const parsedPage = Number(body.Page);

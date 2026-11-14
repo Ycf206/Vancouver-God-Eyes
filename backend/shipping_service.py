@@ -1110,36 +1110,47 @@ class MaritimeShippingService:
         elapsed = min(elapsed, 10.0)
 
         with self._vessels_lock:
-            vessel_items = list(self.vessels.items())
+            snapshot = [
+                (
+                    mmsi,
+                    v.get("waypoints"),
+                    float(v.get("sog", 0.0)),
+                    v.get("path_length_meters"),
+                    float(v.get("progress", 0.0)),
+                )
+                for mmsi, v in self.vessels.items()
+                if not v.get("is_live_ais") and v.get("waypoints") and v.get("sog", 0.0) > 0.2
+            ]
 
-        for mmsi, v in vessel_items:
-            if v.get("is_live_ais"):
-                continue  # 真實 AIS 數據不介入模擬
-
-            waypoints = v.get("waypoints")
-            if not waypoints:
-                continue
-
-            sog = v.get("sog", 0.0)
-            if sog <= 0.2:
-                continue
-
+        updates = []
+        now_iso = datetime.now(timezone.utc).isoformat()
+        for mmsi, waypoints, sog, cached_len, current_p in snapshot:
             # 依真實海浬時速換算移動距離 (1 節 ≈ 0.5144 公尺/秒)
             dist_meters = sog * 0.5144 * elapsed
-            path_len = v.get("path_length_meters") or get_path_length_meters(waypoints)
+            path_len = cached_len or get_path_length_meters(waypoints)
             delta_p = dist_meters / path_len
-
-            current_p = v.get("progress", 0.0)
             next_p = (current_p + delta_p) % 1.0
-            v["progress"] = next_p
 
             # 沿深水航道精確內插座標與真航向
             lon, lat, bearing = interpolate_along_path(waypoints, next_p)
-            v["lon"] = round(lon, 5)
-            v["lat"] = round(lat, 5)
-            v["cog"] = round(bearing, 1)
-            v["heading"] = round(bearing, 1)
-            v["updated_at"] = datetime.now(timezone.utc).isoformat()
+            updates.append((
+                mmsi,
+                {
+                    "progress": next_p,
+                    "lon": round(lon, 5),
+                    "lat": round(lat, 5),
+                    "cog": round(bearing, 1),
+                    "heading": round(bearing, 1),
+                    "updated_at": now_iso,
+                },
+            ))
+
+        if updates:
+            with self._vessels_lock:
+                for mmsi, patch in updates:
+                    v = self.vessels.get(mmsi)
+                    if v and not v.get("is_live_ais"):
+                        v.update(patch)
 
     def handle_ais_message(self, raw_json: str):
         """
@@ -1154,29 +1165,26 @@ class MaritimeShippingService:
             if not mmsi:
                 return
 
-            vessel = self.vessels.get(mmsi, {
-                "mmsi": mmsi,
-                "name": meta.get("ShipName", "").strip() or f"MMSI {mmsi}",
-                "lat": meta.get("latitude", 0.0),
-                "lon": meta.get("longitude", 0.0),
-                "sog": 0.0,
-                "cog": 0.0,
-                "heading": 0.0,
-                "nav_status": "航行中",
-                "ship_type": "商務船隻",
-                "type_group": "cargo",
-                "length": 150,
-                "width": 25,
-                "draft": 8.0,
-                "destination": "VANCOUVER",
-                "source": "Aisstream.io (即時 AIS 串流)",
-                "is_live_ais": True
-            })
-
-            vessel["is_live_ais"] = True
-            vessel["source"] = "Aisstream.io (即時 AIS 串流)"
-            if meta.get("ShipName"):
-                vessel["name"] = meta["ShipName"].strip()
+            with self._vessels_lock:
+                existing = self.vessels.get(mmsi)
+                vessel = dict(existing) if existing else {
+                    "mmsi": mmsi,
+                    "name": meta.get("ShipName", "").strip() or f"MMSI {mmsi}",
+                    "lat": meta.get("latitude", 0.0),
+                    "lon": meta.get("longitude", 0.0),
+                    "sog": 0.0,
+                    "cog": 0.0,
+                    "heading": 0.0,
+                    "nav_status": "航行中",
+                    "ship_type": "商務船隻",
+                    "type_group": "cargo",
+                    "length": 150,
+                    "width": 25,
+                    "draft": 8.0,
+                    "destination": "VANCOUVER",
+                    "source": "Aisstream.io (即時 AIS 串流)",
+                    "is_live_ais": True
+                }
 
             if msg_type == "PositionReport":
                 pos = msg.get("Message", {}).get("PositionReport", {})
@@ -1215,6 +1223,10 @@ class MaritimeShippingService:
                 vessel["length"] = length
                 vessel["width"] = width
 
+            vessel["is_live_ais"] = True
+            vessel["source"] = "Aisstream.io (即時 AIS 串流)"
+            if meta.get("ShipName"):
+                vessel["name"] = meta["ShipName"].strip()
             vessel["updated_at"] = datetime.now(timezone.utc).isoformat()
             vessel["_ts"] = time.time()
             with self._vessels_lock:

@@ -26,14 +26,13 @@ export async function GET(request: Request) {
   ].filter(Boolean) as string[];
 
   for (const bUrl of backendCandidates) {
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 12000);
     try {
-      const controller = new AbortController();
-      const tid = setTimeout(() => controller.abort(), 12000);
       const res = await fetch(`${bUrl}/api/sports/bandits-schedule?year=${targetYear}${isRefresh ? '&refresh=true' : ''}`, {
         signal: controller.signal,
         cache: 'no-store'
       });
-      clearTimeout(tid);
       if (res.ok) {
         const json = await res.json();
         if (json && Array.isArray(json.games) && json.games.length > 0) {
@@ -42,7 +41,9 @@ export async function GET(request: Request) {
           });
         }
       }
-    } catch {}
+    } catch {} finally {
+      clearTimeout(tid);
+    }
   }
 
   // 2. 嘗試讀取本地磁碟快取
@@ -67,10 +68,10 @@ export async function GET(request: Request) {
   }
 
   // 3. 連線官方真實 CEBL API
+  const controller = new AbortController();
+  const tid = setTimeout(() => controller.abort(), 12000);
   try {
     const apiUrl = `https://api.data.cebl.ca/games/${targetYear}/?team_id=16`;
-    const controller = new AbortController();
-    const tid = setTimeout(() => controller.abort(), 12000);
     const res = await fetch(apiUrl, {
       signal: controller.signal,
       headers: {
@@ -81,7 +82,6 @@ export async function GET(request: Request) {
       },
       next: { revalidate: 86400 }
     });
-    clearTimeout(tid);
     if (res.ok) {
       const games = await res.json();
       const payload = {
@@ -97,7 +97,9 @@ export async function GET(request: Request) {
         headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=600' }
       });
     }
-  } catch {}
+  } catch {} finally {
+    clearTimeout(tid);
+  }
 
   return NextResponse.json({
     success: false,

@@ -26,32 +26,6 @@ export interface AdminSourceItem {
 
 export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   {
-    "id": "yvr_flights",
-    "name": "溫哥華國際機場 (YVR) 官方航班與停車即時資料",
-    "type": "api",
-    "cron_expr": "* * * * *",
-    "schedule_interval": "每 1 分鐘",
-    "record_count": 149,
-    "unit": "架起降航班與即時車位",
-    "last_updated": "2026-11-06T20:45:00Z",
-    "status": "healthy",
-    "data_pipeline_notes": "YVR 官方 Flights OData API (抵達與出發) + ParkadeCapacity 即時車位 API -> 動態日期參數計算 -> 結合各大機場飛行時程矩陣推算起降時點 -> 自動去重整合 -> 地圖航線動態繪製與航班看板展示",
-    "runner": "oci",
-    "category": "交通",
-    "workflow_file": null,
-    "source_links": [
-      {
-        "label": "YVR 官方抵達航班 API",
-        "url": "https://www.yvr.ca/en/_api/Flights"
-      },
-      {
-        "label": "YVR 官方停車位容量 API",
-        "url": "https://www.yvr.ca/_api/ParkadeCapacity"
-      }
-    ],
-    "source_url": "https://www.yvr.ca/en/_api/Flights"
-  },
-  {
     "id": "traffic_conditions",
     "name": "路況",
     "type": "api",

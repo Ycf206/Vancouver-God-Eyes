@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getServerBackendUrl } from '@/utils/serverBackend';
 import fs from 'fs';
 import path from 'path';
 
@@ -45,6 +46,7 @@ export async function GET(request: Request) {
     try {
       const candidatePaths = [
         path.join(process.cwd(), 'public', 'yvr_indoor_pois.json'),
+        path.join(process.cwd(), 'frontend', 'public', 'yvr_indoor_pois.json'),
         path.join(process.cwd(), '..', 'backend', 'data', 'yvr_indoor_pois.json'),
         path.join(process.cwd(), 'backend', 'data', 'yvr_indoor_pois.json'),
       ];
@@ -65,7 +67,7 @@ export async function GET(request: Request) {
   }
 
   // 2. 嘗試由 OCI Backend 取得或即時解析 map.yvr.ca
-  const backendBase = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://127.0.0.1:8000';
+  const backendBase = getServerBackendUrl();
   try {
     const res = await fetch(`${backendBase}/api/yvr/indoor-pois${refresh ? '?refresh=true' : ''}`, {
       signal: AbortSignal.timeout(12000),

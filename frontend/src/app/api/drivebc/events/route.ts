@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { getServerBackendUrl } from '@/utils/serverBackend';
 
 export const dynamic = 'force-dynamic';
-
-function getApiUrl(): string {
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -15,8 +12,8 @@ export async function GET(request: NextRequest) {
   // 1. 若使用者要求強制手動刷新，優先向後端 OCI FastAPI 請求即時抓取最新 Drive BC 事件
   if (isRefresh) {
     try {
-      const backendUrl = `${getApiUrl()}/api/drivebc/events?force=true`;
-      const res = await fetch(backendUrl, { cache: 'no-store' });
+      const backendUrl = `${getServerBackendUrl()}/api/drivebc/events?force=true`;
+      const res = await fetch(backendUrl, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
       if (res.ok) {
         const data = await res.json();
         return NextResponse.json(data);
@@ -29,6 +26,7 @@ export async function GET(request: NextRequest) {
   // 2. 本地磁碟原子快取 (0ms 極速無卡頓)
   const candidatePaths = [
     path.join(process.cwd(), 'public', 'vancouver_drivebc_events.json'),
+    path.join(process.cwd(), 'frontend', 'public', 'vancouver_drivebc_events.json'),
     path.join(process.cwd(), '..', 'backend', 'data', 'vancouver_drivebc_events.json'),
     path.join(process.cwd(), 'backend', 'data', 'vancouver_drivebc_events.json')
   ];
@@ -53,8 +51,8 @@ export async function GET(request: NextRequest) {
 
   // 3. 嘗試一般代理後端 OCI
   try {
-    const backendUrl = `${getApiUrl()}/api/drivebc/events`;
-    const res = await fetch(backendUrl, { cache: 'no-store' });
+    const backendUrl = `${getServerBackendUrl()}/api/drivebc/events`;
+    const res = await fetch(backendUrl, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
     if (res.ok) {
       const data = await res.json();
       return NextResponse.json(data);

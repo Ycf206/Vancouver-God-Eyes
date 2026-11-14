@@ -208,7 +208,6 @@ def refresh_bchydro_outages(outage_type: str = "all") -> int:
 
 def refresh_yvr_indoor() -> int:
     """每日 1 次刷新 YVR 機場內部地圖設施與樓層資訊 (經 map.yvr.ca 動態解析 LocusLabs pois-3.0-yvr.json)."""
-    file_path = os.path.join(DATA_DIR, "yvr_indoor_pois.json")
     try:
         from scripts.layers.update_yvr_indoor import fetch_and_save_yvr_indoor
         cnt = fetch_and_save_yvr_indoor()
@@ -261,7 +260,8 @@ async def run_dynamic_layers_background_loop():
 
     last_bike_time = time.time()
     last_scooter_time = time.time()
-    last_monthly_stations_time = time.time()
+    last_monthly_bikes_time = time.time()
+    last_monthly_scooter_time = time.time()
     last_311_time = time.time()
     last_food_time = time.time()
     last_bchydro_time = time.time()
@@ -275,8 +275,9 @@ async def run_dynamic_layers_background_loop():
             # 1. 共享單車 (每 3600 秒更新即時車位；每 30 天自動觸發全量站點位置與名稱同步)
             if now - last_bike_time >= 3600:
                 last_bike_time = now
-                need_monthly_bikes = (now - last_monthly_stations_time >= 30 * 86400)
+                need_monthly_bikes = (now - last_monthly_bikes_time >= 30 * 86400)
                 if need_monthly_bikes:
+                    last_monthly_bikes_time = now
                     print("🚲 [Dynamic Layers] 觸發排程: Mobi 共享單車每月全量站點同步 (full=True)...")
                     await loop.run_in_executor(None, refresh_shared_bikes, True)
                 else:
@@ -286,9 +287,9 @@ async def run_dynamic_layers_background_loop():
             # 2. 共享滑板車 (每 3600 秒更新即時可用車況；每 30 天自動觸發全量站點位置與名稱同步)
             if now - last_scooter_time >= 3600:
                 last_scooter_time = now
-                need_monthly_scooter = (now - last_monthly_stations_time >= 30 * 86400)
+                need_monthly_scooter = (now - last_monthly_scooter_time >= 30 * 86400)
                 if need_monthly_scooter:
-                    last_monthly_stations_time = now
+                    last_monthly_scooter_time = now
                     print("🛴 [Dynamic Layers] 觸發排程: Lime 共享滑板車每月全量站點同步 (full=True)...")
                     await loop.run_in_executor(None, refresh_escooter, True)
                 else:

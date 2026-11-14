@@ -50,11 +50,14 @@ LAYERS_MAP = {
     "turn_restrictions": "update_traffic_turn_restrictions",
     "service_requests_311": "update_311",
     "vancouver_311": "update_311",
-    "tnt_eflyers": "update_tnt_eflyers",
+    "consulates": "update_consulates",
     "vancouver_railways": "update_railways",
     "fedex": "update_fedex",
     "purolator": "update_purolator",
     "vancouver_crashes": "update_crashes",
+    "yvr_indoor": "update_yvr_indoor",
+    "yvr_flights": "update_yvr_flights",
+    "bchydro_outages": "update_bchydro_outages",
 }
 
 def run_layer(layer_id):
@@ -78,10 +81,11 @@ def run_layer(layer_id):
         return False
 
 def main():
+    total_layers = len(LAYERS_MAP)
     parser = argparse.ArgumentParser(description="Vancouver God's Eye Layer Synchronization Engine")
     parser.add_argument("--layer", type=str, help="指定要同步更新的單一圖層 ID")
-    parser.add_argument("--list", action="store_true", help="列出所有可用的 33 個圖層")
-    parser.add_argument("--all", action="store_true", help="依序執行所有 33 個圖層同步")
+    parser.add_argument("--list", action="store_true", help=f"列出所有可用的 {total_layers} 個圖層")
+    parser.add_argument("--all", action="store_true", help=f"依序執行所有 {total_layers} 個圖層同步")
 
     args = parser.parse_args()
 
@@ -91,7 +95,7 @@ def main():
         sys.path.insert(0, curr_dir)
 
     if args.list:
-        print("🗺️ 支援獨立同步的 33 個 Open Data / GIS 圖層清單:")
+        print(f"🗺️ 支援獨立同步的 {total_layers} 個 Open Data / GIS 圖層清單:")
         for idx, k in enumerate(sorted(LAYERS_MAP.keys()), 1):
             print(f"  {idx:2d}. {k}")
         return
@@ -101,7 +105,7 @@ def main():
         sys.exit(0 if success else 1)
 
     if args.all:
-        print("🚀 開始依序更新全部 33 個獨立圖層...")
+        print(f"🚀 開始依序更新全部 {total_layers} 個獨立圖層...")
         for k in sorted(LAYERS_MAP.keys()):
             run_layer(k)
         print("🎉 全部圖層同步執行完畢！")

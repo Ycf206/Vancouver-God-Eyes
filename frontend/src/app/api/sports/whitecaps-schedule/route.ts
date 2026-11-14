@@ -34,14 +34,13 @@ export async function GET(request: Request) {
   ].filter(Boolean) as string[];
 
   for (const bUrl of backendCandidates) {
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 12000);
     try {
-      const controller = new AbortController();
-      const tid = setTimeout(() => controller.abort(), 12000);
       const res = await fetch(`${bUrl}/api/sports/whitecaps-schedule?year=${targetYear}${isRefresh ? '&refresh=true' : ''}`, {
         signal: controller.signal,
         cache: 'no-store'
       });
-      clearTimeout(tid);
       if (res.ok) {
         const json = await res.json();
         if (json && Array.isArray(json.matches) && json.matches.length > 0) {
@@ -50,7 +49,9 @@ export async function GET(request: Request) {
           });
         }
       }
-    } catch {}
+    } catch {} finally {
+      clearTimeout(tid);
+    }
   }
 
   // 2. 嘗試讀取本地磁碟快取
@@ -75,11 +76,11 @@ export async function GET(request: Request) {
   }
 
   // 3. 連線官方真實 MLS stats API
+  const controller = new AbortController();
+  const tid = setTimeout(() => controller.abort(), 12000);
   try {
     const seasonId = MLS_SEASON_IDS[targetYear] || 'MLS-SEA-0001KA';
     const apiUrl = `https://stats-api.mlssoccer.com/matches/seasons/${seasonId}?match_date[gte]=${targetYear}-01-01&match_date[lte]=${targetYear}-12-31&team_id=MLS-CLU-00000C&per_page=120&sort=planned_kickoff_time:asc,home_team_name:asc`;
-    const controller = new AbortController();
-    const tid = setTimeout(() => controller.abort(), 12000);
     const res = await fetch(apiUrl, {
       signal: controller.signal,
       headers: {
@@ -88,24 +89,25 @@ export async function GET(request: Request) {
       },
       next: { revalidate: 86400 }
     });
-    clearTimeout(tid);
-    if (res.ok) {
-      const data = await res.json();
-      const matches = data.schedule || [];
-      const payload = {
-        success: true,
-        season: targetYear,
-        season_id: seasonId,
-        source_url: apiUrl,
-        updated_at: new Date().toISOString(),
-        totalMatches: matches.length,
-        matches
-      };
-      return NextResponse.json(payload, {
-        headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=600' }
-      });
+      if (res.ok) {
+        const data = await res.json();
+        const matches = data.schedule || [];
+        const payload = {
+          success: true,
+          season: targetYear,
+          season_id: seasonId,
+          source_url: apiUrl,
+          updated_at: new Date().toISOString(),
+          totalMatches: matches.length,
+          matches
+        };
+        return NextResponse.json(payload, {
+          headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=600' }
+        });
+      }
+    } catch {} finally {
+      clearTimeout(tid);
     }
-  } catch {}
 
   return NextResponse.json({
     success: false,

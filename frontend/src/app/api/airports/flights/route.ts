@@ -121,18 +121,19 @@ async function fetchYvrDirectLeg(url: string, referer: string): Promise<any[]> {
   };
 
   // 1. Native fetch
+  const controller = new AbortController();
+  const tid = setTimeout(() => controller.abort(), 18000);
   try {
-    const controller = new AbortController();
-    const tid = setTimeout(() => controller.abort(), 18000);
     const res = await fetch(url, { headers: reqHeaders, cache: 'no-store', signal: controller.signal });
-    clearTimeout(tid);
     if (res.ok) {
       const json = await res.json();
       if (Array.isArray(json?.value) && json.value.length > 0) {
         return json.value;
       }
     }
-  } catch {}
+  } catch {} finally {
+    clearTimeout(tid);
+  }
 
   // 2. Cross-platform curl fallback
   try {
@@ -184,14 +185,13 @@ export async function GET(request: Request) {
   );
 
   for (const backendUrl of backendCandidates) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 25000);
       const backendEndpoint = isRefresh
         ? `${backendUrl}/api/airports/flights?refresh=true&_t=${now}`
         : `${backendUrl}/api/airports/flights?_t=${now}`;
       const bRes = await fetch(backendEndpoint, { cache: 'no-store', signal: controller.signal });
-      clearTimeout(timeoutId);
       if (bRes.ok) {
         const bJson = await bRes.json();
         const arr = sanitizeAndSortFlights(bJson?.arrivals || [], todayStr);
@@ -209,7 +209,9 @@ export async function GET(request: Request) {
           return NextResponse.json(cachedFlights, { headers: NO_CACHE_HEADERS });
         }
       }
-    } catch {}
+    } catch {} finally {
+      clearTimeout(timeoutId);
+    }
   }
 
   // 2. Check fresh same-day disk cache if not forced refresh

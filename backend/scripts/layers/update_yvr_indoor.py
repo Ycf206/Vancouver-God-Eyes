@@ -389,6 +389,10 @@ def fetch_and_save_yvr_indoor() -> int:
     return len(pois_list)
 
 
+def update_yvr_indoor():
+    return fetch_and_save_yvr_indoor()
+
+
 if __name__ == "__main__":
     start_ts = time.time()
     count = fetch_and_save_yvr_indoor()

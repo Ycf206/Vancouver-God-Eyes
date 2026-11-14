@@ -6,8 +6,7 @@ import path from 'path';
 
 const execFileAsync = promisify(execFile);
 
-let inMemoryCache: any = null;
-let lastCacheTime = 0;
+const inMemoryCacheMap = new Map<string, { data: any; ts: number }>();
 
 function resolvePublicDataPath(filename: string) {
   const cwd = process.cwd();
@@ -70,12 +69,17 @@ function loadDiskCache(airportId = 'CYVR') {
 }
 
 export async function GET(request: NextRequest) {
-  const airportId = request.nextUrl.searchParams.get('airportId') || request.nextUrl.searchParams.get('airport_id') || 'CYVR';
+  const rawAirportId = request.nextUrl.searchParams.get('airportId') || request.nextUrl.searchParams.get('airport_id') || 'CYVR';
+  const airportId = rawAirportId.trim().toUpperCase();
+  if (!/^[A-Z0-9]{3,5}$/.test(airportId)) {
+    return NextResponse.json({ success: false, error: 'Invalid airportId' }, { status: 400 });
+  }
   const now = Date.now();
 
-  // 1. In-memory cache valid for 50s
-  if (inMemoryCache && (now - lastCacheTime < 50000)) {
-    return NextResponse.json(inMemoryCache, {
+  // 1. In-memory cache valid for 50s (keyed per airportId)
+  const memEntry = inMemoryCacheMap.get(airportId);
+  if (memEntry && (now - memEntry.ts < 50000)) {
+    return NextResponse.json(memEntry.data, {
       headers: { 'Cache-Control': 'public, max-age=50, stale-while-revalidate=120' }
     });
   }
@@ -95,15 +99,16 @@ export async function GET(request: NextRequest) {
       const parsed = JSON.parse(stdout.trim());
       const normalized = normalizeSummaryData(parsed, airportId);
 
-      inMemoryCache = normalized;
-      lastCacheTime = now;
+      inMemoryCacheMap.set(airportId, { data: normalized, ts: now });
 
-      // Update disk cache asynchronously
-      const savePath = resolvePublicDataPath('yvr_weathercams_summary.json');
-      try {
-        fs.mkdirSync(path.dirname(savePath), { recursive: true });
-        fs.writeFileSync(savePath, JSON.stringify(normalized, null, 2), 'utf-8');
-      } catch {}
+      // Update disk cache asynchronously (only for CYVR primary airport)
+      if (airportId === 'CYVR') {
+        const savePath = resolvePublicDataPath('yvr_weathercams_summary.json');
+        try {
+          fs.mkdirSync(path.dirname(savePath), { recursive: true });
+          fs.writeFileSync(savePath, JSON.stringify(normalized, null, 2), 'utf-8');
+        } catch {}
+      }
 
       return NextResponse.json(normalized, {
         headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=120' }
@@ -113,11 +118,10 @@ export async function GET(request: NextRequest) {
     console.warn(`[Next API /api/airports/summary] Live fetch failed, trying disk cache:`, err);
   }
 
-  // 3. Fallback to Disk Cache
-  const diskData = loadDiskCache(airportId);
+  // 3. Fallback to Disk Cache (only valid for CYVR primary airport)
+  const diskData = airportId === 'CYVR' ? loadDiskCache(airportId) : null;
   if (diskData) {
-    inMemoryCache = diskData;
-    lastCacheTime = now;
+    inMemoryCacheMap.set(airportId, { data: diskData, ts: now });
     return NextResponse.json(diskData, {
       headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=120' }
     });

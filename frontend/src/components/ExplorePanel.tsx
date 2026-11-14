@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
 import { Landmark, 
   Compass, X, Fuel, Zap, Ship, MapPin, ArrowUpDown, 
   ChevronDown, ChevronUp, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
@@ -1589,7 +1588,14 @@ function ExploreContent() {
     setFilterExcludePlacementAgencyJobs(false);
   };
 
+  const jobsAbortRef = useRef<AbortController | null>(null);
+
   const fetchJobs = async (targetPage = 1, customPageSize = jobPageSize, customSortOrder = jobSortOrder) => {
+    if (jobsAbortRef.current) {
+      jobsAbortRef.current.abort();
+    }
+    const controller = new AbortController();
+    jobsAbortRef.current = controller;
     setLoadingJobs(true);
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1649,7 +1655,8 @@ function ExploreContent() {
       const res = await fetch('/api/jobs/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: controller.signal,
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
@@ -1657,11 +1664,15 @@ function ExploreContent() {
       setJobPage(typeof data.pageNumber === 'number' ? data.pageNumber : targetPage);
       setJobsList(Array.isArray(data.result) ? data.result : []);
     } catch (err) {
+      if ((err as Error)?.name === 'AbortError') return;
       console.error('Failed to fetch jobs:', err);
       setJobsList([]);
       setJobTotalCount(0);
     } finally {
-      setLoadingJobs(false);
+      if (jobsAbortRef.current === controller) {
+        jobsAbortRef.current = null;
+        setLoadingJobs(false);
+      }
     }
   };
 
@@ -1891,13 +1902,6 @@ function ExploreContent() {
       setLoadingBeach(false);
     }
   }, []);
-
-  // Pre-load beach water data on mount so filters and list work immediately without refresh
-  useEffect(() => {
-    if (beachList.length === 0) {
-      fetchBeachWater(false);
-    }
-  }, [fetchBeachWater, beachList.length]);
 
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'beach') return;
@@ -2649,27 +2653,39 @@ function ExploreContent() {
   };
 
   // 4. Fetch Shipping Vessels for Cargo Tab
-  const fetchShippingVessels = React.useCallback(async () => {
+  const fetchShippingVessels = React.useCallback(async (signal?: AbortSignal) => {
     setLoadingShipping(true);
     const apiUrl = getApiUrl();
     try {
-      const res = await fetch(`${apiUrl}/api/shipping/vessels`);
+      const res = await fetch(`${apiUrl}/api/shipping/vessels`, { signal });
       if (res.ok) {
         const data = await res.json();
         setShippingVessels(data.vessels || []);
       }
     } catch (err) {
+      if ((err as Error)?.name === 'AbortError') return;
       console.error('Error fetching shipping vessels:', err);
     } finally {
-      setLoadingShipping(false);
+      if (!signal?.aborted) {
+        setLoadingShipping(false);
+      }
     }
   }, []);
 
   useEffect(() => {
-    if (!isExploreOpen || activeTab !== 'cargo') return;
-    fetchShippingVessels();
-    const interval = setInterval(fetchShippingVessels, 4000);
-    return () => clearInterval(interval);
+    if (!isExploreOpen || (activeTab !== 'cargo' && activeTab !== 'shipping')) return;
+    let activeController: AbortController | null = null;
+    const poll = () => {
+      activeController?.abort();
+      activeController = new AbortController();
+      fetchShippingVessels(activeController.signal);
+    };
+    poll();
+    const interval = setInterval(poll, 4000);
+    return () => {
+      clearInterval(interval);
+      activeController?.abort();
+    };
   }, [isExploreOpen, activeTab, fetchShippingVessels]);
 
   // 4b. Fetch Border Crossings Live Data (CBSA & CBP)
@@ -3679,13 +3695,6 @@ function ExploreContent() {
     }
   }, [setStationAlertsMap, setTransitAlertsList]);
 
-  // Pre-load transit alerts on mount if not loaded
-  useEffect(() => {
-    if (!transitAlertsData) {
-      fetchTranslinkAlerts(false);
-    }
-  }, [fetchTranslinkAlerts, transitAlertsData]);
-
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'alerts') return;
     fetchTranslinkAlerts();
@@ -3920,13 +3929,6 @@ function ExploreContent() {
       setLoadingTraffic(false);
     }
   }, []);
-
-  // Pre-load traffic summary on mount or when traffic tab is clicked
-  useEffect(() => {
-    if (!trafficSummary) {
-      fetchTrafficSummary(false);
-    }
-  }, [fetchTrafficSummary, trafficSummary]);
 
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'traffic') return;
@@ -11258,7 +11260,7 @@ function ExploreContent() {
         <div className="flex flex-col text-[10.5px] leading-tight text-gray-400 min-w-0 pr-2">
           {activeTab === 'weather' && (
             <span>
-              {weatherSubTab === 'models'
+              {weatherSubTab === 'marine'
                 ? `共有 ${tideStations.length || 7} 座海岸潮汐水位站`
                 : '共有 7 天氣象預報數據'}
             </span>

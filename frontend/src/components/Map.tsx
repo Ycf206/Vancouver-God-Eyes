@@ -25,61 +25,44 @@ import {
   registerYvrIndoorIcons,
 } from '@/utils/yvrIndoorCategories';
 import { 
-  LocateFixed, Train, Compass, ZoomIn, ZoomOut, X, Copy, Check, 
+  Train, Compass, ZoomIn, ZoomOut, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
-  ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
-  RotateCcw, RotateCw, MapPin, MapPinned, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, RadioTower, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert,
+  ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Waves,
+  RotateCcw, RotateCw, MapPin, MapPinned, Crosshair, Activity, Ban, Cone, Ship,
+  Camera, Gauge, Mail, AlertCircle, Radio, RadioTower, Anchor, CreditCard, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert,
   CircleDollarSign, Globe, Ticket, Accessibility,
-  BusFront, Repeat, TrainFront, ShipCargo, Plane, PlaneLanding, PlaneTakeoff, Minimize2, Maximize2, RefreshCw, Wind, Thermometer, Eye, Road, ParkingMeter, Motorbike, Milestone,
-  EvCharger, TrainTrack, TrafficCone, LineSquiggle, HouseHeart, UserRoundGroup, Package,
-  Palette, Soup, HeartHandshake, Trees, Park, TreePine, Toilet, UserShield, FireExtinguisher,
-  Faucet, UtilityPole, Earth, Grid3x2, Parasol, CloudSun, Newspaper, CalendarDays,
+  BusFront, Repeat, TrainFront, ShipCargo, Plane, PlaneLanding, PlaneTakeoff, Minimize2, Maximize2, RefreshCw, Wind, Thermometer, Eye, Road,
+  EvCharger, TrafficCone, Trees, Earth, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
-  Sun, Moon, Sunrise, Sunset, RotateCwClock, ArrowUpToLine, Weight, Siren, SquareParking, Trophy,
+  Sun, Moon, Sunrise, Sunset, RotateCwClock, Weight, SquareParking, Trophy,
   TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
-  Layers, Building2, Castle
+  Layers, Building2
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
-const LUCIDE_DAM_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 11.31c1.17.56 1.54 1.69 3.5 1.69 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M11.75 18c.35.5 1.45 1 2.75 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M2 6h4"/><path d="M7 3a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L10 4a1 1 0 0 0-1-1z"/></svg>`;
-
-const registerDamIcon = (mapInstance: any) => {
+const registerSvgIcon = (mapInstance: any, iconId: string, svgString: string) => {
   if (!mapInstance) return;
   const targetMap = mapInstance.getMap ? mapInstance.getMap() : mapInstance;
-  if (!targetMap || typeof targetMap.hasImage !== 'function' || targetMap.hasImage('lucide-dam')) return;
+  if (!targetMap || typeof targetMap.hasImage !== 'function' || targetMap.hasImage(iconId)) return;
   const img = new Image(32, 32);
   img.onload = () => {
     try {
-      if (targetMap && typeof targetMap.hasImage === 'function' && !targetMap.hasImage('lucide-dam')) {
-        targetMap.addImage('lucide-dam', img);
+      if (targetMap && typeof targetMap.hasImage === 'function' && !targetMap.hasImage(iconId)) {
+        targetMap.addImage(iconId, img);
       }
     } catch {
       // ignore
     }
   };
-  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(LUCIDE_DAM_SVG);
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
 };
+
+const LUCIDE_DAM_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 11.31c1.17.56 1.54 1.69 3.5 1.69 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M11.75 18c.35.5 1.45 1 2.75 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M2 6h4"/><path d="M7 3a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1L10 4a1 1 0 0 0-1-1z"/></svg>`;
+const registerDamIcon = (mapInstance: any) => registerSvgIcon(mapInstance, 'lucide-dam', LUCIDE_DAM_SVG);
 
 // Lucide: castle SVG icon for MapLibre consulates symbol layer
 const LUCIDE_CASTLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5V3"/><path d="M14 5V3"/><path d="M15 21v-3a3 3 0 0 0-6 0v3"/><path d="M18 3v8"/><path d="M18 5H6"/><path d="M22 11H2"/><path d="M22 9v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9"/><path d="M6 3v8"/></svg>`;
-
-const registerCastleIcon = (mapInstance: any) => {
-  if (!mapInstance) return;
-  const targetMap = mapInstance.getMap ? mapInstance.getMap() : mapInstance;
-  if (!targetMap || typeof targetMap.hasImage !== 'function' || targetMap.hasImage('lucide-castle')) return;
-  const img = new Image(32, 32);
-  img.onload = () => {
-    try {
-      if (targetMap && typeof targetMap.hasImage === 'function' && !targetMap.hasImage('lucide-castle')) {
-        targetMap.addImage('lucide-castle', img);
-      }
-    } catch {
-      // ignore
-    }
-  };
-  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(LUCIDE_CASTLE_SVG);
-};
+const registerCastleIcon = (mapInstance: any) => registerSvgIcon(mapInstance, 'lucide-castle', LUCIDE_CASTLE_SVG);
 
 const LetterXIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -1574,7 +1557,6 @@ export default function AppMap() {
   });
   const [truckRoutesPanelOpen, setTruckRoutesPanelOpen] = useState(true);
   const [isTruckRouteMapModalOpen, setIsTruckRouteMapModalOpen] = useState(false);
-  const [isTruckMapImgLoaded, setIsTruckMapImgLoaded] = useState(false);
   const [carSharingFilter, setCarSharingFilter] = useState<{ evo: boolean; modo: boolean }>({ evo: true, modo: true });
   const [safetyCamerasLegendOpen, setSafetyCamerasLegendOpen] = useState(true);
   const [safetyCamerasFilter, setSafetyCamerasFilter] = useState<{ redLightSpeed: boolean; redLightOnly: boolean }>({
@@ -1693,6 +1675,18 @@ export default function AppMap() {
         }
       })
       .catch(err => console.warn('Local area boundaries load warning:', err));
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const win = window as any;
+        delete win.__godsEyeMapRef;
+        delete win.__godsEyeCloseFacilityPopup;
+        delete win.__godsEyeSelectFerry;
+        delete win.__godsEyeFlyTo;
+        delete win.__godsEyeResetView;
+      }
+    };
   }, []);
 
   const getNeighbourhood = useCallback((lon: number, lat: number): string => {
@@ -1756,6 +1750,15 @@ export default function AppMap() {
   const lastCursorCoordRef = useRef<{ lng: number; lat: number } | null>(null);
   const isDraggingMapRef = useRef<boolean>(false);
   const mouseMoveRafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (mouseMoveRafRef.current) {
+        cancelAnimationFrame(mouseMoveRafRef.current);
+        mouseMoveRafRef.current = null;
+      }
+    };
+  }, []);
 
   const handleCopyCoordinates = useCallback(() => {
     const cur = lastCursorCoordRef.current;
@@ -3365,6 +3368,22 @@ export default function AppMap() {
     const map = mapRef.current?.getMap();
     const z = map ? map.getZoom() : currentZoom;
 
+    // 當用家關閉圖層時，即刻移除其載入中提示 (確保即使下方因 zoom < 13.5 提前結束也能清理)
+    setLoadingHeavyLayers(curr => {
+      let changed = false;
+      const next = { ...curr };
+      for (const key of Object.keys(next)) {
+        if (key !== 'contours') {
+          const k = key as keyof typeof layers;
+          if (!layers[k]) {
+            delete next[key];
+            changed = true;
+          }
+        }
+      }
+      return changed ? next : curr;
+    });
+
     // 1. 單車架 (Bike Racks)
     if (turnedOnBikeRacks) {
       if (z < 13.5) {
@@ -3463,22 +3482,6 @@ export default function AppMap() {
         });
       }, 3500);
     }
-
-    // 當用家關閉圖層時，即刻移除其載入中提示
-    setLoadingHeavyLayers(curr => {
-      let changed = false;
-      const next = { ...curr };
-      for (const key of Object.keys(next)) {
-        if (key !== 'contours') {
-          const k = key as keyof typeof layers;
-          if (!layers[k]) {
-            delete next[key];
-            changed = true;
-          }
-        }
-      }
-      return changed ? next : curr;
-    });
   }, [layers]);
 
   // 等高線切換獨立載入提示 (支援間距切換 10m/2m/1m 及圖層開關)
@@ -4128,6 +4131,7 @@ export default function AppMap() {
     };
   }, [mapStyleType, isMarineTideActive, layers.airportIndoor]);
 
+  const isBusTrackHidden = Boolean(searchedBusRoute || selectedBus);
   const mapStyle = useMemo(() => {
     // Determine Base and Label Tiles based on mapStyleType
     let baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'];
@@ -4187,7 +4191,7 @@ export default function AppMap() {
       style.sources['skytrain-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/skytrain` };
       style.sources['skytrain-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/skytrain` };
     }
-    if (layers.busRoutes && !searchedBusRoute && !selectedBus) {
+    if (layers.busRoutes && !isBusTrackHidden) {
       style.sources['bus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/bus` };
       style.sources['bus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/bus` };
     }
@@ -4402,7 +4406,7 @@ export default function AppMap() {
     }
 
     // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線或選中特定巴士時，只顯示該專屬路線，不繪製底圖全域 99 及 R1~R6 路線
-    if (layers.busRoutes && !searchedBusRoute && !selectedBus) {
+    if (layers.busRoutes && !isBusTrackHidden) {
       style.layers.push({
         id: 'bus-tracks-layer',
         type: 'line',
@@ -7556,8 +7560,7 @@ export default function AppMap() {
   }, [
     layers.skytrainRoutes, 
     layers.busRoutes, 
-    searchedBusRoute,
-    selectedBus,
+    isBusTrackHidden,
     layers.seabusRoutes, 
     layers.bcferriesRoutes, 
     layers.parkingMeters, 
@@ -7619,7 +7622,6 @@ export default function AppMap() {
     layers.fuel,
     fuelFilter.brands,
     layers.tesla,
-    layers.evCharging,
     evChargingFilter.speed,
     evChargingFilter.connector,
     evChargingFilter.freeOnly,
@@ -8165,8 +8167,8 @@ export default function AppMap() {
               .replace(/-(?:symbol|cluster|casing|label|glow|hit|inner|fill|line|outline)-layer$/, '')
               .replace(/-(?:layer|fill|line|label|glow|arrows)$/, '')
               .replace(/-/g, '_');
-            const clickLon = e.lngLat?.lng ?? (Array.isArray(coords[0]) ? (Array.isArray(coords[0][0]) ? coords[0][0][0] : coords[0][0]) : coords[0]);
-            const clickLat = e.lngLat?.lat ?? (Array.isArray(coords[0]) ? (Array.isArray(coords[0][1]) ? coords[0][0][1] : coords[0][1]) : coords[1]);
+            const clickLon = e.lngLat?.lng ?? (Array.isArray(coords?.[0]) ? (Array.isArray(coords[0][0]) ? coords[0][0][0] : coords[0][0]) : coords?.[0]);
+            const clickLat = e.lngLat?.lat ?? (Array.isArray(coords?.[0]) ? (Array.isArray(coords[0][0]) ? coords[0][0][1] : coords[0][1]) : coords?.[1]);
 
             let facilityType = props.facility_type || derivedFacilityType || 'fac';
             if (layerId.startsWith('fedex')) facilityType = 'fedex';
@@ -10913,13 +10915,6 @@ export default function AppMap() {
                       const p = selectedFacility.properties || {};
                       return p.locationName || p.name || selectedFacility.name || 'Purolator';
                     }
-                    if (selectedFacility.facility_type === 'airport_indoor') {
-                      return selectedFacility.properties?.name || selectedFacility.name || '機場設施';
-                    }
-                    if (selectedFacility.facility_type === 'tide_stations') {
-                      const raw = selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.properties?.name_en || selectedFacility.name || '';
-                      return raw.replace(/[\u4e00-\u9fa5]+/g, '').replace(/[()（）]/g, '').trim() || raw;
-                    }
                     if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
                     }
@@ -11036,13 +11031,6 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'purolator') {
                       const p = selectedFacility.properties || {};
                       return p.locationName || p.name || selectedFacility.name || 'Purolator';
-                    }
-                    if (selectedFacility.facility_type === 'airport_indoor') {
-                      return selectedFacility.properties?.name || selectedFacility.name || '機場設施';
-                    }
-                    if (selectedFacility.facility_type === 'tide_stations') {
-                      const raw = selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.properties?.name_en || selectedFacility.name || '';
-                      return raw.replace(/[\u4e00-\u9fa5]+/g, '').replace(/[()（）]/g, '').trim() || raw;
                     }
                     if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;

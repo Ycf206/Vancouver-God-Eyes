@@ -463,7 +463,11 @@ export function FinanceTab() {
       .then(json => {
         if (json.success && json.data?.regularMarketPrice) {
           const p = Number(json.data.regularMarketPrice.toFixed(2));
-          setTfsaStocks(cur => cur.map(it => it.id === newItem.id ? { ...it, currentPrice: p, buyPrice: p } : it));
+          setTfsaStocks(cur => {
+            const updated = cur.map(it => it.id === newItem.id ? { ...it, currentPrice: p, buyPrice: p } : it);
+            setTimeout(() => saveTfsaConfig(updated), 0);
+            return updated;
+          });
         }
       }).catch(() => {});
   };

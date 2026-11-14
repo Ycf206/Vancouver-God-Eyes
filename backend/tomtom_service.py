@@ -1195,6 +1195,7 @@ class TomTomTrafficService:
         ]
 
         # 為主要幹道注入精確街道軌跡 (LineString 座標)
+        snapped_data: Dict[str, Any] = {}
         snapped_file = os.path.join(os.path.dirname(__file__), "data", "snapped_corridors.json")
         if os.path.exists(snapped_file):
             try:

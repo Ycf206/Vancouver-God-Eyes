@@ -170,7 +170,6 @@ _LANDMARK_PHRASE_ALIASES: tuple[tuple[str, str], ...] = (
     ("scotiabank", "scotia 豐業銀行"),
     ("hsbc", "滙豐銀行 匯豐銀行"),
     ("vancity", "vancity credit union 溫市信貸"),
-    ("t&t", "大統華 tnt supermarket"),
     ("vancouver public library", "vpl 溫哥華公共圖書館 中央圖書館"),
 )
 
@@ -1125,17 +1124,34 @@ class LayerSearchEngine:
     # ------------------------------------------------------------------
     # Index Construction & Non-Blocking Hot Reload
     # ------------------------------------------------------------------
+    _INDEXED_DATA_FILES = frozenset(
+        [f"vancouver_{cfg[0]}.geojson" for cfg in GEOJSON_LAYER_CONFIGS]
+        + [
+            "vancouver_airports.geojson",
+            "yvr_indoor_pois.json",
+            "translink_gtfs_metadata.json",
+            "skytrain_network.json",
+            "vancouver_local_area_boundary.geojson",
+        ]
+    )
+
     def _compute_latest_data_mtime(self) -> float:
         latest = 0.0
+        for fname in self._INDEXED_DATA_FILES:
+            fpath = os.path.join(self.data_dir, fname)
+            try:
+                mt = os.stat(fpath).st_mtime
+                if mt > latest:
+                    latest = mt
+            except OSError:
+                pass
+        alt_indoor = os.path.normpath(
+            os.path.join(self.data_dir, "..", "..", "frontend", "public", "yvr_indoor_pois.json")
+        )
         try:
-            for entry in os.scandir(self.data_dir):
-                if entry.name.endswith((".geojson", ".json")):
-                    try:
-                        mt = entry.stat().st_mtime
-                        if mt > latest:
-                            latest = mt
-                    except OSError:
-                        pass
+            mt = os.stat(alt_indoor).st_mtime
+            if mt > latest:
+                latest = mt
         except OSError:
             pass
         return latest

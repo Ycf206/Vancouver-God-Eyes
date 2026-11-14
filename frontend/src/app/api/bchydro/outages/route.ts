@@ -27,6 +27,7 @@ export async function GET(request: Request) {
   try {
     const candidatePaths = [
       path.join(process.cwd(), 'public', fileName),
+      path.join(process.cwd(), 'frontend', 'public', fileName),
       path.join(process.cwd(), '..', 'backend', 'data', fileName),
       path.join(process.cwd(), 'backend', 'data', fileName),
     ];
@@ -47,6 +48,12 @@ export async function GET(request: Request) {
   }
 
   // 2. 若快取不存在，即時向 BC Hydro 官方拉取並回傳
+  if (type === 'map') {
+    return NextResponse.json(
+      { type: 'FeatureCollection', features: [] },
+      { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
+    );
+  }
   const remoteUrl = URL_MAP[type] || URL_MAP.current;
   try {
     const res = await fetch(remoteUrl, {

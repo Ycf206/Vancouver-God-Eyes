@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getServerBackendUrl } from '@/utils/serverBackend';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 
@@ -58,7 +59,7 @@ export async function GET() {
 
     if (!stdout || !stdout.trim().startsWith('{')) {
       // 次選：嘗試呼叫內部 FastAPI 後端獲取
-      const backendUrl = process.env.BACKEND_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+      const backendUrl = getServerBackendUrl();
       const bRes = await fetch(`${backendUrl}/api/airports/parkade-capacity`, {
         signal: AbortSignal.timeout(8000)
       });

@@ -21,5 +21,10 @@ def main():
     dep_cnt = len(res.get("departures", []))
     print(f"✅ [YVR Flights] 同步完成: 抵達 {arr_cnt} 班, 出發 {dep_cnt} 班。")
 
+
+def update_yvr_flights():
+    return main()
+
+
 if __name__ == "__main__":
     main()

@@ -288,6 +288,12 @@ def update_planned_outages():
     return {"count": len(all_outages)}
 
 
+def update_bchydro_outages():
+    update_current_outages()
+    update_restored_outages()
+    update_planned_outages()
+
+
 def main():
     parser = argparse.ArgumentParser(description="BC Hydro Power Outages Updater")
     parser.add_argument(

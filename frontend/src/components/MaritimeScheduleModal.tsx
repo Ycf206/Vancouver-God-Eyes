@@ -94,7 +94,7 @@ export default function MaritimeScheduleModal() {
       );
     }
     // Sort moving vessels with destination first, then by speed
-    return list.sort((a, b) => {
+    return [...list].sort((a, b) => {
       const aSpeed = a.sog || 0;
       const bSpeed = b.sog || 0;
       return bSpeed - aSpeed;

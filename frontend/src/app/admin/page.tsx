@@ -15,15 +15,12 @@ import {
   Filter, 
   Lock, 
   Unlock, 
-  FileText,
   Trash2,
   BarChart3,
   Users,
-  MessageSquareWarning,
   Eye, 
   EyeOff,
   ExternalLink,
-  ChevronRight,
   Sparkles,
   Zap,
   Key,
@@ -36,20 +33,21 @@ import {
   ArrowDown,
   Terminal,
   Download,
-  History,
   Wrench,
   RotateCcw,
   Copy,
-  Layers,
-  Palette
+  Layers
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
 import { useUIStore } from '@/store/useUIStore';
+import { ADMIN_LAYER_CONTROLS, LAYER_CATEGORIES } from '@/data/layerRegistry';
 
 // 11.3 數據源對應前台圖層控制面板之 Key
 const SOURCE_TO_LAYER_MAP: Record<string, string> = {
-  traffic_conditions: 'traffic',
+  traffic_conditions: 'trafficConditions',
+  traffic_alerts: 'trafficAlerts',
+  drivebc_events: 'driveBC',
   bus_realtime: 'bus',
   bus_routes: 'busRoutes',
   skytrain_realtime: 'skytrainTrains',
@@ -73,6 +71,7 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   safety_cameras: 'safetyCameras',
   car_sharing: 'carSharing',
   flight_schedules: 'airports',
+  yvr_flights: 'airports',
   yvr_indoor: 'airportIndoor',
   maritime_shipping: 'maritimeShipping',
   marine_terminals: 'marineTerminals',
@@ -85,11 +84,14 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   traffic_signals: 'trafficSignals',
   turn_restrictions: 'turnRestrictions',
   vancouver_railways: 'railways',
-  vancouver_crashes: 'crashes',
+  vancouver_crashes: 'roadClosures',
   road_closures: 'roadClosures',
   road_construction: 'roadConstruction',
   snow_removal_routes: 'snowRemovalRoutes',
   power_outages: 'powerOutages',
+  bchydro_current: 'powerOutages',
+  bchydro_restored: 'powerOutages',
+  bchydro_planned: 'powerOutages',
   bchydro_outages_current: 'powerOutages',
   contours: 'contours',
   fire_halls: 'fireHalls',
@@ -98,8 +100,8 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   disaster_hubs: 'disasterHubs',
   community_centres: 'communityCentres',
   canada_post: 'canadaPost',
-  fedex: 'fedex',
-  purolator: 'purolator',
+  fedex: 'canadaPost',
+  purolator: 'canadaPost',
   banks: 'banks',
   hospitals: 'hospitals',
   parks: 'parks',
@@ -124,103 +126,62 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   beach_water: 'beachWaterQuality',
   beach_water_quality: 'beachWaterQuality',
   zoning_districts: 'zoningDistricts',
+  local_area_boundary: 'localAreaBoundary',
+  postal_code_fsa: 'postalCodeFSA',
   public_trees: 'publicTrees',
   museums: 'museums',
   consulates: 'consulates',
 };
 
-// 圖層控制管理清單 (支援開關、面板顯示與主題色彩微調)
-const LAYER_CONTROLS_LIST = [
-  // 交通
-  { id: 'bus', name: '巴士車輛', category: '交通', defaultColor: '#10b981' },
-  { id: 'busRoutes', name: '巴士路線', category: '交通', defaultColor: '#10b981' },
-  { id: 'busExchanges', name: '巴士轉車站', category: '交通', defaultColor: '#10b981' },
-  { id: 'skytrainTrains', name: '天車列車 (推算)', category: '交通', defaultColor: '#3b82f6' },
-  { id: 'skytrainRoutes', name: '天車路線與車站', category: '交通', defaultColor: '#3b82f6' },
-  { id: 'skytrainFareZones', name: '天車收費分區', category: '交通', defaultColor: '#3b82f6' },
-  { id: 'seabusVehicles', name: '水上巴士船隻', category: '交通', defaultColor: '#00a4e4' },
-  { id: 'seabusRoutes', name: '水上巴士航線', category: '交通', defaultColor: '#00a4e4' },
-  { id: 'bcferriesVehicles', name: '卑詩渡輪船隻', category: '交通', defaultColor: '#0060a9' },
-  { id: 'bcferriesRoutes', name: '卑詩渡輪航線', category: '交通', defaultColor: '#0060a9' },
-  { id: 'maritimeShipping', name: '船運船隻', category: '交通', defaultColor: '#06b6d4' },
-  { id: 'marineTerminals', name: '船運碼頭', category: '交通', defaultColor: '#06b6d4' },
-  { id: 'airports', name: '機場', category: '交通', defaultColor: '#38bdf8' },
-  { id: 'airportIndoor', name: '機場內部地圖 (YVR)', category: '交通', defaultColor: '#38bdf8' },
-  // 道路
-  { id: 'trafficConditions', name: '路況色帶', category: '道路', defaultColor: '#f97316' },
-  { id: 'trafficAlerts', name: '即時路況通報', category: '道路', defaultColor: '#ef4444' },
-  { id: 'trafficCameras', name: '交通攝影機', category: '道路', defaultColor: '#38bdf8' },
-  { id: 'safetyCameras', name: '安全攝影機', category: '道路', defaultColor: '#f43f5e' },
-  { id: 'parkingMeters', name: '咪錶停車位', category: '道路', defaultColor: '#3b82f6' },
-  { id: 'motorcycleParking', name: '電單車位', category: '道路', defaultColor: '#3b82f6' },
-  { id: 'accessibleParking', name: '無障礙車位', category: '道路', defaultColor: '#38bdf8' },
-  { id: 'evCharging', name: '充電站', category: '道路', defaultColor: '#10b981' },
-  { id: 'fuel', name: '加油站', category: '道路', defaultColor: '#f59e0b' },
-  { id: 'bikeways', name: '單車專用徑', category: '道路', defaultColor: '#14b8a6' },
-  { id: 'sharedBikes', name: '共享單車 (Mobi)', category: '道路', defaultColor: '#14b8a6' },
-  { id: 'escooter', name: '共享滑板車', category: '道路', defaultColor: '#84cc16' },
-  { id: 'snowRemovalRoutes', name: '除雪主要幹道', category: '道路', defaultColor: '#06b6d4' },
-  { id: 'oneWayStreets', name: '單行道導向', category: '道路', defaultColor: '#8b5cf6' },
-  { id: 'speedLimits', name: '限速路段', category: '道路', defaultColor: '#f59e0b' },
-  { id: 'crosswalks', name: '行人穿越道', category: '道路', defaultColor: '#ec4899' },
-  // 民生
-  { id: 'schools', name: '學校教育機構', category: '民生', defaultColor: '#3b82f6' },
-  { id: 'libraries', name: '公共圖書館', category: '民生', defaultColor: '#f59e0b' },
-  { id: 'communityCentres', name: '社區中心', category: '民生', defaultColor: '#8b5cf6' },
-  { id: 'parks', name: '都會公園', category: '民生', defaultColor: '#10b981' },
-  { id: 'drinkingFountains', name: '公共飲水台', category: '民生', defaultColor: '#38bdf8' },
-  { id: 'publicWashrooms', name: '公共洗手間', category: '民生', defaultColor: '#06b6d4' },
-  { id: 'foodVendors', name: '餐車與熟食市集', category: '民生', defaultColor: '#f97316' },
-  { id: 'foodBanks', name: '食物銀行據點', category: '民生', defaultColor: '#10b981' },
-  { id: 'homelessShelters', name: '庇護收容所', category: '民生', defaultColor: '#ec4899' },
-  { id: 'banks', name: '銀行與 ATM', category: '民生', defaultColor: '#3b82f6' },
-  { id: 'canadaPost', name: '加拿大郵政據點', category: '民生', defaultColor: '#ef4444' },
-  { id: 'fedex', name: 'FedEx 據點', category: '民生', defaultColor: '#8b5cf6' },
-  { id: 'purolator', name: 'Purolator 據點', category: '民生', defaultColor: '#3b82f6' },
-  { id: 'publicArt', name: '公共街頭藝術', category: '民生', defaultColor: '#a855f7' },
-  { id: 'museums', name: '博物館與展覽館', category: '民生', defaultColor: '#6366f1' },
-  { id: 'garbageCollection', name: '垃圾清運排程', category: '民生', defaultColor: '#10b981' },
-  { id: 'recycling', name: '資源回收站', category: '民生', defaultColor: '#14b8a6' },
-  // 安全
-  { id: 'hospitals', name: '醫院與緊急醫療', category: '安全', defaultColor: '#10b981' },
-  { id: 'police', name: '警察局', category: '安全', defaultColor: '#3b82f6' },
-  { id: 'fireHalls', name: '消防局', category: '安全', defaultColor: '#ef4444' },
-  { id: 'fireHydrants', name: '市政消防栓', category: '安全', defaultColor: '#ef4444' },
-  { id: 'disasterHubs', name: '災害支援中心', category: '安全', defaultColor: '#f59e0b' },
-  { id: 'aed', name: 'AED 急救心臟去顫器', category: '安全', defaultColor: '#ef4444' },
-  { id: 'consulates', name: '各國領事館', category: '安全', defaultColor: '#4f46e5' },
-  // 環境與地理
-  { id: 'beachWaterQuality', name: '海灘水質', category: '自然', defaultColor: '#06b6d4' },
-  { id: 'contours', name: '等高線高程', category: '地理', defaultColor: '#14b8a6' },
-  { id: 'tideStations', name: '潮汐監測站', category: '地理', defaultColor: '#0ea5e9' },
-  { id: 'powerOutages', name: '卑詩省停電即時情況', category: '能源', defaultColor: '#f97316' },
-];
+type AdminSystemCategory = '交通' | '道路' | '天氣' | '生活' | '安全' | '能源';
+type SourceFreqTier = 'realtime' | 'periodic' | 'daily' | 'low';
 
-// 系統 4 大標準分頁與按鈕類別 (對應主導航與探索面板)
-const SYSTEM_CATEGORIES = ['道路', '天氣', '生活', '能源'] as const;
-
-function getSystemCategory(source: { id: string; category?: string; name?: string }): '道路' | '天氣' | '生活' | '能源' {
+function getSystemCategory(source: { id: string; category?: string; name?: string }): AdminSystemCategory {
+  const transitIds = new Set([
+    'translink_realtime', 'flight_schedules', 'yvr_flights', 'yvr_indoor',
+    'yvr_news_rss', 'maritime_shipping', 'border_wait_times',
+  ]);
   const roadIds = new Set([
-    'traffic_conditions', 'traffic_cameras', 'translink_realtime', 'snow_removal_routes',
-    'fuel_prices', 'border_wait_times', 'flight_schedules', 'yvr_indoor', 'maritime_shipping',
+    'traffic_conditions', 'traffic_cameras', 'snow_removal_routes', 'fuel_prices',
     'parking_meters', 'impark_parking', 'motorcycle_parking', 'bikeways',
     'ev_charging', 'traffic_speed_limits', 'traffic_crosswalks', 'one_way_streets',
     'shared_bikes', 'escooter', 'truck_routes', 'traffic_signals',
-    'turn_restrictions', 'vancouver_railways', 'vancouver_crashes'
+    'turn_restrictions', 'vancouver_railways', 'vancouver_crashes', 'drivebc_events',
   ]);
   const weatherIds = new Set([
-    'weather_monitoring', 'tides_hydrometric', 'beach_water', 'aurora_forecast', 'ski_resorts'
+    'weather_monitoring', 'tides_hydrometric', 'beach_water', 'aurora_forecast',
+    'ski_resorts', 'yvr_weathercams',
   ]);
-  const utilitiesIds = new Set([
+  const securityIds = new Set([
+    'consulates', 'aed', 'fire_hydrants',
+  ]);
+  const energyIds = new Set([
     'bchydro_current', 'bchydro_restored', 'bchydro_planned',
-    'bchydro_outages_current', 'bchydro_outages_restored', 'bchydro_outages_planned', 'power_outages', 'powerOutages',
-    'fire_hydrants', 'aed', 'zoning_districts', 'contours'
+    'bchydro_outages_current', 'bchydro_outages_restored', 'bchydro_outages_planned',
+    'power_outages', 'powerOutages', 'zoning_districts', 'contours',
   ]);
 
+  if (transitIds.has(source.id)) return '交通';
   if (roadIds.has(source.id)) return '道路';
   if (weatherIds.has(source.id)) return '天氣';
-  if (utilitiesIds.has(source.id)) return '能源';
+  if (securityIds.has(source.id)) return '安全';
+  if (energyIds.has(source.id)) return '能源';
   return '生活';
+}
+
+function getFrequencyTier(source: { cron_expr?: string; schedule_interval?: string }): SourceFreqTier {
+  const iv = (source.schedule_interval || '').trim();
+  const cron = (source.cron_expr || '').trim();
+  if (/秒|\b[125]\s*分鐘/.test(iv) || cron === '* * * * *' || /^\*\/[1-5]\b/.test(cron)) {
+    return 'realtime';
+  }
+  if (/分鐘|小時/.test(iv)) {
+    return 'periodic';
+  }
+  if (/每[日天]/.test(iv)) {
+    return 'daily';
+  }
+  return 'low';
 }
 
 
@@ -393,19 +354,8 @@ interface DataSource {
   url?: string;
 }
 
-interface AuditLog {
-  id: string;
-  timestamp: string;
-  action: string;
-  source_name: string;
-  runner?: string;
-  status: string;
-  detail: string;
-}
-
 export default function AdminPage() {
   const [sources, setSources] = useState<DataSource[]>(DEFAULT_ADMIN_SOURCES as DataSource[]);
-  const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
   const [mainTab, setMainTab] = useState<'sources' | 'layers' | 'system_logs' | 'analytics' | 'issues' | 'maintenance'>('sources');
@@ -469,10 +419,6 @@ export default function AdminPage() {
   const [systemLogPage, setSystemLogPage] = useState<number>(1);
   const SYSTEM_LOG_PAGE_SIZE = 25;
   const [previewModalImage, setPreviewModalImage] = useState<string | null>(null);
-
-  // 11.5 排程歷史保留期限
-  const [scheduleRetentionDays, setScheduleRetentionDays] = useState<number>(30);
-  const [scheduleRetentionInput, setScheduleRetentionInput] = useState<string>('30');
   
   // --- Analytics & Stats states (正式開始執行後台統計資料) ---
   const [stats, setStats] = useState<{
@@ -582,7 +528,6 @@ export default function AdminPage() {
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
   const [pinErrorMsg, setPinErrorMsg] = useState<string | null>(null);
-  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isUnlocked) return;
@@ -594,21 +539,6 @@ export default function AdminPage() {
       fetchMaintenanceStatus();
     }
   }, [mainTab, isUnlocked]);
-
-  const fetchScheduleHistory = async () => {
-    try {
-      const res = await adminApiFetch<{ logs: AuditLog[]; retention_days?: number }>('/api/admin/schedule-history');
-      if (res.ok && res.data && Array.isArray(res.data.logs)) {
-        setLogs(res.data.logs);
-        if (typeof res.data.retention_days === 'number') {
-          setScheduleRetentionDays(res.data.retention_days);
-          setScheduleRetentionInput(String(res.data.retention_days));
-        }
-      }
-    } catch (err) {
-      console.error('Fetch schedule history error:', err);
-    }
-  };
 
   const fetchMaintenanceStatus = async () => {
     try {
@@ -758,7 +688,6 @@ export default function AdminPage() {
     await adminApiFetch('/api/admin/system-logs/clear', { method: 'POST' });
     await adminApiFetch('/api/admin/schedule-history/clear', { method: 'POST' });
     await fetchSystemLogs();
-    setLogs([]);
   };
 
   // 11.4 匯出系統日誌為 JSON
@@ -770,19 +699,6 @@ export default function AdminPage() {
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
-  };
-
-  // 11.5 設定排程歷史保留期限 (自定義天數)
-  const handleScheduleRetentionChange = async (days: number) => {
-    const safeDays = Math.max(0, Math.floor(isNaN(days) ? 0 : days));
-    setScheduleRetentionDays(safeDays);
-    setScheduleRetentionInput(String(safeDays));
-    await adminApiFetch('/api/admin/schedule-history/retention', {
-      method: 'POST',
-      body: JSON.stringify({ retention_days: safeDays })
-    });
-    await fetchScheduleHistory();
-    await fetchAdminData();
   };
 
   // 11.3 獨立圖層開關：切換並同步至 localStorage、Zustand 與後端全域設定
@@ -955,6 +871,8 @@ export default function AdminPage() {
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedFreqTier, setSelectedFreqTier] = useState<'all' | SourceFreqTier>('all');
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState<'all' | 'enabled' | 'disabled' | 'error'>('all');
 
   // Operation States
   const [syncingId, setSyncingId] = useState<string | null>(null);
@@ -1154,18 +1072,13 @@ export default function AdminPage() {
     try {
       setIsLoading(true);
       
-      const res = await adminApiFetch<{ sources: DataSource[]; logs: AuditLog[]; schedule_retention_days?: number }>('/api/admin/sources');
+      const res = await adminApiFetch<{ sources: DataSource[] }>('/api/admin/sources');
       let loadedSources: DataSource[] = [];
       if (res.ok && res.data && Array.isArray(res.data.sources) && res.data.sources.length > 0) {
         loadedSources = res.data.sources.map(s => ({
           ...s,
           runner: (s.runner as string) === 'github' ? 'github_actions' : s.runner
         }));
-        setLogs(res.data.logs || []);
-        if (typeof (res.data as any).schedule_retention_days === 'number') {
-          setScheduleRetentionDays((res.data as any).schedule_retention_days);
-          setScheduleRetentionInput(String((res.data as any).schedule_retention_days));
-        }
         setBackendConnected(true);
       } else {
         loadedSources = DEFAULT_ADMIN_SOURCES as DataSource[];
@@ -1245,7 +1158,6 @@ export default function AdminPage() {
         setPinInput('');
         setPinError(false);
         setPinErrorMsg(null);
-        setIsUnlockModalOpen(false);
         setIsUnlocked(true);
       } else {
         setPinError(true);
@@ -1305,12 +1217,7 @@ export default function AdminPage() {
 
   // Trigger Sync (場景一)
   const handleSync = async (sourceId: string, runner?: 'github_actions' | 'oci') => {
-    if (!isUnlocked) {
-      setPinInput('');
-      setPinError(false);
-      setIsUnlockModalOpen(true);
-      return;
-    }
+    if (!isUnlocked) return;
     setSyncingId(sourceId);
     try {
       const res = await adminApiFetch<{ status: string; message: string }>('/api/admin/sources/sync', {
@@ -1336,12 +1243,7 @@ export default function AdminPage() {
 
   // Save Schedule Change (場景二)
   const handleSaveSchedule = async (source: DataSource) => {
-    if (!isUnlocked) {
-      setPinInput('');
-      setPinError(false);
-      setIsUnlockModalOpen(true);
-      return;
-    }
+    if (!isUnlocked) return;
     setIsSavingSchedule(true);
     try {
       const targetCron = editCron || source.cron_expr;
@@ -1374,12 +1276,7 @@ export default function AdminPage() {
 
   // Toggle Source Enabled/Disabled
   const handleToggleEnabled = async (source: DataSource) => {
-    if (!isUnlocked) {
-      setPinInput('');
-      setPinError(false);
-      setIsUnlockModalOpen(true);
-      return;
-    }
+    if (!isUnlocked) return;
     try {
       await adminApiFetch('/api/admin/sources/schedule', {
         method: 'POST',
@@ -1394,38 +1291,23 @@ export default function AdminPage() {
     }
   };
 
-  // Clear Logs
-  const handleClearLogs = async () => {
-    if (!confirm('確定要清空所有系統排程與同步日誌嗎？')) return;
-    try {
-      await adminApiFetch('/api/admin/sources/logs/clear', { 
-        method: 'POST'
-      });
-      await fetchAdminData();
-    } catch (err) {
-      console.error('Clear logs failed:', err);
-    }
-  };
-
-  // Categories list
-  const categories = useMemo(() => {
-    const set = new Set<string>();
-    sources.forEach(s => { if (s.category) set.add(s.category); });
-    return Array.from(set);
-  }, [sources]);
-
-  // 11.1 支援多欄位排序之 Filtered & Sorted Sources
+  // 11.1 支援多欄位排序與頻率分層/狀態篩選之 Filtered & Sorted Sources
   const filteredSources = useMemo(() => {
     const list = sources.filter(s => {
       if (activeTab === 'github_actions' && s.runner !== 'github_actions') return false;
       if (activeTab === 'oci' && s.runner !== 'oci') return false;
       if (selectedCategory !== 'all' && getSystemCategory(s) !== selectedCategory) return false;
+      if (selectedFreqTier !== 'all' && getFrequencyTier(s) !== selectedFreqTier) return false;
+      if (selectedStatusFilter === 'enabled' && s.enabled === false) return false;
+      if (selectedStatusFilter === 'disabled' && s.enabled !== false) return false;
+      if (selectedStatusFilter === 'error' && s.status !== 'error') return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         return (
           s.name.toLowerCase().includes(q) ||
           s.id.toLowerCase().includes(q) ||
           s.category.toLowerCase().includes(q) ||
+          getSystemCategory(s).toLowerCase().includes(q) ||
           (s.workflow_file && s.workflow_file.toLowerCase().includes(q)) ||
           s.schedule_interval.toLowerCase().includes(q) ||
           s.cron_expr.toLowerCase().includes(q)
@@ -1454,7 +1336,22 @@ export default function AdminPage() {
       }
       return sortDirection === 'asc' ? cmp : -cmp;
     });
-  }, [sources, activeTab, selectedCategory, searchQuery, sortField, sortDirection]);
+  }, [sources, activeTab, selectedCategory, selectedFreqTier, selectedStatusFilter, searchQuery, sortField, sortDirection]);
+
+  const filteredAdminLayers = useMemo(() => {
+    const q = layerSearchQuery.trim().toLowerCase();
+    return ADMIN_LAYER_CONTROLS.filter((l) => {
+      if (layerCategoryFilter !== 'all' && l.category !== layerCategoryFilter) return false;
+      if (q) {
+        return (
+          l.name.toLowerCase().includes(q) ||
+          l.id.toLowerCase().includes(q) ||
+          l.category.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+  }, [layerCategoryFilter, layerSearchQuery]);
 
   const ghCount = sources.filter(s => s.runner === 'github_actions').length;
   const ociCount = sources.filter(s => s.runner === 'oci').length;
@@ -1563,7 +1460,6 @@ export default function AdminPage() {
                     sessionStorage.setItem('gods_eye_admin_unlocked', 'true');
                   }
                   setIsUnlocked(true);
-                  setIsUnlockModalOpen(false);
                   setGithubStatus({
                     configured: true,
                     repo: 'Ycf206/Vancouver-God-Eyes (開發環境模擬)',
@@ -1634,29 +1530,14 @@ export default function AdminPage() {
             <span>重新載入</span>
           </button>
 
-          {isUnlocked ? (
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-semibold transition-all cursor-pointer"
-              title="安全登出並鎖定管理後台"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>登出鎖定</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                setPinInput('');
-                setPinError(false);
-                setIsUnlockModalOpen(true);
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-xs hover:scale-105"
-              title="點擊輸入管理員密碼以解鎖寫入操作"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>唯讀模式 (點擊解鎖)</span>
-            </button>
-          )}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+            title="安全登出並鎖定管理後台"
+          >
+            <Lock className="w-3.5 h-3.5" />
+            <span>登出鎖定</span>
+          </button>
         </div>
       </header>
 
@@ -1698,7 +1579,7 @@ export default function AdminPage() {
             <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
               mainTab === 'layers' ? 'bg-sky-500/20 text-sky-300' : 'bg-black/30 text-gray-500'
             }`}>
-              {LAYER_CONTROLS_LIST.length}
+              {ADMIN_LAYER_CONTROLS.length}
             </span>
             {mainTab === 'layers' && (
               <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
@@ -1872,7 +1753,7 @@ export default function AdminPage() {
                         ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer'
                         : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                     }`}
-                    title="立即同步全部 12 項 OCI 即時交通、天氣、航班快取"
+                    title={`立即同步全部 ${ociCount} 項 OCI 即時資料快取`}
                   >
                     <Zap className={`w-3.5 h-3.5 ${syncingId === 'all_oci' ? 'animate-spin' : ''}`} />
                     <span>立即更新全部 OCI 資料</span>
@@ -1898,47 +1779,117 @@ export default function AdminPage() {
             </div>
 
             {/* Filter / Search Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#141822] px-4 py-3 rounded-xl border border-[#232a3b]">
-              <div className="relative flex-1 max-w-md">
-                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="搜尋資料源名稱、ID、頻率、Cron 或工作流檔案..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#0d1017] border border-[#2b3346] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-gray-500 outline-none focus:border-indigo-500 transition-colors"
-                />
+            <div className="flex flex-col gap-2.5 bg-[#141822] px-4 py-3 rounded-xl border border-[#232a3b]">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="搜尋資料源名稱、ID、頻率、Cron 或工作流檔案..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-[#0d1017] border border-[#2b3346] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-gray-500 outline-none focus:border-indigo-500 transition-colors"
+                  />
+                </div>
+
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[11px] text-gray-400 font-semibold flex items-center gap-1 shrink-0 mr-0.5">
+                    <Filter className="w-3.5 h-3.5 text-indigo-400" />
+                    <span className="hidden sm:inline">分類：</span>
+                  </span>
+                  {[
+                    { id: 'all', label: '全部', count: sources.length },
+                    { id: '交通', label: '交通', count: sources.filter(s => getSystemCategory(s) === '交通').length },
+                    { id: '道路', label: '道路', count: sources.filter(s => getSystemCategory(s) === '道路').length },
+                    { id: '天氣', label: '天氣', count: sources.filter(s => getSystemCategory(s) === '天氣').length },
+                    { id: '生活', label: '生活', count: sources.filter(s => getSystemCategory(s) === '生活').length },
+                    { id: '安全', label: '安全', count: sources.filter(s => getSystemCategory(s) === '安全').length },
+                    { id: '能源', label: '能源', count: sources.filter(s => getSystemCategory(s) === '能源').length },
+                  ].map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => setSelectedCategory(item.id)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+                        selectedCategory === item.id
+                          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 ring-1 ring-indigo-400'
+                          : 'bg-[#1a2130] text-gray-300 hover:bg-[#252f44] hover:text-white border border-[#2b3548]'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                        selectedCategory === item.id ? 'bg-white/20 text-white' : 'bg-black/40 text-gray-400'
+                      }`}>
+                        {item.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
-                <span className="text-[11px] text-gray-400 font-semibold flex items-center gap-1 shrink-0 mr-0.5">
-                  <Filter className="w-3.5 h-3.5 text-indigo-400" />
-                  <span className="hidden sm:inline">分類：</span>
-                </span>
-                {[
-                  { id: 'all', label: '全部', count: sources.length },
-                  { id: '道路', label: '道路', count: sources.filter(s => getSystemCategory(s) === '道路').length },
-                  { id: '天氣', label: '天氣', count: sources.filter(s => getSystemCategory(s) === '天氣').length },
-                  { id: '生活', label: '生活', count: sources.filter(s => getSystemCategory(s) === '生活').length },
-                  { id: '能源', label: '能源', count: sources.filter(s => getSystemCategory(s) === '能源').length },
-                ].map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => setSelectedCategory(item.id)}
-                    className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
-                      selectedCategory === item.id
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 ring-1 ring-indigo-400'
-                        : 'bg-[#1a2130] text-gray-300 hover:bg-[#252f44] hover:text-white border border-[#2b3548]'
-                    }`}
-                  >
-                    <span>{item.label}</span>
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      selectedCategory === item.id ? 'bg-white/20 text-white' : 'bg-black/40 text-gray-400'
-                    }`}>
-                      {item.count}
-                    </span>
-                  </button>
-                ))}
+              {/* 更新頻率分層 + 狀態快速篩選列 (精簡 68+ 資料源檢視) */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#1e2536]">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[11px] text-gray-400 font-semibold flex items-center gap-1 shrink-0 mr-0.5">
+                    <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>頻率：</span>
+                  </span>
+                  {([
+                    { id: 'all', label: '全部頻率', count: sources.length },
+                    { id: 'realtime', label: '實時 ≤5m', count: sources.filter(s => getFrequencyTier(s) === 'realtime').length },
+                    { id: 'periodic', label: '輪詢 10m~12h', count: sources.filter(s => getFrequencyTier(s) === 'periodic').length },
+                    { id: 'daily', label: '每日', count: sources.filter(s => getFrequencyTier(s) === 'daily').length },
+                    { id: 'low', label: '低頻 月/季/年', count: sources.filter(s => getFrequencyTier(s) === 'low').length },
+                  ] as const).map(tier => (
+                    <button
+                      key={tier.id}
+                      onClick={() => setSelectedFreqTier(tier.id)}
+                      className={`px-2 py-0.5 rounded-md text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1 ${
+                        selectedFreqTier === tier.id
+                          ? 'bg-emerald-600/90 text-white shadow-sm'
+                          : 'bg-[#11151f] text-gray-400 hover:text-gray-200 hover:bg-[#1c2334] border border-[#252d40]'
+                      }`}
+                    >
+                      <span>{tier.label}</span>
+                      <span className="text-[9.5px] opacity-80 font-mono">{tier.count}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {([
+                    { id: 'all', label: '全部狀態' },
+                    { id: 'enabled', label: '已啟用' },
+                    { id: 'disabled', label: '已暫停' },
+                    { id: 'error', label: '異常' },
+                  ] as const).map(st => (
+                    <button
+                      key={st.id}
+                      onClick={() => setSelectedStatusFilter(st.id)}
+                      className={`px-2 py-0.5 rounded-md text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${
+                        selectedStatusFilter === st.id
+                          ? 'bg-sky-600 text-white shadow-sm'
+                          : 'bg-[#11151f] text-gray-400 hover:text-gray-200 hover:bg-[#1c2334] border border-[#252d40]'
+                      }`}
+                    >
+                      {st.label}
+                    </button>
+                  ))}
+                  {(selectedCategory !== 'all' || selectedFreqTier !== 'all' || selectedStatusFilter !== 'all' || searchQuery.trim()) && (
+                    <button
+                      onClick={() => {
+                        setSelectedCategory('all');
+                        setSelectedFreqTier('all');
+                        setSelectedStatusFilter('all');
+                        setSearchQuery('');
+                      }}
+                      className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 cursor-pointer flex items-center gap-1"
+                      title="清除全部篩選條件"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>重設 ({filteredSources.length})</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -2035,9 +1986,11 @@ export default function AdminPage() {
                             {(() => {
                               const cat = getSystemCategory(source);
                               const catColors: Record<string, string> = {
+                                '交通': 'bg-teal-500/15 text-teal-300 border-teal-500/30',
                                 '道路': 'bg-amber-500/15 text-amber-300 border-amber-500/30',
                                 '天氣': 'bg-sky-500/15 text-sky-300 border-sky-500/30',
                                 '生活': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+                                '安全': 'bg-rose-500/15 text-rose-300 border-rose-500/30',
                                 '能源': 'bg-violet-500/15 text-violet-300 border-violet-500/30'
                               };
                               return (
@@ -2539,7 +2492,7 @@ export default function AdminPage() {
               </div>
 
               <div className="flex items-center gap-1.5 bg-[#161a29] p-1 rounded-xl border border-[#2a334d] text-xs overflow-x-auto scrollbar-none">
-                {['all', '交通', '道路', '民生', '安全', '能源', '地理', '環境'].map((cat) => (
+                {['all', ...LAYER_CATEGORIES.map((c) => c.title)].map((cat) => (
                   <button
                     key={cat}
                     type="button"
@@ -2568,14 +2521,7 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#232b3f]">
-                    {LAYER_CONTROLS_LIST.filter(l => {
-                      if (layerCategoryFilter !== 'all' && l.category !== layerCategoryFilter) return false;
-                      if (layerSearchQuery.trim()) {
-                        const q = layerSearchQuery.trim().toLowerCase();
-                        return l.name.toLowerCase().includes(q) || l.id.toLowerCase().includes(q) || l.category.toLowerCase().includes(q);
-                      }
-                      return true;
-                    }).map((layerItem) => {
+                    {filteredAdminLayers.map((layerItem) => {
                       const isHiddenInPanel = !!hiddenLayersInPanel[layerItem.id] || !!hiddenLayersInPanelState[layerItem.id];
                       const isDataDisabled = !!disabledLayers[layerItem.id];
                       const isDataActive = !isDataDisabled;
@@ -2687,14 +2633,7 @@ export default function AdminPage() {
                 </table>
               </div>
 
-              {LAYER_CONTROLS_LIST.filter(l => {
-                if (layerCategoryFilter !== 'all' && l.category !== layerCategoryFilter) return false;
-                if (layerSearchQuery.trim()) {
-                  const q = layerSearchQuery.trim().toLowerCase();
-                  return l.name.toLowerCase().includes(q) || l.id.toLowerCase().includes(q) || l.category.toLowerCase().includes(q);
-                }
-                return true;
-              }).length === 0 && (
+              {filteredAdminLayers.length === 0 && (
                 <div className="py-12 text-center text-gray-500 text-xs flex flex-col items-center gap-2">
                   <AlertCircle className="w-6 h-6 text-gray-600" />
                   <span>沒有符合條件的圖層項目</span>
@@ -2836,7 +2775,7 @@ export default function AdminPage() {
                 </thead>
                 <tbody className="divide-y divide-[#1e2535]">
                   {pagedSystemLogs.map((log, idx) => (
-                    <tr key={`${log.id || 'syslog'}_${idx}`} className="hover:bg-[#19202e] transition-colors">
+                    <tr key={log.id || `${log.timestamp}_${idx}`} className="hover:bg-[#19202e] transition-colors">
                       <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
                         {new Date(log.timestamp).toLocaleString('zh-HK', {
                           year: 'numeric',
@@ -3571,96 +3510,6 @@ export default function AdminPage() {
                     className="px-4 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-md"
                   >
                     {isSavingToken ? '儲存中...' : '儲存 Token'}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-            {/* PIN Unlock Modal */}
-      {isUnlockModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
-          <div className="bg-[#161a23] border border-amber-500/40 rounded-2xl p-5 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-[#242b3b]">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center">
-                  <Lock className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-white">解鎖管理員操作</h3>
-                  <p className="text-[11px] text-gray-400">輸入密碼以啟用排程編輯與即時同步</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => { setIsUnlockModalOpen(false); setPinError(false); }}
-                className="text-gray-400 hover:text-white p-1 rounded-md"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleUnlock} className="flex flex-col gap-3">
-              <div>
-                <label className="text-[11px] font-bold text-gray-300 block mb-1">
-                  請輸入管理員密碼
-                </label>
-                <input
-                  type="password"
-                  placeholder="輸入管理員驗證密碼"
-                  value={pinInput}
-                  autoFocus
-                  onChange={(e) => {
-                    setPinInput(e.target.value);
-                    setPinError(false);
-                    setPinErrorMsg(null);
-                  }}
-                  maxLength={128}
-                  className={`w-full bg-[#0d1017] border ${pinError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-[#2e374c] focus:border-amber-400'} px-3 py-2 rounded-lg text-white font-mono text-center text-sm outline-none`}
-                />
-                {pinError && (
-                  <p className="text-rose-400 text-[10px] mt-1 font-semibold text-center">{pinErrorMsg || '密碼錯誤，請重新輸入'}</p>
-                )}
-              </div>
-
-              <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#242b3b]">
-                {isDev ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (typeof window !== 'undefined') {
-                        sessionStorage.setItem('gods_eye_admin_unlocked', 'true');
-                      }
-                      setIsUnlocked(true);
-                      setIsUnlockModalOpen(false);
-                      setPinError(false);
-                      setGithubStatus({
-                        configured: true,
-                        repo: 'Ycf206/Vancouver-God-Eyes (開發環境模擬)',
-                        token_masked: 'ghp_dev_mock_token_active'
-                      });
-                    }}
-                    className="px-2.5 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                    <span>開發環境免密解鎖</span>
-                  </button>
-                ) : <div />}
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => { setIsUnlockModalOpen(false); setPinError(false); }}
-                    className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f2635] text-xs font-semibold cursor-pointer"
-                  >
-                    取消
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={!pinInput.trim()}
-                    className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-xs transition-colors cursor-pointer shadow-md"
-                  >
-                    確認解鎖
                   </button>
                 </div>
               </div>

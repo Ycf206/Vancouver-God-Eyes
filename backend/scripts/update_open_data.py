@@ -374,7 +374,7 @@ def update_fire_hydrants():
                 "geo_point_2d": {"lon": lon, "lat": lat}
             }
         })
-    save_geojson("vancouver_fire_hydrants", features, frequency="每 6 個月 (Semi-Annual)")
+    save_geojson("vancouver_fire_hydrants", features)
     sync_to_db("fire_hydrants", features)
 
 def update_homeless_shelters():

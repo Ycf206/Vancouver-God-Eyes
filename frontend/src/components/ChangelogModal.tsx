@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { History, X, Sparkles, Tag, Calendar, ChevronDown, ChevronUp, CheckCircle2, Layers } from 'lucide-react';
+import { History, X, Tag, Calendar, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
 
 interface ChangelogEntry {
   version: string;

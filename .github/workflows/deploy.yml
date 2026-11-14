@@ -8,7 +8,6 @@ on:
     paths-ignore:
       - '.github/workflows/update-*.yml'
       - '.github/workflows/oci-monthly-sync.yml'
-      - '.github/workflows/weekly-datasets.yml'
       - 'backend/data/admin_sources_config.json'
       - 'README.md'
       - 'docs/**'

@@ -284,14 +284,14 @@ async def security_and_rate_limit_middleware(request: Request, call_next):
         if path in ("/api/admin/auth/login", "/api/admin/auth/logout"):
             return await call_next(request)
 
-        # 本地開發環境 (localhost / 127.0.0.1 / :3000) 自動放行，方便除錯與界面功能測試
-        client_ip = _get_client_ip(request)
-        host_header = request.headers.get("host", "").lower()
-        dev_bypass_header = request.headers.get("X-Admin-Dev-Bypass", "").lower() in ("true", "1")
-        is_local_dev = (
-            (client_ip in ("127.0.0.1", "::1", "localhost") or dev_bypass_header)
-            and any(h in host_header for h in ("localhost", "127.0.0.1", "::1", "3000", "8000"))
-        )
+        # 本地開發環境 (真實 loopback 連線 + 本地 Host) 才自動放行，防止偽造 Host / X-Admin-Dev-Bypass 繞過
+        raw_client_host = (request.client.host if request.client else "").strip().lower()
+        fwd_for = (request.headers.get("cf-connecting-ip") or request.headers.get("x-forwarded-for") or "").strip().lower()
+        host_header = request.headers.get("host", "").strip().lower()
+        host_only = host_header.split(":")[0].strip("[]")
+        is_loopback_peer = raw_client_host in ("127.0.0.1", "::1", "localhost")
+        has_external_fwd = bool(fwd_for and not any(fwd_for.startswith(ip) for ip in ("127.0.0.1", "::1", "localhost")))
+        is_local_dev = is_loopback_peer and not has_external_fwd and host_only in ("localhost", "127.0.0.1", "::1")
         if is_local_dev:
             return await call_next(request)
 
@@ -396,7 +396,6 @@ from system_log_service import system_log_service
 async def admin_auth_login(request: Request, payload: dict = Body(...)):
     client_ip = _get_client_ip(request)
     # 嚴格防暴力破解鎖定：同一 IP 15 分鐘內最多允許 5 次錯誤嘗試
-    can_try, retry_after = _admin_login_failures.allow(f"check:{client_ip}", max_requests=999999, window_seconds=900)
     with _admin_login_failures._lock:
         recent_fails = [
             t for t in _admin_login_failures._buckets.get(f"fail:{client_ip}", [])
@@ -415,8 +414,17 @@ async def admin_auth_login(request: Request, payload: dict = Body(...)):
 
     password = str(payload.get("password") or payload.get("pin") or "").strip()
     dev_bypass = bool(payload.get("dev_bypass"))
-    host_header = request.headers.get("host", "").lower()
-    is_local_client = client_ip in ("127.0.0.1", "::1", "localhost") or any(h in host_header for h in ("localhost", "127.0.0.1", ":3000", ":8000"))
+    raw_host = request.headers.get("host", "").split(",")[0].strip().lower()
+    host_only = raw_host[1:].split("]", 1)[0] if raw_host.startswith("[") else raw_host.split(":", 1)[0]
+    cf_ip = (request.headers.get("cf-connecting-ip") or "").strip()
+    xff_ip = (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
+    direct_ip = request.client.host if request.client else ""
+    is_local_client = (
+        direct_ip in ("127.0.0.1", "::1", "localhost")
+        and (not cf_ip or cf_ip in ("127.0.0.1", "::1"))
+        and (not xff_ip or xff_ip in ("127.0.0.1", "::1"))
+        and host_only in ("localhost", "127.0.0.1", "::1")
+    )
 
     if not password and not dev_bypass:
         return JSONResponse(status_code=400, content={"status": "error", "message": "請輸入管理員密碼"})
@@ -1520,7 +1528,7 @@ def get_yvr_indoor_pois(refresh: bool = False):
     """
     try:
         import dynamic_layers_service
-        file_path = os.path.join(dynamic_layers_service.DATA_DIR, "yvr_indoor_pois.json")
+        file_path = os.path.join(dynamic_layers_service.BACKEND_DATA_DIR, "yvr_indoor_pois.json")
         if refresh or not os.path.exists(file_path):
             dynamic_layers_service.refresh_yvr_indoor()
         if os.path.exists(file_path):
@@ -1702,8 +1710,7 @@ def get_yvr_parkade_capacity():
     # 支援在後台來源管理動態設定的自訂 URL
     try:
         cfg_paths = [
-            os.path.join(DATA_DIR, "admin_sources_config.json"),
-            os.path.join(os.path.dirname(__file__), "data", "admin_sources_config.json"),
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "admin_sources_config.json"),
         ]
         for p in cfg_paths:
             if os.path.exists(p):
@@ -1759,6 +1766,7 @@ def get_yvr_parkade_capacity():
 
     # 2. 次選使用系統 curl 繞過指紋攔截
     try:
+        import subprocess
         curl_bin = "curl.exe" if os.name == "nt" else "curl"
         curl_args = [
             curl_bin, "-s", url,
@@ -2730,35 +2738,33 @@ def proxy_webcam_image(url: str):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
             "Referer": ref_host
         }
-        r = requests.get(url, headers=headers, timeout=12, allow_redirects=False, stream=True)
-        if r.status_code == 200:
-            mtype = (r.headers.get("content-type") or "image/jpeg").split(";")[0].strip().lower()
-            if not mtype.startswith("image/"):
-                r.close()
-                return Response(status_code=415)
-            chunks = []
-            total_len = 0
-            for chunk in r.iter_content(chunk_size=65536):
-                total_len += len(chunk)
-                if total_len > 5 * 1024 * 1024:
-                    r.close()
-                    return Response(status_code=413)
-                chunks.append(chunk)
-            content = b"".join(chunks)
-            if content:
-                if len(webcam_image_bytes_cache) >= MAX_WEBCAM_BYTES_CACHE_ITEMS:
-                    expired = [k for k, (t_val, _, _) in list(webcam_image_bytes_cache.items()) if now - t_val >= 180]
-                    for k in expired:
-                        webcam_image_bytes_cache.pop(k, None)
+        with requests.get(url, headers=headers, timeout=12, allow_redirects=False, stream=True) as r:
+            if r.status_code == 200:
+                mtype = (r.headers.get("content-type") or "image/jpeg").split(";")[0].strip().lower()
+                if not mtype.startswith("image/"):
+                    return Response(status_code=415)
+                chunks = []
+                total_len = 0
+                for chunk in r.iter_content(chunk_size=65536):
+                    total_len += len(chunk)
+                    if total_len > 5 * 1024 * 1024:
+                        return Response(status_code=413)
+                    chunks.append(chunk)
+                content = b"".join(chunks)
+                if content:
                     if len(webcam_image_bytes_cache) >= MAX_WEBCAM_BYTES_CACHE_ITEMS:
-                        oldest_key = min(webcam_image_bytes_cache, key=lambda k: webcam_image_bytes_cache[k][0])
-                        webcam_image_bytes_cache.pop(oldest_key, None)
-                webcam_image_bytes_cache[url] = (now, content, mtype)
-                return Response(
-                    content=content,
-                    media_type=mtype,
-                    headers={"Cache-Control": "public, max-age=180"}
-                )
+                        expired = [k for k, (t_val, _, _) in list(webcam_image_bytes_cache.items()) if now - t_val >= 180]
+                        for k in expired:
+                            webcam_image_bytes_cache.pop(k, None)
+                        if len(webcam_image_bytes_cache) >= MAX_WEBCAM_BYTES_CACHE_ITEMS:
+                            oldest_key = min(webcam_image_bytes_cache, key=lambda k: webcam_image_bytes_cache[k][0])
+                            webcam_image_bytes_cache.pop(oldest_key, None)
+                    webcam_image_bytes_cache[url] = (now, content, mtype)
+                    return Response(
+                        content=content,
+                        media_type=mtype,
+                        headers={"Cache-Control": "public, max-age=180"}
+                    )
         return Response(status_code=404)
     except Exception as e:
         print(f"Webcam proxy error for {url}: {e}")
@@ -3281,6 +3287,9 @@ def fetch_311_by_date(target_date: str) -> list[dict]:
     從溫哥華 OpenData API 抓取指定日期（溫哥華當地時間 YYYY-MM-DD）的全部 3-1-1 市政服務請求。
     支援本機 311_dates/{target_date}.json 快取以加速後續載入。
     """
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", target_date or ""):
+        return []
+    import tempfile
     import urllib.request
     import urllib.parse
     cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', '311_dates')
@@ -3357,11 +3366,19 @@ def fetch_311_by_date(target_date: str) -> list[dict]:
                 matched_records.append(r)
 
     if matched_records:
+        tmp_path = None
         try:
-            with open(cache_file, 'w', encoding='utf-8') as f:
+            fd, tmp_path = tempfile.mkstemp(dir=cache_dir, prefix=f".311_{target_date}_", suffix=".tmp")
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 json.dump(matched_records, f, ensure_ascii=False, indent=2)
+            os.replace(tmp_path, cache_file)
+            tmp_path = None
         except Exception:
-            pass
+            if tmp_path and os.path.exists(tmp_path):
+                try:
+                    os.unlink(tmp_path)
+                except OSError:
+                    pass
 
     return matched_records
 
@@ -4441,9 +4458,6 @@ def set_admin_github_token(payload: dict = Body(...)):
     return {"status": "success", "message": msg}
 
 
-import json
-import re
-
 CANONICAL_WORKFLOW_MAP: dict[str, str] = {
     "shared_bikes": "update-shared-bikes-hourly.yml",
     "escooter": "update-escooter-hourly.yml",
@@ -4507,6 +4521,13 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "purolator": ["vancouver_purolator.geojson"],
     "vancouver_crashes": ["vancouver_crashes.json"],
     "yvr_news_rss": ["yvr_news_rss.json", "yvr_news.json"],
+    "consulates": ["vancouver_consulates.geojson"],
+    "yvr_indoor": ["yvr_indoor_pois.json"],
+    "flight_schedules": ["vancouver_yvr_flights.json"],
+    "yvr_flights": ["vancouver_yvr_flights.json"],
+    "bchydro_outages": ["bchydro_outages_current.json", "bchydro_outages_map.geojson"],
+    "bchydro_restored": ["bchydro_outages_restored.json"],
+    "bchydro_planned": ["bchydro_outages_planned.json"],
 }
 
 
@@ -5081,7 +5102,7 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         _oci_runtime_ts["sports_bandits"] = time.time()
         cnt = data.get("totalGames") or len(data.get("games", []))
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 CEBL 官方 Vancouver Bandits {cur_y} 賽季賽程，共 {cnt} 場賽事。")
-    if sid in ("shopping_flipp", "flipp_flyers", "tnt_eflyers"):
+    if sid in ("shopping_flipp", "flipp_flyers"):
         import flipp_service
         data = flipp_service.fetch_flipp_flyers(force=True)
         _oci_runtime_ts["shopping_flipp"] = time.time()

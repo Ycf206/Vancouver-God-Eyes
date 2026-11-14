@@ -125,11 +125,13 @@ export default function PowerOutagesDrawer() {
     if (isManualRefresh) setRefreshing(true);
     else setLoading(true);
 
+    let anySucceeded = false;
     try {
       // 1. 抓取現正停電與地區警報 (current)
       const resCurrent = await fetch('/bchydro_outages_current.json?t=' + Date.now()).catch(() => null);
       if (resCurrent && resCurrent.ok) {
         const dataC = await resCurrent.json();
+        anySucceeded = true;
         if (dataC.messagesMap && typeof dataC.messagesMap === 'object') {
           const msgList: RegionMessage[] = Object.values(dataC.messagesMap);
           setMessages(msgList);
@@ -143,6 +145,7 @@ export default function PowerOutagesDrawer() {
       const resRestored = await fetch('/bchydro_outages_restored.json?t=' + Date.now()).catch(() => null);
       if (resRestored && resRestored.ok) {
         const dataR = await resRestored.json();
+        anySucceeded = true;
         if (Array.isArray(dataR.all_outages)) {
           setRestoredOutages(dataR.all_outages);
         }
@@ -152,12 +155,17 @@ export default function PowerOutagesDrawer() {
       const resPlanned = await fetch('/bchydro_outages_planned.json?t=' + Date.now()).catch(() => null);
       if (resPlanned && resPlanned.ok) {
         const dataP = await resPlanned.json();
+        anySucceeded = true;
         if (Array.isArray(dataP.all_outages)) {
           setPlannedOutages(dataP.all_outages);
         }
       }
 
-      setLastDataFetchTime(new Date());
+      if (anySucceeded) {
+        setLastDataFetchTime(new Date());
+      } else {
+        console.warn('[PowerOutagesDrawer] All BC Hydro data fetches failed');
+      }
     } catch (e) {
       console.error('[PowerOutagesDrawer] loadData failed:', e);
     } finally {
