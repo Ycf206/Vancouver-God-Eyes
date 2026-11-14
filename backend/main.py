@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Body, Request, Response
+from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Body, Query, Request, Response
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -1679,6 +1679,80 @@ def get_shopping_flyers(refresh: bool = False, force: bool = False):
         print(f"Error serving flipp flyers: {e}")
         return JSONResponse(status_code=500, content={"error": str(e), "merchants": []})
 
+
+@app.get("/api/finance/search")
+async def get_finance_stock_search(q: str = ""):
+    """
+    股票代號即時搜尋建議 (Yahoo Finance Search API，供股票搜尋與 TFSA 投資配置使用)。
+    """
+    try:
+        import finance_service
+        status_code, payload = await asyncio.to_thread(finance_service.get_stock_suggestions, q)
+        headers = (
+            {"Cache-Control": "public, max-age=60, stale-while-revalidate=120"}
+            if status_code == 200 and q.strip()
+            else {}
+        )
+        return JSONResponse(status_code=status_code, content=payload, headers=headers)
+    except Exception as e:
+        logger.error(f"Error searching finance symbols: {e}")
+        return JSONResponse(status_code=200, content={"success": False, "suggestions": []})
+
+
+@app.get("/api/finance/stock")
+async def get_finance_stock_quote(
+    symbol: str = "",
+    interval: str = "1d",
+    range_val: str = Query("1mo", alias="range"),
+    period1: Optional[str] = None,
+    period2: Optional[str] = None,
+    includePrePost: str = "false",
+):
+    """
+    查詢個股報價與 K 線歷史時間序列 (Yahoo Finance Chart API)。
+    """
+    try:
+        import finance_service
+        status_code, payload = await asyncio.to_thread(
+            finance_service.get_stock_quote,
+            symbol,
+            interval,
+            range_val,
+            period1,
+            period2,
+            includePrePost.lower() == "true",
+        )
+        headers = (
+            {"Cache-Control": "public, max-age=15, stale-while-revalidate=60"}
+            if status_code == 200
+            else {}
+        )
+        return JSONResponse(status_code=status_code, content=payload, headers=headers)
+    except Exception as e:
+        logger.error(f"Error fetching finance stock quote: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": f"查詢股票失敗: {e}"},
+        )
+
+
+@app.get("/api/finance/news")
+async def get_finance_market_news(q: str = "market"):
+    """
+    取得財經市場與加拿大商業新聞 (Yahoo Finance + CBC Business RSS)。
+    """
+    try:
+        import finance_service
+        payload = await asyncio.to_thread(finance_service.get_finance_news, q)
+        return JSONResponse(
+            content=payload,
+            headers={"Cache-Control": "public, max-age=180, stale-while-revalidate=300"},
+        )
+    except Exception as e:
+        logger.error(f"Error fetching finance news: {e}")
+        return JSONResponse(status_code=500, content={"success": False, "total": 0, "news": []})
+
+
 @app.get("/api/drivebc/events")
 def get_drivebc_events(refresh: bool = False, force: bool = False):
     """
@@ -1857,6 +1931,18 @@ def get_translink_alerts(force: bool = False):
 
 
 
+_WORKBC_HEADERS = {
+    "Accept": "application/json, text/plain, */*",
+    "Content-Type": "application/json",
+    "Origin": "https://www.workbc.ca",
+    "Referer": "https://www.workbc.ca/",
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+}
+
+
 @app.post("/api/jobs/search")
 async def jobs_search_proxy(payload: dict = Body(...)):
     """
@@ -1866,15 +1952,19 @@ async def jobs_search_proxy(payload: dict = Body(...)):
         if not isinstance(payload, dict):
             return JSONResponse(status_code=400, content={"error": "Invalid search payload"})
         safe_payload = dict(payload)
-        if "SearchKeywords" in safe_payload and isinstance(safe_payload["SearchKeywords"], str):
-            safe_payload["SearchKeywords"] = safe_payload["SearchKeywords"][:150]
-        if "Keywords" in safe_payload and isinstance(safe_payload["Keywords"], str):
-            safe_payload["Keywords"] = safe_payload["Keywords"][:150]
+        for kw_key in ("Keyword", "SearchKeywords", "Keywords"):
+            if kw_key in safe_payload and isinstance(safe_payload[kw_key], str):
+                safe_payload[kw_key] = safe_payload[kw_key][:150]
         if "PageSize" in safe_payload:
             try:
-                safe_payload["PageSize"] = max(1, min(50, int(safe_payload["PageSize"])))
+                safe_payload["PageSize"] = max(1, min(100, int(safe_payload["PageSize"])))
             except (ValueError, TypeError):
                 safe_payload["PageSize"] = 20
+        if "Page" in safe_payload:
+            try:
+                safe_payload["Page"] = max(1, min(500, int(safe_payload["Page"])))
+            except (ValueError, TypeError):
+                safe_payload["Page"] = 1
         if not safe_payload.get("SearchLocations"):
             safe_payload["SearchLocations"] = [{"City": "Vancouver", "Postal": "", "Region": ""}]
         if safe_payload.get("SearchLocationDistance") is None:
@@ -1882,15 +1972,15 @@ async def jobs_search_proxy(payload: dict = Body(...)):
 
         resp = await asyncio.to_thread(
             requests.post,
-            "https://dev-api-jobboard.workbc.ca/api/Search/JobSearch",
+            "https://workbc-jb.a55eb5-prod.stratus.cloud.gov.bc.ca/api/Search/JobSearch",
             json=safe_payload,
-            headers={
-                "Content-Type": "application/json",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            },
+            headers=_WORKBC_HEADERS,
             timeout=12,
         )
-        return Response(content=resp.content, status_code=resp.status_code, media_type="application/json")
+        if not resp.ok:
+            logger.warning(f"WorkBC JobSearch upstream HTTP {resp.status_code}")
+            return JSONResponse(status_code=resp.status_code, content={"error": f"WorkBC API error ({resp.status_code})"})
+        return Response(content=resp.content, status_code=200, media_type="application/json")
     except Exception as e:
         logger.error(f"Error proxying WorkBC job search: {e}")
         return JSONResponse(status_code=502, content={"error": "無法連線至職缺搜尋服務，請稍後再試"})
@@ -1909,12 +1999,13 @@ async def jobs_detail_proxy(jobId: str):
         resp = await asyncio.to_thread(
             requests.get,
             f"https://workbc-jb.a55eb5-prod.stratus.cloud.gov.bc.ca/api/Search/GetJobDetail?jobId={encoded_id}",
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            },
+            headers=_WORKBC_HEADERS,
             timeout=12,
         )
-        return Response(content=resp.content, status_code=resp.status_code, media_type="application/json")
+        if not resp.ok:
+            logger.warning(f"WorkBC GetJobDetail upstream HTTP {resp.status_code}")
+            return JSONResponse(status_code=resp.status_code, content={"error": f"WorkBC Detail API error ({resp.status_code})"})
+        return Response(content=resp.content, status_code=200, media_type="application/json")
     except Exception as e:
         logger.error(f"Error proxying WorkBC job detail: {e}")
         return JSONResponse(status_code=502, content={"error": "無法載入職缺詳情，請稍後再試"})

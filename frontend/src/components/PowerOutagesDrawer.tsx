@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { 
   ZapOff, Zap, TriangleAlert, ExternalLink, RefreshCw, X, Search, 
   Navigation, ArrowUpDown, Filter, ChevronLeft, ChevronRight,
@@ -96,7 +96,30 @@ export default function PowerOutagesDrawer() {
     setSelectedOutageId 
   } = useUIStore();
 
+  const hasFocusedOutageRef = useRef<boolean>(false);
+  const prevOpenRef = useRef<boolean>(isPowerOutagesOpen);
+
+  const resetOutageMapView = useCallback(() => {
+    setSelectedOutageId(null);
+    if (hasFocusedOutageRef.current) {
+      hasFocusedOutageRef.current = false;
+      const win = typeof window !== 'undefined'
+        ? (window as Window & { __godsEyeResetView?: () => void })
+        : null;
+      win?.__godsEyeResetView?.();
+    }
+  }, [setSelectedOutageId]);
+
+  useEffect(() => {
+    const justClosed = prevOpenRef.current && !isPowerOutagesOpen;
+    prevOpenRef.current = isPowerOutagesOpen;
+    if (justClosed) {
+      resetOutageMapView();
+    }
+  }, [isPowerOutagesOpen, resetOutageMapView]);
+
   const handleClose = () => {
+    resetOutageMapView();
     setPowerOutagesOpen(false);
     setLayers({ powerOutages: false });
   };
@@ -313,6 +336,7 @@ export default function PowerOutagesDrawer() {
   // 地圖跳轉定位
   const handleLocateOnMap = (item: OutageItem) => {
     if (item.latitude && item.longitude && !(item.latitude === 0 && item.longitude === 0)) {
+      hasFocusedOutageRef.current = true;
       setSelectedOutageId(item.id);
       if (typeof window !== 'undefined' && (window as any).__godsEyeFlyTo) {
         (window as any).__godsEyeFlyTo(item.longitude, item.latitude, 14);
