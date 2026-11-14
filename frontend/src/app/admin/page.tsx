@@ -131,6 +131,9 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   public_trees: 'publicTrees',
   museums: 'museums',
   consulates: 'consulates',
+  water_supply: 'waterSupply',
+  sewer_system: 'sewerSystem',
+  mobile_coverage: 'mobileCoverage',
 };
 
 type AdminSystemCategory = '交通' | '道路' | '天氣' | '生活' | '安全' | '能源';
@@ -158,7 +161,7 @@ function getSystemCategory(source: { id: string; category?: string; name?: strin
   const energyIds = new Set([
     'bchydro_current', 'bchydro_restored', 'bchydro_planned',
     'bchydro_outages_current', 'bchydro_outages_restored', 'bchydro_outages_planned',
-    'power_outages', 'powerOutages', 'zoning_districts', 'contours',
+    'power_outages', 'powerOutages', 'water_supply', 'sewer_system', 'zoning_districts', 'contours',
   ]);
 
   if (transitIds.has(source.id)) return '交通';

@@ -1,5 +1,356 @@
 [
   {
+    "id": "sync-1794691503036-service_requests_311",
+    "timestamp": "2026-11-14T21:25:02.954Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "3-1-1",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+  },
+  {
+    "id": "sync-1794689797696-mobile_coverage",
+    "timestamp": "2026-11-14T20:56:37.267Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華流動網絡涵蓋範圍 (Telus / Rogers / Virgin Plus / Bell / Freedom)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華流動網絡涵蓋範圍 (Telus / Rogers / Virgin Plus / Bell / Freedom)] 資料同步完成，共載入 59 筆記錄。"
+  },
+  {
+    "id": "sync-1794689558970-mobile_coverage",
+    "timestamp": "2026-11-14T20:52:38.525Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "mobile_coverage",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [mobile_coverage] 資料同步完成，共載入 59 筆記錄。"
+  },
+  {
+    "id": "sync-1794689413052-mobile_coverage",
+    "timestamp": "2026-11-14T20:50:12.745Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "mobile_coverage",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [mobile_coverage] 資料同步完成，共載入 54 筆記錄。"
+  },
+  {
+    "id": "sync-1794689170281-sewer_system",
+    "timestamp": "2026-11-14T20:46:10.264Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 15,300 筆記錄。"
+  },
+  {
+    "id": "sync-1794689169328-sewer_system",
+    "timestamp": "2026-11-14T20:46:08.587Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 5,821 筆記錄。"
+  },
+  {
+    "id": "sync-1794689148109-water_supply",
+    "timestamp": "2026-11-14T20:45:48.092Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 17,709 筆記錄。"
+  },
+  {
+    "id": "sync-1794689147079-water_supply",
+    "timestamp": "2026-11-14T20:45:46.797Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 2,145 筆記錄。"
+  },
+  {
+    "id": "log-1794687839250",
+    "timestamp": "2026-11-14T20:23:59.248353+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Metro Vancouver 污水系統設施",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Metro Vancouver 污水系統設施 (sewer_system)，成功更新 5821 筆資料至 vancouver_sewer_system.geojson。",
+    "record_count": 5821
+  },
+  {
+    "id": "sync-1794687839206-sewer_system",
+    "timestamp": "2026-11-14T20:23:58.336Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 5,821 筆記錄。"
+  },
+  {
+    "id": "log-1794687832162",
+    "timestamp": "2026-11-14T20:23:52.160861+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Metro Vancouver 供水系統設施",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Metro Vancouver 供水系統設施 (water_supply)，成功更新 2277 筆資料至 vancouver_water_supply.geojson。",
+    "record_count": 2277
+  },
+  {
+    "id": "sync-1794687832128-water_supply",
+    "timestamp": "2026-11-14T20:23:51.837Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 2,277 筆記錄。"
+  },
+  {
+    "id": "log-1794687827977",
+    "timestamp": "2026-11-14T20:23:47.974906+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 預期停電",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 567 筆資料至 bchydro_outages_planned.json。",
+    "record_count": 567
+  },
+  {
+    "id": "log-1794687827316",
+    "timestamp": "2026-11-14T20:23:47.313926+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 恢復供電 (14天)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3600 筆資料至 bchydro_outages_restored.json。",
+    "record_count": 3600
+  },
+  {
+    "id": "log-1794687824966",
+    "timestamp": "2026-11-14T20:23:44.965009+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 現正停電與警報",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 11 筆資料至 bchydro_outages_current.json。",
+    "record_count": 11
+  },
+  {
+    "id": "log-1794687824696",
+    "timestamp": "2026-11-14T20:23:44.694153+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Lime 共享滑板車 (每小時即時車況)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Lime 共享滑板車 (每小時即時車況) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+    "record_count": 251
+  },
+  {
+    "id": "sync-1794687824692-escooter",
+    "timestamp": "2026-11-14T20:23:44.567Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享滑板車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+  },
+  {
+    "id": "log-1794687824331",
+    "timestamp": "2026-11-14T20:23:44.328707+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Mobi 共享單車 (每小時即時車位)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Mobi 共享單車 (每小時即時車位) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+    "record_count": 262
+  },
+  {
+    "id": "sync-1794687824326-shared_bikes",
+    "timestamp": "2026-11-14T20:23:44.234Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享單車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+  },
+  {
+    "id": "sync-1794684031848-sewer_system",
+    "timestamp": "2026-11-14T19:20:30.909Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "sewer_system",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [sewer_system] 資料同步完成，共載入 5,821 筆記錄。"
+  },
+  {
+    "id": "sync-1794684025796-water_supply",
+    "timestamp": "2026-11-14T19:20:25.509Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "water_supply",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [water_supply] 資料同步完成，共載入 2,277 筆記錄。"
+  },
+  {
+    "id": "log-1794683329930",
+    "timestamp": "2026-11-14T19:08:49.929243+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 預期停電",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 563 筆資料至 bchydro_outages_planned.json。",
+    "record_count": 563
+  },
+  {
+    "id": "log-1794683329345",
+    "timestamp": "2026-11-14T19:08:49.344164+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 恢復供電 (14天)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3597 筆資料至 bchydro_outages_restored.json。",
+    "record_count": 3597
+  },
+  {
+    "id": "log-1794683326686",
+    "timestamp": "2026-11-14T19:08:46.685362+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 現正停電與警報",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 14 筆資料至 bchydro_outages_current.json。",
+    "record_count": 14
+  },
+  {
+    "id": "log-1794683326512",
+    "timestamp": "2026-11-14T19:08:46.511037+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Lime 共享滑板車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+    "record_count": 251
+  },
+  {
+    "id": "sync-1794683326509-escooter",
+    "timestamp": "2026-11-14T19:08:46.442Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享滑板車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+  },
+  {
+    "id": "log-1794683326029",
+    "timestamp": "2026-11-14T19:08:46.028277+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Mobi 共享單車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+    "record_count": 262
+  },
+  {
+    "id": "sync-1794683326024-shared_bikes",
+    "timestamp": "2026-11-14T19:08:45.934Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享單車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+  },
+  {
+    "id": "log-1794663186372",
+    "timestamp": "2026-11-14T13:33:06.371231+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 預期停電",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 545 筆資料至 bchydro_outages_planned.json。",
+    "record_count": 545
+  },
+  {
+    "id": "log-1794663185959",
+    "timestamp": "2026-11-14T13:33:05.958462+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 恢復供電 (14天)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3586 筆資料至 bchydro_outages_restored.json。",
+    "record_count": 3586
+  },
+  {
+    "id": "log-1794663183300",
+    "timestamp": "2026-11-14T13:33:03.298752+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 現正停電與警報",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 5 筆資料至 bchydro_outages_current.json。",
+    "record_count": 5
+  },
+  {
+    "id": "log-1794663183081",
+    "timestamp": "2026-11-14T13:33:03.080500+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "3-1-1 市政服務請求",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：3-1-1 市政服務請求 (service_requests_311)，成功更新 1000 筆資料至 vancouver_311.json。",
+    "record_count": 1000
+  },
+  {
+    "id": "sync-1794663183079-service_requests_311",
+    "timestamp": "2026-11-14T13:33:02.990Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "3-1-1",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+  },
+  {
+    "id": "log-1794663177157",
+    "timestamp": "2026-11-14T13:32:57.154860+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Lime 共享滑板車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 251 筆資料至 vancouver_escooter.geojson。",
+    "record_count": 251
+  },
+  {
+    "id": "sync-1794663177152-escooter",
+    "timestamp": "2026-11-14T13:32:57.086Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享滑板車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享滑板車] 資料同步完成，共載入 251 筆記錄。"
+  },
+  {
+    "id": "log-1794663176421",
+    "timestamp": "2026-11-14T13:32:56.419306+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Mobi 共享單車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+    "record_count": 262
+  },
+  {
+    "id": "sync-1794663176385-shared_bikes",
+    "timestamp": "2026-11-14T13:32:56.226Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享單車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+  },
+  {
     "id": "log-1794632079679",
     "timestamp": "2026-11-14T04:54:39.677351+00:00",
     "action": "OCI_DAEMON_SYNC",
@@ -898,60 +1249,6 @@
   {
     "id": "gh-run-42752119229-escooter",
     "timestamp": "2026-11-10T03:52:08Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享滑板車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-  },
-  {
-    "id": "gh-run-42700656206-shared_bikes",
-    "timestamp": "2026-11-09T21:15:24Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享單車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-  },
-  {
-    "id": "gh-run-42699724843-escooter",
-    "timestamp": "2026-11-09T21:09:39Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享滑板車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
-  },
-  {
-    "id": "gh-run-42671029978-service_requests_311",
-    "timestamp": "2026-11-09T18:07:14Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "3-1-1",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-311.yml 執行成功，目前共 1324622 筆即時案件。"
-  },
-  {
-    "id": "gh-run-42644967326-food_vendors",
-    "timestamp": "2026-11-09T15:28:50Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "街頭餐車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-food-vendors.yml 執行成功，目前共 10 處街頭餐車與熟食攤位。"
-  },
-  {
-    "id": "gh-run-42603122175-shared_bikes",
-    "timestamp": "2026-11-09T10:44:52Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享單車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-  },
-  {
-    "id": "gh-run-42601154831-escooter",
-    "timestamp": "2026-11-09T10:29:18Z",
     "action": "GITHUB_WORKFLOW_SYNC",
     "source_name": "共享滑板車",
     "runner": "github_actions",

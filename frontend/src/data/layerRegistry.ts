@@ -27,6 +27,7 @@ export type LayerIconKey =
   | 'Construction'
   | 'Droplets'
   | 'EvCharger'
+  | 'Faucet'
   | 'Fingerprint'
   | 'FireExtinguisher'
   | 'Flower2'
@@ -63,6 +64,7 @@ export type LayerIconKey =
   | 'Scooter'
   | 'Ship'
   | 'ShipCargo'
+  | 'Signal'
   | 'Siren'
   | 'Snowflake'
   | 'Soup'
@@ -1088,6 +1090,21 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     activeShadow: 'shadow-[0_0_6px_rgba(6,182,212,0.15)]',
     defaultColor: '#06b6d4',
   },
+  {
+    id: 'mobileCoverage',
+    layerKey: 'mobileCoverage',
+    name: '流動網絡',
+    buttonLabel: '流動網絡',
+    categoryId: 'lifestyle',
+    category: '生活',
+    keywords: ['mobile', 'coverage', 'cellular', '5g', 'lte', 'telus', 'rogers', 'bell', 'virgin', 'freedom', '流動網絡', '手機訊號', '電信'],
+    iconKey: 'Signal',
+    colorClass: 'text-purple-400',
+    activeBg: 'bg-[#211333]',
+    activeBorder: 'border-purple-500/50',
+    activeShadow: 'shadow-[0_0_6px_rgba(147,51,234,0.2)]',
+    defaultColor: '#9333ea',
+  },
 
   // ===================== 自然 NATURE =====================
   {
@@ -1322,6 +1339,38 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     activeBorder: 'border-amber-500/50',
     activeShadow: 'shadow-[0_0_6px_rgba(245,158,11,0.2)]',
     defaultColor: '#f97316',
+  },
+  {
+    id: 'waterSupply',
+    layerKey: 'waterSupply',
+    name: '大溫區域供水系統設施',
+    buttonLabel: '供水',
+    title: 'Metro Vancouver 區域供水系統設施',
+    categoryId: 'utilities',
+    category: '能源',
+    keywords: ['water supply', 'water', 'reservoir', 'dam', 'filtration', 'pump station', '供水', '自來水', '淨水廠', '蓄水池', '水庫', '水壩'],
+    iconKey: 'Faucet',
+    colorClass: 'text-sky-400',
+    activeBg: 'bg-[#0e2230]',
+    activeBorder: 'border-sky-500/50',
+    activeShadow: 'shadow-[0_0_6px_rgba(2,132,199,0.2)]',
+    defaultColor: '#0284c7',
+  },
+  {
+    id: 'sewerSystem',
+    layerKey: 'sewerSystem',
+    name: '大溫區域污水與排水設施',
+    buttonLabel: '污水',
+    title: 'Metro Vancouver 區域污水與排水設施',
+    categoryId: 'utilities',
+    category: '能源',
+    keywords: ['sewer', 'sewerage', 'wastewater', 'cso', 'sso', 'outfall', 'flow meter', '污水', '下水道', '排水', '污水處理廠', '溢流'],
+    iconKey: 'Droplets',
+    colorClass: 'text-teal-400',
+    activeBg: 'bg-[#0f2627]',
+    activeBorder: 'border-teal-500/50',
+    activeShadow: 'shadow-[0_0_6px_rgba(13,148,136,0.2)]',
+    defaultColor: '#0d9488',
   },
 
   // ===================== 地理 GEOGRAPHY =====================

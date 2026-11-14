@@ -98,6 +98,8 @@ export interface UIState {
     roadClosures: boolean;
     roadConstruction: boolean;
     powerOutages: boolean;
+    waterSupply: boolean;
+    sewerSystem: boolean;
     beachWaterQuality: boolean;
     fireHydrants: boolean;
     zoningDistricts: boolean;
@@ -108,6 +110,7 @@ export interface UIState {
     railways: boolean;
     trafficSignals: boolean;
     turnRestrictions: boolean;
+    mobileCoverage: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -366,6 +369,8 @@ export const useUIStore = create<UIState>()(
         roadClosures: false,
         roadConstruction: false,
         powerOutages: false,
+        waterSupply: false,
+        sewerSystem: false,
         beachWaterQuality: false,
         fireHydrants: false,
         zoningDistricts: false,
@@ -376,6 +381,7 @@ export const useUIStore = create<UIState>()(
         railways: false,
         trafficSignals: false,
         turnRestrictions: false,
+        mobileCoverage: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
@@ -525,6 +531,8 @@ export const useUIStore = create<UIState>()(
               (layer === 'airports' && st.category === 'airports') ||
               (layer === 'airportIndoor' && st.category === 'airport_indoor') ||
               (layer === 'consulates' && st.category === 'consulates') ||
+              (layer === 'waterSupply' && st.category === 'water_supply') ||
+              (layer === 'sewerSystem' && st.category === 'sewer_system') ||
               ((layer === 'bcferriesTerminals' || layer === 'bcferriesRoutes') && st.category === 'ferry_terminal') ||
               (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
               (layer === 'maritimeShipping' && st.category === 'maritime_vessel') ||

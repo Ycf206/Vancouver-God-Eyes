@@ -195,6 +195,9 @@ FILENAME_TO_SOURCE_ID = {
     "vancouver_purolator.geojson": "purolator",
     "vancouver_crashes.json": "vancouver_crashes",
     "vancouver_consulates.geojson": "consulates",
+    "vancouver_water_supply.geojson": "water_supply",
+    "vancouver_sewer_system.geojson": "sewer_system",
+    "vancouver_mobile_coverage.geojson": "mobile_coverage",
 }
 
 
@@ -265,7 +268,7 @@ def update_admin_source_metadata(source_id: str, record_count: int = None, updat
         print(f"  ⚠️ 無法同步更新 admin_sources_config.json [{source_id}]: {e}")
 
 
-def save_layer_geojson(filename, data_or_features, is_feature_list=True):
+def save_layer_geojson(filename, data_or_features, is_feature_list=True, compact=False):
     """Saves GeoJSON file to backend/data and frontend/public and syncs admin source metadata."""
     if not filename.endswith(".geojson"):
         filename = f"{filename}.geojson"
@@ -293,7 +296,10 @@ def save_layer_geojson(filename, data_or_features, is_feature_list=True):
         fd, tmp_path = tempfile.mkstemp(dir=target_dir, prefix=".layer_", suffix=".tmp")
         try:
             with os.fdopen(fd, "w", encoding="utf-8") as f:
-                json.dump(payload, f, ensure_ascii=False, indent=2)
+                if compact:
+                    json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
+                else:
+                    json.dump(payload, f, ensure_ascii=False, indent=2)
             os.replace(tmp_path, target_path)
         except Exception:
             if os.path.exists(tmp_path):

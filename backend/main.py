@@ -2554,7 +2554,7 @@ CURATED_STATIC_TYPES = (
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
     "road_closures", "road_construction", "traffic_conditions",
     "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "traffic_alerts", "public_trees",
-    "museums", "garbage_collection"
+    "museums", "garbage_collection", "water_supply", "sewer_system"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
@@ -3051,6 +3051,8 @@ _ALLOWED_DB_ROAD_FACILITY_TYPES = {
     "fuel",
     "tesla",
     "impark",
+    "water_supply",
+    "sewer_system",
 }
 
 @app.get("/api/geojson/road/{facility_type}")
@@ -4556,6 +4558,7 @@ CANONICAL_WORKFLOW_MAP: dict[str, str] = {
     "service_requests_311": "update-311.yml",
     "vancouver_311": "update-311.yml",
     "vancouver_railways": "update-railways.yml",
+    "mobile_coverage": "update-mobile-coverage.yml",
 }
 
 EXTRA_WORKFLOW_TO_SOURCES: dict[str, list[str]] = {
@@ -4619,6 +4622,9 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "bchydro_outages": ["bchydro_outages_current.json", "bchydro_outages_map.geojson"],
     "bchydro_restored": ["bchydro_outages_restored.json"],
     "bchydro_planned": ["bchydro_outages_planned.json"],
+    "water_supply": ["vancouver_water_supply.geojson", "vancouver_water_mains.geojson"],
+    "sewer_system": ["vancouver_sewer_system.geojson", "vancouver_sewer_lines.geojson"],
+    "mobile_coverage": ["vancouver_mobile_coverage.geojson"],
 }
 
 
@@ -5263,6 +5269,16 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         cnt = dynamic_layers_service.refresh_yvr_indoor()
         _oci_runtime_ts["yvr_indoor"] = time.time()
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 YVR 機場內部地圖設施，共載入 {cnt} 筆位置資料。")
+    if sid == "water_supply":
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_water_supply()
+        _oci_runtime_ts["water_supply"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 Metro Vancouver 供水系統設施，共載入 {cnt} 筆位置資料。")
+    if sid in ("sewer_system", "sewer"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_sewer_system()
+        _oci_runtime_ts["sewer_system"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 Metro Vancouver 污水系統設施，共載入 {cnt} 筆位置資料。")
     return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
 
 
@@ -5296,7 +5312,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
             # 判斷是否為批次觸發
             if source_id == 'all_oci' or (source_id == 'all' and target_runner == 'oci'):
                 target_name = "全部 OCI 伺服器即時服務"
-                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss", "yvr_indoor"):
+                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss", "yvr_indoor", "water_supply", "sewer_system"):
                     try:
                         _refresh_single_oci_service(idx_s)
                     except Exception:

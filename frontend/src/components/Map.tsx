@@ -36,7 +36,7 @@ import {
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, Weight, SquareParking, Trophy,
   TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
-  Layers, Building2
+  Layers, Building2, Faucet, Droplets
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -63,6 +63,210 @@ const registerDamIcon = (mapInstance: any) => registerSvgIcon(mapInstance, 'luci
 // Lucide: castle SVG icon for MapLibre consulates symbol layer
 const LUCIDE_CASTLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5V3"/><path d="M14 5V3"/><path d="M15 21v-3a3 3 0 0 0-6 0v3"/><path d="M18 3v8"/><path d="M18 5H6"/><path d="M22 11H2"/><path d="M22 9v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9"/><path d="M6 3v8"/></svg>`;
 const registerCastleIcon = (mapInstance: any) => registerSvgIcon(mapInstance, 'lucide-castle', LUCIDE_CASTLE_SVG);
+
+// Lucide: faucet & droplets SVG icons for Metro Vancouver Water Supply & Sewerage symbol layers
+const LUCIDE_FAUCET_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M10.083 5.428 5.57 4.083a2 2 0 10.001 3.834l4.512-1.345"/><path d="M12 8v3"/><path d="m13.917 5.428 4.511-1.345a2 2 0 110 3.834l-4.51-1.345"/><path d="M18 17v-4.006"/><path d="M22 11v8"/><path d="M22 12h-3a1 1 0 00-1 .994h-2.539a4 4 0 00-6.915-.012L7 13a5 5 0 00-5 5v1a1 1 0 001 1h2a1 1 0 001-1v-1a1 1 0 01.995-1l1.552.018a4 4 0 006.907 0L18 17a1 1 0 001 1h3"/><circle cx="12" cy="6" r="2"/></svg>`;
+const LUCIDE_DROPLETS_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>`;
+const registerAllVectorSvgIcons = (mapInstance: Parameters<typeof registerDamIcon>[0]) => {
+  registerDamIcon(mapInstance);
+  registerCastleIcon(mapInstance);
+  registerSvgIcon(mapInstance, 'lucide-faucet', LUCIDE_FAUCET_SVG);
+  registerSvgIcon(mapInstance, 'lucide-droplets', LUCIDE_DROPLETS_SVG);
+  registerYvrIndoorIcons(mapInstance);
+};
+
+function pushClusteredUtilityLayers(
+  targetLayers: Array<Record<string, unknown>>,
+  opts: {
+    prefix: string;
+    sourceId: string;
+    baseColor: string;
+    clusterMidColor: string;
+    clusterHighColor: string;
+    iconImage: string;
+  }
+) {
+  const { prefix, sourceId, baseColor, clusterMidColor, clusterHighColor, iconImage } = opts;
+  targetLayers.push(
+    {
+      id: `${prefix}-cluster-layer`,
+      type: 'circle',
+      source: sourceId,
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-color': ['step', ['get', 'point_count'], baseColor, 25, clusterMidColor, 120, clusterHighColor],
+        'circle-radius': ['step', ['get', 'point_count'], 14, 25, 19, 120, 24],
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.92
+      }
+    },
+    {
+      id: `${prefix}-cluster-count`,
+      type: 'symbol',
+      source: sourceId,
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': '{point_count_abbreviated}',
+        'text-size': 11,
+        'text-font': ['Open Sans Bold']
+      },
+      paint: { 'text-color': '#ffffff' }
+    },
+    {
+      id: `${prefix}-layer`,
+      type: 'circle',
+      source: sourceId,
+      filter: ['!', ['has', 'point_count']],
+      paint: {
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 2.5, 13, 5.5, 14, 9, 17, 11],
+        'circle-color': baseColor,
+        'circle-stroke-width': 1.5,
+        'circle-stroke-color': '#ffffff'
+      }
+    },
+    {
+      id: `${prefix}-icon-layer`,
+      type: 'symbol',
+      source: sourceId,
+      filter: ['!', ['has', 'point_count']],
+      minzoom: 13,
+      layout: {
+        'icon-image': iconImage,
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 13, 0.24, 14, 0.36, 17, 0.46],
+        'icon-allow-overlap': true,
+        'icon-ignore-placement': true
+      }
+    }
+  );
+}
+
+const MV_UTILITY_ATTR_ROWS: Array<{ key: string; label: string; format?: (v: unknown) => string }> = [
+  { key: 'municipality', label: '所在城市' },
+  { key: 'address', label: '地址 / 位置' },
+  { key: 'plan_area', label: '規劃分區' },
+  { key: 'sewerage_area', label: '排水流域' },
+  { key: 'owner', label: '權屬機構' },
+  { key: 'status', label: '運行狀態' },
+  { key: 'parent_facility', label: '所屬主設施' },
+  { key: 'facility_section', label: '設施區段' },
+  { key: 'acronym', label: '設施簡碼' },
+  { key: 'site_code', label: '站點代碼' },
+  { key: 'mh_name', label: '檢修井編號' },
+  { key: 'mh_type', label: '結構型式' },
+  { key: 'mh_cover', label: '井蓋規格' },
+  { key: 'bolted', label: '螺栓固定' },
+  { key: 'pressure_hatch', label: '壓力艙蓋' },
+  { key: 'measurement_type', label: '量測項目' },
+  { key: 'classification', label: '監測分類' },
+  { key: 'installation_type', label: '安裝型態' },
+  { key: 'material', label: '材質' },
+  { key: 'x_section', label: '斷面形狀' },
+  { key: 'diameter_mm', label: '口徑尺寸', format: (v) => `${v} mm` },
+  { key: 'width_barrel', label: '井體 / 箱涵寬度' },
+  { key: 'length_barrel', label: '井體 / 箱涵長度' },
+  { key: 'chainage', label: '樁號里程' },
+  { key: 'ground_elev_m', label: '地面高程', format: (v) => `${v} m` },
+  { key: 'invert_m', label: '管底高程', format: (v) => `${v} m` },
+  { key: 'depth_to_invert_m', label: '埋設深度', format: (v) => `${v} m` },
+  { key: 'installed_date', label: '建設日期' },
+  { key: 'basis_of_ownership', label: '產權依據' },
+  { key: 'ownership_ref', label: '產權參考' },
+  { key: 'facility_id', label: 'GIS 設施編號', format: (v) => `#${v}` },
+  { key: 'district_file_no', label: '工程檔案號' },
+  { key: 'drawing_no', label: '工程圖號' },
+  { key: 'sheet_no', label: '圖紙編號' },
+  { key: 'drawing_link_id', label: '圖資索引號' },
+  { key: 'data_tag', label: '遙測標籤' },
+  { key: 'description', label: '詳細說明' },
+  { key: 'other_note', label: '備註資訊' },
+  { key: 'comment', label: '補充說明' },
+];
+
+function MetroUtilityPopupContent({
+  facilityType,
+  props,
+}: {
+  facilityType: 'water_supply' | 'sewer_system';
+  props: Record<string, unknown>;
+}) {
+  const propStr = (key: string): string => {
+    const raw = props[key];
+    if (raw === undefined || raw === null) return '';
+    return String(raw).trim();
+  };
+  const isWater = facilityType === 'water_supply';
+  const stripTrailingEn = (s: string) => s.replace(/\s*\([A-Za-z0-9\s\-/&,+.]+\)\s*$/, '').trim();
+  const typeLabel = stripTrailingEn(propStr('sub_type_zh'));
+  const overflowRows: Array<{ label: string; value: string; highlight?: boolean }> = [];
+  const thresholdExceeded = propStr('threshold_exceeded');
+  const alarmId = propStr('alarm_id');
+  const alarmStart = propStr('alarm_start') || propStr('incident_start');
+  const alarmEnd = propStr('alarm_end') || propStr('incident_end');
+  if (thresholdExceeded) overflowRows.push({ label: '警戒閾值', value: thresholdExceeded, highlight: thresholdExceeded.includes('超過') });
+  if (alarmId) overflowRows.push({ label: '通報編號', value: `#${alarmId}` });
+  if (alarmStart) overflowRows.push({ label: '開始時間', value: alarmStart });
+  if (alarmEnd) overflowRows.push({ label: '結束 / 預計結束', value: alarmEnd });
+
+  const attrRows: Array<{ label: string; value: string }> = [];
+  if (typeLabel) attrRows.push({ label: '設施類型', value: typeLabel });
+  for (const def of MV_UTILITY_ATTR_ROWS) {
+    if (isWater && (def.key === 'municipality' || def.key === 'plan_area' || def.key === 'status')) continue;
+    if (!isWater && def.key === 'address') continue;
+    const raw = props[def.key];
+    if (raw === undefined || raw === null || String(raw).trim() === '') continue;
+    let formatted = def.format ? def.format(raw) : String(raw);
+    if (def.key === 'material') {
+      formatted = stripTrailingEn(formatted);
+    }
+    if (!formatted) continue;
+    attrRows.push({
+      label: def.label,
+      value: formatted,
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-2 text-xs">
+      {overflowRows.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200/80 p-2 rounded flex flex-col gap-1 text-[11px]">
+          <div className="font-bold text-amber-800 flex items-center gap-1">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <span>溢流 / 警報監測紀錄</span>
+          </div>
+          {overflowRows.map((row) => (
+            <div key={row.label} className="flex justify-between items-start gap-2 pt-1 border-t border-amber-200/50">
+              <span className="text-amber-700 shrink-0">{row.label}</span>
+              <span className={`text-right font-medium break-words ${row.highlight ? 'text-rose-700 font-bold' : 'text-amber-950 font-mono'}`}>
+                {row.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {attrRows.length > 0 ? (
+        <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px] max-h-60 overflow-y-auto">
+          {attrRows.map((row, idx) => (
+            <div
+              key={row.label}
+              className={`flex justify-between items-start text-gray-600 gap-2 ${idx > 0 ? 'pt-1.5 border-t border-gray-100' : ''}`}
+            >
+              <span className="shrink-0">{row.label}</span>
+              <span className="text-gray-900 font-medium text-right break-words max-w-[200px]">
+                {row.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-gray-50 p-2.5 rounded border border-gray-100 text-[11px] text-gray-500">
+          此設施點位暫無額外屬性欄位。
+        </div>
+      )}
+    </div>
+  );
+}
 
 const LetterXIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -362,6 +566,8 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   powerOutages: { label: '停電', prefixes: ['power-outages', 'power_outages'] },
   beachWaterQuality: { label: '海灘水質', prefixes: ['beach-water', 'beach_water'] },
   fireHydrants: { label: '消防栓', prefixes: ['fire-hydrants', 'fire_hydrants'] },
+  waterSupply: { label: '供水', prefixes: ['water-supply', 'water_supply'] },
+  sewerSystem: { label: '污水', prefixes: ['sewer-system', 'sewer_system'] },
   zoningDistricts: { label: '土地規劃', prefixes: ['zoning-districts', 'zoning_districts'] },
   publicTrees: { label: '街道樹木', prefixes: ['public-trees', 'public_trees'] },
   airportIndoor: { label: '機場內部地圖', prefixes: ['yvr-indoor'] },
@@ -939,8 +1145,136 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'yvr-indoor-pois-symbol-layer',
   'consulates-layer',
   'consulates-icon-layer',
-  'consulates-symbol-layer'
+  'consulates-symbol-layer',
+  'water-supply-mains-layer',
+  'water-supply-cluster-layer',
+  'water-supply-layer',
+  'water-supply-icon-layer',
+  'sewer-system-lines-layer',
+  'sewer-system-cluster-layer',
+  'sewer-system-layer',
+  'sewer-system-icon-layer'
 ];
+
+type MobileCarrierId = 'telus' | 'rogers' | 'virgin' | 'bell' | 'freedom';
+type MobileTierCategory = '5g_plus' | '5g' | '4g';
+
+interface MobileCoverageTierConfig {
+  value: string;
+  label: string;
+  shortLabel: string;
+  category: MobileTierCategory;
+}
+
+const MOBILE_TIER_CATEGORY_PRESETS: ReadonlyArray<{
+  id: MobileTierCategory;
+  label: string;
+}> = [
+  { id: '5g_plus', label: '5G+' },
+  { id: '5g', label: '5G' },
+  { id: '4g', label: '4G LTE' },
+];
+
+const MOBILE_CARRIER_THEMES: ReadonlyArray<{
+  id: MobileCarrierId;
+  name: string;
+  shortName: string;
+  hex: string;
+  tierText: string;
+  activeCardClass: string;
+  badgeActiveClass: string;
+  url: string;
+  tiers: ReadonlyArray<MobileCoverageTierConfig>;
+}> = [
+  {
+    id: 'telus',
+    name: 'Telus',
+    shortName: 'Telus',
+    hex: '#9333EA',
+    tierText: '5G+ / 5G / LTE',
+    activeCardClass: 'bg-purple-950/40 border-purple-600/60 shadow-[0_0_8px_rgba(147,51,234,0.18)]',
+    badgeActiveClass: 'text-purple-300 bg-purple-900/50',
+    url: 'https://www.telus.com/en/mobility/network/coverage-map',
+    tiers: [
+      { value: '5G+ (3500MHz)', label: '5G+ (3500MHz)', shortLabel: '5G+ 3500MHz', category: '5g_plus' },
+      { value: '5G', label: '5G', shortLabel: '5G', category: '5g' },
+      { value: '4G LTE-Advanced', label: '4G LTE-Advanced', shortLabel: 'LTE-A', category: '4g' },
+      { value: '4G LTE', label: '4G LTE', shortLabel: '4G LTE', category: '4g' },
+    ],
+  },
+  {
+    id: 'rogers',
+    name: 'Rogers',
+    shortName: 'Rogers',
+    hex: '#B91C1C',
+    tierText: '5G+ / 5G / LTE',
+    activeCardClass: 'bg-red-950/45 border-red-800/70 shadow-[0_0_8px_rgba(185,28,28,0.18)]',
+    badgeActiveClass: 'text-red-300 bg-red-950/70',
+    url: 'https://www.rogers.com/mobility/network-coverage-map',
+    tiers: [
+      { value: '5G+', label: '5G+', shortLabel: '5G+', category: '5g_plus' },
+      { value: '5G', label: '5G', shortLabel: '5G', category: '5g' },
+      { value: '4G LTE', label: '4G LTE', shortLabel: '4G LTE', category: '4g' },
+    ],
+  },
+  {
+    id: 'virgin',
+    name: 'Virgin Plus',
+    shortName: 'Virgin',
+    hex: '#FB7185',
+    tierText: '5G / LTE',
+    activeCardClass: 'bg-rose-950/35 border-rose-400/55 shadow-[0_0_8px_rgba(251,113,133,0.16)]',
+    badgeActiveClass: 'text-rose-200 bg-rose-900/45',
+    url: 'https://www.virginplus.ca/en/support/coverage-maps.html',
+    tiers: [
+      { value: '5G', label: '5G', shortLabel: '5G', category: '5g' },
+      { value: '4G LTE', label: '4G LTE', shortLabel: '4G LTE', category: '4g' },
+    ],
+  },
+  {
+    id: 'bell',
+    name: 'Bell',
+    shortName: 'Bell',
+    hex: '#2563EB',
+    tierText: '5G+ / 5G / LTE',
+    activeCardClass: 'bg-blue-950/40 border-blue-600/60 shadow-[0_0_8px_rgba(37,99,235,0.18)]',
+    badgeActiveClass: 'text-blue-300 bg-blue-900/50',
+    url: 'https://www.bell.ca/Mobility/Our_network_coverage',
+    tiers: [
+      { value: '5G+', label: '5G+', shortLabel: '5G+', category: '5g_plus' },
+      { value: '5G', label: '5G', shortLabel: '5G', category: '5g' },
+      { value: '4G LTE', label: '4G LTE', shortLabel: '4G LTE', category: '4g' },
+    ],
+  },
+  {
+    id: 'freedom',
+    name: 'Freedom Mobile',
+    shortName: 'Freedom',
+    hex: '#F97316',
+    tierText: '5G / LTE',
+    activeCardClass: 'bg-orange-950/40 border-orange-500/60 shadow-[0_0_8px_rgba(249,115,22,0.18)]',
+    badgeActiveClass: 'text-orange-300 bg-orange-900/50',
+    url: 'https://www.freedommobile.ca/en-CA/network-coverage',
+    tiers: [
+      { value: '5G / 4G LTE', label: '5G / 4G LTE', shortLabel: '5G / LTE', category: '5g' },
+      { value: '4G LTE (訊號較弱區)', label: '4G LTE (弱訊號區)', shortLabel: '4G 弱訊號區', category: '4g' },
+    ],
+  },
+];
+
+type MobileCoverageFilterState = Record<MobileCarrierId, Record<string, boolean>>;
+
+function createDefaultMobileCoverageFilter(): MobileCoverageFilterState {
+  const initial = {} as MobileCoverageFilterState;
+  for (const carrier of MOBILE_CARRIER_THEMES) {
+    const tierMap: Record<string, boolean> = {};
+    for (const tier of carrier.tiers) {
+      tierMap[tier.value] = true;
+    }
+    initial[carrier.id] = tierMap;
+  }
+  return initial;
+}
 
 // Lucide: calendar-arrow-right
 function CalendarArrowRightIcon({ size = 14, className = "" }: { size?: number; className?: string }) {
@@ -1227,6 +1561,8 @@ export default function AppMap() {
   const [showTimePeriodInfo, setShowTimePeriodInfo] = useState(false);
   const [timeInfoHovered, setTimeInfoHovered] = useState(false);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
+  const [mobileCoverageLegendOpen, setMobileCoverageLegendOpen] = useState(true);
+  const [expandedMobileCarriers, setExpandedMobileCarriers] = useState<Partial<Record<MobileCarrierId, boolean>>>({});
   const [imparkLegendOpen, setImparkLegendOpen] = useState(true);
   const [imparkFilter, setImparkFilter] = useState<{
     hourly: boolean;
@@ -1558,6 +1894,9 @@ export default function AppMap() {
   const [truckRoutesPanelOpen, setTruckRoutesPanelOpen] = useState(true);
   const [isTruckRouteMapModalOpen, setIsTruckRouteMapModalOpen] = useState(false);
   const [carSharingFilter, setCarSharingFilter] = useState<{ evo: boolean; modo: boolean }>({ evo: true, modo: true });
+  const [mobileCoverageFilter, setMobileCoverageFilter] = useState<MobileCoverageFilterState>(() =>
+    createDefaultMobileCoverageFilter()
+  );
   const [safetyCamerasLegendOpen, setSafetyCamerasLegendOpen] = useState(true);
   const [safetyCamerasFilter, setSafetyCamerasFilter] = useState<{ redLightSpeed: boolean; redLightOnly: boolean }>({
     redLightSpeed: true,
@@ -2370,6 +2709,8 @@ export default function AppMap() {
         else if (type === 'railways' && !layers.railways) facilityClosed = true;
         else if (type === 'airport_indoor' && !layers.airportIndoor) facilityClosed = true;
         else if (type === 'consulates' && !layers.consulates) facilityClosed = true;
+        else if (type === 'water_supply' && !layers.waterSupply) facilityClosed = true;
+        else if (type === 'sewer_system' && !layers.sewerSystem) facilityClosed = true;
         else if (type === 'job' && (!isExploreOpen || !openExploreTabs?.includes('jobs'))) facilityClosed = true;
 
         if (facilityClosed) {
@@ -4117,19 +4458,15 @@ export default function AppMap() {
   useEffect(() => {
     const map = mapRef.current?.getMap();
     if (!map) return;
-    registerDamIcon(map);
-    registerCastleIcon(map);
-    registerYvrIndoorIcons(map);
+    registerAllVectorSvgIcons(map);
     const handleStyleData = () => {
-      registerDamIcon(map);
-      registerCastleIcon(map);
-      registerYvrIndoorIcons(map);
+      registerAllVectorSvgIcons(map);
     };
     map.on('styledata', handleStyleData);
     return () => {
       map.off('styledata', handleStyleData);
     };
-  }, [mapStyleType, isMarineTideActive, layers.airportIndoor]);
+  }, [mapStyleType, isMarineTideActive, layers.airportIndoor, layers.consulates, layers.waterSupply, layers.sewerSystem]);
 
   const isBusTrackHidden = Boolean(searchedBusRoute || selectedBus);
   const mapStyle = useMemo(() => {
@@ -4317,6 +4654,32 @@ export default function AppMap() {
     if (layers.consulates) {
       style.sources['consulates'] = { type: 'geojson', data: '/vancouver_consulates.geojson' };
     }
+    if (layers.waterSupply) {
+      style.sources['water_supply'] = {
+        type: 'geojson',
+        data: '/vancouver_water_supply.geojson',
+        cluster: true,
+        clusterMaxZoom: 13,
+        clusterRadius: 45
+      };
+      style.sources['water_supply_mains'] = {
+        type: 'geojson',
+        data: '/vancouver_water_mains.geojson'
+      };
+    }
+    if (layers.sewerSystem) {
+      style.sources['sewer_system'] = {
+        type: 'geojson',
+        data: '/vancouver_sewer_system.geojson',
+        cluster: true,
+        clusterMaxZoom: 13,
+        clusterRadius: 45
+      };
+      style.sources['sewer_system_lines'] = {
+        type: 'geojson',
+        data: '/vancouver_sewer_lines.geojson'
+      };
+    }
     if (layers.disasterHubs) {
       style.sources['disaster-hubs'] = { type: 'geojson', data: '/vancouver_disaster_hubs.geojson' };
     }
@@ -4344,6 +4707,14 @@ export default function AppMap() {
         cluster: true,
         clusterMaxZoom: 14,
         clusterRadius: 45
+      };
+    }
+
+    // 流動網絡涵蓋範圍 (Telus / Rogers / Virgin Plus / Bell / Freedom Mobile)
+    if (layers.mobileCoverage) {
+      style.sources['mobile-coverage'] = {
+        type: 'geojson',
+        data: '/vancouver_mobile_coverage.geojson',
       };
     }
 
@@ -4621,6 +4992,64 @@ export default function AppMap() {
         source: 'esri-labels',
         minzoom: 0,
         maxzoom: 24
+      });
+    }
+
+    // Lifestyle: 流動網絡涵蓋範圍 (放於底圖之上、點位與路線之下，避免遮蔽標記)
+    if (layers.mobileCoverage) {
+      let totalTiers = 0;
+      let activeTierCount = 0;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const carrierFilterExprs: any[] = [];
+
+      for (const carrier of MOBILE_CARRIER_THEMES) {
+        totalTiers += carrier.tiers.length;
+        const activeTiers = carrier.tiers
+          .filter((tier) => Boolean(mobileCoverageFilter[carrier.id]?.[tier.value]))
+          .map((tier) => tier.value);
+
+        activeTierCount += activeTiers.length;
+        if (activeTiers.length === carrier.tiers.length) {
+          carrierFilterExprs.push(['==', ['get', 'carrier_id'], carrier.id]);
+        } else if (activeTiers.length > 0) {
+          carrierFilterExprs.push([
+            'all',
+            ['==', ['get', 'carrier_id'], carrier.id],
+            ['in', ['get', 'network_tier'], ['literal', activeTiers]],
+          ]);
+        }
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mobileFilter: any =
+        activeTierCount === totalTiers
+          ? undefined
+          : carrierFilterExprs.length === 0
+            ? ['==', ['get', 'carrier_id'], '__NONE__']
+            : carrierFilterExprs.length === 1
+              ? carrierFilterExprs[0]
+              : ['any', ...carrierFilterExprs];
+
+      style.layers.push({
+        id: 'mobile-coverage-fill-layer',
+        type: 'fill',
+        source: 'mobile-coverage',
+        ...(mobileFilter ? { filter: mobileFilter } : {}),
+        paint: {
+          'fill-color': ['get', 'color'],
+          'fill-opacity': 0.2,
+        },
+      });
+      style.layers.push({
+        id: 'mobile-coverage-outline-layer',
+        type: 'line',
+        source: 'mobile-coverage',
+        ...(mobileFilter ? { filter: mobileFilter } : {}),
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 9, 0.8, 13, 1.5, 16, 2.2],
+          'line-opacity': 0.72,
+        },
       });
     }
 
@@ -5645,6 +6074,84 @@ export default function AppMap() {
           'icon-allow-overlap': true,
           'icon-ignore-placement': true
         }
+      });
+    }
+
+    // Energy / Utilities: Metro Vancouver Water Supply (供水 - Lucide: faucet + Water Mains 管線)
+    if (layers.waterSupply) {
+      style.layers.push({
+        id: 'water-supply-mains-casing',
+        type: 'line',
+        source: 'water_supply_mains',
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        paint: {
+          'line-color': 'rgba(15, 23, 42, 0.38)',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 9, 2.2, 12, 3.4, 15, 5.2, 18, 7.2]
+        }
+      });
+      style.layers.push({
+        id: 'water-supply-mains-layer',
+        type: 'line',
+        source: 'water_supply_mains',
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        paint: {
+          'line-color': layerCustomColors?.waterSupply || '#0284c7',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1.2, 12, 2.1, 15, 3.5, 18, 5.0],
+          'line-opacity': 0.88
+        }
+      });
+      pushClusteredUtilityLayers(style.layers, {
+        prefix: 'water-supply',
+        sourceId: 'water_supply',
+        baseColor: layerCustomColors?.waterSupply || '#0284c7',
+        clusterMidColor: '#0369a1',
+        clusterHighColor: '#075985',
+        iconImage: 'lucide-faucet',
+      });
+    }
+
+    // Energy / Utilities: Metro Vancouver Sewerage (污水 - Lucide: droplets + Sewers 管線)
+    if (layers.sewerSystem) {
+      style.layers.push({
+        id: 'sewer-system-lines-casing',
+        type: 'line',
+        source: 'sewer_system_lines',
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        paint: {
+          'line-color': 'rgba(15, 23, 42, 0.38)',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 9, 2.2, 12, 3.4, 15, 5.2, 18, 7.2]
+        }
+      });
+      style.layers.push({
+        id: 'sewer-system-lines-layer',
+        type: 'line',
+        source: 'sewer_system_lines',
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        paint: {
+          'line-color': layerCustomColors?.sewerSystem || '#0d9488',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1.2, 12, 2.1, 15, 3.5, 18, 5.0],
+          'line-opacity': 0.88
+        }
+      });
+      pushClusteredUtilityLayers(style.layers, {
+        prefix: 'sewer-system',
+        sourceId: 'sewer_system',
+        baseColor: layerCustomColors?.sewerSystem || '#0d9488',
+        clusterMidColor: '#0f766e',
+        clusterHighColor: '#115e59',
+        iconImage: 'lucide-droplets',
       });
     }
 
@@ -7627,6 +8134,8 @@ export default function AppMap() {
     evChargingFilter.connector,
     evChargingFilter.freeOnly,
     layers.vanWifi,
+    layers.mobileCoverage,
+    mobileCoverageFilter,
     layers.tideStations,
     isRadarActive,
     radarTilePath,
@@ -7645,6 +8154,8 @@ export default function AppMap() {
     layers.roadClosures,
     layers.roadConstruction,
     layers.powerOutages,
+    layers.waterSupply,
+    layers.sewerSystem,
     layers.beachWaterQuality,
     layers.fireHydrants,
     layers.zoningDistricts,
@@ -7718,9 +8229,7 @@ export default function AppMap() {
           }
         }}
         onLoad={(e: any) => {
-          registerDamIcon(e.target);
-          registerCastleIcon(e.target);
-          registerYvrIndoorIcons(e.target);
+          registerAllVectorSvgIcons(e.target);
           updateScale();
           const z = e.target?.getZoom ? e.target.getZoom() : e.viewState?.zoom;
           if (typeof z === 'number' && !isNaN(z) && Math.abs(z - currentZoomRef.current) > 0.15) {
@@ -8118,6 +8627,8 @@ export default function AppMap() {
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('police') ||
             layerId.startsWith('consulates') ||
+            layerId.startsWith('water-supply') ||
+            layerId.startsWith('sewer-system') ||
             layerId.startsWith('disaster-hubs') ||
             layerId.startsWith('community-centres') ||
             layerId.startsWith('canada-post') ||
@@ -8175,6 +8686,8 @@ export default function AppMap() {
             if (layerId.startsWith('fedex')) facilityType = 'fedex';
             else if (layerId.startsWith('purolator')) facilityType = 'purolator';
             else if (layerId.startsWith('consulates')) facilityType = 'consulates';
+            else if (layerId.startsWith('water-supply')) facilityType = 'water_supply';
+            else if (layerId.startsWith('sewer-system')) facilityType = 'sewer_system';
             else if (isImpark) facilityType = 'impark';
             else if (isMuseums) facilityType = 'museums';
             else if (isGarbage) facilityType = 'garbage_collection';
@@ -8409,7 +8922,10 @@ export default function AppMap() {
               <span className="absolute w-12 h-12 rounded-full bg-emerald-400/40 animate-ping pointer-events-none"></span>
               <span className="w-7 h-7 rounded-full border-2 border-emerald-400 bg-emerald-500/30 group-hover:bg-rose-500/60 group-hover:border-rose-400 flex items-center justify-center shadow-lg transition-all">
                 <span className="text-xs group-hover:hidden">
-                  {searchTarget.category === 'tide_stations' ? <Dam className="w-3.5 h-3.5 text-cyan-300" /> : searchTarget.icon}
+                  {searchTarget.category === 'tide_stations' ? <Dam className="w-3.5 h-3.5 text-cyan-300" /> :
+                   searchTarget.category === 'water_supply' ? <Faucet className="w-3.5 h-3.5 text-sky-300" /> :
+                   searchTarget.category === 'sewer_system' ? <Droplets className="w-3.5 h-3.5 text-teal-300" /> :
+                   searchTarget.icon}
                 </span>
                 <span className="text-xs hidden group-hover:inline text-white font-bold leading-none">✕</span>
               </span>
@@ -10822,6 +11338,8 @@ export default function AppMap() {
                   if (t === 'drivebc') return { label: 'BC Drive', bg: 'bg-[#ea580c] text-white' };
                   if (t === 'airport_indoor') return { label: '機場', bg: 'bg-sky-600 text-white' };
                   if (t === 'consulates') return { label: '領事館', bg: 'bg-indigo-600 text-white' };
+                  if (t === 'water_supply') return { label: '供水', bg: 'bg-sky-600 text-white rounded-full px-2' };
+                  if (t === 'sewer_system') return { label: '污水', bg: 'bg-teal-700 text-white rounded-full px-2' };
                   if (t === 'job') return { label: '工作', bg: 'bg-indigo-600 text-white' };
                   return null;
                 })();
@@ -10845,7 +11363,8 @@ export default function AppMap() {
                     border_crossing: 'borderCrossing', ski_resort: 'skiResorts', tide_stations: 'tideStations',
                     marine_terminals: 'marineTerminals', airport_indoor: 'airportIndoor',
                     litter_containers: 'litterContainers', public_trees: 'publicTrees', museums: 'museums',
-                    recycling: 'recycling', fire_hydrants: 'fireHydrants', aed: 'aed'
+                    recycling: 'recycling', fire_hydrants: 'fireHydrants', aed: 'aed',
+                    water_supply: 'waterSupply', sewer_system: 'sewerSystem'
                   };
                   const key = t ? typeToKeyMap[t] : undefined;
                   const custom = key ? layerCustomColors?.[key] : undefined;
@@ -11042,6 +11561,9 @@ export default function AppMap() {
                   if (selectedFacility.facility_type === 'consulates') {
                     return selectedFacility.properties?.office_name || selectedFacility.properties?.name || selectedFacility.name || '領事館';
                   }
+                  if (selectedFacility.facility_type === 'water_supply' || selectedFacility.facility_type === 'sewer_system') {
+                    return selectedFacility.properties?.name || selectedFacility.name || (selectedFacility.facility_type === 'water_supply' ? '供水設施' : '污水設施');
+                  }
 
                   // 0.4 標題的英文確保統一每個英文字中首個英文字母大階 (如 Heather Street, 13th Ave…)
                   title = formatTitleCase(title);
@@ -11152,8 +11674,12 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'consulates' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
-                  selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark)) && (
+                        {(selectedFacility.facility_type === 'water_supply'
+                          ? !!selectedFacility.properties?.plan_area
+                          : selectedFacility.facility_type === 'sewer_system'
+                            ? !!selectedFacility.properties?.address
+                            : (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'consulates' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                              selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark))) && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
                               if (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋')) {
@@ -11205,6 +11731,12 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'schools') return selectedFacility.properties?.address || selectedFacility.properties?.street_address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'police') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'consulates') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'water_supply') {
+                                return selectedFacility.properties?.plan_area || '';
+                              }
+                              if (selectedFacility.facility_type === 'sewer_system') {
+                                return selectedFacility.properties?.address || '';
+                              }
                               if (selectedFacility.facility_type === 'fire_halls') return selectedFacility.properties?.geo_local_area || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'fire_hydrants') {
                                 const area = selectedFacility.properties?.geo_local_area || selectedFacility.local_area;
@@ -12747,6 +13279,13 @@ export default function AppMap() {
                   </div>
                 );
               })()}
+
+              {(selectedFacility.facility_type === 'water_supply' || selectedFacility.facility_type === 'sewer_system') && (
+                <MetroUtilityPopupContent
+                  facilityType={selectedFacility.facility_type}
+                  props={selectedFacility.properties || {}}
+                />
+              )}
 
               {/* Disaster Support Hubs (災害支援中心 - 海嘯與地震避難集合點) Details */}
               {selectedFacility.facility_type === 'disaster_hubs' && (
@@ -16062,8 +16601,6 @@ export default function AppMap() {
                   </div>
                 );
               })()}
-
-              
 
               {/* Gas Station (Fuel) Details */}
               {selectedFacility.facility_type === 'fuel' && (() => {
@@ -20395,6 +20932,327 @@ export default function AppMap() {
                 type="button"
                 onClick={() => setYvrIndoorPanelOpen(true)}
                 className="text-[10px] text-sky-400 hover:underline cursor-pointer shrink-0 ml-2"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 流動網絡篩選面板 (Telus / Rogers / Virgin Plus / Bell / Freedom Mobile + 制式等級子篩選) */}
+      {layers.mobileCoverage && (
+        <div
+          className={`fixed z-30 w-[288px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-purple-500/40 select-none animate-in fade-in duration-200 ${getFloatingPanelPos(
+            (layers.parkingMeters ? 1 : 0) +
+            (layers.motorcycleParking ? 1 : 0) +
+            (layers.fuel ? 1 : 0) +
+            ((layers.evCharging || layers.tesla) ? 1 : 0) +
+            (layers.carSharing ? 1 : 0) +
+            (layers.bikeways ? 1 : 0) +
+            (layers.truckRoutes ? 1 : 0) +
+            (layers.safetyCameras ? 1 : 0) +
+            (layers.impark ? 1 : 0) +
+            (layers.canadaPost ? 1 : 0) +
+            (layers.airportIndoor ? 1 : 0)
+          )}`}
+        >
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-purple-500/20 text-purple-400">
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+              </span>
+              <span className="font-bold text-xs text-white">流動網絡篩選</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setMobileCoverageLegendOpen(!mobileCoverageLegendOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors cursor-pointer"
+              title={mobileCoverageLegendOpen ? '收合' : '展開'}
+            >
+              {mobileCoverageLegendOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {mobileCoverageLegendOpen ? (() => {
+            const isAllActive = MOBILE_CARRIER_THEMES.every((c) =>
+              c.tiers.every((t) => Boolean(mobileCoverageFilter[c.id]?.[t.value]))
+            );
+            const hasAnyCarrierActive = MOBILE_CARRIER_THEMES.some((c) =>
+              c.tiers.some((t) => Boolean(mobileCoverageFilter[c.id]?.[t.value]))
+            );
+
+            const toggleCategoryPreset = (category: MobileTierCategory) => {
+              setMobileCoverageFilter((prev) => {
+                const activeCarriers = MOBILE_CARRIER_THEMES.filter((c) =>
+                  c.tiers.some((t) => Boolean(prev[c.id]?.[t.value]))
+                );
+                const targetCarriers = activeCarriers.length > 0 ? activeCarriers : MOBILE_CARRIER_THEMES;
+                const isCategoryActive = targetCarriers.some((c) =>
+                  c.tiers.some((t) => t.category === category && Boolean(prev[c.id]?.[t.value]))
+                );
+                const nextValue = !isCategoryActive;
+                const nextState: MobileCoverageFilterState = { ...prev };
+                for (const c of targetCarriers) {
+                  const hasMatchingTier = c.tiers.some((t) => t.category === category);
+                  if (!hasMatchingTier) continue;
+                  const updatedTiers = { ...nextState[c.id] };
+                  for (const t of c.tiers) {
+                    if (t.category === category) {
+                      updatedTiers[t.value] = nextValue;
+                    }
+                  }
+                  nextState[c.id] = updatedTiers;
+                }
+                return nextState;
+              });
+            };
+
+            return (
+              <div className="flex flex-col gap-2 text-xs">
+                {/* 全域制式等級快速篩選 (固定於上方) */}
+                <div className="flex items-center justify-between gap-1 bg-[#10141e]/80 border border-[#262b38] rounded-lg px-2 py-1.5 shrink-0">
+                  <span className="text-[10.5px] text-gray-400 font-medium shrink-0">制式等級</span>
+                  <div className="flex items-center gap-1 flex-wrap justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setMobileCoverageFilter(createDefaultMobileCoverageFilter())}
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-medium border transition-colors cursor-pointer ${
+                        isAllActive
+                          ? 'bg-purple-600/35 border-purple-400/70 text-white'
+                          : 'bg-[#171b27] border-[#2b3142] text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      全部
+                    </button>
+                    {MOBILE_TIER_CATEGORY_PRESETS.map((preset) => {
+                      const targetCarriers = hasAnyCarrierActive
+                        ? MOBILE_CARRIER_THEMES.filter((c) =>
+                            c.tiers.some((t) => Boolean(mobileCoverageFilter[c.id]?.[t.value]))
+                          )
+                        : MOBILE_CARRIER_THEMES;
+                      const isPresetActive = targetCarriers.some((c) =>
+                        c.tiers.some(
+                          (t) => t.category === preset.id && Boolean(mobileCoverageFilter[c.id]?.[t.value])
+                        )
+                      );
+                      return (
+                        <button
+                          key={preset.id}
+                          type="button"
+                          onClick={() => toggleCategoryPreset(preset.id)}
+                          className={`px-1.5 py-0.5 rounded text-[10px] font-mono border transition-colors cursor-pointer ${
+                            isPresetActive
+                              ? 'bg-purple-500/25 border-purple-400/60 text-purple-200 font-semibold'
+                              : 'bg-[#171b27] border-[#2b3142] text-gray-500 line-through hover:text-gray-300'
+                          }`}
+                          title={`切換顯示 ${preset.label} 制式`}
+                        >
+                          {preset.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 各電信商與可摺疊制式等級子篩選 (限制高度並提供捲動軸) */}
+                <div
+                  className="max-h-[245px] overflow-y-auto overscroll-contain pr-1 space-y-1.5 [&::-webkit-scrollbar]:!w-1.5 [&::-webkit-scrollbar-track]:!bg-[#0d111a] [&::-webkit-scrollbar-thumb]:!bg-[#475569] hover:[&::-webkit-scrollbar-thumb]:!bg-[#64748b] [&::-webkit-scrollbar-thumb]:!rounded-full"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#475569 #0d111a' }}
+                >
+                  {MOBILE_CARRIER_THEMES.map((carrier) => {
+                    const activeTiersCount = carrier.tiers.filter((t) =>
+                      Boolean(mobileCoverageFilter[carrier.id]?.[t.value])
+                    ).length;
+                    const isActive = activeTiersCount > 0;
+                    const isExpanded = Boolean(expandedMobileCarriers[carrier.id]);
+
+                    const toggleWholeCarrier = () => {
+                      setMobileCoverageFilter((prev) => {
+                        const nextValue = !carrier.tiers.some((t) => Boolean(prev[carrier.id]?.[t.value]));
+                        const updatedTiers: Record<string, boolean> = {};
+                        for (const t of carrier.tiers) {
+                          updatedTiers[t.value] = nextValue;
+                        }
+                        return {
+                          ...prev,
+                          [carrier.id]: updatedTiers,
+                        };
+                      });
+                    };
+
+                    const toggleSingleTier = (tierValue: string) => {
+                      setMobileCoverageFilter((prev) => ({
+                        ...prev,
+                        [carrier.id]: {
+                          ...prev[carrier.id],
+                          [tierValue]: !prev[carrier.id]?.[tierValue],
+                        },
+                      }));
+                    };
+
+                    return (
+                      <div
+                        key={carrier.id}
+                        className={`p-2 rounded-lg border transition-all ${
+                          isActive
+                            ? carrier.activeCardClass
+                            : 'bg-[#10141e]/50 border-[#262b38] opacity-60'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={toggleWholeCarrier}
+                            className="flex-1 flex items-center gap-2 min-w-0 cursor-pointer text-left py-0.5"
+                            title={isActive ? `點擊隱藏 ${carrier.name} 全部制式` : `點擊顯示 ${carrier.name} 全部制式`}
+                          >
+                            <span
+                              className="w-2.5 h-2.5 rounded-full shrink-0 transition-all"
+                              style={{
+                                backgroundColor: isActive ? carrier.hex : '#4B5563',
+                                boxShadow: isActive ? `0 0 8px ${carrier.hex}b3` : undefined,
+                              }}
+                            />
+                            <span
+                              className={`font-bold text-xs truncate ${
+                                isActive ? 'text-white' : 'text-gray-400 line-through'
+                              }`}
+                            >
+                              {carrier.name}
+                            </span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedMobileCarriers((prev) => ({
+                                ...prev,
+                                [carrier.id]: !prev[carrier.id],
+                              }))
+                            }
+                            className={`inline-flex items-center gap-0.5 text-[9.5px] font-mono px-1.5 py-0.5 rounded border transition-colors cursor-pointer shrink-0 ${
+                              isExpanded
+                                ? 'border-purple-400/60 bg-purple-500/20 text-white'
+                                : isActive
+                                  ? `${carrier.badgeActiveClass} border-transparent hover:border-white/25`
+                                  : 'text-gray-500 bg-gray-800/40 border-transparent hover:text-gray-300'
+                            }`}
+                            title={isExpanded ? `收合 ${carrier.name} 制式子篩選` : `展開 ${carrier.name} 制式子篩選`}
+                          >
+                            <span>{activeTiersCount}/{carrier.tiers.length}</span>
+                            {isExpanded ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={toggleWholeCarrier}
+                            className={`w-7 h-4 rounded-full transition-colors p-0.5 flex items-center shrink-0 cursor-pointer ${
+                              isActive ? 'justify-end' : 'bg-gray-700 justify-start'
+                            }`}
+                            style={isActive ? { backgroundColor: carrier.hex } : undefined}
+                            title={isActive ? `隱藏 ${carrier.name}` : `顯示 ${carrier.name}`}
+                            aria-label={`切換 ${carrier.name}`}
+                          >
+                            <span className="w-3 h-3 rounded-full bg-white shadow-xs" />
+                          </button>
+
+                          <a
+                            href={carrier.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1 rounded bg-[#10141e]/80 border border-[#262b38] text-gray-400 hover:text-white hover:border-gray-500 transition-colors shrink-0"
+                            title={`前往 ${carrier.name} 官方涵蓋地圖`}
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
+
+                        {/* 可摺疊制式等級子篩選按鈕列 */}
+                        {isExpanded && (
+                          <div className="flex flex-wrap gap-1 mt-1.5 pt-1.5 border-t border-white/10">
+                            {carrier.tiers.map((tier) => {
+                              const isTierActive = Boolean(mobileCoverageFilter[carrier.id]?.[tier.value]);
+                              return (
+                                <button
+                                  key={tier.value}
+                                  type="button"
+                                  onClick={() => toggleSingleTier(tier.value)}
+                                  className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono border transition-all cursor-pointer ${
+                                    isTierActive
+                                      ? 'text-white font-semibold'
+                                      : 'bg-[#0d111a]/70 border-[#262b38] text-gray-500 line-through hover:text-gray-300'
+                                  }`}
+                                  style={
+                                    isTierActive
+                                      ? {
+                                          backgroundColor: `${carrier.hex}2b`,
+                                          borderColor: `${carrier.hex}a6`,
+                                        }
+                                      : undefined
+                                  }
+                                  title={`${carrier.name} - ${tier.label} (${isTierActive ? '點擊隱藏' : '點擊顯示'})`}
+                                >
+                                  <span
+                                    className="w-1.5 h-1.5 rounded-full shrink-0"
+                                    style={{ backgroundColor: isTierActive ? carrier.hex : '#4B5563' }}
+                                  />
+                                  <span>{tier.shortLabel}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {!isAllActive && (
+                  <div className="flex items-center justify-between pt-1.5 border-t border-[#262b38] text-[10.5px] shrink-0">
+                    <span className="text-gray-400">已套用電信商 / 制式篩選</span>
+                    <button
+                      type="button"
+                      onClick={() => setMobileCoverageFilter(createDefaultMobileCoverageFilter())}
+                      className="text-purple-400 hover:text-purple-300 underline font-medium cursor-pointer"
+                    >
+                      重設全部顯示
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })() : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300 gap-2">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {MOBILE_CARRIER_THEMES.map((carrier) => {
+                  const activeTiersCount = carrier.tiers.filter((t) =>
+                    Boolean(mobileCoverageFilter[carrier.id]?.[t.value])
+                  ).length;
+                  const isActive = activeTiersCount > 0;
+                  const isPartial = isActive && activeTiersCount < carrier.tiers.length;
+                  return (
+                    <span key={carrier.id} className="inline-flex items-center gap-1">
+                      <span
+                        className="w-2 h-2 rounded-full inline-block"
+                        style={{ backgroundColor: isActive ? carrier.hex : '#4B5563' }}
+                      />
+                      <span
+                        className={`text-[10px] font-medium ${
+                          isActive ? 'text-gray-300' : 'text-gray-500 line-through'
+                        }`}
+                      >
+                        {carrier.shortName}
+                        {isPartial ? ` (${activeTiersCount}/${carrier.tiers.length})` : ''}
+                      </span>
+                    </span>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                onClick={() => setMobileCoverageLegendOpen(true)}
+                className="text-[10px] text-purple-400 hover:underline shrink-0 cursor-pointer"
               >
                 展開
               </button>

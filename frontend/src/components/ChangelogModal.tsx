@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { History, X, Tag, Calendar, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { History, X, Tag, Calendar, ChevronDown, CheckCircle2 } from 'lucide-react';
 
 interface ChangelogEntry {
   version: string;
@@ -18,9 +19,11 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
     date: '2026-11-14',
     isLatest: true,
     highlights: [
-      '新增停電圖層',
+      '新增停電, 供水, 污水圖層',
       '新增機場內部地圖圖層',
       '新增 Drive BC 圖層',
+      '新增領事館圖層',
+      '新增流動網絡圖層',
       '新增財經探索頁',
       '修正工作探索頁錯誤'
     ]
@@ -65,7 +68,7 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
     'v2026.11.0': false
   });
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const toggleVersion = (version: string) => {
     setExpandedVersions(prev => ({
@@ -74,9 +77,9 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
     }));
   };
 
-  return (
+  return createPortal(
     <div 
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150 select-none"
+      className="fixed inset-0 z-[150] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div 
@@ -84,7 +87,7 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#252d3e] bg-[#191f2c] shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#252d3e] bg-[#191f2c] shrink-0 select-none">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center">
               <History className="w-4 h-4" />
@@ -105,14 +108,17 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
         </div>
 
         {/* Collapsible Accordion Content */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#3e4e6d]">
+        <div
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-5 pb-6 space-y-3 [&::-webkit-scrollbar]:!w-2.5 [&::-webkit-scrollbar-track]:!bg-[#0d111a] [&::-webkit-scrollbar-thumb]:!bg-[#3b4d70] hover:[&::-webkit-scrollbar-thumb]:!bg-[#526b99] [&::-webkit-scrollbar-thumb]:!rounded-full [&::-webkit-scrollbar-thumb]:!border-2 [&::-webkit-scrollbar-thumb]:!border-solid [&::-webkit-scrollbar-thumb]:!border-[#0d111a]"
+          style={{ scrollbarGutter: 'stable', scrollbarWidth: 'thin', scrollbarColor: '#4b618c #0d111a' }}
+        >
           {CHANGELOG_DATA.map((entry) => {
             const isExpanded = expandedVersions[entry.version] ?? false;
 
             return (
               <div 
                 key={entry.version}
-                className={`border rounded-xl transition-all duration-200 overflow-hidden ${
+                className={`shrink-0 border rounded-xl transition-colors duration-200 overflow-hidden ${
                   entry.isLatest 
                     ? 'border-sky-500/40 bg-[#121622] shadow-[0_0_12px_rgba(56,189,248,0.06)]' 
                     : 'border-[#263147] bg-[#12151e]'
@@ -122,7 +128,7 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
                 <button
                   type="button"
                   onClick={() => toggleVersion(entry.version)}
-                  className={`w-full flex items-center justify-between px-4 py-3.5 transition-colors cursor-pointer text-left ${
+                  className={`w-full flex items-center justify-between px-4 py-3.5 transition-colors cursor-pointer text-left select-none ${
                     isExpanded 
                       ? entry.isLatest ? 'bg-sky-500/10' : 'bg-[#181f2d]' 
                       : 'hover:bg-[#181e2b]'
@@ -182,6 +188,7 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
           })}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

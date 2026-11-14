@@ -8,7 +8,7 @@ import {
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
   UserShield, FireExtinguisher, Zap, ZapOff, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
-  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle
+  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle, Faucet
 } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
@@ -32,6 +32,7 @@ const SIMP_TRAD_PAIRS: Array<[string, string]> = [
   ['飞', '飛'], ['轮', '輪'], ['码', '碼'], ['头', '頭'], ['铁', '鐵'], ['路', '路'],
   ['桥', '橋'], ['门', '門'], ['关', '關'], ['边', '邊'], ['单', '單'], ['饮', '飲'],
   ['环', '環'], ['艺', '藝'], ['术', '術'], ['区', '區'], ['号', '號'], ['线', '線'],
+  ['净', '淨'], ['库', '庫'], ['压', '壓'], ['阀', '閥'], ['检', '檢'], ['坝', '壩'], ['厂', '廠'], ['污', '污'], ['汙', '污'],
 ];
 
 function escapeRegExp(str: string): string {
@@ -190,6 +191,8 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'consulates' || lk === 'consulates') return <Castle className={`${cls} text-indigo-400`} />;
   if (c === 'van_wifi' || lk === 'vanWifi') return <Wifi className={`${cls} text-cyan-400`} />;
   if (c === 'power_outages' || c === 'power_outage' || lk === 'powerOutages') return <ZapOff className={`${cls} text-amber-400`} />;
+  if (c === 'water_supply' || lk === 'waterSupply') return <Faucet className={`${cls} text-sky-400`} />;
+  if (c === 'sewer_system' || lk === 'sewerSystem') return <Droplets className={`${cls} text-teal-400`} />;
   if (c === 'local_area_boundary' || lk === 'localAreaBoundary') return <Grid3x2 className={`${cls} text-teal-400`} />;
   if (c === 'beach_water_quality' || lk === 'beachWaterQuality') return <Parasol className={`${cls} text-teal-300`} />;
   if (c === 'border_crossing' || lk === 'borderCrossing') return <Fence className={`${cls} text-cyan-400`} />;
@@ -349,8 +352,8 @@ export default function TopBar() {
       icon: ZapOff,
       iconColor: 'text-amber-400',
       matcher: (item: SearchTarget) => {
-        const targetKeys = ['powerOutages'];
-        const targetCats = ['power_outages', 'power_outage', 'bchydro_outages'];
+        const targetKeys = ['powerOutages', 'waterSupply', 'sewerSystem'];
+        const targetCats = ['power_outages', 'power_outage', 'bchydro_outages', 'water_supply', 'sewer_system'];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
           targetKeys.some(k => item.id?.startsWith(k));
@@ -1098,6 +1101,8 @@ export default function TopBar() {
                             item.category === 'fire_halls' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
                             item.category === 'police' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
                             item.category === 'consulates' ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60 font-bold' :
+                            item.category === 'water_supply' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60 font-bold' :
+                            item.category === 'sewer_system' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60 font-bold' :
                             item.category === 'hospitals' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
                             item.category === 'disaster_hubs' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
                             item.category === 'fuel' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :

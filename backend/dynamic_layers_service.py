@@ -206,8 +206,38 @@ def refresh_bchydro_outages(outage_type: str = "all") -> int:
         return 0
 
 
+def _refresh_mv_utility_layer(source_id: str, source_name: str, updater_fn, target_file: str) -> int:
+    """Shared OCI updater wrapper for Metro Vancouver water & sewer infrastructure layers."""
+    file_path = "backend/scripts/layers/update_mv_utilities.py"
+    try:
+        cnt = updater_fn()
+        log_data_source_update(source_id, source_name, cnt, target_file, file_path)
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] {source_id} 更新異常: {e}")
+        log_data_source_update(source_id, source_name, None, target_file, file_path, error=e)
+        return 0
+
+
+def refresh_water_supply() -> int:
+    """每 1 小時刷新大溫哥華區域供水系統設施點位 (Metro Vancouver Water Supply)."""
+    from scripts.layers.update_mv_utilities import update_water_supply
+    return _refresh_mv_utility_layer(
+        "water_supply", "Metro Vancouver 供水系統設施", update_water_supply, "vancouver_water_supply.geojson"
+    )
+
+
+def refresh_sewer_system() -> int:
+    """每 1 小時刷新大溫哥華區域污水與排水系統設施點位 (Metro Vancouver Sewerage)."""
+    from scripts.layers.update_mv_utilities import update_sewer_system
+    return _refresh_mv_utility_layer(
+        "sewer_system", "Metro Vancouver 污水系統設施", update_sewer_system, "vancouver_sewer_system.geojson"
+    )
+
+
 def refresh_yvr_indoor() -> int:
     """每日 1 次刷新 YVR 機場內部地圖設施與樓層資訊 (經 map.yvr.ca 動態解析 LocusLabs pois-3.0-yvr.json)."""
+    file_path = "backend/scripts/layers/update_yvr_indoor.py"
     try:
         from scripts.layers.update_yvr_indoor import fetch_and_save_yvr_indoor
         cnt = fetch_and_save_yvr_indoor()
@@ -227,9 +257,10 @@ async def run_dynamic_layers_background_loop():
     - service_requests_311 (3-1-1 市政工單): 每 12 小時 (43200s)
     - food_vendors (街頭熟食餐車): 每 24 小時 (86400s)
     - bchydro_* (BC Hydro 停電): 每 1 小時 (3600s)
+    - water_supply / sewer_system (大溫供水與污水設施): 每 1 小時 (3600s)
     - yvr_indoor (YVR 機場內部地圖): 每日 1 次 (86400s)
     """
-    print("🚲🛴🍔 [Dynamic Layers Service] 常駐快取排程服務啟動 (Mobi/Lime 每小時, 3-1-1 每 12 小時, 餐車/YVR 內部地圖每日)...")
+    print("🚲🛴🍔💧 [Dynamic Layers Service] 常駐快取排程服務啟動 (單車/滑板車/停電/供水污水 每小時, 3-1-1 每 12 小時, 餐車/YVR 內部地圖每日)...")
     loop = asyncio.get_event_loop()
 
     # 啟動時先暫停 5 秒讓核心網路服務綁定完成
@@ -252,6 +283,12 @@ async def run_dynamic_layers_background_loop():
         if not _is_layer_recent("bchydro_outages_current.json", 3600):
             print("⚡ [Dynamic Layers] 初始預熱 BC Hydro 停電即時數據...")
             await loop.run_in_executor(None, refresh_bchydro_outages, "all")
+        if not _is_layer_recent("vancouver_water_supply.geojson", 3600):
+            print("🚰 [Dynamic Layers] 初始預熱 Metro Vancouver 供水系統設施...")
+            await loop.run_in_executor(None, refresh_water_supply)
+        if not _is_layer_recent("vancouver_sewer_system.geojson", 3600):
+            print("💧 [Dynamic Layers] 初始預熱 Metro Vancouver 污水系統設施...")
+            await loop.run_in_executor(None, refresh_sewer_system)
         if not _is_layer_recent("yvr_indoor_pois.json", 86400):
             print("🗺️ [Dynamic Layers] 初始預熱 YVR 機場內部地圖數據...")
             await loop.run_in_executor(None, refresh_yvr_indoor)
@@ -265,6 +302,7 @@ async def run_dynamic_layers_background_loop():
     last_311_time = time.time()
     last_food_time = time.time()
     last_bchydro_time = time.time()
+    last_mv_utilities_time = time.time()
     last_yvr_indoor_time = time.time()
 
     while True:
@@ -314,7 +352,14 @@ async def run_dynamic_layers_background_loop():
                 print("⚡ [Dynamic Layers] 觸發排程: BC Hydro 停電即時數據同步 (Current, Restored, Planned)...")
                 await loop.run_in_executor(None, refresh_bchydro_outages, "all")
 
-            # 6. YVR 機場內部地圖設施與樓層資訊 (每 86400 秒 = 每日 1 次)
+            # 6. Metro Vancouver 供水與污水系統設施 (每 3600 秒 = 1 小時)
+            if now - last_mv_utilities_time >= 3600:
+                last_mv_utilities_time = now
+                print("🚰💧 [Dynamic Layers] 觸發排程: Metro Vancouver 供水與污水系統設施每小時同步...")
+                await loop.run_in_executor(None, refresh_water_supply)
+                await loop.run_in_executor(None, refresh_sewer_system)
+
+            # 7. YVR 機場內部地圖設施與樓層資訊 (每 86400 秒 = 每日 1 次)
             if now - last_yvr_indoor_time >= 86400:
                 last_yvr_indoor_time = now
                 print("🗺️ [Dynamic Layers] 觸發排程: YVR 機場內部地圖數據同步...")

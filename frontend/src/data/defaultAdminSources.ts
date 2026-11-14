@@ -1624,5 +1624,104 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://www2.gov.bc.ca/gov/content/governments/organizational-structure/office-of-the-premier/intergovernmental-relations-secretariat/protocol/consular-corps/directory"
+  },
+  {
+    "id": "water_supply",
+    "name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "type": "geojson",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 17709,
+    "unit": "處供水設施與輸水幹管",
+    "last_updated": "2026-11-14T20:45:48.092Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Metro Vancouver GIS (gis.metrovancouver.org/mvmaps/Water -> ArcGIS MV2U/MVMapX MapServer 圖層 27/28/29/40/41/43/44/63-67) -> 僅保留運行中供水設施並納入輸水幹管 (Water Mains)，由 OCI 常駐快取排程每小時自動分頁同步寫入 vancouver_water_supply.geojson 與 vancouver_water_mains.geojson",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "能源",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Metro Vancouver Water GIS 地圖",
+        "url": "https://gis.metrovancouver.org/mvmaps/Water"
+      },
+      {
+        "type": "api",
+        "label": "Metro Vancouver ArcGIS MapServer",
+        "url": "https://gis.metrovancouver.org/arcgis/rest/services/MV2U/MVMapX/MapServer"
+      }
+    ],
+    "source_url": "https://gis.metrovancouver.org/arcgis/rest/services/MV2U/MVMapX/MapServer"
+  },
+  {
+    "id": "sewer_system",
+    "name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "type": "geojson",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 15300,
+    "unit": "處污水設施與污水管線",
+    "last_updated": "2026-11-14T20:46:10.264Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Metro Vancouver GIS (gis.metrovancouver.org/mvmaps/sewer -> ArcGIS MV2U/MVMapX MapServer 圖層 22/23/24/25/53/62/74/82/177/194/199) -> 納入污水處理廠、泵站、人孔與污水管線 (Sewers)，由 OCI 常駐快取排程每小時自動分頁同步寫入 vancouver_sewer_system.geojson 與 vancouver_sewer_lines.geojson",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "能源",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Metro Vancouver Sewer GIS 地圖",
+        "url": "https://gis.metrovancouver.org/mvmaps/sewer"
+      },
+      {
+        "type": "api",
+        "label": "Metro Vancouver ArcGIS MapServer",
+        "url": "https://gis.metrovancouver.org/arcgis/rest/services/MV2U/MVMapX/MapServer"
+      }
+    ],
+    "source_url": "https://gis.metrovancouver.org/arcgis/rest/services/MV2U/MVMapX/MapServer"
+  },
+  {
+    "id": "mobile_coverage",
+    "name": "大溫哥華流動網絡涵蓋範圍 (Telus / Rogers / Virgin Plus / Bell / Freedom)",
+    "type": "geojson",
+    "cron_expr": "0 0 1 */6 *",
+    "schedule_interval": "每 6 個月",
+    "record_count": 59,
+    "unit": "組多邊形涵蓋圖徵 (5 大電信商)",
+    "last_updated": "2026-11-14T20:56:37.697Z",
+    "status": "healthy",
+    "data_pipeline_notes": "五大電信商官方涵蓋圖資 (Telus Carto MVT、Rogers SpatialBuzz 圖磚、Bell/Virgin Plus Korem TMS、Freedom Mobile CloudFront 圖磚) -> 每 6 個月透過 GitHub Actions 自動解析並合併為 MultiPolygon -> 寫入 /public/vancouver_mobile_coverage.geojson (僅顯示於地圖，不納入搜尋引擎)",
+    "runner": "github_actions",
+    "workflow_file": "update-mobile-coverage.yml",
+    "category": "生活",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Telus 流動網絡涵蓋地圖",
+        "url": "https://www.telus.com/en/mobility/network/coverage-map"
+      },
+      {
+        "type": "web",
+        "label": "Rogers 流動網絡涵蓋地圖",
+        "url": "https://www.rogers.com/mobility/network-coverage-map"
+      },
+      {
+        "type": "web",
+        "label": "Virgin Plus 流動網絡涵蓋地圖",
+        "url": "https://www.virginplus.ca/en/support/coverage-maps.html"
+      },
+      {
+        "type": "web",
+        "label": "Bell 流動網絡涵蓋地圖",
+        "url": "https://www.bell.ca/Mobility/Our_network_coverage"
+      },
+      {
+        "type": "web",
+        "label": "Freedom Mobile 流動網絡涵蓋地圖",
+        "url": "https://www.freedommobile.ca/en-CA/network-coverage"
+      }
+    ],
+    "source_url": "https://www.telus.com/en/mobility/network/coverage-map"
   }
 ];

@@ -40,6 +40,7 @@ _SIMP_CHARS = (
     "冲红灯封路封闭施工修路路况塞车拥堵意外车祸转弯转向限速货车卡车桥梁隧道边境界线邮"
     "政快递包裹柜员机自动提款机网路免费无线滑雪缆车潮汐水文气象极光购物超市商场餐厅美"
     "食咖啡厅动物园水族馆体育馆球场游泳池溜冰场网球场篮球场滑板场儿童游乐场宠物狗公园"
+    "净库压阀检坝厂汙"
 )
 _TRAD_CHARS = (
     "銀醫圖書館學園廁衛間場車鐵郵遞電動樁橋路街號區灣溫華門關輪機飛船貨頭灘樹燈線單雙"
@@ -51,6 +52,7 @@ _TRAD_CHARS = (
     "衝紅燈封路封閉施工修路路況塞車擁堵意外車禍轉彎轉向限速貨車卡車橋樑隧道邊境界線郵"
     "政快遞包裹櫃員機自動提款機網路免費無線滑雪纜車潮汐水文氣象極光購物超市商場餐廳美"
     "食咖啡廳動物園水族館體育館球場游泳池溜冰場網球場籃球場滑板場兒童遊樂場寵物狗公園"
+    "淨庫壓閥檢壩廠污"
 )
 assert len(_SIMP_CHARS) == len(_TRAD_CHARS), "Simplified/Traditional mapping length mismatch"
 _SIMP_TO_TRAD_TABLE = str.maketrans(_SIMP_CHARS, _TRAD_CHARS)
@@ -318,6 +320,36 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "tesla": ("tesla",),
     "特斯拉": ("tesla",),
     "supercharger": ("tesla",),
+    "供水": ("water_supply",),
+    "自來水": ("water_supply",),
+    "淨水廠": ("water_supply",),
+    "蓄水池": ("water_supply",),
+    "水庫": ("water_supply",),
+    "水壩": ("water_supply",),
+    "供水泵站": ("water_supply",),
+    "water supply": ("water_supply",),
+    "filtration plant": ("water_supply",),
+    "reservoir": ("water_supply",),
+    "dam": ("water_supply",),
+    "污水": ("sewer_system",),
+    "下水道": ("sewer_system",),
+    "排水": ("sewer_system",),
+    "污水處理": ("sewer_system",),
+    "污水處理廠": ("sewer_system",),
+    "污水泵站": ("sewer_system",),
+    "污水閥": ("sewer_system",),
+    "溢流": ("sewer_system",),
+    "sewer": ("sewer_system",),
+    "sewerage": ("sewer_system",),
+    "wastewater": ("sewer_system",),
+    "wwtp": ("sewer_system",),
+    "outfall": ("sewer_system",),
+    "cso": ("sewer_system",),
+    "sso": ("sewer_system",),
+    "flow meter": ("sewer_system",),
+    "泵站": ("water_supply", "sewer_system"),
+    "manhole": ("water_supply", "sewer_system"),
+    "檢修井": ("water_supply", "sewer_system"),
     "超級充電": ("tesla",),
     "停車場": ("impark", "accessible_parking"),
     "泊車": ("impark", "parking_meters", "accessible_parking"),
@@ -517,6 +549,8 @@ CATEGORY_TIER_BONUS: dict[str, int] = {
     "road_construction": 16,
     "postal_code_fsa": 20,
     "crime_areas": 18,
+    "water_supply": 22,
+    "sewer_system": 22,
     "bikeways": 16,
     "address": 18,
     # Tier 3 (+6): Bus Stops, Street Parking, Linear Corridors, Zoning
@@ -945,6 +979,8 @@ GEOJSON_LAYER_CONFIGS: list[tuple[str, str, str, str, str, str, int, Optional[st
     ("postal_code_fsa", "postal_code_fsa", "postal_code_fsa", "郵遞編號分區", "📮", "postalCodeFSA", 13, "name"),
     ("crime_areas", "crime_areas", "crime_areas", "社區治安統計", "🛡️", "crimeAreas", 14, "name"),
     ("zoning_districts", "zoning_districts", "zoning_districts", "土地規劃分區", "🗺️", "zoningDistricts", 15, "name"),
+    ("water_supply", "water_supply", "water_supply", "供水", "🚰", "waterSupply", 15, None),
+    ("sewer_system", "sewer_system", "sewer_system", "污水", "💧", "sewerSystem", 15, None),
 ]
 
 _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
@@ -998,6 +1034,8 @@ _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
     "postal_code_fsa": "郵遞編號 郵遞區號 郵編 postal code fsa",
     "local_area_boundary": "區域邊界 社區分區 neighbourhood boundary",
     "zoning_districts": "土地規劃 分區管制 zoning district",
+    "water_supply": "供水 自來水 淨水廠 蓄水池 水庫 水壩 供水泵站 消毒 加氯 紫外線 能源 metro vancouver water supply filtration treatment plant reservoir dam pump station chlorination manhole",
+    "sewer_system": "污水 排水 下水道 污水處理廠 污水泵站 污水閥 排放口 流量計 溢流 檢修井 能源 metro vancouver sewer sewerage wastewater treatment plant lift station outfall cso sso flow meter valve manhole",
 }
 
 _NEIGHBOURHOOD_ZH_ALIASES: dict[str, str] = {
@@ -1251,6 +1289,16 @@ class LayerSearchEngine:
         tier_bonus = CATEGORY_TIER_BONUS.get(category, 10)
         if category == "bus_stop" and "unload" in lower_title:
             tier_bonus = max(1, tier_bonus - 10)
+        elif category in ("water_supply", "sewer_system") and isinstance(meta, dict):
+            sub_lid = (meta.get("properties") or {}).get("source_layer_id")
+            if sub_lid in (22, 27, 41, 43, 63, 64, 65, 66, 67, 74, 82, 177, 194, 199):
+                tier_bonus = 30
+            elif sub_lid in (44, 62):
+                tier_bonus = 18
+            elif sub_lid in (25, 40, 53):
+                tier_bonus = 12
+            elif sub_lid in (23, 28):
+                tier_bonus = 4
 
         doc = SearchDoc(
             doc_id=doc_id,
@@ -2117,6 +2165,12 @@ class LayerSearchEngine:
                     for ztok in c_zh_all.split():
                         exact_codes.append(ztok)
                         exact_codes.append(f"{ztok}領事館")
+                elif fstem in ("water_supply", "sewer_system"):
+                    title = raw_name or str(props.get("sub_type_zh") or badge_zh).strip()
+                    for code_k in ("acronym", "site_code", "district_file_no", "alarm_id"):
+                        cval = str(props.get(code_k) or "").strip()
+                        if cval and len(cval) <= 24:
+                            exact_codes.append(cval)
 
                 if not title:
                     title = badge_zh
@@ -2169,6 +2223,7 @@ class LayerSearchEngine:
                 cat_extra = str(
                     props.get("school_category_zh")
                     or props.get("facility_type_name")
+                    or props.get("sub_type_zh")
                     or props.get("brand")
                     or props.get("operator")
                     or props.get("priority_zh")
@@ -2221,6 +2276,21 @@ class LayerSearchEngine:
                         props.get("head_of_post"),
                         props.get("rank"),
                         props.get("city"),
+                        props.get("municipality"),
+                        props.get("plan_area"),
+                        props.get("sewerage_area"),
+                        props.get("sub_type"),
+                        props.get("sub_type_zh"),
+                        props.get("owner"),
+                        props.get("parent_facility"),
+                        props.get("acronym"),
+                        props.get("site_code"),
+                        props.get("material"),
+                        props.get("status"),
+                        props.get("data_tag"),
+                        props.get("measurement_type"),
+                        props.get("classification"),
+                        props.get("district_file_no"),
                         props.get("email"),
                         props.get("fax"),
                         alias_kw,
