@@ -89,6 +89,7 @@ import {
   UserShield,
   Waves,
   Wifi,
+  Wind,
   X,
   Zap,
   ZapOff,
@@ -230,6 +231,7 @@ const ICON_MAP: Record<LayerIconKey, React.ElementType> = {
   UserShield,
   Waves,
   Wifi,
+  Wind,
   ZapOff,
 };
 

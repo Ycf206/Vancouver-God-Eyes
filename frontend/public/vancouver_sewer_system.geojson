@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
   "total_count": 5821,
-  "updated_at": "2026-11-14T20:46:08.587Z",
+  "updated_at": "2026-11-15T05:34:51.536Z",
   "features": [
     {
       "type": "Feature",
@@ -236,7 +236,9 @@
         "facility_id": 36063,
         "object_id": 110,
         "data_tag": "SHRB-LI-054/PV.CV",
-        "incident_start": "2026-11-14 10:25"
+        "threshold_exceeded": "是 (超過警戒閾值)",
+        "incident_start": "2026-11-14 10:25",
+        "incident_end": "2026-11-14 13:43"
       }
     },
     {

@@ -1,9 +1,19 @@
 {
   "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 40,
+  "updated_at": "2026-11-15T04:13:21.767Z",
   "features": [
     {
       "type": "Feature",
       "id": "ev_cov_VCS29",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142173,
+          49.283155
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS29",
         "facility_type": "ev_charging",
@@ -23,19 +33,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.283154999495224,
-        "lon": -123.1421729994179
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1421729994179,
-          49.283154999495224
-        ]
+        "lon": -123.1421729994179,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS30",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.137209,
+          49.278736
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS30",
         "facility_type": "ev_charging",
@@ -55,19 +66,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.27873599866283,
-        "lon": -123.13720899997011
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.13720899997011,
-          49.27873599866283
-        ]
+        "lon": -123.13720899997011,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS35",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115166,
+          49.279517
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS35",
         "facility_type": "ev_charging",
@@ -87,19 +99,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.279516858982845,
-        "lon": -123.11516599984326
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.11516599984326,
-          49.279516858982845
-        ]
+        "lon": -123.11516599984326,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS09",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100173,
+          49.264131
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS09",
         "facility_type": "ev_charging",
@@ -119,51 +132,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.26413138916266,
-        "lon": -123.10017319992684
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.10017319992684,
-          49.26413138916266
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS39",
-      "properties": {
-        "id": "ev_cov_VCS39",
-        "facility_type": "ev_charging",
-        "name": "1 Kingsway",
-        "address": "1 Kingsway",
-        "local_area": "Mount Pleasant",
-        "location": "P1 of Mt. Pleasant Community Centre lot",
-        "lot_type": "Parkade",
-        "level_1": "Level 2",
-        "operator": "Easypark",
-        "connectors": "J1772",
-        "ports": 1,
-        "voltage": "240VAC",
-        "power_kw": null,
-        "cost": "$0.31 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Active",
-        "lat": 49.26415939929445,
-        "lon": -123.10020540015736
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.10020540015736,
-          49.26415939929445
-        ]
+        "lon": -123.10017319992684,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS50",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043495,
+          49.286385
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS50",
         "facility_type": "ev_charging",
@@ -183,19 +165,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.28638477943181,
-        "lon": -123.04349450018482
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.04349450018482,
-          49.28638477943181
-        ]
+        "lon": -123.04349450018482,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS52",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033813,
+          49.281468
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS52",
         "facility_type": "ev_charging",
@@ -215,19 +198,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.28146799880418,
-        "lon": -123.0338130000933
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.0338130000933,
-          49.28146799880418
-        ]
+        "lon": -123.0338130000933,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS53",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119261,
+          49.276923
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS53",
         "facility_type": "ev_charging",
@@ -247,19 +231,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.27692321917253,
-        "lon": -123.11926106080364
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.11926106080364,
-          49.27692321917253
-        ]
+        "lon": -123.11926106080364,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS61",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09136,
+          49.229776
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS61",
         "facility_type": "ev_charging",
@@ -279,19 +264,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.22977563887732,
-        "lon": -123.09136000049641
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.09136000049641,
-          49.22977563887732
-        ]
+        "lon": -123.09136000049641,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS66",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.074908,
+          49.237785
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS66",
         "facility_type": "ev_charging",
@@ -311,19 +297,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.237784629237474,
-        "lon": -123.07490849933102
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.07490849933102,
-          49.237784629237474
-        ]
+        "lon": -123.07490849933102,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS67",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032264,
+          49.215026
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS67",
         "facility_type": "ev_charging",
@@ -343,19 +330,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.215026469478715,
-        "lon": -123.03226410024742
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.03226410024742,
-          49.215026469478715
-        ]
+        "lon": -123.03226410024742,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS76",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119004,
+          49.279322
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS76",
         "facility_type": "ev_charging",
@@ -375,19 +363,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.279322389511066,
-        "lon": -123.11900359938359
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.11900359938359,
-          49.279322389511066
-        ]
+        "lon": -123.11900359938359,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS81",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101216,
+          49.265155
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS81",
         "facility_type": "ev_charging",
@@ -407,19 +396,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.26515489900705,
-        "lon": -123.10121619970512
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.10121619970512,
-          49.26515489900705
-        ]
+        "lon": -123.10121619970512,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS89",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16864,
+          49.22098
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS89",
         "facility_type": "ev_charging",
@@ -437,21 +427,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.220979999139054,
-        "lon": -123.16864000065736
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.16864000065736,
-          49.220979999139054
-        ]
+        "lon": -123.16864000065736,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS92",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03642,
+          49.266207
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS92",
         "facility_type": "ev_charging",
@@ -471,19 +462,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.266207268730106,
-        "lon": -123.03641970015961
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.03641970015961,
-          49.266207268730106
-        ]
+        "lon": -123.03641970015961,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS94",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.143559,
+          49.257554
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS94",
         "facility_type": "ev_charging",
@@ -501,21 +493,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.25755418886109,
-        "lon": -123.1435587005347
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1435587005347,
-          49.25755418886109
-        ]
+        "lon": -123.1435587005347,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS95",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129657,
+          49.206856
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS95",
         "facility_type": "ev_charging",
@@ -533,21 +526,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.20685599868063,
-        "lon": -123.12965670028812
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.12965670028812,
-          49.20685599868063
-        ]
+        "lon": -123.12965670028812,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS101",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.186749,
+          49.243982
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS101",
         "facility_type": "ev_charging",
@@ -567,83 +561,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.24398205875343,
-        "lon": -123.18674919934331
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.18674919934331,
-          49.24398205875343
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS102",
-      "properties": {
-        "id": "ev_cov_VCS102",
-        "facility_type": "ev_charging",
-        "name": "2221 Main St",
-        "address": "2221 Main St",
-        "local_area": "Mount Pleasant",
-        "location": "Undergound",
-        "lot_type": "Curbside",
-        "level_1": "Level 3",
-        "operator": "Easypark",
-        "connectors": "CHAdeMO/CCS",
-        "ports": 1,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Active",
-        "lat": 49.265158838740625,
-        "lon": -123.10120920053575
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.10120920053575,
-          49.265158838740625
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS104",
-      "properties": {
-        "id": "ev_cov_VCS104",
-        "facility_type": "ev_charging",
-        "name": "1950 Windermere St",
-        "address": "1950 Windermere St",
-        "local_area": "Victoria-Fraserview",
-        "location": "Sunrise Park",
-        "lot_type": "Curbside",
-        "level_1": "Level 3",
-        "operator": "City of Vancouver",
-        "connectors": "CHAdeMO/CCS",
-        "ports": 2,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Active",
-        "lat": 49.22590199905591,
-        "lon": -123.05616899964578
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.05616899964578,
-          49.22590199905591
-        ]
+        "lon": -123.18674919934331,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS13",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106551,
+          49.243681
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS13",
         "facility_type": "ev_charging",
@@ -663,19 +594,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.24368099862675,
-        "lon": -123.1065510001002
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1065510001002,
-          49.24368099862675
-        ]
+        "lon": -123.1065510001002,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS51",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129085,
+          49.226886
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS51",
         "facility_type": "ev_charging",
@@ -695,19 +627,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.22688599941139,
-        "lon": -123.12908500063563
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.12908500063563,
-          49.22688599941139
-        ]
+        "lon": -123.12908500063563,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS55",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11318,
+          49.261093
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS55",
         "facility_type": "ev_charging",
@@ -727,19 +660,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.26109299924619,
-        "lon": -123.1131800002575
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1131800002575,
-          49.26109299924619
-        ]
+        "lon": -123.1131800002575,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS59",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12833,
+          49.272514
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS59",
         "facility_type": "ev_charging",
@@ -759,83 +693,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.272513998910085,
-        "lon": -123.12832999999034
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.12832999999034,
-          49.272513998910085
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS62",
-      "properties": {
-        "id": "ev_cov_VCS62",
-        "facility_type": "ev_charging",
-        "name": "646 E 44th Ave",
-        "address": "646 E 44th Ave",
-        "local_area": "Sunset",
-        "location": "Parking lot off of 44th Ave",
-        "lot_type": "Surface",
-        "level_1": "Level 3",
-        "operator": "City of Vancouver",
-        "connectors": "CHAdeMO",
-        "ports": 2,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Active",
-        "lat": 49.229928609362695,
-        "lon": -123.09135339981748
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.09135339981748,
-          49.229928609362695
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS78",
-      "properties": {
-        "id": "ev_cov_VCS78",
-        "facility_type": "ev_charging",
-        "name": "860 Richards St",
-        "address": "860 Richards St",
-        "local_area": "Downtown",
-        "location": "Curbside on Richards St",
-        "lot_type": "Curbside",
-        "level_1": "Level 2",
-        "operator": "City of Vancouver",
-        "connectors": "J1772",
-        "ports": 1,
-        "voltage": "240VAC",
-        "power_kw": null,
-        "cost": "$0.31 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Active",
-        "lat": 49.27935407929086,
-        "lon": -123.11894880063002
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.11894880063002,
-          49.27935407929086
-        ]
+        "lon": -123.12832999999034,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS79",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09242,
+          49.274598
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS79",
         "facility_type": "ev_charging",
@@ -855,19 +726,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.27459799879927,
-        "lon": -123.09241999935442
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.09241999935442,
-          49.27459799879927
-        ]
+        "lon": -123.09241999935442,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS87",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.036432,
+          49.266893
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS87",
         "facility_type": "ev_charging",
@@ -885,21 +757,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.26689299948404,
-        "lon": -123.03643199991508
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.03643199991508,
-          49.26689299948404
-        ]
+        "lon": -123.03643199991508,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS91",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.035918,
+          49.237302
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS91",
         "facility_type": "ev_charging",
@@ -917,21 +790,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.237301529062655,
-        "lon": -123.0359183999793
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.0359183999793,
-          49.237301529062655
-        ]
+        "lon": -123.0359183999793,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS93",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.159198,
+          49.222436
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS93",
         "facility_type": "ev_charging",
@@ -949,21 +823,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.22243552940421,
-        "lon": -123.15919839978652
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.15919839978652,
-          49.22243552940421
-        ]
+        "lon": -123.15919839978652,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS96",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.059016,
+          49.227636
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS96",
         "facility_type": "ev_charging",
@@ -981,85 +856,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.22763591942339,
-        "lon": -123.05901619994043
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.05901619994043,
-          49.22763591942339
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS103",
-      "properties": {
-        "id": "ev_cov_VCS103",
-        "facility_type": "ev_charging",
-        "name": "5275 McKinnon St",
-        "address": "5275 McKinnon St",
-        "local_area": "Renfrew-Collingwood",
-        "location": "Collingwood Park",
-        "lot_type": "Curbside",
-        "level_1": "Level 3",
-        "operator": "City of Vancouver",
-        "connectors": "CHAdeMO/CCS",
-        "ports": 2,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Underway",
-        "lat": 49.237301529062655,
-        "lon": -123.0359183999793
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.0359183999793,
-          49.237301529062655
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS108",
-      "properties": {
-        "id": "ev_cov_VCS108",
-        "facility_type": "ev_charging",
-        "name": "E 47th Ave and Nanaimo St",
-        "address": "E 47th Ave and Nanaimo St",
-        "local_area": "Victoria-Fraserview",
-        "location": "Nanaimo Park",
-        "lot_type": "Curbside",
-        "level_1": "Level 3",
-        "operator": "City of Vancouver",
-        "connectors": "CHAdeMO/CCS",
-        "ports": 2,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Underway",
-        "lat": 49.22766979867333,
-        "lon": -123.05898900036433
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.05898900036433,
-          49.22766979867333
-        ]
+        "lon": -123.05901619994043,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS110",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152093,
+          49.230694
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS110",
         "facility_type": "ev_charging",
@@ -1077,53 +889,22 @@
         "cost": "$0.38 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
-        "lat": 49.230694229298116,
-        "lon": -123.15209300029865
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.15209300029865,
-          49.230694229298116
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS31",
-      "properties": {
-        "id": "ev_cov_VCS31",
-        "facility_type": "ev_charging",
-        "name": "Beach Ave and Bute St",
-        "address": "Beach Ave and Bute St",
-        "local_area": "West End",
-        "location": "Sunset Beach Easy Park Lot",
-        "lot_type": "Curbside",
-        "level_1": "Level 2",
-        "operator": "Easy Park / Park Board",
-        "connectors": "J1772",
-        "ports": 2,
-        "voltage": "240VAC",
-        "power_kw": null,
-        "cost": "$0.31 kWh",
-        "is_free": false,
-        "access": "Public",
         "status": "Active",
-        "lat": 49.27873599866283,
-        "lon": -123.13720899997011
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.13720899997011,
-          49.27873599866283
-        ]
+        "lat": 49.230694229298116,
+        "lon": -123.15209300029865,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS07",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152656,
+          49.273912
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS07",
         "facility_type": "ev_charging",
@@ -1143,19 +924,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.273911948761985,
-        "lon": -123.15265619939477
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.15265619939477,
-          49.273911948761985
-        ]
+        "lon": -123.15265619939477,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS44",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13022,
+          49.299534
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS44",
         "facility_type": "ev_charging",
@@ -1175,19 +957,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.299533999187936,
-        "lon": -123.1302199993813
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1302199993813,
-          49.299533999187936
-        ]
+        "lon": -123.1302199993813,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS47",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10009,
+          49.222282
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS47",
         "facility_type": "ev_charging",
@@ -1207,19 +990,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.222281998751384,
-        "lon": -123.10008999996074
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.10008999996074,
-          49.222281998751384
-        ]
+        "lon": -123.10008999996074,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS49",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.071295,
+          49.276029
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS49",
         "facility_type": "ev_charging",
@@ -1239,51 +1023,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.27602903875964,
-        "lon": -123.07129509973213
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.07129509973213,
-          49.27602903875964
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS56",
-      "properties": {
-        "id": "ev_cov_VCS56",
-        "facility_type": "ev_charging",
-        "name": "453 W. 12th Ave",
-        "address": "453 W. 12th Ave",
-        "local_area": "Mount Pleasant",
-        "location": "Upper parking lot at City Hall (access from Yukon)",
-        "lot_type": "Surface",
-        "level_1": "Level 2",
-        "operator": "City of Vancouver",
-        "connectors": "J1772",
-        "ports": 2,
-        "voltage": "240VAC",
-        "power_kw": null,
-        "cost": "$0.31 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Active",
-        "lat": 49.261219998705364,
-        "lon": -123.11373999969001
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.11373999969001,
-          49.261219998705364
-        ]
+        "lon": -123.07129509973213,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS70",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044847,
+          49.226955
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS70",
         "facility_type": "ev_charging",
@@ -1303,19 +1056,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.22695486863059,
-        "lon": -123.04484709939611
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.04484709939611,
-          49.22695486863059
-        ]
+        "lon": -123.04484709939611,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS74",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.145005,
+          49.291038
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS74",
         "facility_type": "ev_charging",
@@ -1335,19 +1089,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.29103764886917,
-        "lon": -123.14500479984366
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.14500479984366,
-          49.29103764886917
-        ]
+        "lon": -123.14500479984366,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS82",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07019,
+          49.26046
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS82",
         "facility_type": "ev_charging",
@@ -1367,19 +1122,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.26045999914628,
-        "lon": -123.07019000048312
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.07019000048312,
-          49.26045999914628
-        ]
+        "lon": -123.07019000048312,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS86",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065706,
+          49.256652
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS86",
         "facility_type": "ev_charging",
@@ -1399,19 +1155,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.25665197890284,
-        "lon": -123.06570620058483
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.06570620058483,
-          49.25665197890284
-        ]
+        "lon": -123.06570620058483,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS88",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112645,
+          49.224075
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS88",
         "facility_type": "ev_charging",
@@ -1429,21 +1186,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.22407499880693,
-        "lon": -123.11264500009608
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.11264500009608,
-          49.22407499880693
-        ]
+        "lon": -123.11264500009608,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS90",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.191203,
+          49.270991
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS90",
         "facility_type": "ev_charging",
@@ -1463,19 +1221,20 @@
         "access": "Public",
         "status": "Active",
         "lat": 49.27099146944479,
-        "lon": -123.1912032005563
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1912032005563,
-          49.27099146944479
-        ]
+        "lon": -123.1912032005563,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS97",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.183646,
+          49.266698
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS97",
         "facility_type": "ev_charging",
@@ -1493,53 +1252,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.26669795871344,
-        "lon": -123.18364639969073
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.18364639969073,
-          49.26669795871344
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS98",
-      "properties": {
-        "id": "ev_cov_VCS98",
-        "facility_type": "ev_charging",
-        "name": "6100 Maple St",
-        "address": "6100 Maple St",
-        "local_area": "Kerrisdale",
-        "location": "Maple @ 45th",
-        "lot_type": "Curbside",
-        "level_1": "Level 2",
-        "operator": "City of Vancouver",
-        "connectors": "J1772",
-        "ports": 2,
-        "voltage": "240VAC",
-        "power_kw": null,
-        "cost": "$0.31 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Underway",
-        "lat": 49.23064494913689,
-        "lon": -123.152105699932
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.152105699932,
-          49.23064494913689
-        ]
+        "lon": -123.18364639969073,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS100",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.183985,
+          49.261479
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS100",
         "facility_type": "ev_charging",
@@ -1557,21 +1285,22 @@
         "cost": "$0.31 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.26147863907568,
-        "lon": -123.18398469941687
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.18398469941687,
-          49.26147863907568
-        ]
+        "lon": -123.18398469941687,
+        "source": "cov"
       }
     },
     {
       "type": "Feature",
       "id": "ev_cov_VCS105",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.159084,
+          49.224867
+        ]
+      },
       "properties": {
         "id": "ev_cov_VCS105",
         "facility_type": "ev_charging",
@@ -1589,144 +1318,10 @@
         "cost": "$0.38 kWh",
         "is_free": false,
         "access": "Public",
-        "status": "Underway",
+        "status": "Active",
         "lat": 49.22486699909835,
-        "lon": -123.15908399998246
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.15908399998246,
-          49.22486699909835
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS106",
-      "properties": {
-        "id": "ev_cov_VCS106",
-        "facility_type": "ev_charging",
-        "name": "W 14th Ave & Pine St",
-        "address": "W 14th Ave & Pine St",
-        "local_area": "Fairview",
-        "location": "Granville Park",
-        "lot_type": "Curbside",
-        "level_1": "Level 3",
-        "operator": "City of Vancouver",
-        "connectors": "CHAdeMO/CCS",
-        "ports": 2,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Underway",
-        "lat": 49.25753928936748,
-        "lon": -123.1435600000067
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1435600000067,
-          49.25753928936748
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS107",
-      "properties": {
-        "id": "ev_cov_VCS107",
-        "facility_type": "ev_charging",
-        "name": "950 W 71st Ave",
-        "address": "950 W 71st Ave",
-        "local_area": "Marpole",
-        "location": "Ebune Park",
-        "lot_type": "Curbside",
-        "level_1": "Level 3",
-        "operator": "City of Vancouver",
-        "connectors": "CHAdeMO/CCS",
-        "ports": 2,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Underway",
-        "lat": 49.206861978727076,
-        "lon": -123.12970800018505
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.12970800018505,
-          49.206861978727076
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS109",
-      "properties": {
-        "id": "ev_cov_VCS109",
-        "facility_type": "ev_charging",
-        "name": "W 6th Ave and Dunbar St",
-        "address": "W 6th Ave and Dunbar St",
-        "local_area": "Kitsilano",
-        "location": "Dunbar @ W. 6th",
-        "lot_type": "Curbside",
-        "level_1": "Level 3",
-        "operator": "City of Vancouver",
-        "connectors": "CHAdeMO/CCS",
-        "ports": 2,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Underway",
-        "lat": 49.26676969914343,
-        "lon": -123.18363900008023
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.18363900008023,
-          49.26676969914343
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "ev_cov_VCS112",
-      "properties": {
-        "id": "ev_cov_VCS112",
-        "facility_type": "ev_charging",
-        "name": "3600 W 12th Ave",
-        "address": "3600 W 12th Ave",
-        "local_area": "Kitsilano",
-        "location": "Almond Park Playground",
-        "lot_type": "Curbside",
-        "level_1": "Level 3",
-        "operator": "City of Vancouver",
-        "connectors": "CHAdeMO/CCS",
-        "ports": 2,
-        "voltage": "400VAC",
-        "power_kw": null,
-        "cost": "$0.38 kWh",
-        "is_free": false,
-        "access": "Public",
-        "status": "Underway",
-        "lat": 49.261487999295305,
-        "lon": -123.18398200052448
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.18398200052448,
-          49.261487999295305
-        ]
+        "lon": -123.15908399998246,
+        "source": "cov"
       }
     }
   ]

@@ -36,7 +36,7 @@ import {
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, Weight, SquareParking, Trophy,
   TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
-  Layers, Building2, Faucet, Droplets
+  Layers, Building2, BuildingComplex, Hammer, Faucet, Droplets
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -565,6 +565,7 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
   powerOutages: { label: '停電', prefixes: ['power-outages', 'power_outages'] },
   beachWaterQuality: { label: '海灘水質', prefixes: ['beach-water', 'beach_water'] },
+  airQuality: { label: '空氣質素', prefixes: ['air-quality', 'air_quality'] },
   fireHydrants: { label: '消防栓', prefixes: ['fire-hydrants', 'fire_hydrants'] },
   waterSupply: { label: '供水', prefixes: ['water-supply', 'water_supply'] },
   sewerSystem: { label: '污水', prefixes: ['sewer-system', 'sewer_system'] },
@@ -1558,6 +1559,58 @@ export default function AppMap() {
   const [motorcycleFilterOpen, setMotorcycleFilterOpen] = useState(true);
   const [fuelFilterOpen, setFuelFilterOpen] = useState(true);
   const [evFilterOpen, setEvFilterOpen] = useState(true);
+  const [selectedFloStationIdx, setSelectedFloStationIdx] = useState(0);
+  const [liveFloParkData, setLiveFloParkData] = useState<{
+    facilityId: string;
+    park_id: string;
+    checked_at?: string;
+    status?: string;
+    available_count?: number;
+    total_count?: number;
+    non_member_fee_amount?: number | null;
+    non_member_fee_currency?: string;
+    stations?: Array<{
+      id?: string;
+      name?: string;
+      status?: string;
+      level?: string;
+      freeOfCharge?: boolean;
+      startMethods?: string[];
+      connector_specs?: string[];
+      connector_count?: number;
+      power_type?: string;
+      power?: number;
+      power_kw?: number;
+      tariff_description_en?: string;
+    }>;
+  } | null>(null);
+  const [loadingFloLive, setLoadingFloLive] = useState(false);
+  const [selectedCpPortIdx, setSelectedCpPortIdx] = useState(0);
+  const [liveCpStationData, setLiveCpStationData] = useState<{
+    facilityId: string;
+    device_id: string;
+    checked_at?: string;
+    host_name?: string;
+    address1?: string;
+    network_display_name?: string;
+    description?: string | null;
+    access_restriction?: string;
+    start_methods?: string[];
+    status?: string;
+    available_count?: number;
+    total_count?: number;
+    is_free?: boolean;
+    ports_info?: Array<{
+      outletNumber?: number;
+      status?: string;
+      level?: string;
+      displayLevel?: string;
+      powerRange?: { max?: string | number; unit?: string };
+      connectorList?: Array<{ plugType?: string; displayPlugType?: string; status?: string }>;
+    }>;
+    station_price?: Record<string, unknown>;
+  } | null>(null);
+  const [loadingCpLive, setLoadingCpLive] = useState(false);
   const [showTimePeriodInfo, setShowTimePeriodInfo] = useState(false);
   const [timeInfoHovered, setTimeInfoHovered] = useState(false);
   const [timeInfoPinned, setTimeInfoPinned] = useState(false);
@@ -2568,12 +2621,103 @@ export default function AppMap() {
     }
   }, [selectedFacility, carSharingFilter, bikewaysFilter, safetyCamerasFilter, imparkFilter]);
 
-  // 當設施彈窗切換或關閉時，重設時段說明面板狀態
+  // 當設施彈窗切換或關閉時，重設時段說明面板及 FLO / ChargePoint 站點索引狀態，並為 FLO / ChargePoint 站點進行即時 API2 狀態校對
   useEffect(() => {
     setShowTimePeriodInfo(false);
     setTimeInfoHovered(false);
     setTimeInfoPinned(false);
+    setSelectedFloStationIdx(0);
+    setLiveFloParkData(null);
+    setLoadingFloLive(false);
+    setSelectedCpPortIdx(0);
+    setLiveCpStationData(null);
+    setLoadingCpLive(false);
+
+    if (!selectedFacility || selectedFacility.facility_type !== 'ev_charging') return;
+    const props = selectedFacility.properties || {};
+    const facIdStr = String(selectedFacility.id ?? '');
+    const isFlo = props.source === 'flo' || facIdStr.startsWith('ev_flo_');
+    const isCp = props.source === 'chargepoint' || facIdStr.startsWith('ev_cp_');
+
+    if (isFlo) {
+      const parkId = String(props.park_id || facIdStr.replace(/^ev_flo_/, '')).trim();
+      if (!parkId) return;
+
+      const controller = new AbortController();
+      const facId = facIdStr;
+      const sidParam = props.station_id ? `?station_id=${encodeURIComponent(String(props.station_id))}` : '';
+      setLoadingFloLive(true);
+
+      fetch(`${getApiUrl()}/api/ev/flo/${encodeURIComponent(parkId)}${sidParam}`, {
+        cache: 'no-store',
+        signal: controller.signal,
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!controller.signal.aborted && data && Array.isArray(data.stations)) {
+            setLiveFloParkData({ facilityId: facId, ...data });
+          }
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (!controller.signal.aborted) {
+            setLoadingFloLive(false);
+          }
+        });
+
+      return () => controller.abort();
+    }
+
+    if (isCp) {
+      const deviceId = String(props.device_id || facIdStr.replace(/^ev_cp_/, '')).trim();
+      if (!deviceId) return;
+
+      const controller = new AbortController();
+      const facId = facIdStr;
+      setLoadingCpLive(true);
+
+      fetch(`${getApiUrl()}/api/ev/chargepoint/${encodeURIComponent(deviceId)}`, {
+        cache: 'no-store',
+        signal: controller.signal,
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!controller.signal.aborted && data && data.device_id) {
+            setLiveCpStationData({ facilityId: facId, ...data });
+          }
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (!controller.signal.aborted) {
+            setLoadingCpLive(false);
+          }
+        });
+
+      return () => controller.abort();
+    }
   }, [selectedFacility?.id]);
+
+  // 開啟電動車充電站圖層時定期 (每 3 分鐘) 重新拉取無快取最新可用狀態
+  useEffect(() => {
+    if (!layers.evCharging) return;
+    const refreshEvSource = () => {
+      try {
+        const map = mapRef.current?.getMap?.();
+        const src = map?.getSource?.('ev-charging') as { setData?: (url: string) => void } | undefined;
+        if (src && typeof src.setData === 'function') {
+          src.setData(`${getApiUrl()}/api/ev/geojson?_t=${Date.now()}`);
+        }
+      } catch {
+        // ignore map unmount race
+      }
+    };
+    const initTimer = setTimeout(refreshEvSource, 600);
+    const intervalId = setInterval(refreshEvSource, 180000);
+    return () => {
+      clearTimeout(initTimer);
+      clearInterval(intervalId);
+    };
+  }, [layers.evCharging]);
 
   // 實時動態切換單車徑篩選 (即時開關地圖上 4 類單車道)
   useEffect(() => {
@@ -4607,7 +4751,7 @@ export default function AppMap() {
       style.sources['motorcycle-parking'] = { type: 'geojson', data: `/api/geojson/road/motorcycle_parking${mpQuery}` };
     }
     if (layers.evCharging) {
-      style.sources['ev-charging'] = { type: 'geojson', data: '/vancouver_ev_charging.geojson' };
+      style.sources['ev-charging'] = { type: 'geojson', data: `${apiUrl}/api/ev/geojson` };
     }
     if (layers.escooter) {
       style.sources['escooter'] = { type: 'geojson', data: '/vancouver_escooter.geojson' };
@@ -4745,6 +4889,14 @@ export default function AppMap() {
       style.sources['mobile-coverage'] = {
         type: 'geojson',
         data: '/vancouver_mobile_coverage.geojson',
+      };
+    }
+
+    // Metro Vancouver 空氣質素健康指數 (AQHI) 區塊圖層
+    if (layers.airQuality) {
+      style.sources['air-quality'] = {
+        type: 'geojson',
+        data: `${apiUrl}/api/air-quality/geojson`,
       };
     }
 
@@ -5079,6 +5231,29 @@ export default function AppMap() {
           'line-color': ['get', 'color'],
           'line-width': ['interpolate', ['linear'], ['zoom'], 9, 0.8, 13, 1.5, 16, 2.2],
           'line-opacity': 0.72,
+        },
+      });
+    }
+
+    // Nature / Weather: 大溫哥華空氣質素健康指數 (AQHI) 區塊圖層 (置於底圖之上、點位之下，無點擊 Popup)
+    if (layers.airQuality) {
+      style.layers.push({
+        id: 'air-quality-fill-layer',
+        type: 'fill',
+        source: 'air-quality',
+        paint: {
+          'fill-color': ['coalesce', ['get', 'color'], '#3399ff'],
+          'fill-opacity': 0.38,
+        },
+      });
+      style.layers.push({
+        id: 'air-quality-outline-layer',
+        type: 'line',
+        source: 'air-quality',
+        paint: {
+          'line-color': ['coalesce', ['get', 'color'], '#3399ff'],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 8, 1.2, 12, 2.0, 15, 2.5],
+          'line-opacity': 0.85,
         },
       });
     }
@@ -5665,15 +5840,26 @@ export default function AppMap() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const evFilters: any[] = ['all'];
       if (evChargingFilter.speed === 'fast') {
-        evFilters.push(['>=', ['coalesce', ['get', 'power_kw'], 0], 50]);
+        evFilters.push(['>=', ['coalesce', ['get', 'max_power_kw'], ['get', 'power_kw'], 0], 50]);
       } else if (evChargingFilter.speed === 'slow') {
-        evFilters.push(['<', ['coalesce', ['get', 'power_kw'], 0], 50]);
+        evFilters.push(['<', ['coalesce', ['get', 'max_power_kw'], ['get', 'power_kw'], 0], 50]);
       }
       if (evChargingFilter.freeOnly) {
         evFilters.push(['==', ['coalesce', ['get', 'is_free'], false], true]);
       }
       if (evChargingFilter.connector && evChargingFilter.connector !== 'all') {
         evFilters.push(['!=', ['index-of', evChargingFilter.connector, ['coalesce', ['get', 'connectors'], '']], -1]);
+      }
+      if (evChargingFilter.operator === 'flo') {
+        evFilters.push(['==', ['coalesce', ['get', 'source'], ''], 'flo']);
+      } else if (evChargingFilter.operator === 'chargepoint') {
+        evFilters.push(['==', ['coalesce', ['get', 'source'], ''], 'chargepoint']);
+      } else if (evChargingFilter.operator === 'cov') {
+        evFilters.push([
+          'all',
+          ['!=', ['coalesce', ['get', 'source'], ''], 'flo'],
+          ['!=', ['coalesce', ['get', 'source'], ''], 'chargepoint']
+        ]);
       }
       const evFilterExpr = evFilters.length > 1 ? evFilters : undefined;
 
@@ -5683,7 +5869,7 @@ export default function AppMap() {
         source: 'ev-charging',
         ...(evFilterExpr ? { filter: evFilterExpr } : {}),
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 13, 5, 14, 6.5, 15, 9.5, 17, 11.5],
           'circle-color': '#059669',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -5694,10 +5880,23 @@ export default function AppMap() {
         type: 'symbol',
         source: 'ev-charging',
         ...(evFilterExpr ? { filter: evFilterExpr } : {}),
-        minzoom: 13,
+        minzoom: 12,
         layout: {
-          'text-field': '⚡',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
+          'text-field': [
+            'case',
+            ['==', ['coalesce', ['get', 'source'], ''], 'chargepoint'], 'CP',
+            ['==', ['coalesce', ['get', 'source'], ''], 'flo'], 'F',
+            'C'
+          ],
+          'text-size': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            12, ['case', ['==', ['coalesce', ['get', 'source'], ''], 'chargepoint'], 6.5, 8],
+            14, ['case', ['==', ['coalesce', ['get', 'source'], ''], 'chargepoint'], 8, 9.5],
+            15, ['case', ['==', ['coalesce', ['get', 'source'], ''], 'chargepoint'], 9.5, 11.5],
+            17, ['case', ['==', ['coalesce', ['get', 'source'], ''], 'chargepoint'], 11, 14]
+          ],
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
@@ -8166,6 +8365,8 @@ export default function AppMap() {
     layers.vanWifi,
     layers.mobileCoverage,
     mobileCoverageFilter,
+    layers.airQuality,
+    evChargingFilter.operator,
     layers.tideStations,
     isRadarActive,
     radarTilePath,
@@ -8569,8 +8770,8 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
-          } else if (layerId.startsWith('beach-water')) {
-            // 海灘水質不顯示 popup，所有資料已在探索-海灘中能看到，僅在地圖顯示顏色區塊
+          } else if (layerId.startsWith('beach-water') || layerId.startsWith('air-quality')) {
+            // 海灘水質及空氣質素不顯示 popup，僅在地圖顯示顏色區塊
             return;
           } else if (layerId.startsWith('fire-hydrants')) {
             setSelectedStop(null);
@@ -11399,6 +11600,8 @@ export default function AppMap() {
                   if (t === 'water_supply') return { label: '供水', bg: 'bg-sky-600 text-white rounded-full px-2' };
                   if (t === 'sewer_system') return { label: '污水', bg: 'bg-teal-700 text-white rounded-full px-2' };
                   if (t === 'job') return { label: '工作', bg: 'bg-indigo-600 text-white' };
+                  if (t === 'business_licence') return { label: '商業牌照', bg: 'bg-sky-600 text-white' };
+                  if (t === 'building_permit') return { label: '建築許可', bg: 'bg-orange-600 text-white' };
                   return null;
                 })();
 
@@ -11500,6 +11703,12 @@ export default function AppMap() {
                       return selectedFacility.properties?.station_name || selectedFacility.properties?.station_location || selectedFacility.name || 'Lime 共享滑板車站點';
                     }
                     if (selectedFacility.facility_type === 'ev_charging') {
+                      if (selectedFacility.properties?.source === 'chargepoint' || String(selectedFacility.id ?? '').startsWith('ev_cp_')) {
+                        return selectedFacility.properties?.host_name || selectedFacility.properties?.hostName || selectedFacility.properties?.name || selectedFacility.name || 'ChargePoint 電動車充電站';
+                      }
+                      if (selectedFacility.properties?.source === 'flo' || String(selectedFacility.id ?? '').startsWith('ev_flo_')) {
+                        return selectedFacility.properties?.name || selectedFacility.name || 'FLO 電動車充電站';
+                      }
                       return selectedFacility.properties?.address || selectedFacility.name || '電動車充電站';
                     }
                     if (selectedFacility.facility_type === 'tesla') {
@@ -11612,6 +11821,12 @@ export default function AppMap() {
                     }
                     if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
+                    }
+                    if (selectedFacility.facility_type === 'business_licence') {
+                      return selectedFacility.properties?.businesstradename || selectedFacility.properties?.businesstype || selectedFacility.name || selectedFacility.properties?.licencenumber || '商業牌照';
+                    }
+                    if (selectedFacility.facility_type === 'building_permit') {
+                      return selectedFacility.properties?.address || selectedFacility.properties?.permitnumber || selectedFacility.name || '建築許可';
                     }
                     return selectedFacility.name || '';
                   })();
@@ -11737,7 +11952,7 @@ export default function AppMap() {
                           : selectedFacility.facility_type === 'sewer_system'
                             ? !!selectedFacility.properties?.address
                             : (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'consulates' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
-                              selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark))) && (
+                              selectedFacility.facility_type === 'ev_charging' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || selectedFacility.facility_type === 'business_licence' || selectedFacility.facility_type === 'building_permit' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark))) && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
                               if (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋')) {
@@ -11773,7 +11988,14 @@ export default function AppMap() {
                                 return formatStreetAttrLocal(selectedFacility.properties?.streetuse || selectedFacility.properties?.type) || '單向行車路段';
                               }
                               if (selectedFacility.facility_type === 'ev_charging') {
-                                return selectedFacility.properties?.local_area || selectedFacility.local_area || 'Vancouver, BC';
+                                const ep = selectedFacility.properties || {};
+                                if (ep.source === 'chargepoint' || String(selectedFacility.id ?? '').startsWith('ev_cp_')) {
+                                  return ep.address1 || ep.address || ep.city || 'ChargePoint';
+                                }
+                                if (ep.source === 'flo' || String(selectedFacility.id ?? '').startsWith('ev_flo_')) {
+                                  return ep.address1 || ep.address || ep.city || 'FLO';
+                                }
+                                return ep.local_area || selectedFacility.local_area || 'Vancouver, BC';
                               }
                               if (selectedFacility.facility_type === 'car_sharing') {
                                 if (selectedFacility.properties?.operator === 'Modo') {
@@ -11865,6 +12087,16 @@ export default function AppMap() {
                                 const en = rawStreet.replace(/[\u4e00-\u9fa5]+/g, '').replace(/^[\s\-\–\—\:\/]+|[\s\-\–\—\:\/]+$/g, '').trim();
                                 if (en) return en;
                                 return selectedFacility.properties?.from || 'Vancouver, BC';
+                              }
+                              if (selectedFacility.facility_type === 'business_licence') {
+                                const area = selectedFacility.properties?.localarea || selectedFacility.local_area;
+                                const lic = selectedFacility.properties?.licencenumber;
+                                return [lic ? `牌照 #${lic}` : '', area].filter(Boolean).join(' · ') || 'Vancouver';
+                              }
+                              if (selectedFacility.facility_type === 'building_permit') {
+                                const area = selectedFacility.properties?.geolocalarea || selectedFacility.local_area;
+                                const pNum = selectedFacility.properties?.permitnumber;
+                                return [pNum ? `許可證 #${pNum}` : '', area].filter(Boolean).join(' · ') || 'Vancouver';
                               }
                               return selectedFacility.local_area;
                             })()}
@@ -12684,6 +12916,534 @@ export default function AppMap() {
               {/* EV Charging Details */}
               {selectedFacility.facility_type === 'ev_charging' && (() => {
                 const props = selectedFacility.properties || {};
+                const facIdStr = String(selectedFacility.id ?? '');
+                const isFlo = props.source === 'flo' || facIdStr.startsWith('ev_flo_');
+                const isChargePoint = props.source === 'chargepoint' || facIdStr.startsWith('ev_cp_');
+
+                interface FloStationRecord {
+                  id?: string;
+                  name?: string;
+                  status?: string;
+                  level?: string;
+                  freeOfCharge?: boolean;
+                  startMethods?: string[] | string;
+                  connector_specs?: string[] | string;
+                  connector_count?: number;
+                  power_type?: string;
+                  power?: number;
+                  power_kw?: number;
+                  tariff_description_en?: string;
+                }
+
+                interface CpPortRecord {
+                  outletNumber?: number;
+                  status?: string;
+                  level?: string;
+                  displayLevel?: string;
+                  powerRange?: { max?: string | number; unit?: string };
+                  connectorList?: Array<{ plugType?: string; displayPlugType?: string; status?: string }>;
+                }
+
+                interface CpFeeEntry {
+                  amount?: number | string;
+                  unit?: string;
+                }
+
+                interface CpTouItem {
+                  day?: string;
+                  startTime?: number;
+                  endTime?: number;
+                  fee?: CpFeeEntry;
+                }
+
+                const parsePropJson = <T,>(val: unknown, fallback: T): T => {
+                  if (Array.isArray(val) || (val && typeof val === 'object')) return val as T;
+                  if (typeof val === 'string') {
+                    const trimmed = val.trim();
+                    if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+                      try { return JSON.parse(trimmed) as T; } catch { return fallback; }
+                    }
+                  }
+                  return fallback;
+                };
+
+                if (isChargePoint) {
+                  const liveCp = liveCpStationData && liveCpStationData.facilityId === facIdStr ? liveCpStationData : null;
+                  const cpPorts = (liveCp?.ports_info && liveCp.ports_info.length > 0)
+                    ? liveCp.ports_info
+                    : parsePropJson<CpPortRecord[]>(props.ports_info, []);
+                  const safePortIdx = selectedCpPortIdx < cpPorts.length ? selectedCpPortIdx : 0;
+                  const activePort = cpPorts[safePortIdx] || null;
+
+                  const activeStatus = activePort?.status || liveCp?.status || props.status || 'Available';
+                  const isStatusAvailable = activeStatus === 'Available';
+                  const isStatusInUse = /in\s*use|occupied|busy|charging/i.test(activeStatus);
+                  const statusTextClass = isStatusAvailable
+                    ? 'text-emerald-700'
+                    : isStatusInUse
+                      ? 'text-amber-600'
+                      : 'text-rose-600';
+
+                  const sp = (liveCp?.station_price && typeof liveCp.station_price === 'object')
+                    ? liveCp.station_price as Record<string, any>
+                    : parsePropJson<Record<string, any>>(props.station_price, {});
+                  const currency = String(sp.currencyCode || 'CAD').trim();
+                  const isFreeCp = Boolean(liveCp ? liveCp.is_free : (sp.free === true || props.is_free || props.free_of_charge));
+
+                  const formatUnitZh = (u?: string) => {
+                    const up = String(u || '').trim().toUpperCase();
+                    if (up === 'KWH') return 'kWh';
+                    if (up === 'HOUR') return '小時';
+                    if (up === 'MINUTE') return '分鐘';
+                    if (up === 'SESSION') return '次';
+                    return u || '次';
+                  };
+
+                  const formatCpFee = (fee?: CpFeeEntry | null): string => {
+                    if (!fee || fee.amount === undefined || fee.amount === null || fee.amount === '') return '—';
+                    const num = Number(fee.amount);
+                    if (!Number.isFinite(num)) return String(fee.amount);
+                    if (num === 0) return '免費';
+                    const formatted = `$${Number(num.toFixed(3))} ${currency}`;
+                    return fee.unit ? `${formatted} / ${formatUnitZh(fee.unit)}` : formatted;
+                  };
+
+                  const formatSecClock = (secRaw?: number): string => {
+                    const sec = Number(secRaw ?? 0);
+                    const totalMin = Math.round(sec / 60) % 1440;
+                    const hh = Math.floor(totalMin / 60);
+                    const mm = totalMin % 60;
+                    const pad = (n: number) => String(n).padStart(2, '0');
+                    if (timeFormat === '12h') {
+                      const period = hh >= 12 ? 'PM' : 'AM';
+                      const h12 = hh % 12 === 0 ? 12 : hh % 12;
+                      return `${h12}:${pad(mm)} ${period}`;
+                    }
+                    return `${pad(hh)}:${pad(mm)}`;
+                  };
+
+                  const formatTouWindow = (item: CpTouItem): string => {
+                    const st = Number(item.startTime ?? 0);
+                    const et = Number(item.endTime ?? 0);
+                    const feeStr = item.fee ? formatCpFee(item.fee) : '—';
+                    if (st === 0 && (et === 0 || et >= 86340)) {
+                      return `全日 ${feeStr}`;
+                    }
+                    return `${formatSecClock(st)}–${formatSecClock(et)} ${feeStr}`;
+                  };
+
+                  const accessRestrictionRaw = String(liveCp?.access_restriction ?? props.access_restriction ?? 'NONE').trim();
+                  const accessRestrictionDisplay = ({
+                    NONE: '無限制 (NONE)',
+                    RESIDENTS_ONLY: '僅限住戶 (RESIDENTS_ONLY)',
+                    EMPLOYEES_ONLY: '僅限員工 (EMPLOYEES_ONLY)',
+                    GUESTS_ONLY: '僅限訪客 (GUESTS_ONLY)',
+                    PARKING_PERMIT_REQUIRED: '需停車許可證 (PARKING_PERMIT_REQUIRED)',
+                    UNKNOWN: '未註明 (UNKNOWN)',
+                  } as Record<string, string>)[accessRestrictionRaw] || accessRestrictionRaw;
+
+                  const descriptionText = String(liveCp?.description ?? props.description ?? '').trim();
+                  const startMethods = liveCp?.start_methods
+                    ? liveCp.start_methods
+                    : parsePropJson<string[]>(props.start_methods, []);
+                  const connectorSpecs = activePort?.connectorList
+                    ? activePort.connectorList.map((c) => c.displayPlugType || c.plugType || '').filter(Boolean)
+                    : parsePropJson<string[]>(props.connector_specs, []);
+                  const activeLevel = activePort?.level || props.level || '—';
+                  const portCount = cpPorts.length > 0 ? cpPorts.length : (liveCp?.total_count ?? props.ports ?? 1);
+                  const activePowerMax = activePort?.powerRange?.max ?? props.power_kw;
+                  const activePowerUnit = activePort?.powerRange?.unit || props.power_unit || 'kW';
+                  const activePowerDisplay = (activePowerMax !== undefined && activePowerMax !== null && String(activePowerMax).trim() !== '')
+                    ? `${activePowerMax} ${activePowerUnit}`
+                    : '—';
+
+                  // 泊車費用 parkingFee (支援 chargingBasedFee / chargingBasedTouFee / durationBasedFee / durationBasedTouFee / fixedFee / touFeeList)
+                  const parkingFeeDisplay = (() => {
+                    const pf = sp.parkingFee;
+                    if (!pf || typeof pf !== 'object') return isFreeCp ? '免費' : '—';
+                    const parts: string[] = [];
+                    if (pf.fixedFee) parts.push(formatCpFee(pf.fixedFee));
+                    const cbf = pf.chargingBasedFee;
+                    if (cbf && typeof cbf === 'object') {
+                      if (cbf.whileCharging) parts.push(`充電中 ${formatCpFee(cbf.whileCharging)}`);
+                      if (cbf.whileNotCharging) parts.push(`充飽停留 ${formatCpFee(cbf.whileNotCharging)}`);
+                      if (cbf.gracePeriod) parts.push(`寬限 ${Math.round(Number(cbf.gracePeriod) / 60)} 分鐘`);
+                    }
+                    const dbf = pf.durationBasedFee;
+                    if (dbf && typeof dbf === 'object') {
+                      if (dbf.fee) parts.push(formatCpFee(dbf.fee));
+                      if (dbf.whileCharging) parts.push(`充電中 ${formatCpFee(dbf.whileCharging)}`);
+                      if (dbf.whileNotCharging) parts.push(`充飽停留 ${formatCpFee(dbf.whileNotCharging)}`);
+                    }
+                    const touBlock = pf.chargingBasedTouFee || pf.durationBasedTouFee;
+                    const pfTouList: CpTouItem[] = Array.isArray(touBlock?.touFeeList)
+                      ? touBlock.touFeeList
+                      : (Array.isArray(pf.touFeeList) ? pf.touFeeList : []);
+                    if (pfTouList.length > 0) {
+                      const touTxt = pfTouList.map((it) => formatTouWindow(it)).join('；');
+                      const gp = touBlock?.gracePeriod ? ` (寬限 ${Math.round(Number(touBlock.gracePeriod) / 60)} 分鐘)` : '';
+                      parts.push(`分時 ${touTxt}${gp}`);
+                    }
+                    return parts.length > 0 ? parts.join(' · ') : '免費';
+                  })();
+
+                  const maxFeeDisplay = sp.maxFee ? formatCpFee(sp.maxFee) : '—';
+                  const guestFeeDisplay = sp.guestFee ? formatCpFee(sp.guestFee) : '—';
+                  const serviceFeeDisplay = sp.serviceFee ? formatCpFee(sp.serviceFee) : '—';
+
+                  // 充電費用 energyFee (Sunday -> Saturday 摺疊清單，參考開放時間風格)
+                  const energyFee = (sp.energyFee && typeof sp.energyFee === 'object') ? sp.energyFee : {};
+                  const energyTouList: CpTouItem[] = Array.isArray(energyFee.touFeeList) ? energyFee.touFeeList : [];
+                  const sundayToSaturday = [
+                    { key: 'sun', label: '週日', dow: 0 },
+                    { key: 'mon', label: '週一', dow: 1 },
+                    { key: 'tue', label: '週二', dow: 2 },
+                    { key: 'wed', label: '週三', dow: 3 },
+                    { key: 'thu', label: '週四', dow: 4 },
+                    { key: 'fri', label: '週五', dow: 5 },
+                    { key: 'sat', label: '週六', dow: 6 },
+                  ];
+                  const todayDow = new Date().getDay();
+                  const touScheduleByDay = sundayToSaturday.map((d) => {
+                    const matched = energyTouList.filter((item) => {
+                      const dk = String(item.day || '').trim().toLowerCase();
+                      if (dk === 'alldays' || dk === 'all' || dk === 'everyday') return true;
+                      if (dk === 'weekdays') return d.dow >= 1 && d.dow <= 5;
+                      if (dk === 'weekends') return d.dow === 0 || d.dow === 6;
+                      return dk === d.key || dk.startsWith(d.key);
+                    });
+                    const text = matched.length > 0
+                      ? matched.map((m) => formatTouWindow(m)).join(' / ')
+                      : (energyFee.fixedFee ? formatCpFee(energyFee.fixedFee) : (isFreeCp ? '免費' : '—'));
+                    return { ...d, text, isToday: d.dow === todayDow };
+                  });
+                  const todayEnergyRow = touScheduleByDay.find((r) => r.isToday) || touScheduleByDay[0];
+                  const fixedEnergyDisplay = energyFee.fixedFee
+                    ? formatCpFee(energyFee.fixedFee)
+                    : (sp.flatFee ? formatCpFee(sp.flatFee) : (isFreeCp ? '免費' : '—'));
+
+                  return (
+                    <div className="flex flex-col gap-2 text-xs">
+                      {/* 離個人位置色塊（僅免費時顯示免費標籤，無開放時間欄位） */}
+                      <div className="bg-[#059669]/10 p-2.5 rounded-lg border border-[#059669]/25 flex items-center justify-between text-[11px]">
+                        <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
+                          <span className="text-gray-600 shrink-0">離個人位置:</span>
+                          {userDistanceToFuel ? (
+                            <span className="text-gray-800 font-medium shrink-0">約 {userDistanceToFuel}</span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setSettingsModalOpen(true)}
+                              className="text-emerald-700 hover:text-emerald-900 underline font-normal truncate cursor-pointer transition-colors"
+                              title="點擊打開設定個人位置"
+                            >
+                              設定個人位置
+                            </button>
+                          )}
+                        </div>
+                        {isFreeCp && (
+                          <span className="text-[10px] text-emerald-800 bg-emerald-100/80 px-1.5 py-0.5 rounded font-medium border border-emerald-300/60 shrink-0">
+                            免費充電
+                          </span>
+                        )}
+                      </div>
+
+                      {/* 多充電槍切換標籤 */}
+                      {cpPorts.length > 1 && (
+                        <div className="flex items-center gap-1 flex-wrap">
+                          {cpPorts.map((pt, idx) => {
+                            const pSt = pt.status || 'Available';
+                            const pAvail = pSt === 'Available';
+                            const pInUse = /in\s*use|occupied|busy|charging/i.test(pSt);
+                            const isSelected = idx === safePortIdx;
+                            return (
+                              <button
+                                key={pt.outletNumber ?? idx}
+                                type="button"
+                                onClick={() => setSelectedCpPortIdx(idx)}
+                                className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors cursor-pointer inline-flex items-center gap-1 ${
+                                  isSelected
+                                    ? (pAvail ? 'bg-emerald-600 text-white border-emerald-600 font-semibold' : pInUse ? 'bg-amber-500 text-white border-amber-500 font-semibold' : 'bg-rose-600 text-white border-rose-600 font-semibold')
+                                    : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+                                }`}
+                              >
+                                <span className={`w-1.5 h-1.5 rounded-full ${
+                                  isSelected ? 'bg-white' : (pAvail ? 'bg-emerald-500' : pInUse ? 'bg-amber-500' : 'bg-rose-500')
+                                }`} />
+                                <span>Port {pt.outletNumber ?? idx + 1}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>營運單位</span>
+                          <span className="text-gray-900 font-medium text-right">
+                            {liveCp?.network_display_name || props.network_display_name || props.operator || 'ChargePoint Network'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>即時狀態</span>
+                          <span className="inline-flex items-center gap-1.5 text-right">
+                            {loadingCpLive && (
+                              <span className="text-[9.5px] text-gray-400 animate-pulse">即時校對中…</span>
+                            )}
+                            <span className={`${statusTextClass} font-semibold`}>{activeStatus}</span>
+                          </span>
+                        </div>
+                        {descriptionText && (
+                          <div className="flex justify-between items-start gap-3 text-gray-600 pt-1.5 border-t border-gray-100">
+                            <span className="shrink-0">詳細資料</span>
+                            <span className="text-gray-900 font-normal text-right whitespace-pre-line break-words leading-relaxed text-[10.5px]">
+                              {descriptionText}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center gap-2 text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span className="shrink-0">使用限制</span>
+                          <span className="text-gray-900 font-medium text-right break-words">{accessRestrictionDisplay}</span>
+                        </div>
+                        <div className="flex justify-between items-start gap-3 text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span className="shrink-0">充電方法</span>
+                          <span className="text-gray-900 font-medium text-right break-words">
+                            {startMethods.length > 0 ? startMethods.join(', ') : '—'}
+                          </span>
+                        </div>
+
+                        <div className="border-t border-gray-200/80 my-0.5" />
+
+                        <div className="flex justify-between items-start gap-3 text-gray-600">
+                          <span className="shrink-0">接口規格</span>
+                          <span className="text-gray-900 font-medium text-right break-words">
+                            {connectorSpecs.length > 0 ? connectorSpecs.join(', ') : (props.connectors || '—')}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>充電等級</span>
+                          <span className="text-gray-900 font-medium text-right">{activeLevel || '—'}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>充電接口</span>
+                          <span className="text-gray-900 font-medium text-right">{portCount}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>電壓</span>
+                          <span className="text-gray-900 font-medium text-right">{activePowerDisplay}</span>
+                        </div>
+
+                        <div className="border-t border-gray-200/80 my-0.5" />
+
+                        <div className="flex justify-between items-start gap-3 text-gray-600">
+                          <span className="shrink-0">泊車費用</span>
+                          <span className="text-gray-900 font-medium text-right break-words">{parkingFeeDisplay}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>最高收費</span>
+                          <span className="text-gray-900 font-medium text-right">{maxFeeDisplay}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>訪客費用</span>
+                          <span className="text-gray-900 font-medium text-right">{guestFeeDisplay}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>服務費用</span>
+                          <span className="text-gray-900 font-medium text-right">{serviceFeeDisplay}</span>
+                        </div>
+                        <div className="pt-1.5 border-t border-gray-100">
+                          {energyTouList.length > 0 ? (
+                            <details className="group">
+                              <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-slate-800 select-none">
+                                <span>充電費用</span>
+                                <span className="text-gray-900 text-right font-medium flex items-center gap-1 font-mono max-w-[210px] truncate" title={todayEnergyRow?.text}>
+                                  <span>{todayEnergyRow?.label}: {todayEnergyRow?.text}</span>
+                                  <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                                </span>
+                              </summary>
+                              <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
+                                {touScheduleByDay.map((row) => (
+                                  <div
+                                    key={row.key}
+                                    className={`flex justify-between gap-2 py-0.5 px-0.5 rounded ${
+                                      row.isToday ? 'font-semibold text-emerald-800' : 'text-gray-600'
+                                    }`}
+                                  >
+                                    <span className="shrink-0">{row.label}</span>
+                                    <span className="text-right leading-tight font-mono break-words max-w-[205px]">{row.text}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </details>
+                          ) : (
+                            <div className="flex justify-between items-center text-gray-600">
+                              <span>充電費用</span>
+                              <span className="text-gray-900 font-medium text-right">{fixedEnergyDisplay}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (isFlo) {
+                  const liveMatch = liveFloParkData && liveFloParkData.facilityId === String(selectedFacility.id) ? liveFloParkData : null;
+                  const floStations = (liveMatch?.stations && liveMatch.stations.length > 0)
+                    ? liveMatch.stations
+                    : parsePropJson<FloStationRecord[]>(props.available_stations, []);
+                  const safeIdx = selectedFloStationIdx < floStations.length ? selectedFloStationIdx : 0;
+                  const activeSt = floStations[safeIdx] || null;
+
+                  const activeStatus = activeSt?.status || liveMatch?.status || props.status || 'Available';
+                  const isStatusAvailable = activeStatus === 'Available';
+                  const isStatusInUse = /in\s*use|occupied|busy|charging/i.test(activeStatus);
+                  const statusTextClass = isStatusAvailable
+                    ? 'text-emerald-700'
+                    : isStatusInUse
+                      ? 'text-amber-600'
+                      : 'text-rose-600';
+                  const startMethods = activeSt
+                    ? parsePropJson<string[]>(activeSt.startMethods, [])
+                    : parsePropJson<string[]>(props.start_methods, []);
+                  const connectorSpecs = activeSt
+                    ? parsePropJson<string[]>(activeSt.connector_specs, [])
+                    : parsePropJson<string[]>(props.connector_specs, []);
+                  const activeLevel = activeSt?.level || props.level || '';
+                  const connectorCount = activeSt?.connector_count ?? props.connector_count ?? (connectorSpecs.length || 1);
+                  const activePowerType = activeSt?.power_type ?? props.power_type ?? '';
+                  const activePowerW = Number(activeSt?.power ?? props.power ?? 0);
+                  const activePowerKw = Number(activeSt?.power_kw ?? props.power_kw ?? 0);
+                  const activePowerDisplay = activePowerW > 0
+                    ? `${Number((activePowerW / 1000).toFixed(2))} kW`
+                    : (activePowerKw > 0 ? `${activePowerKw} kW` : '—');
+                  const activeIsFree = activeSt ? Boolean(activeSt.freeOfCharge) : Boolean(props.is_free || props.free_of_charge);
+                  const nonMemberFeeRaw = liveMatch?.non_member_fee_amount !== undefined ? liveMatch.non_member_fee_amount : props.non_member_fee_amount;
+                  const nonMemberCurrency = liveMatch?.non_member_fee_currency || props.non_member_fee_currency || 'CAD';
+                  const feeDisplay = (nonMemberFeeRaw !== null && nonMemberFeeRaw !== undefined && String(nonMemberFeeRaw).trim() !== '')
+                    ? `$${Number(nonMemberFeeRaw).toFixed(2)} ${nonMemberCurrency}`
+                    : (activeIsFree ? '免費' : '—');
+                  const tariffDescEn = (activeSt?.tariff_description_en ?? props.tariff_description_en ?? '').trim();
+
+                  return (
+                    <div className="flex flex-col gap-2 text-xs">
+                      {/* 離個人位置色塊（FLO 無開放時間欄位，僅在免費時顯示免費標籤） */}
+                      <div className="bg-[#059669]/10 p-2.5 rounded-lg border border-[#059669]/25 flex items-center justify-between text-[11px]">
+                        <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
+                          <span className="text-gray-600 shrink-0">離個人位置:</span>
+                          {userDistanceToFuel ? (
+                            <span className="text-gray-800 font-medium shrink-0">約 {userDistanceToFuel}</span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setSettingsModalOpen(true)}
+                              className="text-emerald-700 hover:text-emerald-900 underline font-normal truncate cursor-pointer transition-colors"
+                              title="點擊打開設定個人位置"
+                            >
+                              設定個人位置
+                            </button>
+                          )}
+                        </div>
+                        {activeIsFree && (
+                          <span className="text-[10px] text-emerald-800 bg-emerald-100/80 px-1.5 py-0.5 rounded font-medium border border-emerald-300/60 shrink-0">
+                            免費充電
+                          </span>
+                        )}
+                      </div>
+
+                      {/* 若同一園區有多個充電樁，允許切換查看各樁詳細資料與即時可用狀態 */}
+                      {floStations.length > 1 && (
+                        <div className="flex items-center gap-1 flex-wrap">
+                          {floStations.map((st: FloStationRecord, idx: number) => {
+                            const stAvail = (st.status || 'Available') === 'Available';
+                            const stInUse = /in\s*use|occupied|busy|charging/i.test(st.status || '');
+                            const isSelected = idx === safeIdx;
+                            return (
+                              <button
+                                key={st.id || idx}
+                                type="button"
+                                onClick={() => setSelectedFloStationIdx(idx)}
+                                className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors cursor-pointer inline-flex items-center gap-1 ${
+                                  isSelected
+                                    ? (stAvail ? 'bg-emerald-600 text-white border-emerald-600 font-semibold' : stInUse ? 'bg-amber-500 text-white border-amber-500 font-semibold' : 'bg-rose-600 text-white border-rose-600 font-semibold')
+                                    : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+                                }`}
+                              >
+                                <span className={`w-1.5 h-1.5 rounded-full ${
+                                  isSelected ? 'bg-white' : (stAvail ? 'bg-emerald-500' : stInUse ? 'bg-amber-500' : 'bg-rose-500')
+                                }`} />
+                                <span>{st.name || `#${idx + 1}`}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>營運單位</span>
+                          <span className="text-gray-900 font-medium text-right">{props.operator || 'FLO'}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>即時狀態</span>
+                          <span className="inline-flex items-center gap-1.5 text-right">
+                            {loadingFloLive && (
+                              <span className="text-[9.5px] text-gray-400 animate-pulse">即時校對中…</span>
+                            )}
+                            <span className={`${statusTextClass} font-semibold`}>{activeStatus}</span>
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-start gap-3 text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span className="shrink-0">充電方法</span>
+                          <span className="text-gray-900 font-medium text-right break-words">
+                            {startMethods.length > 0 ? startMethods.join(', ') : '—'}
+                          </span>
+                        </div>
+
+                        <div className="border-t border-gray-200/80 my-0.5" />
+
+                        <div className="flex justify-between items-start gap-3 text-gray-600">
+                          <span className="shrink-0">接口規格</span>
+                          <span className="text-gray-900 font-medium text-right break-words">
+                            {connectorSpecs.length > 0 ? connectorSpecs.join(', ') : (props.connector_specs_str || props.connectors || '—')}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>充電等級</span>
+                          <span className="text-gray-900 font-medium text-right">{activeLevel || '—'}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>充電接口</span>
+                          <span className="text-gray-900 font-medium text-right">{connectorCount}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>充電類別</span>
+                          <span className="text-gray-900 font-medium text-right">{activePowerType || '—'}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>電壓</span>
+                          <span className="text-gray-900 font-medium text-right">{activePowerDisplay}</span>
+                        </div>
+
+                        <div className="border-t border-gray-200/80 my-0.5" />
+
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>費用</span>
+                          <span className="text-gray-900 font-medium text-right">{feeDisplay}</span>
+                        </div>
+                        {tariffDescEn && (
+                          <div className="flex flex-col gap-0.5 text-gray-600 pt-1.5 border-t border-gray-100">
+                            <span>詳細資料</span>
+                            <span className="text-gray-800 font-normal whitespace-pre-line break-words leading-relaxed text-[10.5px]">
+                              {tariffDescEn}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
                 const formatLotType = (val?: string) => {
                   if (!val) return '';
                   const s = val.trim();
@@ -18454,6 +19214,97 @@ export default function AppMap() {
                 );
               })()}
 
+              {/* 商業牌照 / 建築許可 (Business Licence / Building Permit) */}
+              {(selectedFacility.facility_type === 'business_licence' || selectedFacility.facility_type === 'building_permit') && (() => {
+                const props = selectedFacility.properties || {};
+                const isBusiness = selectedFacility.facility_type === 'business_licence';
+                const fmtDate = (v: unknown) => {
+                  if (v === null || v === undefined || v === '') return '';
+                  const s = String(v).trim();
+                  if (!s) return '';
+                  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+                  const d = new Date(s);
+                  if (Number.isNaN(d.getTime())) return s.slice(0, 10);
+                  try {
+                    return new Intl.DateTimeFormat('en-CA', {
+                      timeZone: 'America/Vancouver',
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                    }).format(d);
+                  } catch {
+                    return s.slice(0, 10);
+                  }
+                };
+                const rows: Array<{ label: string; value: string; mono?: boolean; highlight?: string }> = isBusiness
+                  ? [
+                      ...(props.licencenumber ? [{ label: '牌照號碼', value: String(props.licencenumber), mono: true }] : []),
+                      ...(props.status ? [{
+                        label: '牌照狀態',
+                        value: String(props.status),
+                        highlight: String(props.status).toLowerCase() === 'issued'
+                          ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                          : String(props.status).toLowerCase() === 'pending'
+                            ? 'text-amber-700 bg-amber-50 border-amber-200'
+                            : 'text-rose-700 bg-rose-50 border-rose-200',
+                      }] : []),
+                      ...(props.businesstradename ? [{ label: '商業名稱', value: String(props.businesstradename) }] : []),
+                      ...(props.businesstype ? [{ label: '商業類別', value: String(props.businesstype) }] : []),
+                      ...(fmtDate(props.issueddate) ? [{ label: '發牌日期', value: fmtDate(props.issueddate), mono: true }] : []),
+                      ...(fmtDate(props.expireddate) ? [{ label: '到期日期', value: fmtDate(props.expireddate), mono: true }] : []),
+                      ...(props.numberofemployees !== null && props.numberofemployees !== undefined && props.numberofemployees !== ''
+                        ? [{ label: '員工人數', value: `${Number(props.numberofemployees).toLocaleString()} 人` }]
+                        : []),
+                      ...((props.localarea || selectedFacility.local_area) ? [{ label: '所在地區', value: String(props.localarea || selectedFacility.local_area) }] : []),
+                    ]
+                  : [
+                      ...(props.permitnumber ? [{ label: '許可證編號', value: String(props.permitnumber), mono: true }] : []),
+                      ...(props.permitcategory ? [{ label: '許可類別', value: String(props.permitcategory) }] : []),
+                      ...(props.typeofwork ? [{ label: '工程類別', value: String(props.typeofwork) }] : []),
+                      ...(props.address ? [{ label: '施工地址', value: String(props.address) }] : []),
+                      ...(fmtDate(props.issuedate) ? [{ label: '核發日期', value: fmtDate(props.issuedate), mono: true }] : []),
+                      ...(props.projectvalue !== null && props.projectvalue !== undefined && props.projectvalue !== '' && !Number.isNaN(Number(props.projectvalue))
+                        ? [{ label: '工程預算', value: `$${Number(props.projectvalue).toLocaleString('en-CA', { maximumFractionDigits: 0 })}`, mono: true }]
+                        : []),
+                      ...(props.buildingcontractor ? [{ label: '承建商', value: String(props.buildingcontractor) }] : []),
+                      ...((props.geolocalarea || selectedFacility.local_area) ? [{ label: '所在地區', value: String(props.geolocalarea || selectedFacility.local_area) }] : []),
+                    ];
+                const recency = fmtDate(isBusiness ? props.extractdate : props.issuedate);
+                const desc = !isBusiness && props.projectdescription ? String(props.projectdescription).trim() : '';
+
+                return (
+                  <div className="space-y-2.5">
+                    <div className="bg-slate-50 border border-slate-200/90 rounded-xl px-3 py-1 divide-y divide-slate-200/70">
+                      {rows.map((row) => (
+                        <div key={row.label} className="flex items-start justify-between gap-3 py-1.5 text-[11.5px]">
+                          <span className="text-slate-500 shrink-0">{row.label}</span>
+                          {row.highlight ? (
+                            <span className={`px-2 py-0.5 rounded-full text-[10.5px] font-semibold border ${row.highlight}`}>
+                              {row.value}
+                            </span>
+                          ) : (
+                            <span className={`text-slate-900 font-medium text-right break-words ${row.mono ? 'font-mono tabular-nums' : ''}`}>
+                              {row.value}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {desc && (
+                      <div className="bg-orange-50/70 border border-orange-200/80 rounded-xl p-2.5 text-[11.5px]">
+                        <div className="text-[10.5px] font-bold text-orange-700 mb-1">工程說明</div>
+                        <p className="text-slate-700 leading-relaxed whitespace-pre-line">{desc}</p>
+                      </div>
+                    )}
+                    {recency && (
+                      <div className="text-[10.5px] text-slate-400 text-right font-mono tabular-nums">
+                        {isBusiness ? `資料擷取日期: ${recency}` : `核發日期: ${recency}`}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
               {/* 門牌地址 (Civic Address) */}
               {selectedFacility.facility_type === 'address' && (() => {
                 const p = selectedFacility.properties || {};
@@ -18926,6 +19777,8 @@ export default function AppMap() {
                   { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
                   { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
                   { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
+                  { id: 'business', label: '商業牌照', icon: BuildingComplex, color: 'text-sky-400' },
+                  { id: 'permits', label: '建築許可', icon: Hammer, color: 'text-orange-400' },
                   { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
                   { id: 'lottery', label: '彩票', icon: Trophy, color: 'text-amber-400' },
                   { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
@@ -18951,6 +19804,8 @@ export default function AppMap() {
                 { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
                 { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
                 { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
+                { id: 'business', label: '商業牌照', icon: BuildingComplex, color: 'text-sky-400' },
+                { id: 'permits', label: '建築許可', icon: Hammer, color: 'text-orange-400' },
                 { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
                 { id: 'lottery', label: '彩票', icon: Trophy, color: 'text-amber-400' },
                 { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
@@ -19046,6 +19901,8 @@ export default function AppMap() {
             { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
             { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
             { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
+            { id: 'business', label: '商業牌照', icon: BuildingComplex, color: 'text-sky-400' },
+            { id: 'permits', label: '建築許可', icon: Hammer, color: 'text-orange-400' },
             { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
             { id: 'lottery', label: '彩票', icon: Trophy, color: 'text-amber-400' },
             { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
@@ -19091,72 +19948,113 @@ export default function AppMap() {
         </div>
       </div>
 
-      {/* 罪案地區圖例卡片 (Crime Rate Legend) */}
-      {layers.crimeAreas && (
-        <div className="absolute bottom-[calc(68px+env(safe-area-inset-bottom,0px))] left-2 sm:left-4 z-20 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-[#2a2f3d] select-none max-w-[calc(100vw-16px)] sm:max-w-[340px] animate-in fade-in duration-200">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]"></span>
-              <span className="text-[11px] font-bold text-gray-200">每年每平方公里警方記錄罪案數</span>
-            </div>
-            <span className="text-[10px] text-gray-400 font-mono">2026</span>
-          </div>
+      {(layers.crimeAreas || layers.trafficConditions || layers.airQuality) && (
+        <div className="absolute bottom-[calc(68px+env(safe-area-inset-bottom,0px))] left-2 sm:left-4 z-20 flex flex-col-reverse gap-2 items-start max-w-[calc(100vw-16px)] pointer-events-none">
+          {/* 罪案地區圖例卡片 (Crime Rate Legend) */}
+          {layers.crimeAreas && (
+            <div className="pointer-events-auto bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-[#2a2f3d] select-none max-w-full sm:max-w-[340px] animate-in fade-in duration-200">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]"></span>
+                  <span className="text-[11px] font-bold text-gray-200">每年每平方公里警方記錄罪案數</span>
+                </div>
+                <span className="text-[10px] text-gray-400 font-mono">2026</span>
+              </div>
 
-          {/* 5 階色塊指示條 */}
-          <div className="grid grid-cols-5 gap-1.5 mb-1.5">
-            <div className="flex flex-col items-center gap-1">
-              <div className="w-full h-2.5 rounded-full bg-[#94a3b8] shadow-sm"></div>
-              <span className="text-[9px] text-gray-300 whitespace-nowrap">少過10</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="w-full h-2.5 rounded-full bg-[#2e7d32] shadow-sm"></div>
-              <span className="text-[9px] text-gray-300 whitespace-nowrap">10–50</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="w-full h-2.5 rounded-full bg-[#6ee7b7] shadow-sm"></div>
-              <span className="text-[9px] text-gray-300 whitespace-nowrap">50–150</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="w-full h-2.5 rounded-full bg-[#f59e0b] shadow-sm"></div>
-              <span className="text-[9px] text-gray-300 whitespace-nowrap">150–400</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="w-full h-2.5 rounded-full bg-[#dc2626] shadow-sm"></div>
-              <span className="text-[9px] text-gray-300 whitespace-nowrap">400+</span>
-            </div>
-          </div>
+              {/* 5 階色塊指示條 */}
+              <div className="grid grid-cols-5 gap-1.5 mb-1.5">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-full h-2.5 rounded-full bg-[#94a3b8] shadow-sm"></div>
+                  <span className="text-[9px] text-gray-300 whitespace-nowrap">少過10</span>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-full h-2.5 rounded-full bg-[#2e7d32] shadow-sm"></div>
+                  <span className="text-[9px] text-gray-300 whitespace-nowrap">10–50</span>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-full h-2.5 rounded-full bg-[#6ee7b7] shadow-sm"></div>
+                  <span className="text-[9px] text-gray-300 whitespace-nowrap">50–150</span>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-full h-2.5 rounded-full bg-[#f59e0b] shadow-sm"></div>
+                  <span className="text-[9px] text-gray-300 whitespace-nowrap">150–400</span>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-full h-2.5 rounded-full bg-[#dc2626] shadow-sm"></div>
+                  <span className="text-[9px] text-gray-300 whitespace-nowrap">400+</span>
+                </div>
+              </div>
 
-          <div className="text-[10px] text-gray-400 text-center pt-1 border-t border-[#262b38]/80">
-            數據只供參考，不構成安全評分標準。
-          </div>
-        </div>
-      )}
-
-      {/* 路況顏色圖例 (Traffic Flow Speed Legend: Fast to Slow) */}
-      {layers.trafficConditions && (
-        <div 
-          className={`absolute ${
-            layers.crimeAreas ? 'bottom-[calc(198px+env(safe-area-inset-bottom,0px))]' : 'bottom-[calc(68px+env(safe-area-inset-bottom,0px))]'
-          } left-2 sm:left-4 z-20 max-w-[calc(100vw-16px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3.5 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200 flex flex-col gap-1.5`}
-        >
-          <div className="flex items-center justify-between gap-3 text-[11px] font-semibold text-gray-200">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>即時路況圖例</span>
+              <div className="text-[10px] text-gray-400 text-center pt-1 border-t border-[#262b38]/80">
+                數據只供參考，不構成安全評分標準。
+              </div>
             </div>
-            <span className="text-[10px] text-gray-400 font-mono">TomTom Flow</span>
-          </div>
+          )}
 
-          <div className="flex items-center gap-2 pt-0.5">
-            <span className="text-[11px] font-medium text-emerald-400 shrink-0">暢通 (Fast)</span>
-            <div className="flex items-center gap-1">
-              <span className="w-6 h-2.5 rounded-[2px] bg-[#68bc73] shadow-xs" title="暢通無阻 (自由流速)" />
-              <span className="w-6 h-2.5 rounded-[2px] bg-[#f8cb47] shadow-xs" title="順暢微緩" />
-              <span className="w-6 h-2.5 rounded-[2px] bg-[#e75344] shadow-xs" title="車多緩行 / 壅塞" />
-              <span className="w-6 h-2.5 rounded-[2px] bg-[#822119] shadow-xs" title="嚴重停滯 / 封閉" />
+          {/* 路況顏色圖例 (Traffic Flow Speed Legend) */}
+          {layers.trafficConditions && (
+            <div className="pointer-events-auto max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3.5 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200 flex items-center gap-2">
+              <span className="text-[11px] font-medium text-emerald-400 shrink-0">暢通</span>
+              <div className="flex items-center gap-1">
+                <span className="w-6 h-2.5 rounded-[2px] bg-[#68bc73] shadow-xs" title="暢通無阻 (自由流速)" />
+                <span className="w-6 h-2.5 rounded-[2px] bg-[#f8cb47] shadow-xs" title="順暢微緩" />
+                <span className="w-6 h-2.5 rounded-[2px] bg-[#e75344] shadow-xs" title="車多緩行 / 壅塞" />
+                <span className="w-6 h-2.5 rounded-[2px] bg-[#822119] shadow-xs" title="嚴重停滯 / 封閉" />
+              </div>
+              <span className="text-[11px] font-medium text-rose-400 shrink-0">繁忙</span>
             </div>
-            <span className="text-[11px] font-medium text-rose-400 shrink-0">繁忙 (Slow)</span>
-          </div>
+          )}
+
+          {/* 空氣質素健康指數圖例 (AQHI Legend) */}
+          {layers.airQuality && (
+            <div className="pointer-events-auto w-[min(320px,calc(100vw-16px))] sm:w-[340px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200 flex flex-col gap-2">
+              <div className="grid grid-cols-11 h-5 rounded-md overflow-hidden border border-white/15">
+                {[
+                  { hex: '#56b4e9', label: '1', darkText: true },
+                  { hex: '#3399ff', label: '2', darkText: true },
+                  { hex: '#0072b2', label: '3', darkText: false },
+                  { hex: '#f0e442', label: '4', darkText: true },
+                  { hex: '#e69f00', label: '5', darkText: true },
+                  { hex: '#d55e00', label: '6', darkText: false },
+                  { hex: '#cc3333', label: '7', darkText: false },
+                  { hex: '#b22222', label: '8', darkText: false },
+                  { hex: '#8b0000', label: '9', darkText: false },
+                  { hex: '#882255', label: '10', darkText: false },
+                  { hex: '#4a101d', label: '+', darkText: false },
+                ].map((cell, i) => (
+                  <div
+                    key={cell.hex}
+                    style={{ backgroundColor: cell.hex }}
+                    className={`flex items-center justify-center text-[10px] font-mono font-bold tabular-nums leading-none ${
+                      cell.darkText ? 'text-slate-950' : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)]'
+                    }`}
+                    title={i === 10 ? 'AQHI 10+ (極高風險)' : `AQHI ${cell.label}`}
+                  >
+                    {cell.label}
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-4 gap-1 pt-1.5 border-t border-[#262b38]/80 text-center leading-tight">
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-[#56b4e9]">低風險</span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">(1-3)</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-[#f0e442]">中風險</span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">(4-6)</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-[#f87171]">高風險</span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">(7-10)</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-[#e69f00]">極高風險</span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">(10+)</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -19685,11 +20583,6 @@ export default function AppMap() {
                 />
                 <span>只顯示支援信用卡付款</span>
               </label>
-
-              <div className="text-[10px] text-gray-400 flex items-center justify-between">
-                <span>溫哥華時區動態計算</span>
-                <span className="text-blue-400 font-mono">10pm-9am 免費</span>
-              </div>
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
@@ -19828,11 +20721,6 @@ export default function AppMap() {
                 />
                 <span>只顯示支援信用卡付款</span>
               </label>
-
-              <div className="text-[10px] text-gray-400 flex items-center justify-between">
-                <span>溫哥華時區動態計算</span>
-                <span className="text-blue-400 font-mono">10pm-9am 免費</span>
-              </div>
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
@@ -19937,11 +20825,6 @@ export default function AppMap() {
                 />
                 <span>包含獨立油站 (Husky / Super Save 等)</span>
               </label>
-
-              <div className="text-[10px] text-gray-400 flex items-center justify-between">
-                <span>地圖即時過濾渲染</span>
-                <span className="text-amber-400 font-mono">即時生效</span>
-              </div>
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
@@ -19971,18 +20854,67 @@ export default function AppMap() {
               </span>
               <span className="font-bold text-xs text-white">電動車充電規格篩選</span>
             </div>
-            <button
-              onClick={() => setEvFilterOpen(!evFilterOpen)}
-              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
-            >
-              {evFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </button>
+            <div className="flex items-center gap-1">
+              {(evChargingFilter.speed !== 'all' || evChargingFilter.connector !== 'all' || evChargingFilter.freeOnly || (evChargingFilter.operator && evChargingFilter.operator !== 'all')) && (
+                <button
+                  onClick={() => setEvChargingFilter({ speed: 'all', connector: 'all', freeOnly: false, operator: 'all' })}
+                  className="text-[10px] text-emerald-400 hover:text-emerald-300 px-1.5 py-0.5 rounded hover:bg-[#252a38] transition-colors cursor-pointer"
+                  title="重設篩選條件"
+                >
+                  重設
+                </button>
+              )}
+              <button
+                onClick={() => setEvFilterOpen(!evFilterOpen)}
+                className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+              >
+                {evFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
 
           {evFilterOpen ? (
             <div className="flex flex-col gap-2.5 text-xs">
+              {/* 營運單位 / 資料來源 (CoV + FLO + ChargePoint) */}
+              {layers.evCharging && (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between text-[11px] text-gray-300">
+                    <span>營運單位:</span>
+                    <span className="font-bold text-emerald-400 font-mono">
+                      {evChargingFilter.operator === 'flo'
+                        ? 'FLO'
+                        : evChargingFilter.operator === 'chargepoint'
+                          ? 'ChargePoint'
+                          : evChargingFilter.operator === 'cov'
+                            ? '溫哥華市府'
+                            : '全部站點'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1">
+                    {[
+                      { label: '全部', val: 'all' },
+                      { label: '市府 C', val: 'cov' },
+                      { label: 'FLO F', val: 'flo' },
+                      { label: 'CP', val: 'chargepoint' }
+                    ].map((op) => (
+                      <button
+                        key={op.val}
+                        onClick={() => setEvChargingFilter({ operator: op.val as 'all' | 'cov' | 'flo' | 'chargepoint' })}
+                        className={`py-1 text-[10.5px] rounded font-medium transition-all ${
+                          (evChargingFilter.operator || 'all') === op.val
+                            ? 'bg-emerald-500 text-gray-950 font-bold shadow-sm'
+                            : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                        }`}
+                      >
+                        {op.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* 充電功率/速度 */}
-              <div className="flex flex-col gap-1">
+              <div className={`flex flex-col gap-1 ${layers.evCharging ? 'pt-1.5 border-t border-[#262b38]' : ''}`}>
                 <div className="flex items-center justify-between text-[11px] text-gray-300">
                   <span>充電速度:</span>
                   <span className="font-bold text-emerald-400 font-mono">
@@ -19997,7 +20929,7 @@ export default function AppMap() {
                   ].map((s) => (
                     <button
                       key={s.val}
-                      onClick={() => setEvChargingFilter({ speed: s.val as any })}
+                      onClick={() => setEvChargingFilter({ speed: s.val as 'all' | 'fast' | 'slow' })}
                       className={`py-1 text-[11px] rounded font-medium transition-all ${
                         evChargingFilter.speed === s.val
                           ? 'bg-emerald-500 text-gray-950 font-bold shadow-sm'
@@ -20018,17 +20950,18 @@ export default function AppMap() {
                     {evChargingFilter.connector === 'all' ? '通用接頭' : evChargingFilter.connector}
                   </span>
                 </div>
-                <div className="grid grid-cols-4 gap-1">
+                <div className="grid grid-cols-5 gap-1">
                   {[
                     { label: '全部', val: 'all' },
                     { label: 'CCS', val: 'CCS' },
                     { label: 'J1772', val: 'J1772' },
+                    { label: 'CHAdeMO', val: 'CHAdeMO' },
                     { label: 'Tesla', val: 'Tesla' }
                   ].map((c) => (
                     <button
                       key={c.val}
                       onClick={() => setEvChargingFilter({ connector: c.val })}
-                      className={`py-1 text-[11px] rounded font-medium transition-all ${
+                      className={`py-1 text-[10.5px] rounded font-medium transition-all ${
                         evChargingFilter.connector === c.val
                           ? 'bg-emerald-500 text-gray-950 font-bold shadow-sm'
                           : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
@@ -20050,15 +20983,24 @@ export default function AppMap() {
                 />
                 <span>只顯示免費充電站點</span>
               </label>
-
-              <div className="text-[10px] text-gray-400 flex items-center justify-between">
-                <span>地圖即時過濾渲染</span>
-                <span className="text-emerald-400 font-mono">即時生效</span>
-              </div>
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
-              <span>目前篩選: <span className="text-emerald-400 font-bold">{evChargingFilter.speed === 'all' ? '全部' : evChargingFilter.speed === 'fast' ? '快充' : '慢充'}{evChargingFilter.freeOnly ? ' · 免費' : ''}</span></span>
+              <span>
+                目前篩選:{' '}
+                <span className="text-emerald-400 font-bold">
+                  {evChargingFilter.operator === 'flo'
+                    ? 'FLO · '
+                    : evChargingFilter.operator === 'chargepoint'
+                      ? 'CP · '
+                      : evChargingFilter.operator === 'cov'
+                        ? '市府 · '
+                        : ''}
+                  {evChargingFilter.speed === 'all' ? '全部' : evChargingFilter.speed === 'fast' ? '快充' : '慢充'}
+                  {evChargingFilter.connector !== 'all' ? ` · ${evChargingFilter.connector}` : ''}
+                  {evChargingFilter.freeOnly ? ' · 免費' : ''}
+                </span>
+              </span>
               <button 
                 onClick={() => setEvFilterOpen(true)}
                 className="text-[10px] text-emerald-400 hover:underline"

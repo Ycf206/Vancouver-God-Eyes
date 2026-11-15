@@ -3053,7 +3053,181 @@ _ALLOWED_DB_ROAD_FACILITY_TYPES = {
     "impark",
     "water_supply",
     "sewer_system",
+    "air_quality",
 }
+
+
+def _load_live_ev_cache_features(cache_path: str, require_available: bool = True) -> list:
+    if not os.path.exists(cache_path):
+        return []
+    try:
+        with open(cache_path, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+        feats = list(raw.get("features") or [])
+        if require_available:
+            return [
+                ft for ft in feats
+                if str((ft.get("properties") or {}).get("status") or "").strip().lower() == "available"
+            ]
+        return feats
+    except Exception as e:
+        print(f"[EVGeoJSON] Error reading {cache_path}: {e}")
+        return []
+
+
+def _get_merged_ev_geojson() -> dict:
+    """合併溫哥華市府 CoV 充電站點與 OCI 1 小時 FLO / ChargePoint API2 可用站點快取。"""
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    cov_path = os.path.join(base_dir, "data", "vancouver_ev_charging.geojson")
+    if not os.path.exists(cov_path):
+        cov_path = os.path.join(base_dir, "..", "frontend", "public", "vancouver_ev_charging.geojson")
+    flo_cache_path = os.path.join(base_dir, "data", "flo_ev_live_cache.json")
+    cp_cache_path = os.path.join(base_dir, "data", "chargepoint_ev_live_cache.json")
+
+    cov_features: list = []
+    fallback_flo: list = []
+    if os.path.exists(cov_path):
+        try:
+            with open(cov_path, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+            for feat in raw.get("features") or []:
+                fid = str(feat.get("id") or "")
+                if fid.startswith("ev_flo_"):
+                    fallback_flo.append(feat)
+                elif not fid.startswith("ev_cp_"):
+                    cov_features.append(feat)
+        except Exception as e:
+            print(f"[EVGeoJSON] Error reading {cov_path}: {e}")
+
+    flo_features = _load_live_ev_cache_features(flo_cache_path, require_available=True) or fallback_flo
+    cp_features = _load_live_ev_cache_features(cp_cache_path, require_available=True)
+
+    return {"type": "FeatureCollection", "features": cov_features + flo_features + cp_features}
+
+
+def _get_air_quality_geojson_path() -> str | None:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(base_dir, "data", "vancouver_air_quality.geojson")
+    if os.path.exists(data_path):
+        return data_path
+    pub_path = os.path.join(base_dir, "..", "frontend", "public", "vancouver_air_quality.geojson")
+    if os.path.exists(pub_path):
+        return pub_path
+    return None
+
+
+@app.get("/api/air-quality/geojson")
+def get_air_quality_geojson():
+    """取得大溫哥華空氣質素健康指數 (AQHI) 區塊圖層 GeoJSON（OCI 每 24 小時快取）。"""
+    path = _get_air_quality_geojson_path()
+    if not path:
+        try:
+            dynamic_layers_service.refresh_air_quality()
+            path = _get_air_quality_geojson_path()
+        except Exception as e:
+            print(f"[AirQuality] Lazy refresh error: {e}")
+    if path and os.path.exists(path):
+        return FileResponse(
+            path,
+            media_type="application/json",
+            headers={"Cache-Control": "public, max-age=300, stale-while-revalidate=3600"},
+        )
+    return JSONResponse(
+        content={"type": "FeatureCollection", "features": []},
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
+_ev_fast_sync_lock = threading.Lock()
+_ev_fast_sync_last_trigger: dict[str, float] = {}
+
+
+def _maybe_trigger_ev_fast_sync(key: str, cache_path: str, runner_fn, max_age_sec: int = 180) -> None:
+    """If an EV live cache file is >max_age_sec old, trigger a non-blocking fast API1 status refresh."""
+    now = time.time()
+    try:
+        is_stale = (not os.path.exists(cache_path)) or ((now - os.path.getmtime(cache_path)) >= max_age_sec)
+    except OSError:
+        is_stale = True
+    if not is_stale:
+        return
+    with _ev_fast_sync_lock:
+        if (now - _ev_fast_sync_last_trigger.get(key, 0.0)) < 60:
+            return
+        _ev_fast_sync_last_trigger[key] = now
+
+    def _run() -> None:
+        try:
+            runner_fn()
+        except Exception as err:
+            print(f"[{key} Live Fast] Background refresh error: {err}")
+
+    threading.Thread(target=_run, daemon=True).start()
+
+
+def _run_flo_fast_sync() -> None:
+    from scripts.layers.update_flo_ev import sync_flo_live_statuses_fast
+    sync_flo_live_statuses_fast(update_admin_meta=True)
+
+
+def _run_cp_fast_sync() -> None:
+    from scripts.layers.update_chargepoint_ev import sync_chargepoint_live_statuses_fast
+    sync_chargepoint_live_statuses_fast(update_admin_meta=True)
+
+
+@app.get("/api/ev/geojson")
+def get_ev_geojson():
+    """取得整合 CoV + FLO + ChargePoint 即時可用電動車充電站點的 GeoJSON (no-cache 確保即時狀態最新)。"""
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    _maybe_trigger_ev_fast_sync("FLO", os.path.join(data_dir, "flo_ev_live_cache.json"), _run_flo_fast_sync, max_age_sec=180)
+    _maybe_trigger_ev_fast_sync("ChargePoint", os.path.join(data_dir, "chargepoint_ev_live_cache.json"), _run_cp_fast_sync, max_age_sec=180)
+    return JSONResponse(
+        content=_get_merged_ev_geojson(),
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+    )
+
+
+@app.get("/api/ev/flo/{park_id}")
+def get_flo_park_live_details(park_id: str, station_id: Optional[str] = None):
+    """即時向 FLO API2 查詢單一充電站園區的所有充電樁現況，確保與官方網頁完全同步。"""
+    clean_pid = (park_id or "").strip()
+    if not re.fullmatch(r"[a-zA-Z0-9_-]{4,80}", clean_pid):
+        return JSONResponse(status_code=400, content={"error": "Invalid park_id"})
+    clean_sid = (station_id or "").strip() if station_id else None
+    if clean_sid and not re.fullmatch(r"[a-zA-Z0-9_-]{4,80}", clean_sid):
+        clean_sid = None
+
+    try:
+        from scripts.layers.update_flo_ev import fetch_single_park_live
+        live_info = fetch_single_park_live(clean_pid, station_id=clean_sid)
+        if not live_info:
+            return JSONResponse(status_code=404, content={"error": "Park not found on FLO"})
+        return JSONResponse(
+            content=live_info,
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.get("/api/ev/chargepoint/{device_id}")
+def get_chargepoint_station_live_details(device_id: str):
+    """即時向 ChargePoint API2 查詢單一充電站的即時充電槍狀態與費率。"""
+    clean_did = (device_id or "").strip()
+    if not re.fullmatch(r"[a-zA-Z0-9_-]{2,40}", clean_did):
+        return JSONResponse(status_code=400, content={"error": "Invalid device_id"})
+    try:
+        from scripts.layers.update_chargepoint_ev import fetch_single_chargepoint_live
+        live_info = fetch_single_chargepoint_live(clean_did)
+        if not live_info:
+            return JSONResponse(status_code=404, content={"error": "Station not found on ChargePoint"})
+        return JSONResponse(
+            content=live_info,
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(
@@ -3115,6 +3289,14 @@ def get_road_facilities_geojson(
     if facility_type in ("beach_water_quality", "beach_water"):
         import beach_water_service
         return beach_water_service.get_beach_water_geojson()
+
+    # Handle Air Quality (AQHI)
+    if facility_type in ("air_quality", "aqhi"):
+        return get_air_quality_geojson()
+
+    # Handle EV Charging (CoV + hourly FLO API2 cache)
+    if facility_type == "ev_charging":
+        return get_ev_geojson()
 
     # Handle Banks (formerly ATM)
     if facility_type in ("banks", "atm"):
@@ -3522,6 +3704,62 @@ def get_311_service_requests(force: bool = False, date: Optional[str] = None):
         except Exception:
             pass
     return JSONResponse(content={"results": []}, headers=cache_headers)
+
+
+@app.get("/api/explore/business-licences")
+def get_explore_business_licences(
+    page: int = 1,
+    page_size: int = 20,
+    q: str = "",
+    status: str = "",
+    localarea: str = "",
+    businesstype: str = "",
+    date: str = "",
+    sort: str = "extract_desc",
+    force: bool = False,
+):
+    """取得溫哥華商業牌照 (Business Licences) 資料，支援即時搜尋、狀態/分區/類型篩選、發牌日期、排序與分頁。"""
+    cache_headers = {"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache"}
+    from scripts.layers.opendata_explore_service import query_explore_dataset
+    data = query_explore_dataset(
+        "business-licences",
+        page=page,
+        page_size=page_size,
+        q=q,
+        filters={"status": status, "localarea": localarea, "businesstype": businesstype},
+        date_str=date,
+        sort_key=sort,
+        force=force,
+    )
+    return JSONResponse(content=data, headers=cache_headers)
+
+
+@app.get("/api/explore/building-permits")
+def get_explore_building_permits(
+    page: int = 1,
+    page_size: int = 20,
+    q: str = "",
+    permitcategory: str = "",
+    typeofwork: str = "",
+    geolocalarea: str = "",
+    date: str = "",
+    sort: str = "issuedate_desc",
+    force: bool = False,
+):
+    """取得溫哥華已簽發建築許可 (Issued Building Permits) 資料，支援即時搜尋、類別/類型/社區篩選、簽發日期、排序與分頁。"""
+    cache_headers = {"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache"}
+    from scripts.layers.opendata_explore_service import query_explore_dataset
+    data = query_explore_dataset(
+        "issued-building-permits",
+        page=page,
+        page_size=page_size,
+        q=q,
+        filters={"permitcategory": permitcategory, "typeofwork": typeofwork, "geolocalarea": geolocalarea},
+        date_str=date,
+        sort_key=sort,
+        force=force,
+    )
+    return JSONResponse(content=data, headers=cache_headers)
 
 @app.get("/api/explore/nearby")
 def explore_nearby_facilities(
@@ -4625,6 +4863,11 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "water_supply": ["vancouver_water_supply.geojson", "vancouver_water_mains.geojson"],
     "sewer_system": ["vancouver_sewer_system.geojson", "vancouver_sewer_lines.geojson"],
     "mobile_coverage": ["vancouver_mobile_coverage.geojson"],
+    "air_quality": ["vancouver_air_quality.geojson"],
+    "ev_charging_flo": ["flo_ev_live_cache.json"],
+    "ev_charging_chargepoint": ["chargepoint_ev_live_cache.json"],
+    "business_licences": ["vancouver_business_licences.json"],
+    "building_permits": ["vancouver_building_permits.json"],
 }
 
 
@@ -4940,6 +5183,36 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
         yi_cnt, yi_ts = _extract_disk_file_meta(yi_file)
         yi_runtime = _unix_to_iso(_oci_runtime_ts.get("yvr_indoor"))
         oci_live_updates["yvr_indoor"] = (_max_iso_ts(yi_runtime, yi_ts), yi_cnt if yi_cnt > 0 else None)
+
+    if "air_quality" in src_by_id:
+        aq_file = os.path.join(data_dir, "vancouver_air_quality.geojson")
+        aq_cnt, aq_ts = _extract_disk_file_meta(aq_file)
+        aq_runtime = _unix_to_iso(_oci_runtime_ts.get("air_quality"))
+        oci_live_updates["air_quality"] = (_max_iso_ts(aq_runtime, aq_ts), aq_cnt if aq_cnt > 0 else None)
+
+    if "ev_charging_flo" in src_by_id:
+        fl_file = os.path.join(data_dir, "flo_ev_live_cache.json")
+        fl_cnt, fl_ts = _extract_disk_file_meta(fl_file)
+        fl_runtime = _unix_to_iso(_oci_runtime_ts.get("ev_charging_flo"))
+        oci_live_updates["ev_charging_flo"] = (_max_iso_ts(fl_runtime, fl_ts), fl_cnt if fl_cnt > 0 else None)
+
+    if "ev_charging_chargepoint" in src_by_id:
+        cp_file = os.path.join(data_dir, "chargepoint_ev_live_cache.json")
+        cp_cnt, cp_ts = _extract_disk_file_meta(cp_file)
+        cp_runtime = _unix_to_iso(_oci_runtime_ts.get("ev_charging_chargepoint"))
+        oci_live_updates["ev_charging_chargepoint"] = (_max_iso_ts(cp_runtime, cp_ts), cp_cnt if cp_cnt > 0 else None)
+
+    if "business_licences" in src_by_id:
+        bl_file = os.path.join(data_dir, "vancouver_business_licences.json")
+        bl_cnt, bl_ts = _extract_disk_file_meta(bl_file)
+        bl_runtime = _unix_to_iso(_oci_runtime_ts.get("business_licences"))
+        oci_live_updates["business_licences"] = (_max_iso_ts(bl_runtime, bl_ts), bl_cnt if bl_cnt > 0 else None)
+
+    if "building_permits" in src_by_id:
+        bp_file = os.path.join(data_dir, "vancouver_building_permits.json")
+        bp_cnt, bp_ts = _extract_disk_file_meta(bp_file)
+        bp_runtime = _unix_to_iso(_oci_runtime_ts.get("building_permits"))
+        oci_live_updates["building_permits"] = (_max_iso_ts(bp_runtime, bp_ts), bp_cnt if bp_cnt > 0 else None)
 
     for sid, (live_iso, live_cnt) in oci_live_updates.items():
         s = src_by_id.get(sid)
@@ -5269,6 +5542,31 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         cnt = dynamic_layers_service.refresh_yvr_indoor()
         _oci_runtime_ts["yvr_indoor"] = time.time()
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 YVR 機場內部地圖設施，共載入 {cnt} 筆位置資料。")
+    if sid == "air_quality":
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_air_quality()
+        _oci_runtime_ts["air_quality"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時更新大溫哥華空氣質素健康指數 (AQHI) 分區圖層，共 {cnt} 個監測分區。")
+    if sid in ("ev_charging_flo", "flo_ev"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_flo_ev()
+        _oci_runtime_ts["ev_charging_flo"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時透過 API2 同步大溫哥華 FLO 可用充電站點，共載入 {cnt} 處園區。")
+    if sid in ("ev_charging_chargepoint", "chargepoint_ev"):
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_chargepoint_ev()
+        _oci_runtime_ts["ev_charging_chargepoint"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時透過 API2 同步大溫哥華 ChargePoint 可用充電站點，共載入 {cnt} 座。")
+    if sid == "business_licences":
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_business_licences(target_count=1000)
+        _oci_runtime_ts["business_licences"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步溫哥華商業牌照最新資料，共載入 {cnt} 筆快取。")
+    if sid == "building_permits":
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_building_permits(target_count=1000)
+        _oci_runtime_ts["building_permits"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步溫哥華建築許可最新資料，共載入 {cnt} 筆快取。")
     if sid == "water_supply":
         import dynamic_layers_service
         cnt = dynamic_layers_service.refresh_water_supply()
@@ -5312,7 +5610,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
             # 判斷是否為批次觸發
             if source_id == 'all_oci' or (source_id == 'all' and target_runner == 'oci'):
                 target_name = "全部 OCI 伺服器即時服務"
-                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss", "yvr_indoor", "water_supply", "sewer_system"):
+                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss", "yvr_indoor", "water_supply", "sewer_system", "air_quality", "ev_charging_flo", "ev_charging_chargepoint"):
                     try:
                         _refresh_single_oci_service(idx_s)
                     except Exception:
@@ -6262,19 +6560,23 @@ def get_ev_stations_api(
       - 'distance': 距離最優 (由近至遠)
     """
     geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_ev_charging.geojson")
-    if not os.path.exists(geojson_path):
+    flo_path = os.path.join(os.path.dirname(__file__), "data", "flo_ev_live_cache.json")
+    cp_path = os.path.join(os.path.dirname(__file__), "data", "chargepoint_ev_live_cache.json")
+    if not os.path.exists(geojson_path) and not os.path.exists(flo_path) and not os.path.exists(cp_path):
         return {"stations": [], "total": 0}
     try:
-        mtime = os.path.getmtime(geojson_path)
+        cov_mt = os.path.getmtime(geojson_path) if os.path.exists(geojson_path) else 0.0
+        flo_mt = os.path.getmtime(flo_path) if os.path.exists(flo_path) else 0.0
+        cp_mt = os.path.getmtime(cp_path) if os.path.exists(cp_path) else 0.0
+        mtime = max(cov_mt, flo_mt, cp_mt)
         if _ev_geojson_cache["data"] is not None and _ev_geojson_cache["mtime"] == mtime:
             data = _ev_geojson_cache["data"]
         else:
-            with open(geojson_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
+            data = _get_merged_ev_geojson()
             _ev_geojson_cache["mtime"] = mtime
             _ev_geojson_cache["data"] = data
     except Exception as e:
-        logger.error(f"Error loading vancouver_ev_charging.geojson: {e}")
+        logger.error(f"Error loading merged EV charging GeoJSON: {e}")
         return {"stations": [], "total": 0}
 
     ref_lat = lat if lat is not None else 49.2827
@@ -6295,21 +6597,29 @@ def get_ev_stations_api(
             continue
 
         dist = haversine_distance(ref_lat, ref_lon, st_lat, st_lon)
-        raw_power = props.get("power_kw")
+        raw_power = props.get("max_power_kw")
+        if raw_power is None or str(raw_power).strip() == "":
+            raw_power = props.get("power_kw")
         try:
-            power_kw = float(raw_power) if raw_power is not None and str(raw_power).strip() != "" else 7.2
+            power_kw = float(raw_power) if raw_power is not None and str(raw_power).strip() != "" and float(raw_power) > 0 else 7.2
         except (ValueError, TypeError):
             power_kw = 7.2
-        cost_str = props.get("cost", "依現場計費")
+        cost_str = props.get("cost") or "依現場計費"
 
         # 綜合最優打分：功率越高加分越多，距離越遠減分
         score = (power_kw / 250.0) * 0.65 - (min(dist, 25.0) / 25.0) * 0.35
 
+        fid_str = str(props.get("id") or feat.get("id") or "")
+        st_source = str(props.get("source") or ("flo" if fid_str.startswith("ev_flo_") else ("chargepoint" if fid_str.startswith("ev_cp_") else "cov"))).lower()
         stations.append({
-            "id": props.get("id"),
+            "id": fid_str,
+            "source": st_source,
+            "device_id": props.get("device_id"),
+            "park_id": props.get("park_id"),
             "name": props.get("name", "電動車充電站"),
             "address": props.get("address", ""),
             "local_area": props.get("local_area", ""),
+            "city": props.get("city", ""),
             "operator": props.get("operator", "公共充電站"),
             "connectors": props.get("connectors", "J1772"),
             "ports": props.get("ports", 2),
@@ -6320,7 +6630,18 @@ def get_ev_stations_api(
             "distance_km": dist,
             "lat": st_lat,
             "lon": st_lon,
-            "score": round(score, 3)
+            "score": round(score, 3),
+            "properties": {
+                k: props.get(k)
+                for k in (
+                    "source", "device_id", "park_id", "station_id", "address1", "city",
+                    "description", "access_restriction", "start_methods", "connector_specs",
+                    "ports_info", "station_price", "available_stations", "status",
+                    "level", "free_of_charge", "non_member_fee_amount", "non_member_fee_currency",
+                    "tariff_description_en"
+                )
+                if props.get(k) is not None
+            },
         })
 
     if sort_by == "distance":

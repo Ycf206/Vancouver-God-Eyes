@@ -12,7 +12,8 @@ import { Landmark,
   PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle,
   Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
   Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy, Ticket,
-  CircleChevronLeft, CircleChevronRight, Globe, BarChart2, ChartNoAxesCombined, ArrowLeftRight
+  CircleChevronLeft, CircleChevronRight, Globe, BarChart2, ChartNoAxesCombined, ArrowLeftRight,
+  BuildingComplex, Hammer, Info
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
@@ -719,6 +720,9 @@ interface FuelStation {
 
 interface EVStation {
   id: string;
+  source?: string;
+  device_id?: string | number;
+  park_id?: string;
   name: string;
   address: string;
   local_area: string;
@@ -734,6 +738,7 @@ interface EVStation {
   lat: number;
   lon: number;
   score: number;
+  properties?: Record<string, any>;
 }
 
 interface FerryVessel {
@@ -890,6 +895,445 @@ export default function ExplorePanel() {
     <ExploreErrorBoundary onClose={() => { setExploreOpen(false); setSearchTarget(null); }}>
       <ExploreContent />
     </ExploreErrorBoundary>
+  );
+}
+
+export interface OpenDataFacetOption {
+  value: string;
+  count: number;
+}
+
+export interface BusinessLicenceRecord {
+  licencenumber?: string | null;
+  businesstype?: string | null;
+  businesstradename?: string | null;
+  issueddate?: string | null;
+  expireddate?: string | null;
+  numberofemployees?: number | null;
+  localarea?: string | null;
+  status?: string | null;
+  extractdate?: string | null;
+  lat?: number | null;
+  lon?: number | null;
+}
+
+export interface BuildingPermitRecord {
+  permitnumber?: string | null;
+  typeofwork?: string | null;
+  permitcategory?: string | null;
+  address?: string | null;
+  issuedate?: string | null;
+  projectvalue?: number | null;
+  buildingcontractor?: string | null;
+  geolocalarea?: string | null;
+  projectdescription?: string | null;
+  lat?: number | null;
+  lon?: number | null;
+}
+
+interface OpenDataPagedResponse<T> {
+  total_count: number;
+  page: number;
+  page_size: number;
+  latest_recency_date?: string | null;
+  facets?: Record<string, OpenDataFacetOption[]>;
+  results: T[];
+  updated_at?: string | null;
+  source?: string;
+}
+
+function formatUniformDate(val: string | number | null | undefined, timeZone: string): string {
+  if (val === null || val === undefined || val === '') return '';
+  const raw = String(val).trim();
+  if (!raw) return '';
+  // Preserve bare YYYY-MM-DD strings verbatim so UTC midnight isn't shifted back 1 day in PST/PDT
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return raw.slice(0, 10);
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: timeZone || 'America/Vancouver',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(d);
+  } catch {
+    return raw.slice(0, 10);
+  }
+}
+
+function formatProjectCurrency(val: number | string | null | undefined): string {
+  if (val === null || val === undefined || val === '') return '';
+  const num = Number(val);
+  if (Number.isNaN(num)) return '';
+  return `$${Math.round(num).toLocaleString('en-CA')}`;
+}
+
+function OpenDataPaginationBar({
+  page,
+  pageSize,
+  totalCount,
+  loading,
+  accent,
+  onPageChange,
+}: {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  loading: boolean;
+  accent: 'sky' | 'orange';
+  onPageChange: (nextPage: number) => void;
+}) {
+  const rawTotalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  // OpenData v2.1 API offset limit is 10,000 (offset <= 9900)
+  const maxReachablePages = Math.max(1, Math.min(rawTotalPages, Math.floor(9900 / pageSize) + 1));
+  const safePage = Math.max(1, Math.min(page, maxReachablePages));
+  const startIdx = totalCount === 0 ? 0 : (safePage - 1) * pageSize + 1;
+  const endIdx = Math.min(totalCount, safePage * pageSize);
+
+  const pageNumbers = useMemo(
+    () => Array.from({ length: maxReachablePages }, (_, idx) => idx + 1),
+    [maxReachablePages]
+  );
+
+  const focusClass = accent === 'sky' ? 'focus:border-sky-500' : 'focus:border-orange-500';
+  const countColorClass = accent === 'sky' ? 'text-sky-400' : 'text-orange-400';
+
+  return (
+    <div className="flex items-center justify-between px-3 py-1.5 bg-[#121620] border border-[#263147] rounded-lg text-xs shrink-0 mt-2">
+      <div className="text-[11px] text-gray-400 flex items-center gap-1.5 min-w-0 truncate">
+        <span>
+          顯示第 <span className={`font-semibold font-mono tabular-nums ${countColorClass}`}>{startIdx}</span> -{' '}
+          <span className={`font-semibold font-mono tabular-nums ${countColorClass}`}>{endIdx}</span> 筆
+        </span>
+        {totalCount > 0 && (
+          <span className="hidden sm:inline text-gray-500 font-mono tabular-nums">
+            / {totalCount.toLocaleString()}
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-center gap-1.5 shrink-0">
+        <button
+          type="button"
+          onClick={() => onPageChange(1)}
+          disabled={safePage <= 1 || loading}
+          className="px-2 py-1 rounded bg-[#1a1f2d] text-gray-300 border border-[#2c3448] disabled:opacity-40 hover:bg-[#23293a] text-[11px] cursor-pointer disabled:cursor-not-allowed transition-colors"
+        >
+          首頁
+        </button>
+        <button
+          type="button"
+          title="上一頁"
+          aria-label="上一頁"
+          onClick={() => onPageChange(Math.max(1, safePage - 1))}
+          disabled={safePage <= 1 || loading}
+          className="p-1 rounded bg-[#1a1f2d] text-gray-300 border border-[#2c3448] disabled:opacity-40 hover:bg-[#23293a] cursor-pointer disabled:cursor-not-allowed transition-colors"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+        </button>
+
+        <select
+          aria-label="頁碼選擇"
+          value={safePage}
+          disabled={loading}
+          onChange={(e) => onPageChange(Number(e.target.value) || 1)}
+          className={`bg-[#1a1f2d] text-gray-200 border border-[#2c3448] rounded px-1.5 py-0.5 text-[11px] font-mono outline-none ${focusClass} cursor-pointer disabled:opacity-50`}
+        >
+          {pageNumbers.map((p) => (
+            <option key={p} value={p}>
+              {p} / {maxReachablePages}
+            </option>
+          ))}
+        </select>
+
+        <button
+          type="button"
+          title="下一頁"
+          aria-label="下一頁"
+          onClick={() => onPageChange(Math.min(maxReachablePages, safePage + 1))}
+          disabled={safePage >= maxReachablePages || loading}
+          className="p-1 rounded bg-[#1a1f2d] text-gray-300 border border-[#2c3448] disabled:opacity-40 hover:bg-[#23293a] cursor-pointer disabled:cursor-not-allowed transition-colors"
+        >
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => onPageChange(maxReachablePages)}
+          disabled={safePage >= maxReachablePages || loading}
+          className="px-2 py-1 rounded bg-[#1a1f2d] text-gray-300 border border-[#2c3448] disabled:opacity-40 hover:bg-[#23293a] text-[11px] cursor-pointer disabled:cursor-not-allowed transition-colors"
+        >
+          末頁
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function OpenDataExploreShell({
+  title,
+  icon,
+  accent,
+  datasetHref,
+  recencyLabel,
+  recencyDate,
+  intervalLabel,
+  totalCount,
+  loading,
+  error,
+  searchPlaceholder,
+  searchValue,
+  onSearchChange,
+  onSearchSubmit,
+  dateLabel,
+  dateValue,
+  onDateChange,
+  sortValue,
+  sortOptions,
+  onSortChange,
+  filters,
+  pageSize,
+  onPageSizeChange,
+  hasActiveFilters,
+  onResetFilters,
+  onRefresh,
+  page,
+  onPageChange,
+  isEmpty,
+  emptyText,
+  children,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  accent: 'sky' | 'orange';
+  datasetHref: string;
+  recencyLabel: string;
+  recencyDate: string;
+  intervalLabel?: string;
+  totalCount: number;
+  loading: boolean;
+  error: string | null;
+  searchPlaceholder: string;
+  searchValue: string;
+  onSearchChange: (val: string) => void;
+  onSearchSubmit: () => void;
+  dateLabel: string;
+  dateValue: string;
+  onDateChange: (val: string) => void;
+  sortValue: string;
+  sortOptions: Array<{ value: string; label: string }>;
+  onSortChange: (val: string) => void;
+  filters: Array<{
+    key: string;
+    label: string;
+    value: string;
+    options: OpenDataFacetOption[];
+    onChange: (val: string) => void;
+  }>;
+  pageSize: number;
+  onPageSizeChange: (size: number) => void;
+  hasActiveFilters: boolean;
+  onResetFilters: () => void;
+  onRefresh: () => void;
+  page: number;
+  onPageChange: (p: number) => void;
+  isEmpty: boolean;
+  emptyText: string;
+  children: React.ReactNode;
+}) {
+  const accentFocus = accent === 'sky' ? 'focus:border-sky-500' : 'focus:border-orange-500';
+  const accentSpinner = accent === 'sky' ? 'text-sky-400' : 'text-orange-400';
+  const accentDot = accent === 'sky' ? 'bg-sky-400' : 'bg-orange-400';
+  const accentBadge =
+    accent === 'sky'
+      ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+      : 'bg-orange-500/15 text-orange-300 border-orange-500/30';
+
+  return (
+    <div className="flex flex-col flex-1 min-h-0">
+      {/* Subheader (matching 3-1-1 compact style) */}
+      <div className="flex items-center justify-between mb-2 shrink-0 gap-2">
+        <div className="flex items-center gap-2 min-w-0 flex-wrap">
+          <span className={`w-2 h-2 rounded-full ${accentDot} animate-pulse shrink-0`} />
+          <span className="text-xs text-gray-200 font-semibold truncate flex items-center gap-1.5">
+            {icon}
+            <span>{title}: {totalCount.toLocaleString()} 件</span>
+          </span>
+          {recencyDate && (
+            <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono border shrink-0 ${accentBadge}`}>
+              {recencyLabel}: {recencyDate}
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <a
+            href={datasetHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 px-1.5 py-1 rounded-md bg-[#12151e] hover:bg-[#1e2433] text-[10px] text-gray-400 hover:text-gray-200 border border-[#262b38] transition-colors"
+            title="前往溫哥華市政府 OpenData 官方資料集"
+          >
+            <span>OpenData</span>
+            <ExternalLink className="w-2.5 h-2.5" />
+          </a>
+          <button
+            type="button"
+            onClick={onRefresh}
+            disabled={loading}
+            title="重新整理最新資料"
+            className="p-1 rounded-md bg-[#12151e] hover:bg-[#1e2433] text-gray-300 border border-[#262b38] transition-colors cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3 h-3 ${loading ? `animate-spin ${accentSpinner}` : ''}`} />
+          </button>
+          <span className="text-[10px] text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full whitespace-nowrap">
+            {intervalLabel || '每 24 小時'}
+          </span>
+        </div>
+      </div>
+
+      {/* Compact Filter Bar (matching 3-1-1 style) */}
+      <div className="flex flex-col gap-1.5 mb-2.5 shrink-0 bg-[#12151e]/80 p-2 rounded-xl border border-[#262b38]">
+        <div className="relative">
+          <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchValue}
+            onChange={(e) => onSearchChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') onSearchSubmit();
+            }}
+            placeholder={searchPlaceholder}
+            className={`w-full pl-8 pr-7 py-1.5 bg-[#1a1d26] border border-[#2d3343] rounded-lg text-xs text-gray-200 placeholder-gray-500 focus:outline-none ${accentFocus} transition-colors`}
+          />
+          {searchValue && (
+            <button
+              type="button"
+              onClick={() => onSearchChange('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer"
+              title="清除搜尋"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+          {/* Date Picker */}
+          <div className="relative flex items-center bg-[#1a1d26] border border-[#2d3343] rounded-lg px-2 py-1 text-gray-300 shrink-0">
+            <Calendar className="w-3 h-3 text-gray-400 mr-1 shrink-0" />
+            <span className="text-[10px] text-gray-400 mr-1 shrink-0">{dateLabel}</span>
+            <input
+              type="date"
+              aria-label={dateLabel}
+              value={dateValue}
+              onChange={(e) => onDateChange(e.target.value)}
+              className="bg-transparent text-gray-200 text-[11px] font-mono outline-none [color-scheme:dark] w-[110px]"
+            />
+            {dateValue && (
+              <button
+                type="button"
+                onClick={() => onDateChange('')}
+                className="text-gray-400 hover:text-white ml-1 shrink-0 cursor-pointer"
+                title="清除日期篩選"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Sort */}
+          <div className="flex items-center gap-1 bg-[#1a1d26] border border-[#2d3343] rounded-lg px-2 py-1 text-gray-300 shrink-0">
+            <ArrowUpDown className="w-3 h-3 text-gray-400 shrink-0" />
+            <select
+              aria-label="排序方式"
+              value={sortValue}
+              onChange={(e) => onSortChange(e.target.value)}
+              className="bg-[#1a1d26] text-gray-200 text-[11px] outline-none cursor-pointer"
+            >
+              {sortOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Facet Filters */}
+          {filters.map((flt) => (
+            <select
+              key={flt.key}
+              aria-label={flt.label}
+              value={flt.value}
+              onChange={(e) => flt.onChange(e.target.value)}
+              className={`bg-[#1a1d26] text-gray-300 border border-[#2d3343] rounded-lg px-2 py-1 text-[11px] outline-none ${accentFocus} max-w-[145px] truncate cursor-pointer`}
+            >
+              <option value="all">{flt.label}（全部）</option>
+              {flt.options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.value} ({opt.count.toLocaleString()})
+                </option>
+              ))}
+            </select>
+          ))}
+
+          {/* Page Size */}
+          <select
+            aria-label="每頁筆數"
+            value={pageSize}
+            onChange={(e) => onPageSizeChange(Number(e.target.value) || 20)}
+            className={`bg-[#1a1d26] text-gray-300 border border-[#2d3343] rounded-lg px-2 py-1 text-[11px] font-mono outline-none ${accentFocus} cursor-pointer`}
+          >
+            <option value={20}>20 筆</option>
+            <option value={50}>50 筆</option>
+            <option value={100}>100 筆</option>
+          </select>
+
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={onResetFilters}
+              className="px-2 py-1 rounded-lg bg-[#1e2433] hover:bg-[#2a3142] text-gray-300 text-[11px] border border-[#2d3343] transition-colors cursor-pointer"
+            >
+              重設
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Scrollable Stacked Cards List (no inner min-h-0 so max-h parent never collapses to 0px) */}
+      <div className="flex-1 overflow-y-auto min-h-[260px] space-y-2 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#263147] [&::-webkit-scrollbar-thumb]:rounded-full">
+        {loading && isEmpty ? (
+          <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2">
+            <RefreshCw className={`w-6 h-6 animate-spin ${accentSpinner}`} />
+            <span className="text-xs">正在載入資料...</span>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center h-40 text-rose-400 gap-2 text-xs">
+            <AlertTriangle className="w-5 h-5" />
+            <span>{error}</span>
+          </div>
+        ) : isEmpty ? (
+          <div className="flex flex-col items-center justify-center h-40 text-gray-500 text-xs">
+            <span>{emptyText}</span>
+          </div>
+        ) : (
+          <div className={`space-y-2 transition-opacity ${loading ? 'opacity-65' : ''}`}>
+            {children}
+          </div>
+        )}
+      </div>
+
+      {/* Bottom Pagination */}
+      <OpenDataPaginationBar
+        page={page}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        loading={loading}
+        accent={accent}
+        onPageChange={onPageChange}
+      />
+    </div>
   );
 }
 
@@ -1352,6 +1796,215 @@ function ExploreContent() {
   // 分頁：天氣, 新聞, 活動, 滑雪, 燃油, 充電, 渡輪, 船運
   const activeTab = exploreTab || 'weather';
   const setActiveTab = setExploreTab;
+
+  // --- 商業牌照 (Business Licences) 與 建築許可 (Building Permits) 狀態 ---
+  const [blData, setBlData] = useState<OpenDataPagedResponse<BusinessLicenceRecord> | null>(null);
+  const [loadingBl, setLoadingBl] = useState(false);
+  const [blError, setBlError] = useState<string | null>(null);
+  const [blSearch, setBlSearch] = useState('');
+  const [blDebouncedSearch, setBlDebouncedSearch] = useState('');
+  const [blStatusFilter, setBlStatusFilter] = useState('all');
+  const [blAreaFilter, setBlAreaFilter] = useState('all');
+  const [blTypeFilter, setBlTypeFilter] = useState('all');
+  const [blDateFilter, setBlDateFilter] = useState('');
+  const [blSort, setBlSort] = useState('extract_desc');
+  const [blPage, setBlPage] = useState(1);
+  const [blPageSize, setBlPageSize] = useState(20);
+  const [blRefreshTick, setBlRefreshTick] = useState(0);
+  const blForceRef = useRef(false);
+
+  const [bpData, setBpData] = useState<OpenDataPagedResponse<BuildingPermitRecord> | null>(null);
+  const [loadingBp, setLoadingBp] = useState(false);
+  const [bpError, setBpError] = useState<string | null>(null);
+  const [bpSearch, setBpSearch] = useState('');
+  const [bpDebouncedSearch, setBpDebouncedSearch] = useState('');
+  const [bpCategoryFilter, setBpCategoryFilter] = useState('all');
+  const [bpWorkFilter, setBpWorkFilter] = useState('all');
+  const [bpAreaFilter, setBpAreaFilter] = useState('all');
+  const [bpDateFilter, setBpDateFilter] = useState('');
+  const [bpSort, setBpSort] = useState('issuedate_desc');
+  const [bpPage, setBpPage] = useState(1);
+  const [bpPageSize, setBpPageSize] = useState(20);
+  const [bpRefreshTick, setBpRefreshTick] = useState(0);
+  const bpForceRef = useRef(false);
+  const [hoveredPermitInfo, setHoveredPermitInfo] = useState<string | null>(null);
+  const [pinnedPermitInfo, setPinnedPermitInfo] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (blSearch === blDebouncedSearch) return;
+    const timer = setTimeout(() => {
+      setBlDebouncedSearch(blSearch);
+      setBlPage(1);
+    }, 320);
+    return () => clearTimeout(timer);
+  }, [blSearch, blDebouncedSearch]);
+
+  useEffect(() => {
+    if (bpSearch === bpDebouncedSearch) return;
+    const timer = setTimeout(() => {
+      setBpDebouncedSearch(bpSearch);
+      setBpPage(1);
+    }, 320);
+    return () => clearTimeout(timer);
+  }, [bpSearch, bpDebouncedSearch]);
+
+  useEffect(() => {
+    if (!pinnedPermitInfo) return;
+    const handleOutsideClick = () => setPinnedPermitInfo(null);
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [pinnedPermitInfo]);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'business') return;
+    const controller = new AbortController();
+    const force = blForceRef.current;
+    blForceRef.current = false;
+
+    const params = new URLSearchParams({
+      page: String(blPage),
+      page_size: String(blPageSize),
+      sort: blSort,
+    });
+    if (blDebouncedSearch.trim()) params.set('q', blDebouncedSearch.trim());
+    if (blStatusFilter !== 'all') params.set('status', blStatusFilter);
+    if (blAreaFilter !== 'all') params.set('localarea', blAreaFilter);
+    if (blTypeFilter !== 'all') params.set('businesstype', blTypeFilter);
+    if (blDateFilter) params.set('date', blDateFilter);
+    if (force) params.set('force', '1');
+
+    setLoadingBl(true);
+    setBlError(null);
+    fetch(`/api/explore/business-licences?${params.toString()}`, {
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json: OpenDataPagedResponse<BusinessLicenceRecord>) => {
+        setBlData(json);
+      })
+      .catch((err) => {
+        if ((err as Error)?.name !== 'AbortError') {
+          setBlError('無法載入商業牌照資料，請稍後重試');
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoadingBl(false);
+      });
+
+    return () => controller.abort();
+  }, [
+    isExploreOpen,
+    activeTab,
+    blPage,
+    blPageSize,
+    blDebouncedSearch,
+    blStatusFilter,
+    blAreaFilter,
+    blTypeFilter,
+    blDateFilter,
+    blSort,
+    blRefreshTick,
+  ]);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'permits') return;
+    const controller = new AbortController();
+    const force = bpForceRef.current;
+    bpForceRef.current = false;
+
+    const params = new URLSearchParams({
+      page: String(bpPage),
+      page_size: String(bpPageSize),
+      sort: bpSort,
+    });
+    if (bpDebouncedSearch.trim()) params.set('q', bpDebouncedSearch.trim());
+    if (bpCategoryFilter !== 'all') params.set('permitcategory', bpCategoryFilter);
+    if (bpWorkFilter !== 'all') params.set('typeofwork', bpWorkFilter);
+    if (bpAreaFilter !== 'all') params.set('geolocalarea', bpAreaFilter);
+    if (bpDateFilter) params.set('date', bpDateFilter);
+    if (force) params.set('force', '1');
+
+    setLoadingBp(true);
+    setBpError(null);
+    fetch(`/api/explore/building-permits?${params.toString()}`, {
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json: OpenDataPagedResponse<BuildingPermitRecord>) => {
+        setBpData(json);
+      })
+      .catch((err) => {
+        if ((err as Error)?.name !== 'AbortError') {
+          setBpError('無法載入建築許可資料，請稍後重試');
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoadingBp(false);
+      });
+
+    return () => controller.abort();
+  }, [
+    isExploreOpen,
+    activeTab,
+    bpPage,
+    bpPageSize,
+    bpDebouncedSearch,
+    bpCategoryFilter,
+    bpWorkFilter,
+    bpAreaFilter,
+    bpDateFilter,
+    bpSort,
+    bpRefreshTick,
+  ]);
+
+  const jumpToOpenDataLocation = (
+    type: 'business_licence' | 'building_permit',
+    item: BusinessLicenceRecord | BuildingPermitRecord,
+    rowKey: string
+  ) => {
+    if (item.lat == null || item.lon == null) return;
+    setPinnedPermitInfo(null);
+    const isBusiness = type === 'business_licence';
+    const blItem = item as BusinessLicenceRecord;
+    const bpItem = item as BuildingPermitRecord;
+    const title = isBusiness
+      ? (blItem.businesstradename || blItem.businesstype || blItem.licencenumber || '商業牌照')
+      : (bpItem.address || bpItem.permitnumber || '建築許可');
+    const localArea = isBusiness ? (blItem.localarea || 'Vancouver') : (bpItem.geolocalarea || 'Vancouver');
+
+    setSearchTarget({
+      id: `${type}_${rowKey}`,
+      title,
+      subtitle: localArea,
+      category: type,
+      badge: isBusiness ? '商業牌照' : '建築許可',
+      icon: isBusiness ? '🏢' : '🏗️',
+      lat: item.lat,
+      lon: item.lon,
+      zoom: 17,
+      meta: {
+        facility_type: type,
+        local_area: localArea,
+        properties: { ...item },
+      },
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+    if (mapInstance) {
+      mapInstance.flyTo({ center: [item.lon, item.lat], zoom: 17, essential: true });
+    }
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      setExploreMinimized(true);
+    }
+  };
 
   // --- Ski tab states ---
   const [skiResorts, setSkiResorts] = useState<SkiResort[]>([]);
@@ -1839,6 +2492,7 @@ function ExploreContent() {
 
   // --- EV tab states ---
   const [evSortBy, setEvSortBy] = useState<'best' | 'price' | 'distance'>('best');
+  const [evOperatorFilter, setEvOperatorFilter] = useState<'all' | 'cov' | 'flo' | 'chargepoint'>('all');
   const [evSearchQuery, setEvSearchQuery] = useState('');
   const [hideFreeCharging, setHideFreeCharging] = useState(false);
   const [evStations, setEvStations] = useState<EVStation[]>([]);
@@ -2284,6 +2938,10 @@ function ExploreContent() {
           const geo = await res.json();
           const list: EVStation[] = (geo.features || []).map((f: any, idx: number) => {
             const p = f.properties || {};
+            const fid = String(p.id || f.id || idx + 1);
+            const src = String(
+              p.source || (fid.startsWith('ev_cp_') ? 'chargepoint' : fid.startsWith('ev_flo_') ? 'flo' : 'cov')
+            );
             const coords = f.geometry?.coordinates || [-123.12, 49.28];
             const lat = coords[1];
             const lon = coords[0];
@@ -2294,11 +2952,15 @@ function ExploreContent() {
               dist = Math.round(Math.sqrt(dLat * dLat + dLon * dLon) * 10) / 10;
             }
             return {
-              id: String(p.id || idx + 1),
-              name: p.name || p.address || '電動車充電站',
-              address: p.address || 'Vancouver, BC',
+              id: fid,
+              source: src,
+              device_id: p.device_id,
+              park_id: p.park_id,
+              name: p.name || p.host_name || p.address || '電動車充電站',
+              address: p.address || p.address1 || 'Vancouver, BC',
               local_area: p.local_area || 'Vancouver',
-              operator: p.operator || 'BC Hydro EV / Flo',
+              city: p.city || '',
+              operator: p.operator || (src === 'chargepoint' ? 'ChargePoint' : src === 'flo' ? 'FLO' : 'City of Vancouver'),
               connectors: p.connectors || 'CCS / J1772',
               ports: p.ports || 2,
               voltage: p.voltage || 'Level 2 / DC Fast',
@@ -2307,7 +2969,9 @@ function ExploreContent() {
               is_free: Boolean(p.is_free),
               distance_km: dist,
               lat,
-              lon
+              lon,
+              score: Number(p.score || 0),
+              properties: p,
             };
           });
           setEvStations(list);
@@ -2415,19 +3079,29 @@ function ExploreContent() {
     return list;
   }, [fuelStations, onlyMajorChains, fuelSearchQuery]);
 
-  // Filter EV stations by search query
+  // Filter EV stations by operator and search query
   const filteredEvStations = useMemo(() => {
-    if (!evSearchQuery.trim()) return evStations;
     const q = evSearchQuery.trim().toLowerCase();
-    return evStations.filter((s) => 
-      (s.name && s.name.toLowerCase().includes(q)) ||
-      (s.operator && s.operator.toLowerCase().includes(q)) ||
-      (s.address && s.address.toLowerCase().includes(q)) ||
-      (s.connectors && s.connectors.toLowerCase().includes(q)) ||
-      (s.local_area && s.local_area.toLowerCase().includes(q)) ||
-      (s.city && s.city.toLowerCase().includes(q))
-    );
-  }, [evStations, evSearchQuery]);
+    return evStations.filter((s) => {
+      const fid = String(s.id || '');
+      const src = (
+        s.source ||
+        (fid.startsWith('ev_cp_') ? 'chargepoint' : fid.startsWith('ev_flo_') ? 'flo' : 'cov')
+      ).toLowerCase();
+      if (evOperatorFilter !== 'all' && src !== evOperatorFilter) {
+        return false;
+      }
+      if (!q) return true;
+      return (
+        (s.name && s.name.toLowerCase().includes(q)) ||
+        (s.operator && s.operator.toLowerCase().includes(q)) ||
+        (s.address && s.address.toLowerCase().includes(q)) ||
+        (s.connectors && s.connectors.toLowerCase().includes(q)) ||
+        (s.local_area && s.local_area.toLowerCase().includes(q)) ||
+        (s.city && s.city.toLowerCase().includes(q))
+      );
+    });
+  }, [evStations, evSearchQuery, evOperatorFilter]);
 
   // 船運排序：抵達時間由近至遠，已泊岸（繫泊停靠碼頭）排在最底
   const sortedShippingVessels = useMemo(() => {
@@ -2604,32 +3278,45 @@ function ExploreContent() {
 
   // Handle EV click
   const handleSelectEVStation = (st: EVStation) => {
+    const idStr = String(st.id || '');
+    const src =
+      st.source ||
+      (idStr.startsWith('ev_cp_') ? 'chargepoint' : idStr.startsWith('ev_flo_') ? 'flo' : 'cov');
     enableLayer('evCharging');
     setSearchTarget({
-      id: `ev_${st.id}`,
+      id: idStr.startsWith('ev_') ? idStr : `ev_${idStr}`,
       title: st.name,
       subtitle: `${st.address || st.local_area} · 功率: ${st.power_kw} kW · ${st.cost}`,
       category: 'ev_charging',
       layer_key: 'evCharging',
       badge: '充電站',
-      icon: '⚡',
+      icon: src === 'chargepoint' ? 'CP' : src === 'flo' ? 'F' : 'C',
       lat: st.lat,
       lon: st.lon,
       meta: {
         local_area: st.address || st.local_area || '溫哥華市',
         properties: {
+          ...(st.properties || {}),
           id: st.id,
+          source: src,
+          device_id: st.device_id ?? st.properties?.device_id,
+          park_id: st.park_id ?? st.properties?.park_id,
           name: st.name,
+          host_name: st.properties?.host_name || st.name,
+          address: st.address,
+          address1: st.properties?.address1 || st.address,
+          city: st.city,
           power_kw: st.power_kw,
           connectors: st.connectors,
-          ports: st.ports,
+          ports: st.properties?.ports ?? st.ports,
           voltage: st.voltage,
           cost: st.cost,
+          is_free: st.is_free,
           operator: st.operator,
-          facility_type: 'ev_charging'
-        }
+          facility_type: 'ev_charging',
+        },
       },
-      zoom: 16.5
+      zoom: 16.5,
     });
   };
 
@@ -4238,6 +4925,8 @@ function ExploreContent() {
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
     jobs: { label: '工作職位', icon: Briefcase, color: 'text-indigo-400' },
     '311': { label: '3-1-1 市政服務', icon: PhoneCall, color: 'text-emerald-400' },
+    business: { label: '商業牌照', icon: BuildingComplex, color: 'text-sky-400' },
+    permits: { label: '建築許可', icon: Hammer, color: 'text-orange-400' },
     shopping: { label: '購物優惠', icon: ShoppingBag, color: 'text-rose-400' },
     lottery: { label: '樂透彩票', icon: Trophy, color: 'text-amber-400' },
     banks: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
@@ -4266,6 +4955,8 @@ function ExploreContent() {
     aurora: '極光',
     jobs: '工作',
     '311': '3-1-1',
+    business: '商業牌照',
+    permits: '建築許可',
     shopping: '購物',
     lottery: '彩票',
     banks: '銀行',
@@ -4774,9 +5465,22 @@ function ExploreContent() {
                     return (
                       <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5 mt-1">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-2">
                             <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.4)]"></span>
                             <h4 className="text-xs font-bold text-white tracking-wide">空氣質素健康指數</h4>
+                            <button
+                              type="button"
+                              onClick={() => toggleLayer('airQuality')}
+                              className={`p-1 rounded text-[10px] font-semibold flex items-center justify-center transition-all cursor-pointer ${
+                                layers?.airQuality
+                                  ? 'bg-sky-600 hover:bg-sky-500 text-white border border-sky-400/50'
+                                  : 'bg-[#1a2332] hover:bg-[#232f44] text-sky-300 border border-sky-600/40'
+                              }`}
+                              title={layers?.airQuality ? '空氣質素圖層 (已開啟)' : '開啟空氣質素圖層'}
+                              aria-label="切換空氣質素地圖圖層"
+                            >
+                              <Layers className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                           <span className="text-[10px] text-sky-400 font-mono bg-sky-950/60 border border-sky-800/40 px-1.5 py-0.5 rounded">
                             AQHI
@@ -7091,6 +7795,464 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 1.5b 商業牌照分頁 (Vancouver Business Licences) ==================== */}
+      {activeTab === 'business' && (() => {
+        const results = blData?.results || [];
+        const facets = blData?.facets || {};
+        const recencyDate = formatUniformDate(blData?.latest_recency_date || results[0]?.extractdate, timeZone);
+        const intervalText = adminSourceIntervals?.business_licences;
+        const hasActiveFilters = Boolean(
+          blSearch.trim() ||
+          blStatusFilter !== 'all' ||
+          blAreaFilter !== 'all' ||
+          blTypeFilter !== 'all' ||
+          blDateFilter ||
+          blSort !== 'extract_desc'
+        );
+
+        return (
+          <OpenDataExploreShell
+            title="溫哥華商業牌照 (Business Licences)"
+            icon={<BuildingComplex className="w-4 h-4 text-sky-400 shrink-0" />}
+            accent="sky"
+            datasetHref="https://opendata.vancouver.ca/explore/dataset/business-licences/"
+            recencyLabel="ExtractDate"
+            recencyDate={recencyDate}
+            intervalLabel={intervalText}
+            totalCount={blData?.total_count ?? 0}
+            loading={loadingBl}
+            error={blError}
+            searchPlaceholder="搜尋牌照號碼、商業名稱、商業類型或地區..."
+            searchValue={blSearch}
+            onSearchChange={setBlSearch}
+            onSearchSubmit={() => {
+              setBlDebouncedSearch(blSearch);
+              setBlPage(1);
+            }}
+            dateLabel="發牌"
+            dateValue={blDateFilter}
+            onDateChange={(val) => {
+              setBlDateFilter(val);
+              setBlPage(1);
+            }}
+            sortValue={blSort}
+            sortOptions={[
+              { value: 'extract_desc', label: '最新擷取 (ExtractDate ↓)' },
+              { value: 'issued_desc', label: '發牌日期 (新 → 舊)' },
+              { value: 'issued_asc', label: '發牌日期 (舊 → 新)' },
+              { value: 'expired_desc', label: '到期日期 (遠 → 近)' },
+              { value: 'employees_desc', label: '員工人數 (多 → 少)' },
+            ]}
+            onSortChange={(val) => {
+              setBlSort(val);
+              setBlPage(1);
+            }}
+            filters={[
+              {
+                key: 'status',
+                label: '狀態',
+                value: blStatusFilter,
+                options: facets.status || [],
+                onChange: (val) => {
+                  setBlStatusFilter(val);
+                  setBlPage(1);
+                },
+              },
+              {
+                key: 'localarea',
+                label: '地區',
+                value: blAreaFilter,
+                options: facets.localarea || [],
+                onChange: (val) => {
+                  setBlAreaFilter(val);
+                  setBlPage(1);
+                },
+              },
+              {
+                key: 'businesstype',
+                label: '商業類別',
+                value: blTypeFilter,
+                options: facets.businesstype || [],
+                onChange: (val) => {
+                  setBlTypeFilter(val);
+                  setBlPage(1);
+                },
+              },
+            ]}
+            pageSize={blPageSize}
+            onPageSizeChange={(n) => {
+              setBlPageSize(n);
+              setBlPage(1);
+            }}
+            hasActiveFilters={hasActiveFilters}
+            onResetFilters={() => {
+              setBlSearch('');
+              setBlDebouncedSearch('');
+              setBlStatusFilter('all');
+              setBlAreaFilter('all');
+              setBlTypeFilter('all');
+              setBlDateFilter('');
+              setBlSort('extract_desc');
+              setBlPage(1);
+            }}
+            onRefresh={() => {
+              blForceRef.current = true;
+              setBlRefreshTick((t) => t + 1);
+            }}
+            page={blPage}
+            onPageChange={setBlPage}
+            isEmpty={results.length === 0}
+            emptyText="查無符合條件的商業牌照資料"
+          >
+            {results.map((item, idx) => {
+              const rowKey = `${item.licencenumber || 'bl'}_${idx}`;
+              const hasCoords = item.lat != null && item.lon != null;
+              const issuedFmt = formatUniformDate(item.issueddate, timeZone);
+              const expiredFmt = formatUniformDate(item.expireddate, timeZone);
+              const titleText = item.businesstradename || item.businesstype || item.licencenumber;
+              const statusLower = String(item.status || '').toLowerCase();
+              const statusBadgeClass =
+                statusLower === 'issued'
+                  ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                  : statusLower === 'pending'
+                    ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                    : 'bg-rose-500/15 text-rose-300 border-rose-500/30';
+              const hasEmployees = item.numberofemployees !== null && item.numberofemployees !== undefined;
+
+              return (
+                <div
+                  key={rowKey}
+                  onClick={() => hasCoords && jumpToOpenDataLocation('business_licence', item, rowKey)}
+                  className={`p-3 bg-[#131722] hover:bg-[#181d2a] border border-[#232a3a] hover:border-sky-500/40 rounded-xl transition-all shadow-sm flex flex-col gap-1.5 group ${
+                    hasCoords ? 'cursor-pointer' : 'opacity-90'
+                  }`}
+                >
+                  {/* Row 1: Status pill + Title + Google Navigation right button */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 flex-wrap min-w-0">
+                      {item.status && (
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border shrink-0 ${statusBadgeClass}`}>
+                          {item.status}
+                        </span>
+                      )}
+                      {titleText && (
+                        <span className="text-xs font-bold text-gray-100 leading-snug break-words group-hover:text-sky-300 transition-colors">
+                          {titleText}
+                        </span>
+                      )}
+                    </div>
+
+                    {hasCoords && (
+                      <a
+                        href={getGoogleNavUrl(item.lat!, item.lon!)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        title="Google Maps 導航至此"
+                        className="p-1.5 bg-[#10261b] hover:bg-emerald-600/30 border border-emerald-500/30 rounded-lg text-emerald-400 hover:text-emerald-300 transition-colors shrink-0"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Row 2: Category, LocalArea & Licence Number pills */}
+                  {( (item.businesstype && item.businesstype !== titleText) || item.localarea || item.licencenumber ) && (
+                    <div className="flex flex-wrap items-center gap-1.5 text-[10.5px]">
+                      {item.businesstype && item.businesstype !== titleText && (
+                        <span className="bg-indigo-950/40 text-indigo-300 border border-indigo-500/20 px-2 py-0.5 rounded font-medium">
+                          {item.businesstype}
+                        </span>
+                      )}
+                      {item.localarea && (
+                        <span className="bg-cyan-950/40 text-cyan-300 border border-cyan-500/20 px-2 py-0.5 rounded flex items-center gap-1">
+                          <MapPin className="w-2.5 h-2.5 shrink-0" />
+                          {item.localarea}
+                        </span>
+                      )}
+                      {item.licencenumber && (
+                        <span className="bg-[#1e2535] text-gray-300 px-2 py-0.5 rounded font-mono tabular-nums">
+                          #{item.licencenumber}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Row 3: Dark inset metadata box (only shown if employees present) */}
+                  {hasEmployees && (
+                    <div className="bg-[#0e121a] px-2.5 py-1.5 rounded-lg text-[11px] text-gray-400 border border-[#1e2536]">
+                      員工人數: <span className="text-gray-200 font-mono tabular-nums">{Number(item.numberofemployees).toLocaleString()} 人</span>
+                    </div>
+                  )}
+
+                  {/* Row 4: Dates hairline footer */}
+                  {(issuedFmt || expiredFmt) && (
+                    <div className="flex items-center justify-between text-[10.5px] text-gray-500 pt-0.5 border-t border-[#1d2434] font-mono tabular-nums">
+                      <span>{issuedFmt ? `發牌: ${issuedFmt}` : ''}</span>
+                      <span>{expiredFmt ? `到期: ${expiredFmt}` : ''}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </OpenDataExploreShell>
+        );
+      })()}
+
+      {/* ==================== 1.5c 建築許可分頁 (Vancouver Issued Building Permits) ==================== */}
+      {activeTab === 'permits' && (() => {
+        const results = bpData?.results || [];
+        const facets = bpData?.facets || {};
+        const recencyDate = formatUniformDate(bpData?.latest_recency_date || results[0]?.issuedate, timeZone);
+        const intervalText = adminSourceIntervals?.building_permits;
+        const hasActiveFilters = Boolean(
+          bpSearch.trim() ||
+          bpCategoryFilter !== 'all' ||
+          bpWorkFilter !== 'all' ||
+          bpAreaFilter !== 'all' ||
+          bpDateFilter ||
+          bpSort !== 'issuedate_desc'
+        );
+
+        return (
+          <OpenDataExploreShell
+            title="溫哥華建築許可 (Building Permits)"
+            icon={<Hammer className="w-4 h-4 text-orange-400 shrink-0" />}
+            accent="orange"
+            datasetHref="https://opendata.vancouver.ca/explore/dataset/issued-building-permits/"
+            recencyLabel="IssueDate"
+            recencyDate={recencyDate}
+            intervalLabel={intervalText}
+            totalCount={bpData?.total_count ?? 0}
+            loading={loadingBp}
+            error={bpError}
+            searchPlaceholder="搜尋許可證編號、施工地址、承建商、工程說明或地區..."
+            searchValue={bpSearch}
+            onSearchChange={setBpSearch}
+            onSearchSubmit={() => {
+              setBpDebouncedSearch(bpSearch);
+              setBpPage(1);
+            }}
+            dateLabel="核發"
+            dateValue={bpDateFilter}
+            onDateChange={(val) => {
+              setBpDateFilter(val);
+              setBpPage(1);
+            }}
+            sortValue={bpSort}
+            sortOptions={[
+              { value: 'issuedate_desc', label: '核發日期 (新 → 舊 IssueDate ↓)' },
+              { value: 'issuedate_asc', label: '核發日期 (舊 → 新)' },
+              { value: 'value_desc', label: '工程預算 (高 → 低)' },
+              { value: 'value_asc', label: '工程預算 (低 → 高)' },
+            ]}
+            onSortChange={(val) => {
+              setBpSort(val);
+              setBpPage(1);
+            }}
+            filters={[
+              {
+                key: 'permitcategory',
+                label: '許可類別',
+                value: bpCategoryFilter,
+                options: facets.permitcategory || [],
+                onChange: (val) => {
+                  setBpCategoryFilter(val);
+                  setBpPage(1);
+                },
+              },
+              {
+                key: 'typeofwork',
+                label: '工程類別',
+                value: bpWorkFilter,
+                options: facets.typeofwork || [],
+                onChange: (val) => {
+                  setBpWorkFilter(val);
+                  setBpPage(1);
+                },
+              },
+              {
+                key: 'geolocalarea',
+                label: '地區',
+                value: bpAreaFilter,
+                options: facets.geolocalarea || [],
+                onChange: (val) => {
+                  setBpAreaFilter(val);
+                  setBpPage(1);
+                },
+              },
+            ]}
+            pageSize={bpPageSize}
+            onPageSizeChange={(n) => {
+              setBpPageSize(n);
+              setBpPage(1);
+            }}
+            hasActiveFilters={hasActiveFilters}
+            onResetFilters={() => {
+              setBpSearch('');
+              setBpDebouncedSearch('');
+              setBpCategoryFilter('all');
+              setBpWorkFilter('all');
+              setBpAreaFilter('all');
+              setBpDateFilter('');
+              setBpSort('issuedate_desc');
+              setBpPage(1);
+            }}
+            onRefresh={() => {
+              bpForceRef.current = true;
+              setBpRefreshTick((t) => t + 1);
+            }}
+            page={bpPage}
+            onPageChange={setBpPage}
+            isEmpty={results.length === 0}
+            emptyText="查無符合條件的建築許可資料"
+          >
+            {results.map((item, idx) => {
+              const rowKey = `${item.permitnumber || 'bp'}_${idx}`;
+              const hasCoords = item.lat != null && item.lon != null;
+              const issuedFmt = formatUniformDate(item.issuedate, timeZone);
+              const projectValFmt = formatProjectCurrency(item.projectvalue);
+              const hasDesc = Boolean(item.projectdescription && item.projectdescription.trim());
+              const isInfoOpen = hoveredPermitInfo === rowKey || pinnedPermitInfo === rowKey;
+              const isBottomRows = results.length >= 2 && idx >= results.length - 2 && idx > 0;
+              const titleText = item.address || item.permitnumber;
+
+              return (
+                <div
+                  key={rowKey}
+                  onClick={() => hasCoords && jumpToOpenDataLocation('building_permit', item, rowKey)}
+                  className={`p-3 bg-[#131722] hover:bg-[#181d2a] border border-[#232a3a] hover:border-orange-500/40 rounded-xl transition-all shadow-sm flex flex-col gap-1.5 group ${
+                    hasCoords ? 'cursor-pointer' : 'opacity-90'
+                  }`}
+                >
+                  {/* Row 1: TypeOfWork pill + Address/Permit Title + Info & Google Navigation right buttons */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 flex-wrap min-w-0">
+                      {item.typeofwork && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-500/15 text-orange-300 border border-orange-500/30 shrink-0">
+                          {item.typeofwork}
+                        </span>
+                      )}
+                      {titleText && (
+                        <span className="text-xs font-bold text-gray-100 leading-snug break-words group-hover:text-orange-300 transition-colors">
+                          {titleText}
+                        </span>
+                      )}
+                    </div>
+
+                    {(hasDesc || hasCoords) && (
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {hasDesc && (
+                          <div
+                            className="relative shrink-0"
+                            onPointerEnter={(e) => {
+                              if (e.pointerType !== 'touch') setHoveredPermitInfo(rowKey);
+                            }}
+                            onPointerLeave={(e) => {
+                              if (e.pointerType !== 'touch') setHoveredPermitInfo(null);
+                            }}
+                          >
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPinnedPermitInfo((prev) => (prev === rowKey ? null : rowKey));
+                              }}
+                              title="檢視工程說明 (Project Description)"
+                              aria-label="工程說明"
+                              className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                                isInfoOpen
+                                  ? 'bg-orange-500/25 text-orange-300 border-orange-500/50'
+                                  : 'bg-[#1a1f2d] hover:bg-orange-500/20 text-gray-300 hover:text-orange-300 border-[#2c3448]'
+                              }`}
+                            >
+                              <Info className="w-3.5 h-3.5" />
+                            </button>
+
+                            {isInfoOpen && (
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className={`absolute right-0 ${
+                                  isBottomRows ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
+                                } w-64 sm:w-80 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 z-50 text-left animate-in fade-in duration-150`}
+                              >
+                                <div className="text-[10.5px] font-bold text-orange-300 mb-1 flex items-center justify-between gap-2">
+                                  <span>工程說明</span>
+                                  {item.permitnumber && (
+                                    <span className="font-mono text-gray-400">{item.permitnumber}</span>
+                                  )}
+                                </div>
+                                <p className="text-[11px] text-gray-200 leading-relaxed whitespace-pre-line break-words">
+                                  {item.projectdescription}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {hasCoords && (
+                          <a
+                            href={getGoogleNavUrl(item.lat!, item.lon!)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            title="Google Maps 導航至此"
+                            className="p-1.5 bg-[#10261b] hover:bg-emerald-600/30 border border-emerald-500/30 rounded-lg text-emerald-400 hover:text-emerald-300 transition-colors shrink-0"
+                          >
+                            <Navigation className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Row 2: Permit Category, GeoLocalArea & Permit Number pills */}
+                  {(item.permitcategory || item.geolocalarea || item.permitnumber) && (
+                    <div className="flex flex-wrap items-center gap-1.5 text-[10.5px]">
+                      {item.permitcategory && (
+                        <span className="bg-amber-950/40 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded font-medium">
+                          {item.permitcategory}
+                        </span>
+                      )}
+                      {item.geolocalarea && (
+                        <span className="bg-cyan-950/40 text-cyan-300 border border-cyan-500/20 px-2 py-0.5 rounded flex items-center gap-1">
+                          <MapPin className="w-2.5 h-2.5 shrink-0" />
+                          {item.geolocalarea}
+                        </span>
+                      )}
+                      {item.permitnumber && (
+                        <span className="bg-[#1e2535] text-gray-300 px-2 py-0.5 rounded font-mono tabular-nums">
+                          {item.permitnumber}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Row 3: Dark inset box for contractor */}
+                  {item.buildingcontractor && (
+                    <div className="bg-[#0e121a] px-2.5 py-1.5 rounded-lg text-[11px] text-gray-400 border border-[#1e2536] break-words">
+                      承建商: <span className="text-gray-200">{item.buildingcontractor}</span>
+                    </div>
+                  )}
+
+                  {/* Row 4: IssueDate & Project Value hairline footer */}
+                  {(issuedFmt || projectValFmt) && (
+                    <div className="flex items-center justify-between text-[10.5px] text-gray-500 pt-0.5 border-t border-[#1d2434] font-mono tabular-nums">
+                      <span>{issuedFmt ? `核發: ${issuedFmt}` : ''}</span>
+                      {projectValFmt && (
+                        <span>
+                          預算: <span className="text-emerald-300 font-semibold">{projectValFmt}</span>
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </OpenDataExploreShell>
+        );
+      })()}
+
 {/* ==================== 1.6 購物分頁 (Shopping - 大溫各大超市特惠傳單 Flipp) ==================== */}
       {activeTab === 'shopping' && (() => {
         // 官方網址修正與對應表
@@ -8145,6 +9307,30 @@ function ExploreContent() {
             </button>
           </div>
 
+          {/* 營運單位篩選: 全部 / 市府 (C) / FLO (F) / ChargePoint (CP) */}
+          <div className="grid grid-cols-4 gap-1 bg-[#10131a] p-1 rounded-lg border border-[#232836] mb-2 shrink-0">
+            {[
+              { id: 'all', label: '全部', title: '顯示全部營運單位' },
+              { id: 'cov', label: '市府 C', title: '溫哥華市政府 (C)' },
+              { id: 'flo', label: 'FLO F', title: 'FLO (F)' },
+              { id: 'chargepoint', label: 'CP', title: 'ChargePoint (CP)' },
+            ].map((op) => (
+              <button
+                key={op.id}
+                type="button"
+                title={op.title}
+                onClick={() => setEvOperatorFilter(op.id as 'all' | 'cov' | 'flo' | 'chargepoint')}
+                className={`py-1 text-[11px] rounded transition-all text-center cursor-pointer ${
+                  evOperatorFilter === op.id
+                    ? 'bg-emerald-600/25 text-emerald-300 border border-emerald-500/40 font-bold shadow-sm'
+                    : 'text-gray-400 hover:text-gray-200 border border-transparent'
+                }`}
+              >
+                {op.label}
+              </button>
+            ))}
+          </div>
+
           {/* Checkbox: 隱藏免費充電站 (Matches EV screenshot) */}
           <div className="flex items-center justify-between mb-2.5 shrink-0 px-0.5">
             <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer select-none">
@@ -8176,6 +9362,18 @@ function ExploreContent() {
                   ? `${(distKm * 0.621371).toFixed(1)} 英里`
                   : `${distKm.toFixed(1)} 公里`;
                 const powerKw = Number(st.power_kw) || 0;
+                const idStr = String(st.id || '');
+                const src = (
+                  st.source ||
+                  (idStr.startsWith('ev_cp_') ? 'chargepoint' : idStr.startsWith('ev_flo_') ? 'flo' : 'cov')
+                ).toLowerCase();
+                const badgeCode = src === 'chargepoint' ? 'CP' : src === 'flo' ? 'F' : 'C';
+                const badgeClass =
+                  src === 'chargepoint'
+                    ? 'bg-orange-500/20 text-orange-300 border-orange-500/40'
+                    : src === 'flo'
+                      ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+                      : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
 
                 return (
                   <div
@@ -8185,6 +9383,9 @@ function ExploreContent() {
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold font-mono border shrink-0 leading-none ${badgeClass}`}>
+                          {badgeCode}
+                        </span>
                         <span className="font-bold text-white text-[13px] truncate group-hover:text-emerald-300 transition-colors">
                           {st.name}
                         </span>
@@ -8198,10 +9399,10 @@ function ExploreContent() {
                       <div className={`text-sm font-bold font-mono tracking-tight ${
                         powerKw >= 150 ? 'text-lime-400' : powerKw >= 50 ? 'text-emerald-400' : 'text-sky-400'
                       }`}>
-                        {powerKw} kW
+                        {powerKw > 0 ? `${powerKw} kW` : (st.voltage || 'EV')}
                       </div>
                       <div className="text-[10.5px] font-mono text-gray-400 mt-0.5">
-                        {st.is_free ? '免費' : st.cost} · {distDisplay}
+                        {st.is_free ? '免費' : (st.cost || '收費制')} · {distDisplay}
                       </div>
                     </div>
                   </div>
@@ -11372,6 +12573,12 @@ function ExploreContent() {
             )}
             {activeTab === '311' && (
               <span>共有 {filtered311Requests.length || requests311.length} 宗市政服務案件</span>
+            )}
+            {activeTab === 'business' && (
+              <span>共有 {(blData?.total_count ?? 0).toLocaleString()} 筆商業牌照資料</span>
+            )}
+            {activeTab === 'permits' && (
+              <span>共有 {(bpData?.total_count ?? 0).toLocaleString()} 筆建築許可資料</span>
             )}
             {activeTab === 'shopping' && (() => {
               const currentMerchant = flippMerchants.find(m => m.merchant === selectedMerchant) || flippMerchants[0];

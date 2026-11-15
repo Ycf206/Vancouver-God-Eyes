@@ -62,6 +62,8 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   accessible_parking: 'accessibleParking',
   motorcycle_parking: 'motorcycleParking',
   ev_charging: 'evCharging',
+  ev_charging_flo: 'evCharging',
+  ev_charging_chargepoint: 'evCharging',
   escooter: 'escooter',
   escooter_locations: 'escooter',
   shared_bikes: 'sharedBikes',
@@ -125,6 +127,7 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   tide_stations: 'tideStations',
   beach_water: 'beachWaterQuality',
   beach_water_quality: 'beachWaterQuality',
+  air_quality: 'airQuality',
   zoning_districts: 'zoningDistricts',
   local_area_boundary: 'localAreaBoundary',
   postal_code_fsa: 'postalCodeFSA',
@@ -147,12 +150,12 @@ function getSystemCategory(source: { id: string; category?: string; name?: strin
   const roadIds = new Set([
     'traffic_conditions', 'traffic_cameras', 'snow_removal_routes', 'fuel_prices',
     'parking_meters', 'impark_parking', 'motorcycle_parking', 'bikeways',
-    'ev_charging', 'traffic_speed_limits', 'traffic_crosswalks', 'one_way_streets',
+    'ev_charging', 'ev_charging_flo', 'ev_charging_chargepoint', 'traffic_speed_limits', 'traffic_crosswalks', 'one_way_streets',
     'shared_bikes', 'escooter', 'truck_routes', 'traffic_signals',
     'turn_restrictions', 'vancouver_railways', 'vancouver_crashes', 'drivebc_events',
   ]);
   const weatherIds = new Set([
-    'weather_monitoring', 'tides_hydrometric', 'beach_water', 'aurora_forecast',
+    'weather_monitoring', 'tides_hydrometric', 'beach_water', 'air_quality', 'aurora_forecast',
     'ski_resorts', 'yvr_weathercams',
   ]);
   const securityIds = new Set([

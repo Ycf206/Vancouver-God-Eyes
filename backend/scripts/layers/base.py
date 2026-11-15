@@ -198,6 +198,7 @@ FILENAME_TO_SOURCE_ID = {
     "vancouver_water_supply.geojson": "water_supply",
     "vancouver_sewer_system.geojson": "sewer_system",
     "vancouver_mobile_coverage.geojson": "mobile_coverage",
+    "vancouver_air_quality.geojson": "air_quality",
 }
 
 

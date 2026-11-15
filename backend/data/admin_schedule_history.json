@@ -1,5 +1,615 @@
 [
   {
+    "id": "sync-1794721442128-ev_charging_chargepoint",
+    "timestamp": "2026-11-15T05:44:01Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "ChargePoint 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [ChargePoint 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 658 筆記錄。"
+  },
+  {
+    "id": "sync-1794721256429-ev_charging_flo",
+    "timestamp": "2026-11-15T05:40:56Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,035 筆記錄。"
+  },
+  {
+    "id": "sync-1794721081071-ev_charging_chargepoint",
+    "timestamp": "2026-11-15T05:38:00Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "ChargePoint 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [ChargePoint 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 658 筆記錄。"
+  },
+  {
+    "id": "sync-1794721046021-ev_charging_flo",
+    "timestamp": "2026-11-15T05:37:25Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,034 筆記錄。"
+  },
+  {
+    "id": "log-1794720894106",
+    "timestamp": "2026-11-15T05:34:54.103599+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Metro Vancouver 污水系統設施",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Metro Vancouver 污水系統設施 (sewer_system)，成功更新 15300 筆資料至 vancouver_sewer_system.geojson。",
+    "record_count": 15300
+  },
+  {
+    "id": "sync-1794720893991-sewer_system",
+    "timestamp": "2026-11-15T05:34:53.983Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 15,300 筆記錄。"
+  },
+  {
+    "id": "sync-1794720892665-sewer_system",
+    "timestamp": "2026-11-15T05:34:51.536Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 5,821 筆記錄。"
+  },
+  {
+    "id": "log-1794720882042",
+    "timestamp": "2026-11-15T05:34:42.040596+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Metro Vancouver 供水系統設施",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Metro Vancouver 供水系統設施 (water_supply)，成功更新 17709 筆資料至 vancouver_water_supply.geojson。",
+    "record_count": 17709
+  },
+  {
+    "id": "sync-1794720881956-water_supply",
+    "timestamp": "2026-11-15T05:34:41.934Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 17,709 筆記錄。"
+  },
+  {
+    "id": "sync-1794720880600-water_supply",
+    "timestamp": "2026-11-15T05:34:40.337Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 2,145 筆記錄。"
+  },
+  {
+    "id": "sync-1794720872972-ev_charging_chargepoint",
+    "timestamp": "2026-11-15T05:34:32Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "ChargePoint 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [ChargePoint 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 659 筆記錄。"
+  },
+  {
+    "id": "log-1794720865979",
+    "timestamp": "2026-11-15T05:34:25.977868+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 預期停電",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 526 筆資料至 bchydro_outages_planned.json。",
+    "record_count": 526
+  },
+  {
+    "id": "log-1794720865086",
+    "timestamp": "2026-11-15T05:34:25.084716+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 恢復供電 (14天)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3654 筆資料至 bchydro_outages_restored.json。",
+    "record_count": 3654
+  },
+  {
+    "id": "log-1794720862031",
+    "timestamp": "2026-11-15T05:34:22.029404+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 現正停電與警報",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 20 筆資料至 bchydro_outages_current.json。",
+    "record_count": 20
+  },
+  {
+    "id": "log-1794720861794",
+    "timestamp": "2026-11-15T05:34:21.792666+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Lime 共享滑板車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 252 筆資料至 vancouver_escooter.geojson。",
+    "record_count": 252
+  },
+  {
+    "id": "sync-1794720861791-escooter",
+    "timestamp": "2026-11-15T05:34:21.737Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享滑板車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享滑板車] 資料同步完成，共載入 252 筆記錄。"
+  },
+  {
+    "id": "log-1794720861203",
+    "timestamp": "2026-11-15T05:34:21.201542+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Mobi 共享單車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+    "record_count": 262
+  },
+  {
+    "id": "sync-1794720861194-shared_bikes",
+    "timestamp": "2026-11-15T05:34:21.111Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享單車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+  },
+  {
+    "id": "sync-1794720744671-ev_charging_flo",
+    "timestamp": "2026-11-15T05:32:24Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,034 筆記錄。"
+  },
+  {
+    "id": "sync-1794720170259-ev_charging_chargepoint",
+    "timestamp": "2026-11-15T05:22:50Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "ChargePoint 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [ChargePoint 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 657 筆記錄。"
+  },
+  {
+    "id": "sync-1794719062732-ev_charging_flo",
+    "timestamp": "2026-11-15T05:04:22Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,035 筆記錄。"
+  },
+  {
+    "id": "sync-1794718869017-ev_charging_flo",
+    "timestamp": "2026-11-15T05:01:08Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,033 筆記錄。"
+  },
+  {
+    "id": "sync-1794718808717-ev_charging_flo",
+    "timestamp": "2026-11-15T05:00:08Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,033 筆記錄。"
+  },
+  {
+    "id": "sync-1794718449294-ev_charging_flo",
+    "timestamp": "2026-11-15T04:54:08Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,031 筆記錄。"
+  },
+  {
+    "id": "log-1794718266505",
+    "timestamp": "2026-11-15T04:51:06.504117+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "溫哥華建築許可 (Building Permits)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：溫哥華建築許可 (Building Permits) (building_permits)，成功更新 1000 筆資料至 vancouver_building_permits.json。",
+    "record_count": 1000
+  },
+  {
+    "id": "sync-1794718266499-building_permits",
+    "timestamp": "2026-11-15T04:51:06Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "building_permits",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [building_permits] 資料同步完成，共載入 52,672 筆記錄。"
+  },
+  {
+    "id": "log-1794718243113",
+    "timestamp": "2026-11-15T04:50:43.112564+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "溫哥華商業牌照 (Business Licences)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：溫哥華商業牌照 (Business Licences) (business_licences)，成功更新 1000 筆資料至 vancouver_business_licences.json。",
+    "record_count": 1000
+  },
+  {
+    "id": "sync-1794718243109-business_licences",
+    "timestamp": "2026-11-15T04:50:43Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "business_licences",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [business_licences] 資料同步完成，共載入 207,448 筆記錄。"
+  },
+  {
+    "id": "sync-1794718200933-ev_charging_flo",
+    "timestamp": "2026-11-15T04:50:00Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,028 筆記錄。"
+  },
+  {
+    "id": "sync-1794718001199-ev_charging_flo",
+    "timestamp": "2026-11-15T04:46:40Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,027 筆記錄。"
+  },
+  {
+    "id": "sync-1794716489489-service_requests_311",
+    "timestamp": "2026-11-15T04:21:29.391Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "3-1-1",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
+  },
+  {
+    "id": "log-1794716171979",
+    "timestamp": "2026-11-15T04:16:11.977328+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "YVR 機場內部地圖",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：YVR 機場內部地圖 (yvr_indoor)，成功更新 1263 筆資料至 yvr_indoor_pois.json。",
+    "record_count": 1263
+  },
+  {
+    "id": "sync-1794716171968-yvr_indoor",
+    "timestamp": "2026-11-15T04:16:11Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "溫哥華國際機場 (YVR) 內部地圖與設施資料",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [溫哥華國際機場 (YVR) 內部地圖與設施資料] 資料同步完成，共載入 1,263 筆記錄。"
+  },
+  {
+    "id": "log-1794716171422",
+    "timestamp": "2026-11-15T04:16:11.419750+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Metro Vancouver 污水系統設施",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Metro Vancouver 污水系統設施 (sewer_system)，成功更新 15300 筆資料至 vancouver_sewer_system.geojson。",
+    "record_count": 15300
+  },
+  {
+    "id": "sync-1794716171305-sewer_system",
+    "timestamp": "2026-11-15T04:16:11.293Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 15,300 筆記錄。"
+  },
+  {
+    "id": "sync-1794716169892-sewer_system",
+    "timestamp": "2026-11-15T04:16:08.925Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 5,821 筆記錄。"
+  },
+  {
+    "id": "log-1794716159382",
+    "timestamp": "2026-11-15T04:15:59.381262+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Metro Vancouver 供水系統設施",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Metro Vancouver 供水系統設施 (water_supply)，成功更新 17709 筆資料至 vancouver_water_supply.geojson。",
+    "record_count": 17709
+  },
+  {
+    "id": "sync-1794716159342-water_supply",
+    "timestamp": "2026-11-15T04:15:59.313Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 17,709 筆記錄。"
+  },
+  {
+    "id": "sync-1794716157935-water_supply",
+    "timestamp": "2026-11-15T04:15:57.673Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 2,145 筆記錄。"
+  },
+  {
+    "id": "log-1794716142156",
+    "timestamp": "2026-11-15T04:15:42.142665+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 預期停電",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 527 筆資料至 bchydro_outages_planned.json。",
+    "record_count": 527
+  },
+  {
+    "id": "log-1794716141583",
+    "timestamp": "2026-11-15T04:15:41.582192+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 恢復供電 (14天)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3649 筆資料至 bchydro_outages_restored.json。",
+    "record_count": 3649
+  },
+  {
+    "id": "log-1794716140008",
+    "timestamp": "2026-11-15T04:15:40.005708+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 現正停電與警報",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 22 筆資料至 bchydro_outages_current.json。",
+    "record_count": 22
+  },
+  {
+    "id": "log-1794716139776",
+    "timestamp": "2026-11-15T04:15:39.775084+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "街頭熟食餐車",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：街頭熟食餐車 (food_vendors)，成功更新 1 筆資料至 vancouver_food_vendors.geojson。",
+    "record_count": 1
+  },
+  {
+    "id": "sync-1794716139767-food_vendors",
+    "timestamp": "2026-11-15T04:15:39.737Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "街頭餐車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [街頭餐車] 資料同步完成，共載入 1 筆記錄。"
+  },
+  {
+    "id": "log-1794716139497",
+    "timestamp": "2026-11-15T04:15:39.496345+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Lime 共享滑板車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 252 筆資料至 vancouver_escooter.geojson。",
+    "record_count": 252
+  },
+  {
+    "id": "sync-1794716139494-escooter",
+    "timestamp": "2026-11-15T04:15:39.400Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享滑板車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享滑板車] 資料同步完成，共載入 252 筆記錄。"
+  },
+  {
+    "id": "log-1794716138964",
+    "timestamp": "2026-11-15T04:15:38.962360+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Mobi 共享單車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+    "record_count": 262
+  },
+  {
+    "id": "sync-1794716138953-shared_bikes",
+    "timestamp": "2026-11-15T04:15:38.858Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享單車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+  },
+  {
+    "id": "sync-1794716041801-ev_charging",
+    "timestamp": "2026-11-15T04:14:01.792Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "充電站",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [充電站] 資料同步完成，共載入 1,226 筆記錄。"
+  },
+  {
+    "id": "sync-1794716001839-ev_charging",
+    "timestamp": "2026-11-15T04:13:21.767Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "充電站",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [充電站] 資料同步完成，共載入 40 筆記錄。"
+  },
+  {
+    "id": "sync-1794715983813-ev_charging_flo",
+    "timestamp": "2026-11-15T04:13:03Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "FLO 電動車充電站即時狀態 (API2)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [FLO 電動車充電站即時狀態 (API2)] 資料同步完成，共載入 1,006 筆記錄。"
+  },
+  {
+    "id": "sync-1794713419971-air_quality",
+    "timestamp": "2026-11-15T03:30:19.796Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "air_quality",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [air_quality] 資料同步完成，共載入 6 筆記錄。"
+  },
+  {
+    "id": "log-1794699491455",
+    "timestamp": "2026-11-14T23:38:11.454069+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Metro Vancouver 污水系統設施",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Metro Vancouver 污水系統設施 (sewer_system)，成功更新 15300 筆資料至 vancouver_sewer_system.geojson。",
+    "record_count": 15300
+  },
+  {
+    "id": "sync-1794699491403-sewer_system",
+    "timestamp": "2026-11-14T23:38:11.392Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 15,300 筆記錄。"
+  },
+  {
+    "id": "sync-1794699490076-sewer_system",
+    "timestamp": "2026-11-14T23:38:09.089Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域污水系統設施 (Metro Vancouver Sewer)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域污水系統設施 (Metro Vancouver Sewer)] 資料同步完成，共載入 5,821 筆記錄。"
+  },
+  {
+    "id": "log-1794699460473",
+    "timestamp": "2026-11-14T23:37:40.470935+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Metro Vancouver 供水系統設施",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Metro Vancouver 供水系統設施 (water_supply)，成功更新 17709 筆資料至 vancouver_water_supply.geojson。",
+    "record_count": 17709
+  },
+  {
+    "id": "sync-1794699460435-water_supply",
+    "timestamp": "2026-11-14T23:37:40.399Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 17,709 筆記錄。"
+  },
+  {
+    "id": "sync-1794699458869-water_supply",
+    "timestamp": "2026-11-14T23:37:38.574Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "大溫哥華區域供水系統設施 (Metro Vancouver Water)",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [大溫哥華區域供水系統設施 (Metro Vancouver Water)] 資料同步完成，共載入 2,145 筆記錄。"
+  },
+  {
+    "id": "log-1794699425331",
+    "timestamp": "2026-11-14T23:37:05.329309+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 預期停電",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 預期停電 (bchydro_planned)，成功更新 541 筆資料至 bchydro_outages_planned.json。",
+    "record_count": 541
+  },
+  {
+    "id": "log-1794699424863",
+    "timestamp": "2026-11-14T23:37:04.862112+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 恢復供電 (14天)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 恢復供電 (14天) (bchydro_restored)，成功更新 3614 筆資料至 bchydro_outages_restored.json。",
+    "record_count": 3614
+  },
+  {
+    "id": "log-1794699422815",
+    "timestamp": "2026-11-14T23:37:02.813836+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "BC Hydro 現正停電與警報",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：BC Hydro 現正停電與警報 (bchydro_current)，成功更新 16 筆資料至 bchydro_outages_current.json。",
+    "record_count": 16
+  },
+  {
+    "id": "log-1794699422637",
+    "timestamp": "2026-11-14T23:37:02.635530+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Lime 共享滑板車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Lime 共享滑板車 (每月全量站點) (escooter)，成功更新 252 筆資料至 vancouver_escooter.geojson。",
+    "record_count": 252
+  },
+  {
+    "id": "sync-1794699422633-escooter",
+    "timestamp": "2026-11-14T23:37:02.571Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享滑板車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享滑板車] 資料同步完成，共載入 252 筆記錄。"
+  },
+  {
+    "id": "log-1794699422168",
+    "timestamp": "2026-11-14T23:37:02.166805+00:00",
+    "action": "OCI_DAEMON_SYNC",
+    "source_name": "Mobi 共享單車 (每月全量站點)",
+    "runner": "oci",
+    "status": "success",
+    "detail": "資料源更新完成：Mobi 共享單車 (每月全量站點) (shared_bikes)，成功更新 262 筆資料至 vancouver_shared_bikes.geojson。",
+    "record_count": 262
+  },
+  {
+    "id": "sync-1794699422158-shared_bikes",
+    "timestamp": "2026-11-14T23:37:02.052Z",
+    "action": "LAYER_DATA_SYNC",
+    "source_name": "共享單車",
+    "runner": "local_or_oci",
+    "status": "success",
+    "detail": "圖層 [共享單車] 資料同步完成，共載入 262 筆記錄。"
+  },
+  {
     "id": "sync-1794691503036-service_requests_311",
     "timestamp": "2026-11-14T21:25:02.954Z",
     "action": "LAYER_DATA_SYNC",
@@ -1236,23 +1846,5 @@
     "runner": "local_or_oci",
     "status": "success",
     "detail": "圖層 [3-1-1] 資料同步完成，共載入 1,000 筆記錄。"
-  },
-  {
-    "id": "gh-run-42752468100-shared_bikes",
-    "timestamp": "2026-11-10T03:55:38Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享單車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-shared-bikes-hourly.yml 執行成功，目前共 262 處站點與可用車位。"
-  },
-  {
-    "id": "gh-run-42752119229-escooter",
-    "timestamp": "2026-11-10T03:52:08Z",
-    "action": "GITHUB_WORKFLOW_SYNC",
-    "source_name": "共享滑板車",
-    "runner": "github_actions",
-    "status": "success",
-    "detail": "[GitHub Actions · 排程自動執行] 工作流 update-escooter-hourly.yml 執行成功，目前共 246 處滑板車站點。"
   }
 ]

@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'finance' | 'events' | 'sports' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'shopping' | 'lottery' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic' | 'crashes';
+export type ExploreTabType = 'weather' | 'news' | 'finance' | 'events' | 'sports' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'business' | 'permits' | 'shopping' | 'lottery' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic' | 'crashes';
 
 export interface SearchTarget {
   id: string;
@@ -101,6 +101,7 @@ export interface UIState {
     waterSupply: boolean;
     sewerSystem: boolean;
     beachWaterQuality: boolean;
+    airQuality: boolean;
     fireHydrants: boolean;
     zoningDistricts: boolean;
     publicTrees: boolean;
@@ -200,8 +201,9 @@ export interface UIState {
     speed: 'all' | 'fast' | 'slow';
     connector: string; // 'all' or 'CCS' / 'J1772' / 'Tesla' / 'CHAdeMO'
     freeOnly: boolean;
+    operator: 'all' | 'cov' | 'flo' | 'chargepoint';
   };
-  setEvChargingFilter: (filter: Partial<{ speed: 'all' | 'fast' | 'slow'; connector: string; freeOnly: boolean }>) => void;
+  setEvChargingFilter: (filter: Partial<{ speed: 'all' | 'fast' | 'slow'; connector: string; freeOnly: boolean; operator: 'all' | 'cov' | 'flo' | 'chargepoint' }>) => void;
   airportIndoorFilter: {
     terminalId: string;
     floorId: string;
@@ -372,6 +374,7 @@ export const useUIStore = create<UIState>()(
         waterSupply: false,
         sewerSystem: false,
         beachWaterQuality: false,
+        airQuality: false,
         fireHydrants: false,
         zoningDistricts: false,
         publicTrees: false,
@@ -409,6 +412,8 @@ export const useUIStore = create<UIState>()(
         public_events: '每 30 分鐘',
         vancouver_news: '每 5 分鐘',
         vancouver_311: '每日更新 1 次',
+        business_licences: '每 24 小時',
+        building_permits: '每 24 小時',
         crashes: '每月更新 1 次',
       },
       setAdminSourceIntervals: (intervals) => set((state) => ({ adminSourceIntervals: { ...state.adminSourceIntervals, ...intervals } })),
@@ -629,6 +634,7 @@ export const useUIStore = create<UIState>()(
         speed: 'all',
         connector: 'all',
         freeOnly: false,
+        operator: 'all',
       },
       setEvChargingFilter: (filter) =>
         set((state) => ({

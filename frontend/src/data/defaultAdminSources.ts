@@ -1723,5 +1723,145 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://www.telus.com/en/mobility/network/coverage-map"
+  },
+  {
+    "id": "air_quality",
+    "name": "Metro Vancouver 空氣質素健康指數圖層",
+    "type": "geojson",
+    "cron_expr": "0 0 * * *",
+    "schedule_interval": "每 24 小時",
+    "record_count": 6,
+    "unit": "個大溫哥華 AQHI 監測分區",
+    "last_updated": "2026-11-15T03:30:19Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Metro Vancouver AirMap (gis.metrovancouver.org/maps/air -> ArcGIS MV2U/MVMapX MapServer/1 區塊邊界) + 加拿大環境部 HPFX AQHI 即時觀測 XML -> 每 24 小時由 OCI 常駐快取排程自動更新各分區指數與風險分色並寫入 vancouver_air_quality.geojson (僅顯示於地圖與天氣探索切換，不納入搜尋引擎)",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "天氣",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Metro Vancouver AirMap 官方圖台",
+        "url": "https://gis.metrovancouver.org/maps/air"
+      },
+      {
+        "type": "api",
+        "label": "ECCC HPFX 即時 AQHI XML",
+        "url": "https://hpfx.collab.science.gc.ca/"
+      }
+    ],
+    "source_url": "https://gis.metrovancouver.org/maps/air"
+  },
+  {
+    "id": "ev_charging_flo",
+    "name": "FLO 電動車充電站即時狀態 (API2)",
+    "type": "api",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 998,
+    "unit": "處大溫哥華 FLO 可用充電園區",
+    "last_updated": "2026-11-15T03:30:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "每月經 GitHub Actions (ev_charging) 以網格切片抓取 FLO API1 大溫完整站點目錄 (flo_ev_parks.json) -> OCI 伺服器每 1 小時呼叫 FLO API2 (/v3.0/parks/station/{id}) 刷新詳細費率、接口規格與即時狀態 -> 僅篩選 status=Available 寫入 flo_ev_live_cache.json 並納入搜尋引擎",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "道路",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "FLO Charging Network",
+        "url": "https://www.flo.com/"
+      },
+      {
+        "type": "api",
+        "label": "FLO Station Detail API2",
+        "url": "https://emobility.flo.ca/v3.0/parks/station/"
+      }
+    ],
+    "source_url": "https://emobility.flo.ca/v3.0/parks/station/"
+  },
+  {
+    "id": "ev_charging_chargepoint",
+    "name": "ChargePoint 電動車充電站即時狀態 (API2)",
+    "type": "api",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 0,
+    "unit": "座大溫哥華 ChargePoint 可用充電站",
+    "last_updated": "2026-11-15T05:00:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "每月經 GitHub Actions (ev_charging) 以網格切片與分頁游標抓取 ChargePoint API1 大溫完整站點目錄 (chargepoint_ev_devices.json) -> OCI 伺服器每 1 小時呼叫 ChargePoint API2 (/map-prod/v3/station/info) 刷新詳細費率與充電槍規格，並透過快速 API1 同步僅篩選 status=Available 寫入 chargepoint_ev_live_cache.json 並納入搜尋引擎",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "道路",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "ChargePoint Driver Map",
+        "url": "https://driver.chargepoint.com/"
+      },
+      {
+        "type": "api",
+        "label": "ChargePoint Station Info API2",
+        "url": "https://mc-ca.chargepoint.com/map-prod/v3/station/info"
+      }
+    ],
+    "source_url": "https://mc-ca.chargepoint.com/map-prod/v3/station/info"
+  },
+  {
+    "id": "business_licences",
+    "name": "溫哥華商業牌照",
+    "type": "api",
+    "cron_expr": "0 2 * * *",
+    "schedule_interval": "每 24 小時",
+    "record_count": 207448,
+    "unit": "筆商業牌照記錄",
+    "last_updated": "2026-11-14T08:08:51Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Vancouver Open Data Business Licences API -> OCI 每日快取最新 1,000 筆資料並支援全量搜尋、篩選、排序與日期查詢 -> 寫入 vancouver_business_licences.json -> 探索面板分頁展示",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "生活",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Vancouver OpenData Business Licences",
+        "url": "https://opendata.vancouver.ca/explore/dataset/business-licences"
+      },
+      {
+        "type": "api",
+        "label": "OpenData v2.1 API",
+        "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/business-licences/records/?lang=en"
+      }
+    ],
+    "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/business-licences/records/?lang=en"
+  },
+  {
+    "id": "building_permits",
+    "name": "溫哥華建築許可",
+    "type": "api",
+    "cron_expr": "0 2 * * *",
+    "schedule_interval": "每 24 小時",
+    "record_count": 52672,
+    "unit": "筆建築許可記錄",
+    "last_updated": "2026-11-12T08:00:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Vancouver Open Data Issued Building Permits API -> OCI 每日快取最新 1,000 筆資料並支援全量搜尋、篩選、排序與日期查詢 -> 寫入 vancouver_building_permits.json -> 探索面板分頁展示",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "生活",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Vancouver OpenData Issued Building Permits",
+        "url": "https://opendata.vancouver.ca/explore/dataset/issued-building-permits"
+      },
+      {
+        "type": "api",
+        "label": "OpenData v2.1 API",
+        "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records/?lang=en"
+      }
+    ],
+    "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records/?lang=en"
   }
 ];

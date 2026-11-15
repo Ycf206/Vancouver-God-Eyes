@@ -317,6 +317,7 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "電動車": ("ev_charging", "tesla"),
     "ev": ("ev_charging", "tesla"),
     "charger": ("ev_charging", "tesla"),
+    "flo": ("ev_charging",),
     "tesla": ("tesla",),
     "特斯拉": ("tesla",),
     "supercharger": ("tesla",),
@@ -990,7 +991,7 @@ _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
     "banks": "銀行 bank banks atm 櫃員機 自動櫃員機 提款機 分行",
     "fuel": "油站 加油站 汽油 柴油 gas station fuel petrol",
     "tesla": "tesla 特斯拉 超級充電 目的地充電 supercharger ev charger",
-    "ev_charging": "充電 充電站 充電樁 電動車 ev charging charger",
+    "ev_charging": "充電 充電站 充電樁 電動車 ev charging charger flo chargepoint cp j1772 ccs combo nacs chademo",
     "impark": "停車場 泊車 時租 月租 impark parking lot",
     "accessible_parking": "無障礙車位 殘障車位 傷健車位 accessible parking disability",
     "motorcycle_parking": "摩托車 電單車 重機 停車位 motorcycle parking",
@@ -1170,6 +1171,8 @@ class LayerSearchEngine:
             "translink_gtfs_metadata.json",
             "skytrain_network.json",
             "vancouver_local_area_boundary.geojson",
+            "flo_ev_live_cache.json",
+            "chargepoint_ev_live_cache.json",
         ]
     )
 
@@ -2002,6 +2005,30 @@ class LayerSearchEngine:
                 print(f"[SearchEngine] Error reading {fpath}: {exc}")
                 continue
 
+            if fstem == "ev_charging":
+                base_feats = [
+                    ft for ft in (data.get("features") or [])
+                    if not (str(ft.get("id") or "").startswith("ev_flo_") or str(ft.get("id") or "").startswith("ev_cp_"))
+                ]
+                extra_ev_feats: list[dict[str, Any]] = []
+                for cache_name, legacy_prefix in (("flo_ev_live_cache.json", "ev_flo_"), ("chargepoint_ev_live_cache.json", "ev_cp_")):
+                    cache_path = os.path.join(self.data_dir, cache_name)
+                    loaded_feats: list[dict[str, Any]] = []
+                    if os.path.exists(cache_path):
+                        try:
+                            with open(cache_path, "r", encoding="utf-8") as cf:
+                                cdata = json.load(cf)
+                            loaded_feats = list(cdata.get("features") or [])
+                        except Exception as cexc:
+                            print(f"[SearchEngine] Error reading {cache_path}: {cexc}")
+                    if not loaded_feats:
+                        loaded_feats = [
+                            ft for ft in (data.get("features") or [])
+                            if str(ft.get("id") or "").startswith(legacy_prefix)
+                        ]
+                    extra_ev_feats.extend(loaded_feats)
+                data = {"type": "FeatureCollection", "features": base_feats + extra_ev_feats}
+
             seen_dedup_keys: set[str] = set()
             alias_kw = _LAYER_ALIAS_KEYWORDS.get(search_cat, "")
 
@@ -2291,6 +2318,9 @@ class LayerSearchEngine:
                         props.get("measurement_type"),
                         props.get("classification"),
                         props.get("district_file_no"),
+                        props.get("operator"),
+                        props.get("station_name"),
+                        props.get("connectors"),
                         props.get("email"),
                         props.get("fax"),
                         alias_kw,

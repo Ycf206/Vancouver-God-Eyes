@@ -22,7 +22,7 @@ jobs:
       - name: Fetch latest layer cache from data branch
         run: |
           git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
-          git checkout refs/remotes/origin/data -- backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson 2>/dev/null || true
+          git checkout refs/remotes/origin/data -- backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson backend/data/flo_ev_parks.json backend/data/flo_ev_live_cache.json backend/data/chargepoint_ev_devices.json backend/data/chargepoint_ev_live_cache.json 2>/dev/null || true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,9 +33,9 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run layer update script (電動車充電站點)
+      - name: Run layer update script (電動車充電站點 + FLO + ChargePoint API1)
         run: |
-          python backend/scripts/layers/update_ev_charging.py
+          python backend/scripts/layers/update_ev_charging.py --api1-only
 
       - name: Commit and push updated data to data branch
         id: git_push
@@ -45,7 +45,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           mkdir -p /tmp/wf_stage
-          for f in backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson; do
+          for f in backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson backend/data/flo_ev_parks.json backend/data/flo_ev_live_cache.json backend/data/chargepoint_ev_devices.json backend/data/chargepoint_ev_live_cache.json; do
             if [ -f "$f" ]; then
               mkdir -p "/tmp/wf_stage/$(dirname "$f")"
               cp -f "$f" "/tmp/wf_stage/$f"
@@ -64,14 +64,14 @@ jobs:
               git checkout -f -B data
             fi
 
-            for f in backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson; do
+            for f in backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson backend/data/flo_ev_parks.json backend/data/flo_ev_live_cache.json backend/data/chargepoint_ev_devices.json backend/data/chargepoint_ev_live_cache.json; do
               if [ -f "/tmp/wf_stage/$f" ]; then
                 mkdir -p "$(dirname "$f")"
                 cp -f "/tmp/wf_stage/$f" "$f"
               fi
             done
 
-            git add backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson
+            git add backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson backend/data/flo_ev_parks.json backend/data/flo_ev_live_cache.json backend/data/chargepoint_ev_devices.json backend/data/chargepoint_ev_live_cache.json
             if git diff -I '"updated_at"' -I '"generated_at"' --staged --quiet; then
               echo "No substantive feature changes detected for 電動車充電站點."
               git reset --hard HEAD >/dev/null 2>&1 || true
@@ -104,7 +104,7 @@ jobs:
             mkdir -p backend/data frontend/public
             if [ "${{ steps.git_push.outputs.has_changes }}" = "true" ]; then
               git fetch origin data:refs/remotes/origin/data 2>/dev/null || git fetch origin data 2>/dev/null || true
-              git checkout refs/remotes/origin/data -- backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson 2>/dev/null || git checkout origin/data -- backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson 2>/dev/null || true
+              git checkout refs/remotes/origin/data -- backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson backend/data/flo_ev_parks.json backend/data/flo_ev_live_cache.json backend/data/chargepoint_ev_devices.json backend/data/chargepoint_ev_live_cache.json 2>/dev/null || git checkout origin/data -- backend/data/vancouver_ev_charging.geojson frontend/public/vancouver_ev_charging.geojson backend/data/flo_ev_parks.json backend/data/flo_ev_live_cache.json backend/data/chargepoint_ev_devices.json backend/data/chargepoint_ev_live_cache.json 2>/dev/null || true
             fi
             python3 backend/scripts/record_workflow_sync.py --source "ev_charging" --workflow "update-ev-charging.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "ev_charging" --workflow "update-ev-charging.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
             echo "✅ OCI 伺服器 [電動車充電站點] 資料與後台時間戳同步完成！"

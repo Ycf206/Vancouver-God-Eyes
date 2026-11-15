@@ -1,24 +1,24 @@
 {
   "success": true,
-  "updated_at": "2026-11-14T14:22:45.204635-07:00",
+  "updated_at": "2026-11-14T22:34:14.554034-07:00",
   "draws": {
     "SIX49": {
-      "drawNbr": 4467,
-      "drawDate": "Nov 11, 2026",
+      "drawNbr": 4468,
+      "drawDate": "Nov 14, 2026",
       "drawNbrs": [
-        2,
-        3,
+        1,
+        8,
+        9,
         21,
-        34,
-        40,
-        44
+        38,
+        47
       ],
-      "bonusNbr": 1,
+      "bonusNbr": 10,
       "extraNbrs": [
-        19,
-        52,
-        63,
-        82
+        37,
+        50,
+        77,
+        83
       ],
       "maxMillionPending": 0,
       "prizeDiv": 0,
@@ -32,48 +32,48 @@
         {
           "prizeDiv": 20,
           "seqNbr": 1,
-          "prizeDesc": "$38,000,000.00",
+          "prizeDesc": "$1,000,000.00",
           "whiteBallPrizeAmount": 1000000.0,
-          "goldBallPrizeAmount": 38000000.0,
-          "goldBallDrawn": true,
-          "whiteBallsDrawn": 14,
-          "goldBallsDrawn": 1,
-          "nthBallDrawn": 15,
+          "goldBallPrizeAmount": 10000000.0,
+          "goldBallDrawn": false,
+          "whiteBallsDrawn": 1,
+          "goldBallsDrawn": 0,
+          "nthBallDrawn": 1,
           "startingBallTotal": 30,
           "drawNbrs": [
-            4,
             3,
-            7,
-            7,
+            1,
+            8,
+            3,
+            6,
+            6,
             9,
-            7,
-            3,
-            5,
+            8,
             0,
-            2
+            6
           ]
         }
       ],
       "gpAdditionalNumbers": [],
-      "nextDrawDate": "2026-11-14 (週六)"
+      "nextDrawDate": "2026-11-18 (週三)"
     },
     "BC49": {
-      "drawNbr": 3631,
-      "drawDate": "Nov 11, 2026",
+      "drawNbr": 3632,
+      "drawDate": "Nov 14, 2026",
       "drawNbrs": [
-        10,
-        11,
         14,
-        15,
         19,
-        45
+        38,
+        40,
+        47,
+        48
       ],
-      "bonusNbr": 20,
+      "bonusNbr": 35,
       "extraNbrs": [
-        19,
-        52,
-        63,
-        82
+        37,
+        50,
+        77,
+        83
       ],
       "maxMillionPending": 0,
       "prizeDiv": 0,
@@ -85,7 +85,7 @@
       "extraBreakdown": null,
       "gpNumbers": null,
       "gpAdditionalNumbers": null,
-      "nextDrawDate": "2026-11-14 (週六)"
+      "nextDrawDate": "2026-11-18 (週三)"
     },
     "LMAX": {
       "drawNbr": 1287,

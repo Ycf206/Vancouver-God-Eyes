@@ -83,6 +83,7 @@ export type LayerIconKey =
   | 'UserShield'
   | 'Waves'
   | 'Wifi'
+  | 'Wind'
   | 'ZapOff';
 
 export type TransportGroupId =
@@ -1213,6 +1214,22 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     activeBorder: 'border-teal-500/50',
     activeShadow: 'shadow-[0_0_6px_rgba(20,184,166,0.15)]',
     defaultColor: '#06b6d4',
+  },
+  {
+    id: 'airQuality',
+    layerKey: 'airQuality',
+    name: '空氣質素',
+    buttonLabel: '空氣質素',
+    title: '空氣質素',
+    categoryId: 'nature',
+    category: '自然',
+    keywords: ['air', 'air quality', 'aqhi', '空氣', '空氣質素', '健康指數'],
+    iconKey: 'Wind',
+    colorClass: 'text-sky-300',
+    activeBg: 'bg-[#0e2235]',
+    activeBorder: 'border-sky-500/50',
+    activeShadow: 'shadow-[0_0_6px_rgba(56,189,248,0.15)]',
+    defaultColor: '#38bdf8',
   },
 
   // ===================== 安全 SECURITY =====================

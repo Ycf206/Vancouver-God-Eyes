@@ -249,6 +249,152 @@ def refresh_yvr_indoor() -> int:
         return 0
 
 
+def refresh_air_quality() -> int:
+    """每 24 小時刷新 Metro Vancouver 空氣質素健康指數 (AQHI) 區塊圖層"""
+    file_path = "backend/scripts/layers/update_air_quality.py"
+    target_file = "vancouver_air_quality.geojson"
+    try:
+        from update_air_quality import update_air_quality
+        features = update_air_quality()
+        cnt = len(features) if features else 0
+        log_data_source_update("air_quality", "Metro Vancouver 空氣質素健康指數圖層", cnt, target_file, file_path)
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_air_quality 異常: {e}")
+        log_data_source_update("air_quality", "Metro Vancouver 空氣質素健康指數圖層", None, target_file, file_path, error=e)
+        return 0
+
+
+def refresh_business_licences(target_count: int = 1000) -> int:
+    """每 24 小時刷新溫哥華市政府商業牌照 (Business Licences) 最新快取"""
+    file_path = "backend/scripts/layers/update_business_licences.py"
+    target_file = "vancouver_business_licences.json"
+    try:
+        from update_business_licences import update_business_licences
+        data = update_business_licences(target_count=target_count)
+        cnt = len(data["results"]) if isinstance(data, dict) and "results" in data else 0
+        log_data_source_update("business_licences", "溫哥華商業牌照 (Business Licences)", cnt, target_file, file_path)
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_business_licences 異常: {e}")
+        log_data_source_update("business_licences", "溫哥華商業牌照 (Business Licences)", None, target_file, file_path, error=e)
+        return 0
+
+
+def refresh_building_permits(target_count: int = 1000) -> int:
+    """每 24 小時刷新溫哥華市政府已簽發建築許可 (Issued Building Permits) 最新快取"""
+    file_path = "backend/scripts/layers/update_building_permits.py"
+    target_file = "vancouver_building_permits.json"
+    try:
+        from update_building_permits import update_building_permits
+        data = update_building_permits(target_count=target_count)
+        cnt = len(data["results"]) if isinstance(data, dict) and "results" in data else 0
+        log_data_source_update("building_permits", "溫哥華建築許可 (Building Permits)", cnt, target_file, file_path)
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_building_permits 異常: {e}")
+        log_data_source_update("building_permits", "溫哥華建築許可 (Building Permits)", None, target_file, file_path, error=e)
+        return 0
+
+
+_flo_ev_task: Optional[asyncio.Future[Any]] = None
+_flo_fast_task: Optional[asyncio.Future[Any]] = None
+_cp_ev_task: Optional[asyncio.Future[Any]] = None
+_cp_fast_task: Optional[asyncio.Future[Any]] = None
+
+
+def refresh_flo_ev() -> int:
+    """每 1 小時刷新 FLO 電動車充電站詳細費率與即時可用狀態 (API2 + API1 同步)"""
+    file_path = "backend/scripts/layers/update_flo_ev.py"
+    target_file = "flo_ev_live_cache.json"
+    try:
+        from update_flo_ev import refresh_flo_api2
+        features = refresh_flo_api2(update_admin_meta=True)
+        cnt = len(features) if features else 0
+        log_data_source_update("ev_charging_flo", "FLO 電動車充電站即時狀態 (API2)", cnt, target_file, file_path)
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_flo_ev 異常: {e}")
+        log_data_source_update("ev_charging_flo", "FLO 電動車充電站即時狀態 (API2)", None, target_file, file_path, error=e)
+        return 0
+
+
+def refresh_flo_ev_fast() -> int:
+    """高頻輕量 (~3.5s) FLO API1 即時狀態校對，消弭站點 Available / InUse 顯示延遲"""
+    try:
+        from update_flo_ev import sync_flo_live_statuses_fast
+        features = sync_flo_live_statuses_fast(update_admin_meta=True)
+        return len(features) if features else 0
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_flo_ev_fast 異常: {e}")
+        return 0
+
+
+def refresh_chargepoint_ev() -> int:
+    """每 1 小時刷新 ChargePoint 電動車充電站詳細費率與即時可用狀態 (API2 + API1 同步)"""
+    file_path = "backend/scripts/layers/update_chargepoint_ev.py"
+    target_file = "chargepoint_ev_live_cache.json"
+    try:
+        from update_chargepoint_ev import refresh_chargepoint_api2
+        features = refresh_chargepoint_api2(update_admin_meta=True)
+        cnt = len(features) if features else 0
+        log_data_source_update("ev_charging_chargepoint", "ChargePoint 電動車充電站即時狀態 (API2)", cnt, target_file, file_path)
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_chargepoint_ev 異常: {e}")
+        log_data_source_update("ev_charging_chargepoint", "ChargePoint 電動車充電站即時狀態 (API2)", None, target_file, file_path, error=e)
+        return 0
+
+
+def refresh_chargepoint_ev_fast() -> int:
+    """高頻輕量 (~2s) ChargePoint API1 即時狀態校對，消弭站點 Available / In Use 顯示延遲"""
+    try:
+        from update_chargepoint_ev import sync_chargepoint_live_statuses_fast
+        features = sync_chargepoint_live_statuses_fast(update_admin_meta=True)
+        return len(features) if features else 0
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_chargepoint_ev_fast 異常: {e}")
+        return 0
+
+
+def _schedule_flo_ev_background(loop: asyncio.AbstractEventLoop) -> None:
+    """Launch FLO API2 hydration asynchronously so hourly rate-limit waits never stall other live layers."""
+    global _flo_ev_task
+    if _flo_ev_task is not None and not _flo_ev_task.done():
+        print("⏳ [Dynamic Layers] FLO 充電站 (API2) 背景更新仍在執行中，略過重複排程。")
+        return
+    _flo_ev_task = loop.run_in_executor(None, refresh_flo_ev)
+
+
+def _schedule_flo_fast_background(loop: asyncio.AbstractEventLoop) -> None:
+    """Launch fast ~3.5s FLO API1 status sync asynchronously unless API2 or fast sync is already active."""
+    global _flo_fast_task
+    if _flo_ev_task is not None and not _flo_ev_task.done():
+        return
+    if _flo_fast_task is not None and not _flo_fast_task.done():
+        return
+    _flo_fast_task = loop.run_in_executor(None, refresh_flo_ev_fast)
+
+
+def _schedule_cp_ev_background(loop: asyncio.AbstractEventLoop) -> None:
+    """Launch ChargePoint API2 hydration asynchronously."""
+    global _cp_ev_task
+    if _cp_ev_task is not None and not _cp_ev_task.done():
+        print("⏳ [Dynamic Layers] ChargePoint 充電站 (API2) 背景更新仍在執行中，略過重複排程。")
+        return
+    _cp_ev_task = loop.run_in_executor(None, refresh_chargepoint_ev)
+
+
+def _schedule_cp_fast_background(loop: asyncio.AbstractEventLoop) -> None:
+    """Launch fast ~2s ChargePoint API1 status sync asynchronously."""
+    global _cp_fast_task
+    if _cp_ev_task is not None and not _cp_ev_task.done():
+        return
+    if _cp_fast_task is not None and not _cp_fast_task.done():
+        return
+    _cp_fast_task = loop.run_in_executor(None, refresh_chargepoint_ev_fast)
+
+
 async def run_dynamic_layers_background_loop():
     """
     OCI 常駐後台背景更新排程 (動態圖層與高頻資料):
@@ -259,6 +405,9 @@ async def run_dynamic_layers_background_loop():
     - bchydro_* (BC Hydro 停電): 每 1 小時 (3600s)
     - water_supply / sewer_system (大溫供水與污水設施): 每 1 小時 (3600s)
     - yvr_indoor (YVR 機場內部地圖): 每日 1 次 (86400s)
+    - air_quality (大溫空氣質素健康指數 AQHI 區塊): 每 24 小時 (86400s)
+    - ev_charging_flo (FLO 充電站即時狀態 API2): 每 1 小時 (3600s)
+    - ev_charging_chargepoint (ChargePoint 充電站即時狀態 API2): 每 1 小時 (3600s)
     """
     print("🚲🛴🍔💧 [Dynamic Layers Service] 常駐快取排程服務啟動 (單車/滑板車/停電/供水污水 每小時, 3-1-1 每 12 小時, 餐車/YVR 內部地圖每日)...")
     loop = asyncio.get_event_loop()
@@ -292,6 +441,27 @@ async def run_dynamic_layers_background_loop():
         if not _is_layer_recent("yvr_indoor_pois.json", 86400):
             print("🗺️ [Dynamic Layers] 初始預熱 YVR 機場內部地圖數據...")
             await loop.run_in_executor(None, refresh_yvr_indoor)
+        if not _is_layer_recent("vancouver_air_quality.geojson", 86400):
+            print("🌬️ [Dynamic Layers] 初始預熱大溫空氣質素 (AQHI) 區塊圖層...")
+            await loop.run_in_executor(None, refresh_air_quality)
+        if not _is_layer_recent("vancouver_business_licences.json", 86400):
+            print("🏢 [Dynamic Layers] 初始預熱溫哥華商業牌照 (Business Licences) 快取...")
+            await loop.run_in_executor(None, refresh_business_licences, 1000)
+        if not _is_layer_recent("vancouver_building_permits.json", 86400):
+            print("🔨 [Dynamic Layers] 初始預熱溫哥華建築許可 (Building Permits) 快取...")
+            await loop.run_in_executor(None, refresh_building_permits, 1000)
+        if not _is_layer_recent("flo_ev_live_cache.json", 3600):
+            print("⚡ [Dynamic Layers] 初始預熱 FLO 電動車充電站即時可用狀態 (API2 背景執行)...")
+            _schedule_flo_ev_background(loop)
+        elif not _is_layer_recent("flo_ev_live_cache.json", 180):
+            print("⚡ [Dynamic Layers] 初始快速校對 FLO 即時充電狀態 (API1)...")
+            _schedule_flo_fast_background(loop)
+        if not _is_layer_recent("chargepoint_ev_live_cache.json", 3600):
+            print("⚡ [Dynamic Layers] 初始預熱 ChargePoint 電動車充電站即時可用狀態 (API2 背景執行)...")
+            _schedule_cp_ev_background(loop)
+        elif not _is_layer_recent("chargepoint_ev_live_cache.json", 180):
+            print("⚡ [Dynamic Layers] 初始快速校對 ChargePoint 即時充電狀態 (API1)...")
+            _schedule_cp_fast_background(loop)
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] 初始預熱異常: {e}")
 
@@ -304,6 +474,13 @@ async def run_dynamic_layers_background_loop():
     last_bchydro_time = time.time()
     last_mv_utilities_time = time.time()
     last_yvr_indoor_time = time.time()
+    last_air_quality_time = time.time()
+    last_business_licences_time = time.time()
+    last_building_permits_time = time.time()
+    last_flo_ev_time = time.time()
+    last_flo_fast_time = time.time()
+    last_cp_ev_time = time.time()
+    last_cp_fast_time = time.time()
 
     while True:
         try:
@@ -364,6 +541,42 @@ async def run_dynamic_layers_background_loop():
                 last_yvr_indoor_time = now
                 print("🗺️ [Dynamic Layers] 觸發排程: YVR 機場內部地圖數據同步...")
                 await loop.run_in_executor(None, refresh_yvr_indoor)
+
+            # 8. Metro Vancouver 空氣質素健康指數 AQHI 區塊 (每 86400 秒 = 每日 1 次)
+            if now - last_air_quality_time >= 86400:
+                last_air_quality_time = now
+                print("🌬️ [Dynamic Layers] 觸發排程: 大溫空氣質素 (AQHI) 區塊圖層 24 小時同步...")
+                await loop.run_in_executor(None, refresh_air_quality)
+
+            # 8.5. 溫哥華商業牌照與建築許可 (每 86400 秒 = 每日 1 次)
+            if now - last_business_licences_time >= 86400:
+                last_business_licences_time = now
+                print("🏢 [Dynamic Layers] 觸發排程: 溫哥華商業牌照 (Business Licences) 24 小時同步...")
+                await loop.run_in_executor(None, refresh_business_licences, 1000)
+            if now - last_building_permits_time >= 86400:
+                last_building_permits_time = now
+                print("🔨 [Dynamic Layers] 觸發排程: 溫哥華建築許可 (Building Permits) 24 小時同步...")
+                await loop.run_in_executor(None, refresh_building_permits, 1000)
+
+            # 9. FLO 電動車充電站即時可用狀態 API2 詳細更新 (每 3600 秒) + 輕量 API1 即時狀態校對 (每 180 秒)
+            if now - last_flo_ev_time >= 3600:
+                last_flo_ev_time = now
+                last_flo_fast_time = now
+                print("⚡ [Dynamic Layers] 觸發排程: FLO 充電站詳細費率與即時可用狀態 (API2) 每小時背景同步...")
+                _schedule_flo_ev_background(loop)
+            elif now - last_flo_fast_time >= 180:
+                last_flo_fast_time = now
+                _schedule_flo_fast_background(loop)
+
+            # 10. ChargePoint 電動車充電站即時可用狀態 API2 詳細更新 (每 3600 秒) + 輕量 API1 即時狀態校對 (每 180 秒)
+            if now - last_cp_ev_time >= 3600:
+                last_cp_ev_time = now
+                last_cp_fast_time = now
+                print("⚡ [Dynamic Layers] 觸發排程: ChargePoint 充電站詳細費率與即時可用狀態 (API2) 每小時背景同步...")
+                _schedule_cp_ev_background(loop)
+            elif now - last_cp_fast_time >= 180:
+                last_cp_fast_time = now
+                _schedule_cp_fast_background(loop)
 
         except asyncio.CancelledError:
             print("🛑 [Dynamic Layers Service] 常駐背景排程已停止。")
