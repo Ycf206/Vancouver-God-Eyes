@@ -12,8 +12,9 @@ if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
 
 LAYERS_MAP = {
     "air_quality": "update_air_quality",
+    "wildfire": "update_wildfire",
     "beach_water": "update_beach_water",
-    "impark_parking": "update_impark_parking",
+    "impark_parking": "update_private_parking",
     "schools": "update_schools",
     "libraries": "update_libraries",
     "parks": "update_parks",

@@ -102,6 +102,7 @@ export interface UIState {
     sewerSystem: boolean;
     beachWaterQuality: boolean;
     airQuality: boolean;
+    wildfire: boolean;
     fireHydrants: boolean;
     zoningDistricts: boolean;
     publicTrees: boolean;
@@ -375,6 +376,7 @@ export const useUIStore = create<UIState>()(
         sewerSystem: false,
         beachWaterQuality: false,
         airQuality: false,
+        wildfire: false,
         fireHydrants: false,
         zoningDistricts: false,
         publicTrees: false,

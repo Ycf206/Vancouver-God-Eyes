@@ -143,7 +143,7 @@ def update_snow_removal_routes():
                 shape_len_float = float(shape_len)
                 if shape_len_float >= 1000:
                     length_km = round(shape_len_float / 1000.0, 2)
-                    length_str = f"{length_km} 公里"
+                    length_str = f"{length_km} km"
                 else:
                     length_str = f"{int(shape_len_float)} 公尺"
             except Exception:

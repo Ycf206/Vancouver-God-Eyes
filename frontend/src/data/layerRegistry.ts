@@ -30,6 +30,7 @@ export type LayerIconKey =
   | 'Faucet'
   | 'Fingerprint'
   | 'FireExtinguisher'
+  | 'Flame'
   | 'Flower2'
   | 'Footprints'
   | 'Fuel'
@@ -1230,6 +1231,23 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     activeBorder: 'border-sky-500/50',
     activeShadow: 'shadow-[0_0_6px_rgba(56,189,248,0.15)]',
     defaultColor: '#38bdf8',
+  },
+  {
+    id: 'wildfire',
+    layerKey: 'wildfire',
+    name: '山火',
+    buttonLabel: '山火',
+    title: '山火',
+    categoryId: 'nature',
+    category: '自然',
+    keywords: ['wildfire', 'fire', 'fire danger', 'bc wildfire', '山火', '林火', '野火', '火災危險等級'],
+    iconKey: 'Flame',
+    colorClass: 'text-orange-400',
+    activeBg: 'bg-[#2a170e]',
+    activeBorder: 'border-orange-500/50',
+    activeShadow: 'shadow-[0_0_6px_rgba(249,115,22,0.18)]',
+    defaultColor: '#f97316',
+    showInAdmin: true,
   },
 
   // ===================== 安全 SECURITY =====================

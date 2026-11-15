@@ -13,7 +13,7 @@ import { Landmark,
   Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
   Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, BusFront, Trophy, Ticket,
   CircleChevronLeft, CircleChevronRight, Globe, BarChart2, ChartNoAxesCombined, ArrowLeftRight,
-  BuildingComplex, Hammer, Info
+  BuildingComplex, Hammer, ArrowLeftToLine, ArrowRightToLine
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
@@ -933,6 +933,7 @@ export interface BuildingPermitRecord {
 
 interface OpenDataPagedResponse<T> {
   total_count: number;
+  yesterday_count?: number | null;
   page: number;
   page_size: number;
   latest_recency_date?: string | null;
@@ -960,13 +961,6 @@ function formatUniformDate(val: string | number | null | undefined, timeZone: st
   } catch {
     return raw.slice(0, 10);
   }
-}
-
-function formatProjectCurrency(val: number | string | null | undefined): string {
-  if (val === null || val === undefined || val === '') return '';
-  const num = Number(val);
-  if (Number.isNaN(num)) return '';
-  return `$${Math.round(num).toLocaleString('en-CA')}`;
 }
 
 function OpenDataPaginationBar({
@@ -1000,27 +994,24 @@ function OpenDataPaginationBar({
   const countColorClass = accent === 'sky' ? 'text-sky-400' : 'text-orange-400';
 
   return (
-    <div className="flex items-center justify-between px-3 py-1.5 bg-[#121620] border border-[#263147] rounded-lg text-xs shrink-0 mt-2">
-      <div className="text-[11px] text-gray-400 flex items-center gap-1.5 min-w-0 truncate">
+    <div className="flex items-center justify-between px-3 py-1.5 bg-[#121620] border border-[#263147] rounded-lg text-xs shrink-0 mt-1.5">
+      <div className="text-[11px] text-gray-400 flex items-center gap-1 min-w-0 whitespace-nowrap">
         <span>
           顯示第 <span className={`font-semibold font-mono tabular-nums ${countColorClass}`}>{startIdx}</span> -{' '}
           <span className={`font-semibold font-mono tabular-nums ${countColorClass}`}>{endIdx}</span> 筆
         </span>
-        {totalCount > 0 && (
-          <span className="hidden sm:inline text-gray-500 font-mono tabular-nums">
-            / {totalCount.toLocaleString()}
-          </span>
-        )}
       </div>
 
       <div className="flex items-center gap-1.5 shrink-0">
         <button
           type="button"
+          title="首頁"
+          aria-label="首頁"
           onClick={() => onPageChange(1)}
           disabled={safePage <= 1 || loading}
-          className="px-2 py-1 rounded bg-[#1a1f2d] text-gray-300 border border-[#2c3448] disabled:opacity-40 hover:bg-[#23293a] text-[11px] cursor-pointer disabled:cursor-not-allowed transition-colors"
+          className="p-1 rounded bg-[#1a1f2d] text-gray-300 border border-[#2c3448] disabled:opacity-40 hover:bg-[#23293a] cursor-pointer disabled:cursor-not-allowed transition-colors"
         >
-          首頁
+          <ArrowLeftToLine className="w-3.5 h-3.5" />
         </button>
         <button
           type="button"
@@ -1059,11 +1050,13 @@ function OpenDataPaginationBar({
         </button>
         <button
           type="button"
+          title="末頁"
+          aria-label="末頁"
           onClick={() => onPageChange(maxReachablePages)}
           disabled={safePage >= maxReachablePages || loading}
-          className="px-2 py-1 rounded bg-[#1a1f2d] text-gray-300 border border-[#2c3448] disabled:opacity-40 hover:bg-[#23293a] text-[11px] cursor-pointer disabled:cursor-not-allowed transition-colors"
+          className="p-1 rounded bg-[#1a1f2d] text-gray-300 border border-[#2c3448] disabled:opacity-40 hover:bg-[#23293a] cursor-pointer disabled:cursor-not-allowed transition-colors"
         >
-          末頁
+          <ArrowRightToLine className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
@@ -1074,10 +1067,8 @@ function OpenDataExploreShell({
   title,
   icon,
   accent,
-  datasetHref,
-  recencyLabel,
-  recencyDate,
   intervalLabel,
+  headerCount,
   totalCount,
   loading,
   error,
@@ -1104,12 +1095,10 @@ function OpenDataExploreShell({
   children,
 }: {
   title: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   accent: 'sky' | 'orange';
-  datasetHref: string;
-  recencyLabel: string;
-  recencyDate: string;
   intervalLabel?: string;
+  headerCount: number;
   totalCount: number;
   loading: boolean;
   error: string | null;
@@ -1144,39 +1133,20 @@ function OpenDataExploreShell({
   const accentFocus = accent === 'sky' ? 'focus:border-sky-500' : 'focus:border-orange-500';
   const accentSpinner = accent === 'sky' ? 'text-sky-400' : 'text-orange-400';
   const accentDot = accent === 'sky' ? 'bg-sky-400' : 'bg-orange-400';
-  const accentBadge =
-    accent === 'sky'
-      ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
-      : 'bg-orange-500/15 text-orange-300 border-orange-500/30';
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
       {/* Subheader (matching 3-1-1 compact style) */}
       <div className="flex items-center justify-between mb-2 shrink-0 gap-2">
-        <div className="flex items-center gap-2 min-w-0 flex-wrap">
+        <div className="flex items-center gap-2 min-w-0">
           <span className={`w-2 h-2 rounded-full ${accentDot} animate-pulse shrink-0`} />
           <span className="text-xs text-gray-200 font-semibold truncate flex items-center gap-1.5">
             {icon}
-            <span>{title}: {totalCount.toLocaleString()} 件</span>
+            <span>{title}: {headerCount.toLocaleString()} 件</span>
           </span>
-          {recencyDate && (
-            <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono border shrink-0 ${accentBadge}`}>
-              {recencyLabel}: {recencyDate}
-            </span>
-          )}
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
-          <a
-            href={datasetHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 px-1.5 py-1 rounded-md bg-[#12151e] hover:bg-[#1e2433] text-[10px] text-gray-400 hover:text-gray-200 border border-[#262b38] transition-colors"
-            title="前往溫哥華市政府 OpenData 官方資料集"
-          >
-            <span>OpenData</span>
-            <ExternalLink className="w-2.5 h-2.5" />
-          </a>
           <button
             type="button"
             onClick={onRefresh}
@@ -1186,14 +1156,14 @@ function OpenDataExploreShell({
           >
             <RefreshCw className={`w-3 h-3 ${loading ? `animate-spin ${accentSpinner}` : ''}`} />
           </button>
-          <span className="text-[10px] text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full whitespace-nowrap">
-            {intervalLabel || '每 24 小時'}
+          <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono whitespace-nowrap">
+            {intervalLabel || '每日更新 1 次'}
           </span>
         </div>
       </div>
 
-      {/* Compact Filter Bar (matching 3-1-1 style) */}
-      <div className="flex flex-col gap-1.5 mb-2.5 shrink-0 bg-[#12151e]/80 p-2 rounded-xl border border-[#262b38]">
+      {/* Compact Filter Bar */}
+      <div className="flex flex-col gap-1.5 mb-2 shrink-0 bg-[#12151e]/80 p-1.5 rounded-xl border border-[#262b38]">
         <div className="relative">
           <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
@@ -1228,7 +1198,7 @@ function OpenDataExploreShell({
               aria-label={dateLabel}
               value={dateValue}
               onChange={(e) => onDateChange(e.target.value)}
-              className="bg-transparent text-gray-200 text-[11px] font-mono outline-none [color-scheme:dark] w-[110px]"
+              className="bg-transparent text-gray-200 text-[11px] font-mono outline-none [color-scheme:dark] w-[108px]"
             />
             {dateValue && (
               <button
@@ -1259,6 +1229,18 @@ function OpenDataExploreShell({
             </select>
           </div>
 
+          {/* Page Size (放在排序的右方) */}
+          <select
+            aria-label="每頁筆數"
+            value={pageSize}
+            onChange={(e) => onPageSizeChange(Number(e.target.value) || 20)}
+            className={`bg-[#1a1d26] text-gray-300 border border-[#2d3343] rounded-lg px-2 py-1 text-[11px] font-mono outline-none ${accentFocus} cursor-pointer shrink-0`}
+          >
+            <option value={20}>20 筆</option>
+            <option value={50}>50 筆</option>
+            <option value={100}>100 筆</option>
+          </select>
+
           {/* Facet Filters */}
           {filters.map((flt) => (
             <select
@@ -1266,7 +1248,7 @@ function OpenDataExploreShell({
               aria-label={flt.label}
               value={flt.value}
               onChange={(e) => flt.onChange(e.target.value)}
-              className={`bg-[#1a1d26] text-gray-300 border border-[#2d3343] rounded-lg px-2 py-1 text-[11px] outline-none ${accentFocus} max-w-[145px] truncate cursor-pointer`}
+              className={`bg-[#1a1d26] text-gray-300 border border-[#2d3343] rounded-lg px-2 py-1 text-[11px] outline-none ${accentFocus} max-w-[140px] truncate cursor-pointer`}
             >
               <option value="all">{flt.label}（全部）</option>
               {flt.options.map((opt) => (
@@ -1276,18 +1258,6 @@ function OpenDataExploreShell({
               ))}
             </select>
           ))}
-
-          {/* Page Size */}
-          <select
-            aria-label="每頁筆數"
-            value={pageSize}
-            onChange={(e) => onPageSizeChange(Number(e.target.value) || 20)}
-            className={`bg-[#1a1d26] text-gray-300 border border-[#2d3343] rounded-lg px-2 py-1 text-[11px] font-mono outline-none ${accentFocus} cursor-pointer`}
-          >
-            <option value={20}>20 筆</option>
-            <option value={50}>50 筆</option>
-            <option value={100}>100 筆</option>
-          </select>
 
           {hasActiveFilters && (
             <button
@@ -1301,8 +1271,8 @@ function OpenDataExploreShell({
         </div>
       </div>
 
-      {/* Scrollable Stacked Cards List (no inner min-h-0 so max-h parent never collapses to 0px) */}
-      <div className="flex-1 overflow-y-auto min-h-[260px] space-y-2 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#263147] [&::-webkit-scrollbar-thumb]:rounded-full">
+      {/* Scrollable Stacked Cards List */}
+      <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pr-1 pb-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#263147] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#364462]">
         {loading && isEmpty ? (
           <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2">
             <RefreshCw className={`w-6 h-6 animate-spin ${accentSpinner}`} />
@@ -1827,8 +1797,6 @@ function ExploreContent() {
   const [bpPageSize, setBpPageSize] = useState(20);
   const [bpRefreshTick, setBpRefreshTick] = useState(0);
   const bpForceRef = useRef(false);
-  const [hoveredPermitInfo, setHoveredPermitInfo] = useState<string | null>(null);
-  const [pinnedPermitInfo, setPinnedPermitInfo] = useState<string | null>(null);
 
   useEffect(() => {
     if (blSearch === blDebouncedSearch) return;
@@ -1847,13 +1815,6 @@ function ExploreContent() {
     }, 320);
     return () => clearTimeout(timer);
   }, [bpSearch, bpDebouncedSearch]);
-
-  useEffect(() => {
-    if (!pinnedPermitInfo) return;
-    const handleOutsideClick = () => setPinnedPermitInfo(null);
-    document.addEventListener('click', handleOutsideClick);
-    return () => document.removeEventListener('click', handleOutsideClick);
-  }, [pinnedPermitInfo]);
 
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'business') return;
@@ -1971,7 +1932,6 @@ function ExploreContent() {
     rowKey: string
   ) => {
     if (item.lat == null || item.lon == null) return;
-    setPinnedPermitInfo(null);
     const isBusiness = type === 'business_licence';
     const blItem = item as BusinessLicenceRecord;
     const bpItem = item as BuildingPermitRecord;
@@ -3253,7 +3213,10 @@ function ExploreContent() {
     setSearchTarget({
       id: `fuel_${st.id}`,
       title: st.name || st.brand,
-      subtitle: `${st.address} · 油價: ${st.price_current.toFixed(1)}¢`,
+      subtitle:
+        st.price_current > 0 && st.price_current < 900
+          ? `${st.address} · 油價: ${st.price_current.toFixed(1)}¢`
+          : `${st.address} · 暫無報價`,
       category: 'fuel',
       layer_key: 'fuel',
       badge: '油站',
@@ -5023,7 +4986,11 @@ function ExploreContent() {
 
   return (
     <div 
-      className="fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-[45] sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-88px)] lg:max-w-[calc(100vw-328px)] bottom-[calc(62px+env(safe-area-inset-bottom,0px))] sm:bottom-auto max-h-[calc(100dvh-130px)] sm:max-h-[calc(100dvh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className={`fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-[45] sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-88px)] lg:max-w-[calc(100vw-328px)] bottom-[calc(62px+env(safe-area-inset-bottom,0px))] sm:bottom-auto ${
+        activeTab === '311' || activeTab === 'business' || activeTab === 'permits'
+          ? 'h-[calc(100dvh-130px)] sm:h-[calc(100dvh-148px)]'
+          : ''
+      } max-h-[calc(100dvh-130px)] sm:max-h-[calc(100dvh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden`}
       onClick={(e) => e.stopPropagation()}
     >
       {/* 1. 當多於1個分頁時的關閉確認對話框 (Close Confirmation Dialog) */}
@@ -7754,17 +7721,19 @@ function ExploreContent() {
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
+                  title="首頁"
+                  aria-label="首頁"
                   onClick={() => setPage311(1)}
                   disabled={page311 <= 1}
-                  className="px-2 py-0.5 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] text-[11px] transition-colors cursor-pointer"
+                  className="p-1 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] transition-colors cursor-pointer disabled:cursor-not-allowed"
                 >
-                  首頁
+                  <ArrowLeftToLine className="w-3.5 h-3.5" />
                 </button>
                 <button
                   type="button"
                   onClick={() => setPage311(p => Math.max(1, p - 1))}
                   disabled={page311 <= 1}
-                  className="p-1 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] transition-colors cursor-pointer"
+                  className="p-1 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] transition-colors cursor-pointer disabled:cursor-not-allowed"
                   title="上一頁"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
@@ -7776,18 +7745,20 @@ function ExploreContent() {
                   type="button"
                   onClick={() => setPage311(p => Math.min(totalPages311, p + 1))}
                   disabled={page311 >= totalPages311}
-                  className="p-1 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] transition-colors cursor-pointer"
+                  className="p-1 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] transition-colors cursor-pointer disabled:cursor-not-allowed"
                   title="下一頁"
                 >
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
                 <button
                   type="button"
+                  title="末頁"
+                  aria-label="末頁"
                   onClick={() => setPage311(totalPages311)}
                   disabled={page311 >= totalPages311}
-                  className="px-2 py-0.5 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] text-[11px] transition-colors cursor-pointer"
+                  className="p-1 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] transition-colors cursor-pointer disabled:cursor-not-allowed"
                 >
-                  末頁
+                  <ArrowRightToLine className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -7799,8 +7770,8 @@ function ExploreContent() {
       {activeTab === 'business' && (() => {
         const results = blData?.results || [];
         const facets = blData?.facets || {};
-        const recencyDate = formatUniformDate(blData?.latest_recency_date || results[0]?.extractdate, timeZone);
-        const intervalText = adminSourceIntervals?.business_licences;
+        const rawInterval = adminSourceIntervals?.business_licences;
+        const intervalText = rawInterval && rawInterval !== '每 24 小時' ? rawInterval : '每日更新 1 次';
         const hasActiveFilters = Boolean(
           blSearch.trim() ||
           blStatusFilter !== 'all' ||
@@ -7812,13 +7783,11 @@ function ExploreContent() {
 
         return (
           <OpenDataExploreShell
-            title="溫哥華商業牌照 (Business Licences)"
+            title="昨日商業牌照擷取數量"
             icon={<BuildingComplex className="w-4 h-4 text-sky-400 shrink-0" />}
             accent="sky"
-            datasetHref="https://opendata.vancouver.ca/explore/dataset/business-licences/"
-            recencyLabel="ExtractDate"
-            recencyDate={recencyDate}
             intervalLabel={intervalText}
+            headerCount={blData?.yesterday_count ?? 0}
             totalCount={blData?.total_count ?? 0}
             loading={loadingBl}
             error={blError}
@@ -7837,7 +7806,7 @@ function ExploreContent() {
             }}
             sortValue={blSort}
             sortOptions={[
-              { value: 'extract_desc', label: '最新擷取 (ExtractDate ↓)' },
+              { value: 'extract_desc', label: '最新擷取' },
               { value: 'issued_desc', label: '發牌日期 (新 → 舊)' },
               { value: 'issued_asc', label: '發牌日期 (舊 → 新)' },
               { value: 'expired_desc', label: '到期日期 (遠 → 近)' },
@@ -7927,7 +7896,7 @@ function ExploreContent() {
                     hasCoords ? 'cursor-pointer' : 'opacity-90'
                   }`}
                 >
-                  {/* Row 1: Status pill + Title + Google Navigation right button */}
+                  {/* Row 1: Status pill + Title + LocalArea & Google Navigation right buttons */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 flex-wrap min-w-0">
                       {item.status && (
@@ -7942,32 +7911,36 @@ function ExploreContent() {
                       )}
                     </div>
 
-                    {hasCoords && (
-                      <a
-                        href={getGoogleNavUrl(item.lat!, item.lon!)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        title="Google Maps 導航至此"
-                        className="p-1.5 bg-[#10261b] hover:bg-emerald-600/30 border border-emerald-500/30 rounded-lg text-emerald-400 hover:text-emerald-300 transition-colors shrink-0"
-                      >
-                        <Navigation className="w-3.5 h-3.5" />
-                      </a>
+                    {(item.localarea || hasCoords) && (
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {item.localarea && (
+                          <span className="bg-cyan-950/40 text-cyan-300 border border-cyan-500/20 px-2 py-0.5 rounded text-[10.5px] flex items-center gap-1 whitespace-nowrap">
+                            <MapPin className="w-2.5 h-2.5 shrink-0" />
+                            {item.localarea}
+                          </span>
+                        )}
+                        {hasCoords && (
+                          <a
+                            href={getGoogleNavUrl(item.lat!, item.lon!)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            title="Google Maps 導航至此"
+                            className="p-1.5 bg-[#10261b] hover:bg-emerald-600/30 border border-emerald-500/30 rounded-lg text-emerald-400 hover:text-emerald-300 transition-colors shrink-0"
+                          >
+                            <Navigation className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
                     )}
                   </div>
 
-                  {/* Row 2: Category, LocalArea & Licence Number pills */}
-                  {( (item.businesstype && item.businesstype !== titleText) || item.localarea || item.licencenumber ) && (
+                  {/* Row 2: Category & Licence Number pills */}
+                  {((item.businesstype && item.businesstype !== titleText) || item.licencenumber) && (
                     <div className="flex flex-wrap items-center gap-1.5 text-[10.5px]">
                       {item.businesstype && item.businesstype !== titleText && (
                         <span className="bg-indigo-950/40 text-indigo-300 border border-indigo-500/20 px-2 py-0.5 rounded font-medium">
                           {item.businesstype}
-                        </span>
-                      )}
-                      {item.localarea && (
-                        <span className="bg-cyan-950/40 text-cyan-300 border border-cyan-500/20 px-2 py-0.5 rounded flex items-center gap-1">
-                          <MapPin className="w-2.5 h-2.5 shrink-0" />
-                          {item.localarea}
                         </span>
                       )}
                       {item.licencenumber && (
@@ -8003,8 +7976,8 @@ function ExploreContent() {
       {activeTab === 'permits' && (() => {
         const results = bpData?.results || [];
         const facets = bpData?.facets || {};
-        const recencyDate = formatUniformDate(bpData?.latest_recency_date || results[0]?.issuedate, timeZone);
-        const intervalText = adminSourceIntervals?.building_permits;
+        const rawInterval = adminSourceIntervals?.building_permits;
+        const intervalText = rawInterval && rawInterval !== '每 24 小時' ? rawInterval : '每日更新 1 次';
         const hasActiveFilters = Boolean(
           bpSearch.trim() ||
           bpCategoryFilter !== 'all' ||
@@ -8016,13 +7989,11 @@ function ExploreContent() {
 
         return (
           <OpenDataExploreShell
-            title="溫哥華建築許可 (Building Permits)"
-            icon={<Hammer className="w-4 h-4 text-orange-400 shrink-0" />}
+            title="昨日建築許可審批數量"
+            icon={null}
             accent="orange"
-            datasetHref="https://opendata.vancouver.ca/explore/dataset/issued-building-permits/"
-            recencyLabel="IssueDate"
-            recencyDate={recencyDate}
             intervalLabel={intervalText}
+            headerCount={bpData?.yesterday_count ?? 0}
             totalCount={bpData?.total_count ?? 0}
             loading={loadingBp}
             error={bpError}
@@ -8041,7 +8012,7 @@ function ExploreContent() {
             }}
             sortValue={bpSort}
             sortOptions={[
-              { value: 'issuedate_desc', label: '核發日期 (新 → 舊 IssueDate ↓)' },
+              { value: 'issuedate_desc', label: '核發日期 (新 → 舊)' },
               { value: 'issuedate_asc', label: '核發日期 (舊 → 新)' },
               { value: 'value_desc', label: '工程預算 (高 → 低)' },
               { value: 'value_asc', label: '工程預算 (低 → 高)' },
@@ -8111,10 +8082,6 @@ function ExploreContent() {
               const rowKey = `${item.permitnumber || 'bp'}_${idx}`;
               const hasCoords = item.lat != null && item.lon != null;
               const issuedFmt = formatUniformDate(item.issuedate, timeZone);
-              const projectValFmt = formatProjectCurrency(item.projectvalue);
-              const hasDesc = Boolean(item.projectdescription && item.projectdescription.trim());
-              const isInfoOpen = hoveredPermitInfo === rowKey || pinnedPermitInfo === rowKey;
-              const isBottomRows = results.length >= 2 && idx >= results.length - 2 && idx > 0;
               const titleText = item.address || item.permitnumber;
 
               return (
@@ -8125,7 +8092,7 @@ function ExploreContent() {
                     hasCoords ? 'cursor-pointer' : 'opacity-90'
                   }`}
                 >
-                  {/* Row 1: TypeOfWork pill + Address/Permit Title + Info & Google Navigation right buttons */}
+                  {/* Row 1: TypeOfWork pill + Address/Permit Title + GeoLocalArea & Google Navigation right buttons */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 flex-wrap min-w-0">
                       {item.typeofwork && (
@@ -8140,54 +8107,13 @@ function ExploreContent() {
                       )}
                     </div>
 
-                    {(hasDesc || hasCoords) && (
+                    {(item.geolocalarea || hasCoords) && (
                       <div className="flex items-center gap-1.5 shrink-0">
-                        {hasDesc && (
-                          <div
-                            className="relative shrink-0"
-                            onPointerEnter={(e) => {
-                              if (e.pointerType !== 'touch') setHoveredPermitInfo(rowKey);
-                            }}
-                            onPointerLeave={(e) => {
-                              if (e.pointerType !== 'touch') setHoveredPermitInfo(null);
-                            }}
-                          >
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setPinnedPermitInfo((prev) => (prev === rowKey ? null : rowKey));
-                              }}
-                              title="檢視工程說明 (Project Description)"
-                              aria-label="工程說明"
-                              className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
-                                isInfoOpen
-                                  ? 'bg-orange-500/25 text-orange-300 border-orange-500/50'
-                                  : 'bg-[#1a1f2d] hover:bg-orange-500/20 text-gray-300 hover:text-orange-300 border-[#2c3448]'
-                              }`}
-                            >
-                              <Info className="w-3.5 h-3.5" />
-                            </button>
-
-                            {isInfoOpen && (
-                              <div
-                                onClick={(e) => e.stopPropagation()}
-                                className={`absolute right-0 ${
-                                  isBottomRows ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
-                                } w-64 sm:w-80 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 z-50 text-left animate-in fade-in duration-150`}
-                              >
-                                <div className="text-[10.5px] font-bold text-orange-300 mb-1 flex items-center justify-between gap-2">
-                                  <span>工程說明</span>
-                                  {item.permitnumber && (
-                                    <span className="font-mono text-gray-400">{item.permitnumber}</span>
-                                  )}
-                                </div>
-                                <p className="text-[11px] text-gray-200 leading-relaxed whitespace-pre-line break-words">
-                                  {item.projectdescription}
-                                </p>
-                              </div>
-                            )}
-                          </div>
+                        {item.geolocalarea && (
+                          <span className="bg-cyan-950/40 text-cyan-300 border border-cyan-500/20 px-2 py-0.5 rounded text-[10.5px] flex items-center gap-1 whitespace-nowrap">
+                            <MapPin className="w-2.5 h-2.5 shrink-0" />
+                            {item.geolocalarea}
+                          </span>
                         )}
 
                         {hasCoords && (
@@ -8206,25 +8132,12 @@ function ExploreContent() {
                     )}
                   </div>
 
-                  {/* Row 2: Permit Category, GeoLocalArea & Permit Number pills */}
-                  {(item.permitcategory || item.geolocalarea || item.permitnumber) && (
+                  {/* Row 2: Permit Number pill */}
+                  {item.permitnumber && (
                     <div className="flex flex-wrap items-center gap-1.5 text-[10.5px]">
-                      {item.permitcategory && (
-                        <span className="bg-amber-950/40 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded font-medium">
-                          {item.permitcategory}
-                        </span>
-                      )}
-                      {item.geolocalarea && (
-                        <span className="bg-cyan-950/40 text-cyan-300 border border-cyan-500/20 px-2 py-0.5 rounded flex items-center gap-1">
-                          <MapPin className="w-2.5 h-2.5 shrink-0" />
-                          {item.geolocalarea}
-                        </span>
-                      )}
-                      {item.permitnumber && (
-                        <span className="bg-[#1e2535] text-gray-300 px-2 py-0.5 rounded font-mono tabular-nums">
-                          {item.permitnumber}
-                        </span>
-                      )}
+                      <span className="bg-[#1e2535] text-gray-300 px-2 py-0.5 rounded font-mono tabular-nums">
+                        {item.permitnumber}
+                      </span>
                     </div>
                   )}
 
@@ -8235,15 +8148,10 @@ function ExploreContent() {
                     </div>
                   )}
 
-                  {/* Row 4: IssueDate & Project Value hairline footer */}
-                  {(issuedFmt || projectValFmt) && (
+                  {/* Row 4: IssueDate hairline footer */}
+                  {issuedFmt && (
                     <div className="flex items-center justify-between text-[10.5px] text-gray-500 pt-0.5 border-t border-[#1d2434] font-mono tabular-nums">
-                      <span>{issuedFmt ? `核發: ${issuedFmt}` : ''}</span>
-                      {projectValFmt && (
-                        <span>
-                          預算: <span className="text-emerald-300 font-semibold">{projectValFmt}</span>
-                        </span>
-                      )}
+                      <span>核發: {issuedFmt}</span>
                     </div>
                   )}
                 </div>
@@ -9210,8 +9118,8 @@ function ExploreContent() {
 
                     <div className="text-right shrink-0 pl-1">
                       <div className="text-sm font-bold font-mono text-amber-400 whitespace-nowrap">
-                        <span>{(Number(st.price_current) || 0).toFixed(1)}</span>
-                        <span className="ml-0.5 text-xs">¢</span>
+                        <span>{st.price_current > 0 && st.price_current < 900 ? Number(st.price_current).toFixed(1) : '--'}</span>
+                        {st.price_current > 0 && st.price_current < 900 && <span className="ml-0.5 text-xs">¢</span>}
                       </div>
                       <div className="text-[10.5px] font-mono text-gray-400 mt-0.5">
                         {distDisplay}

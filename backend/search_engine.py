@@ -242,6 +242,11 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "泳灘": ("beach_water_quality",),
     "沙灘": ("beach_water_quality",),
     "beach": ("beach_water_quality",),
+    "山火": ("wildfire",),
+    "林火": ("wildfire",),
+    "野火": ("wildfire",),
+    "wildfire": ("wildfire",),
+    "wildfires": ("wildfire",),
     "公共藝術": ("public_art",),
     "雕塑": ("public_art",),
     "壁畫": ("public_art",),
@@ -356,6 +361,8 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "泊車": ("impark", "parking_meters", "accessible_parking"),
     "parking": ("impark", "accessible_parking", "parking_meters"),
     "impark": ("impark",),
+    "easypark": ("impark",),
+    "easy park": ("impark",),
     "收費錶": ("parking_meters",),
     "咪錶": ("parking_meters",),
     "meter": ("parking_meters",),
@@ -514,6 +521,7 @@ CATEGORY_TIER_BONUS: dict[str, int] = {
     "banks": 30,
     "local_area_boundary": 30,
     "beach_water_quality": 30,
+    "wildfire": 30,
     "marine_terminals": 28,
     "airport_indoor": 24,
     # Tier 2 (+20): Bus Routes, Energy, Parking Lots, Mobility Share, Couriers, Washrooms, Live Overlays
@@ -935,6 +943,7 @@ GEOJSON_LAYER_CONFIGS: list[tuple[str, str, str, str, str, str, int, Optional[st
     ("community_gardens", "community_gardens", "community_gardens", "社區花園", "🌻", "communityGardens", 16, None),
     ("community_centres", "community_centres", "community_centres", "社區中心", "🏛️", "communityCentres", 16, None),
     ("beach_water", "beach_water_quality", "beach_water_quality", "海灘水質", "🏖️", "beachWaterQuality", 15, None),
+    ("wildfire", "wildfire", "wildfire", "山火", "🔥", "wildfire", 13, None),
     ("public_washrooms", "public_washrooms", "public_washrooms", "公共洗手間", "🚻", "publicWashrooms", 17, None),
     ("drinking_fountains", "drinking_fountains", "drinking_fountains", "飲水器", "💧", "drinkingFountains", 17, None),
     ("food_banks", "food_banks", "food_banks", "食物援助", "🥫", "foodBanks", 16, None),
@@ -951,7 +960,7 @@ GEOJSON_LAYER_CONFIGS: list[tuple[str, str, str, str, str, str, int, Optional[st
     ("fuel", "fuel", "fuel", "油站", "⛽", "fuel", 16, None),
     ("tesla", "tesla", "tesla", "Tesla 充電站", "⚡", "tesla", 16, None),
     ("ev_charging", "ev_charging", "ev_charging", "電動車充電站", "⚡", "evCharging", 16, None),
-    ("impark", "impark", "impark", "ImPark 停車場", "🅿️", "impark", 16, None),
+    ("impark", "impark", "impark", "私人停車場", "🅿️", "impark", 16, None),
     ("accessible_parking", "accessible_parking", "accessible_parking", "無障礙停車位", "♿", "accessibleParking", 17, None),
     ("motorcycle_parking", "motorcycle_parking", "motorcycle_parking", "摩托車停車位", "🏍️", "motorcycleParking", 17, None),
     ("car_sharing", "car_sharing", "car_sharing", "共享汽車", "🚗", "carSharing", 16, None),
@@ -992,7 +1001,7 @@ _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
     "fuel": "油站 加油站 汽油 柴油 gas station fuel petrol",
     "tesla": "tesla 特斯拉 超級充電 目的地充電 supercharger ev charger",
     "ev_charging": "充電 充電站 充電樁 電動車 ev charging charger flo chargepoint cp j1772 ccs combo nacs chademo",
-    "impark": "停車場 泊車 時租 月租 impark parking lot",
+    "impark": "停車場 泊車 時租 月租 季節 年租 私人停車場 impark easypark parking lot",
     "accessible_parking": "無障礙車位 殘障車位 傷健車位 accessible parking disability",
     "motorcycle_parking": "摩托車 電單車 重機 停車位 motorcycle parking",
     "parking_meters": "停車收費錶 咪錶 路邊泊車 parking meter paybyphone",
@@ -1014,6 +1023,7 @@ _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
     "parks_facilities": "公園設施 球場 網球場 籃球場 泳池 遊樂場 playground court",
     "community_gardens": "社區花園 農圃 community garden",
     "beach_water_quality": "海灘 泳灘 沙灘 水質 大腸桿菌 beach swimming",
+    "wildfire": "山火 林火 野火 火險 火災危險等級 wildfire fire danger bc wildfire service",
     "police": "警察局 警局 報案 治安 police vpd",
     "fire_halls": "消防局 消防隊 救火 fire hall rescue",
     "consulates": "領事館 總領事館 名譽領事館 大使館 外交 簽證 護照 consulate consulates consular consul embassy",
@@ -2086,9 +2096,20 @@ class LayerSearchEngine:
                     title = sname
                 elif fstem == "impark":
                     lnum = str(props.get("lot_number") or "").strip()
+                    op = str(props.get("operator") or ("EasyPark" if str(props.get("company") or "").lower() == "easypark" else "ImPark")).strip()
                     if lnum:
                         exact_codes.append(lnum)
-                    title = str(props.get("lot_name") or (f"ImPark Lot #{lnum}" if lnum else "ImPark 停車場")).strip()
+                    for pz in (props.get("pay_zones") or []):
+                        if isinstance(pz, dict) and pz.get("code"):
+                            exact_codes.append(str(pz["code"]).strip())
+                    raw_lot = str(props.get("lot_name") or "").strip()
+                    if raw_lot:
+                        if op.lower() not in raw_lot.lower():
+                            title = f"{op} Lot #{lnum} - {raw_lot}" if lnum else f"{op} - {raw_lot}"
+                        else:
+                            title = raw_lot
+                    else:
+                        title = f"{op} Lot #{lnum}" if lnum else f"{op} 停車場"
                 elif fstem == "canada_post":
                     title = str(props.get("name") or props.get("postaladdress") or "Canada Post").strip()
                 elif fstem == "fedex":
@@ -2185,6 +2206,11 @@ class LayerSearchEngine:
                     title = f"消防栓 · {street_h}"
                 elif fstem == "consulates":
                     title = str(props.get("office_name") or raw_name or "領事館").strip()
+                elif fstem == "wildfire":
+                    title = str(props.get("incidentName") or raw_name or "山火事件").strip()
+                    inc_lbl = str(props.get("incidentNumberLabel") or "").strip()
+                    if inc_lbl:
+                        exact_codes.append(inc_lbl)
                     c_en = str(props.get("country") or "").strip()
                     if c_en:
                         exact_codes.append(c_en)
@@ -2219,6 +2245,7 @@ class LayerSearchEngine:
                     or props.get("postaladdress")
                     or props.get("address1")
                     or (props.get("address") if isinstance(props.get("address"), str) else "")
+                    or props.get("incidentLocation")
                     or props.get("street_address")
                     or props.get("location")
                     or props.get("hblock")
@@ -2319,6 +2346,17 @@ class LayerSearchEngine:
                         props.get("classification"),
                         props.get("district_file_no"),
                         props.get("operator"),
+                        props.get("company"),
+                        props.get("incidentLocation"),
+                        props.get("fireCentreName"),
+                        props.get("stage_of_control_zh"),
+                        props.get("stageOfControlCode"),
+                        props.get("lot_number"),
+                        " ".join(
+                            f"{z.get('provider', '')} {z.get('code', '')}"
+                            for z in (props.get("pay_zones") or [])
+                            if isinstance(z, dict)
+                        ),
                         props.get("station_name"),
                         props.get("connectors"),
                         props.get("email"),

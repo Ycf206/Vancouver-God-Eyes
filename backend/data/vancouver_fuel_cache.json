@@ -10,12 +10,12 @@
     "lat": 49.268679,
     "lon": -123.145324,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 185.9,
+      "midgrade": 203.9,
+      "premium": 212.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -29,12 +29,12 @@
     "lat": 49.269985,
     "lon": -123.145914,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 182.9,
+      "midgrade": 206.9,
+      "premium": 215.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -48,12 +48,12 @@
     "lat": 49.210904,
     "lon": -123.10264,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 213.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -67,12 +67,12 @@
     "lat": 49.210578,
     "lon": -123.091624,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 185.9,
+      "midgrade": 203.9,
+      "premium": 211.9,
+      "diesel": 259.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -86,12 +86,12 @@
     "lat": 49.210637,
     "lon": -123.090643,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 182.9,
+      "midgrade": 192.9,
+      "premium": 200.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -105,12 +105,12 @@
     "lat": 49.234466,
     "lon": -123.184904,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 186.9,
+      "midgrade": 213.9,
+      "premium": 216.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -124,12 +124,12 @@
     "lat": 49.21046,
     "lon": -123.12982,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 182.9,
+      "midgrade": 203.9,
+      "premium": 212.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -143,12 +143,12 @@
     "lat": 49.226303,
     "lon": -123.12865,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 187.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -162,12 +162,12 @@
     "lat": 49.234639,
     "lon": -123.139969,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 179.9,
+      "midgrade": 205.9,
+      "premium": 209.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -181,12 +181,12 @@
     "lat": 49.248902,
     "lon": -123.128042,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 186.9,
+      "midgrade": 206.9,
+      "premium": 213.9,
+      "diesel": 264.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -200,12 +200,12 @@
     "lat": 49.248913,
     "lon": -123.127202,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 186.9,
+      "midgrade": 212.9,
+      "premium": 216.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -219,12 +219,12 @@
     "lat": 49.224443,
     "lon": -123.040674,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 185.9,
+      "midgrade": 215.9,
+      "premium": 219.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -238,12 +238,12 @@
     "lat": 49.259146,
     "lon": -123.061771,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 213.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -257,12 +257,12 @@
     "lat": 49.264067,
     "lon": -123.153472,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 182.9,
+      "midgrade": 211.9,
+      "premium": 216.9,
+      "diesel": 264.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -282,7 +282,7 @@
       "diesel": null
     },
     "source": "待官方即時更新",
-    "updated_at": "剛更新"
+    "updated_at": "待官方即時更新"
   },
   {
     "id": "way/397336068",
@@ -295,12 +295,12 @@
     "lat": 49.205405,
     "lon": -123.140194,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 185.9,
+      "midgrade": 195.9,
+      "premium": 211.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -314,12 +314,12 @@
     "lat": 49.263494,
     "lon": -123.203527,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 185.9,
+      "midgrade": 211.9,
+      "premium": 215.9,
+      "diesel": 265.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -333,12 +333,12 @@
     "lat": 49.263993,
     "lon": -123.145355,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 186.9,
+      "midgrade": 210.9,
+      "premium": 217.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -352,12 +352,12 @@
     "lat": 49.279219,
     "lon": -123.129971,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 186.9,
+      "midgrade": 210.9,
+      "premium": 221.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -371,12 +371,12 @@
     "lat": 49.260443,
     "lon": -123.100648,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 185.2,
+      "midgrade": 204.9,
+      "premium": 213.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -396,7 +396,7 @@
       "diesel": null
     },
     "source": "待官方即時更新",
-    "updated_at": "剛更新"
+    "updated_at": "待官方即時更新"
   },
   {
     "id": "way/1181212709",
@@ -409,12 +409,12 @@
     "lat": 49.258535,
     "lon": -123.028001,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 182.9,
+      "midgrade": 200.9,
+      "premium": 209.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -428,12 +428,12 @@
     "lat": 49.222029,
     "lon": -123.065472,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 181.9,
+      "midgrade": 199.9,
+      "premium": 208.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -447,12 +447,12 @@
     "lat": 49.210237,
     "lon": -123.099066,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 180.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
+      "diesel": 259.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -466,12 +466,12 @@
     "lat": 49.232429,
     "lon": -123.077454,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 181.9,
+      "midgrade": 212.9,
+      "premium": 216.9,
+      "diesel": 265.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -485,12 +485,12 @@
     "lat": 49.26927,
     "lon": -123.057039,
     "prices": {
-      "regular": null,
+      "regular": 178.9,
       "midgrade": null,
       "premium": null,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -504,12 +504,12 @@
     "lat": 49.269129,
     "lon": -123.056105,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 178.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -523,12 +523,12 @@
     "lat": 49.263855,
     "lon": -123.168633,
     "prices": {
-      "regular": null,
+      "regular": 189.9,
       "midgrade": null,
       "premium": null,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -542,12 +542,12 @@
     "lat": 49.257353,
     "lon": -123.168024,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 213.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -561,12 +561,12 @@
     "lat": 49.239752,
     "lon": -123.065658,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 181.9,
+      "midgrade": 197.9,
+      "premium": 205.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -586,7 +586,7 @@
       "diesel": null
     },
     "source": "待官方即時更新",
-    "updated_at": "剛更新"
+    "updated_at": "待官方即時更新"
   },
   {
     "id": "node/700544626",
@@ -599,12 +599,12 @@
     "lat": 49.224936,
     "lon": -123.06534,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 182.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
+      "diesel": 264.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -618,12 +618,12 @@
     "lat": 49.224991,
     "lon": -123.054358,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 213.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -637,12 +637,12 @@
     "lat": 49.217921,
     "lon": -123.077444,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 213.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -656,12 +656,12 @@
     "lat": 49.25991,
     "lon": -123.077906,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 177.9,
+      "midgrade": 205.9,
+      "premium": 209.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -675,12 +675,12 @@
     "lat": 49.259847,
     "lon": -123.0771,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 177.9,
+      "midgrade": 194.9,
+      "premium": 202.9,
+      "diesel": 264.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -694,12 +694,12 @@
     "lat": 49.262655,
     "lon": -123.077967,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 177.9,
+      "midgrade": 209.9,
+      "premium": 217.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -713,12 +713,12 @@
     "lat": 49.218387,
     "lon": -123.076672,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
+      "diesel": 259.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -732,12 +732,12 @@
     "lat": 49.239975,
     "lon": -123.076799,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 178.9,
+      "midgrade": 196.9,
+      "premium": 204.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -751,12 +751,12 @@
     "lat": 49.237191,
     "lon": -123.065055,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 179.9,
+      "midgrade": 199.9,
+      "premium": 207.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -776,7 +776,7 @@
       "diesel": null
     },
     "source": "待官方即時更新",
-    "updated_at": "剛更新"
+    "updated_at": "待官方即時更新"
   },
   {
     "id": "node/765294772",
@@ -789,12 +789,12 @@
     "lat": 49.233907,
     "lon": -123.1392,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 217.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -808,12 +808,12 @@
     "lat": 49.234217,
     "lon": -123.127645,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -827,12 +827,12 @@
     "lat": 49.242334,
     "lon": -123.058286,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 179.9,
+      "midgrade": 203.9,
+      "premium": 215.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -846,12 +846,12 @@
     "lat": 49.232726,
     "lon": -123.10117,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 181.9,
+      "midgrade": 200.9,
+      "premium": 209.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -865,12 +865,12 @@
     "lat": 49.280893,
     "lon": -123.044473,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 175.9,
+      "midgrade": 204.5,
+      "premium": 212.9,
+      "diesel": 265.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -884,12 +884,12 @@
     "lat": 49.207309,
     "lon": -123.1402,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 222.9,
+      "midgrade": 216.9,
+      "premium": 220.9,
+      "diesel": 265.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -909,7 +909,7 @@
       "diesel": null
     },
     "source": "待官方即時更新",
-    "updated_at": "剛更新"
+    "updated_at": "待官方即時更新"
   },
   {
     "id": "node/2494631076",
@@ -922,12 +922,12 @@
     "lat": 49.257899,
     "lon": -123.043807,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 182.9,
+      "midgrade": 200.9,
+      "premium": 209.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -941,12 +941,12 @@
     "lat": 49.219932,
     "lon": -123.040841,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 178.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -960,12 +960,12 @@
     "lat": 49.257888,
     "lon": -123.033199,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 180.9,
+      "midgrade": 200.9,
+      "premium": 208.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -985,7 +985,7 @@
       "diesel": null
     },
     "source": "待官方即時更新",
-    "updated_at": "剛更新"
+    "updated_at": "待官方即時更新"
   },
   {
     "id": "node/5413453021",
@@ -998,12 +998,12 @@
     "lat": 49.280948,
     "lon": -123.02785,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 183.9,
+      "midgrade": 201.9,
+      "premium": 209.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1017,12 +1017,12 @@
     "lat": 49.28091,
     "lon": -123.066018,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 186.9,
+      "midgrade": 213.9,
+      "premium": 217.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1036,12 +1036,12 @@
     "lat": 49.236054,
     "lon": -123.045498,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 181.9,
+      "midgrade": 200.9,
+      "premium": 209.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1055,12 +1055,12 @@
     "lat": 49.267855,
     "lon": -123.147551,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 182.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1080,7 +1080,7 @@
       "diesel": null
     },
     "source": "待官方即時更新",
-    "updated_at": "剛更新"
+    "updated_at": "待官方即時更新"
   },
   {
     "id": "node/8920851129",
@@ -1093,12 +1093,12 @@
     "lat": 49.204735,
     "lon": -123.023924,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 185.9,
+      "midgrade": 212.9,
+      "premium": 216.9,
+      "diesel": 261.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1112,12 +1112,12 @@
     "lat": 49.269775,
     "lon": -123.034138,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 178.9,
+      "midgrade": 201.9,
+      "premium": 209.9,
+      "diesel": 266.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1131,12 +1131,12 @@
     "lat": 49.269146,
     "lon": -123.033158,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 178.9,
+      "midgrade": 196.9,
+      "premium": 205.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1150,12 +1150,12 @@
     "lat": 49.248935,
     "lon": -123.089728,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 181.9,
+      "midgrade": 196.9,
+      "premium": 204.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1169,12 +1169,12 @@
     "lat": 49.285045,
     "lon": -123.064402,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "regular": 186.9,
+      "midgrade": 204.9,
+      "premium": 212.9,
+      "diesel": 264.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1194,7 +1194,7 @@
       "diesel": null
     },
     "source": "待官方即時更新",
-    "updated_at": "剛更新"
+    "updated_at": "待官方即時更新"
   },
   {
     "id": "node/12805621511",
@@ -1207,12 +1207,12 @@
     "lat": 49.280996,
     "lon": -123.078694,
     "prices": {
-      "regular": null,
-      "midgrade": null,
-      "premium": null,
+      "regular": 175.9,
+      "midgrade": 193.9,
+      "premium": 202.9,
       "diesel": null
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   },
   {
@@ -1226,12 +1226,12 @@
     "lat": 49.269464,
     "lon": -123.101224,
     "prices": {
-      "regular": null,
+      "regular": 179.9,
       "midgrade": null,
-      "premium": null,
-      "diesel": null
+      "premium": 209.9,
+      "diesel": 265.9
     },
-    "source": "待官方即時更新",
+    "source": "GasBuddy Live",
     "updated_at": "剛更新"
   }
 ]

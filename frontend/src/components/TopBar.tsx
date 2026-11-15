@@ -6,7 +6,7 @@ import {
   Milestone, Store, Trees, Landmark, Droplets, Clock, Sparkles, Navigation,
   CircleDollarSign, Toilet, Fuel, EvCharger, Hospital, TrainFront, ParkingMeter, Package, Waves, Fence, Repeat, BusFront, Dam,
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
-  UserShield, FireExtinguisher, Zap, ZapOff, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
+  UserShield, FireExtinguisher, Flame, Zap, ZapOff, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
   Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle, Faucet
 } from 'lucide-react';
@@ -195,6 +195,7 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'sewer_system' || lk === 'sewerSystem') return <Droplets className={`${cls} text-teal-400`} />;
   if (c === 'local_area_boundary' || lk === 'localAreaBoundary') return <Grid3x2 className={`${cls} text-teal-400`} />;
   if (c === 'beach_water_quality' || lk === 'beachWaterQuality') return <Parasol className={`${cls} text-teal-300`} />;
+  if (c === 'wildfire' || lk === 'wildfire') return <Flame className={`${cls} text-orange-400`} />;
   if (c === 'border_crossing' || lk === 'borderCrossing') return <Fence className={`${cls} text-cyan-400`} />;
   if (c === 'ski_resort' || lk === 'skiResorts') return <CableCar className={`${cls} text-sky-400`} />;
   if (c === 'tide_stations' || lk === 'tideStations') return <Dam className={`${cls} text-teal-400`} />;
@@ -316,11 +317,11 @@ export default function TopBar() {
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'parks', 'parksFacilities', 'communityGardens', 'publicTrees',
-          'drinkingFountains', 'publicWashrooms', 'skiResorts', 'beachWaterQuality'
+          'drinkingFountains', 'publicWashrooms', 'skiResorts', 'beachWaterQuality', 'wildfire'
         ];
         const targetCats = [
           'parks', 'parks_facilities', 'community_gardens', 'public_trees',
-          'drinking_fountains', 'public_washrooms', 'ski_resort', 'beach_water_quality'
+          'drinking_fountains', 'public_washrooms', 'ski_resort', 'beach_water_quality', 'wildfire'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -759,17 +760,7 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* 區域選擇 (緊貼左方日期時間，已鎖定為溫哥華，禁止點擊) */}
-      <div 
-        className="hidden sm:flex items-center gap-1.5 bg-[#25262b]/60 border border-[#373a40]/60 px-3 h-9 rounded-md ml-2.5 text-xs sm:text-sm text-gray-400 font-medium shadow-sm shrink-0 cursor-not-allowed select-none opacity-80"
-        title="目前僅支援溫哥華地區（其他市鎮資料陸續建置中）"
-      >
-        <MapIcon className="w-3.5 h-3.5 text-gray-500" />
-        <span>溫哥華</span>
-        <ChevronDown className="w-3 h-3 text-gray-600 ml-1" />
-      </div>
-
-      {/* 搜尋列 (緊隨大溫地區，調闊寬度以容納豐富搜尋與圖標空間) */}
+      {/* 搜尋列 (調闊寬度以容納豐富搜尋與圖標空間) */}
       <div ref={searchContainerRef} className="relative flex-1 min-w-0 max-w-[780px] ml-1.5 sm:ml-2.5 mr-2 sm:mr-4">
         <div className="flex items-center bg-[#25262b] border border-[#373a40] rounded-md px-2 sm:px-3 h-9 focus-within:border-emerald-500/70 focus-within:ring-1 focus-within:ring-emerald-500/30 transition-all shadow-inner">
           {/* 搜尋欄左方圖層篩選按鈕 */}

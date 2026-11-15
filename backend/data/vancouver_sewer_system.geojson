@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
   "total_count": 5821,
-  "updated_at": "2026-11-15T05:34:51.536Z",
+  "updated_at": "2026-11-15T23:33:35.116Z",
   "features": [
     {
       "type": "Feature",
@@ -153,8 +153,8 @@
         "object_id": 99,
         "data_tag": "SWR1-LI-052/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-13 17:57",
-        "incident_end": "2026-11-13 20:13"
+        "incident_start": "2026-11-15 10:23",
+        "incident_end": "2026-11-15 11:13"
       }
     },
     {
@@ -181,8 +181,8 @@
         "object_id": 101,
         "data_tag": "SNWD-LI-003A1/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-13 18:58",
-        "incident_end": "2026-11-13 20:29"
+        "incident_start": "2026-11-15 10:34",
+        "incident_end": "2026-11-15 11:12"
       }
     },
     {
@@ -209,8 +209,8 @@
         "object_id": 109,
         "data_tag": "SHRB-LI-053/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-13 17:42",
-        "incident_end": "2026-11-13 23:46"
+        "incident_start": "2026-11-15 10:31",
+        "incident_end": "2026-11-15 12:55"
       }
     },
     {
@@ -236,9 +236,7 @@
         "facility_id": 36063,
         "object_id": 110,
         "data_tag": "SHRB-LI-054/PV.CV",
-        "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-14 10:25",
-        "incident_end": "2026-11-14 13:43"
+        "incident_start": "2026-11-15 10:44"
       }
     },
     {
@@ -265,8 +263,8 @@
         "object_id": 111,
         "data_tag": "SHA1-LI-051/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-13 17:36",
-        "incident_end": "2026-11-13 23:10"
+        "incident_start": "2026-11-15 10:27",
+        "incident_end": "2026-11-15 11:44"
       }
     },
     {
@@ -293,8 +291,8 @@
         "object_id": 112,
         "data_tag": "SHA1-LI-051/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-13 17:36",
-        "incident_end": "2026-11-13 23:10"
+        "incident_start": "2026-11-15 10:27",
+        "incident_end": "2026-11-15 11:44"
       }
     },
     {
@@ -349,8 +347,8 @@
         "object_id": 114,
         "data_tag": "SBO3-LI-051/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-14 11:16",
-        "incident_end": "2026-11-14 12:55"
+        "incident_start": "2026-11-15 11:45",
+        "incident_end": "2026-11-15 13:55"
       }
     },
     {
@@ -377,8 +375,8 @@
         "object_id": 116,
         "data_tag": "SHRB-LI-052/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-13 17:31",
-        "incident_end": "2026-11-14 01:07"
+        "incident_start": "2026-11-15 06:55",
+        "incident_end": "2026-11-15 13:27"
       }
     },
     {
@@ -405,8 +403,8 @@
         "object_id": 143,
         "data_tag": "SCHP-LI-053/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-14 11:27",
-        "incident_end": "2026-11-14 12:33"
+        "incident_start": "2026-11-15 11:51",
+        "incident_end": "2026-11-15 13:27"
       }
     },
     {
@@ -433,8 +431,8 @@
         "object_id": 161,
         "data_tag": "SWLG-LI-052/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-13 21:29",
-        "incident_end": "2026-11-13 22:00"
+        "incident_start": "2026-11-15 10:23",
+        "incident_end": "2026-11-15 11:15"
       }
     },
     {
@@ -489,8 +487,8 @@
         "object_id": 174,
         "data_tag": "SWLG-LI-052/PV.CV",
         "threshold_exceeded": "是 (超過警戒閾值)",
-        "incident_start": "2026-11-13 21:29",
-        "incident_end": "2026-11-13 22:00"
+        "incident_start": "2026-11-15 10:23",
+        "incident_end": "2026-11-15 11:15"
       }
     },
     {

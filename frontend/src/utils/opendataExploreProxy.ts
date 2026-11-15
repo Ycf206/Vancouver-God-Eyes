@@ -17,8 +17,36 @@ function escapeOdsql(val: string): string {
   return val.replace(/[\x00-\x1f\x7f]/g, ' ').trim().replace(/\\/g, '').replace(/'/g, "''");
 }
 
+async function fetchYesterdayCount(datasetSlug: string): Promise<number | null> {
+  try {
+    // 卑詩省永久太平洋時間 (PCT = UTC-7)
+    const pctYesterdayMs = Date.now() - 7 * 3600 * 1000 - 86400 * 1000;
+    const yStr = new Date(pctYesterdayMs).toISOString().slice(0, 10);
+
+    let whereExpr = '';
+    if (datasetSlug === 'business-licences') {
+      const nextDay = new Date(pctYesterdayMs + 86400 * 1000).toISOString().slice(0, 10);
+      whereExpr = `extractdate >= '${yStr}T07:00:00Z' and extractdate <= '${nextDay}T06:59:59Z'`;
+    } else {
+      whereExpr = `issuedate = date'${yStr}'`;
+    }
+    const odUrl = `https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/${datasetSlug}/records?lang=en&limit=0&where=${encodeURIComponent(whereExpr)}`;
+    const r = await fetch(odUrl, {
+      headers: { 'User-Agent': 'VancouverGodsEye/1.0' },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return typeof j?.total_count === 'number' ? j.total_count : null;
+  } catch {
+    return null;
+  }
+}
+
 interface CachedExplorePayload {
   api_total_count?: number;
+  yesterday_count?: number | null;
   latest_recency_date?: string | null;
   facets?: Record<string, unknown>;
   results?: Record<string, unknown>[];
@@ -132,8 +160,10 @@ export async function handleExploreOpenDataRequest(request: NextRequest, config:
     sortKey === config.defaultSort;
 
   if (isDefaultFirstPage && cached?.results?.length) {
+    const yesterdayCount = (await fetchYesterdayCount(config.datasetSlug)) ?? cached.yesterday_count ?? null;
     return NextResponse.json({
       total_count: cached.api_total_count || cached.results.length,
+      yesterday_count: yesterdayCount,
       page: 1,
       page_size: pageSize,
       latest_recency_date: cached.latest_recency_date || null,
@@ -153,7 +183,7 @@ export async function handleExploreOpenDataRequest(request: NextRequest, config:
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       if (config.dateIsDatetime) {
         const nextDay = new Date(new Date(`${date}T00:00:00Z`).getTime() + 86400000).toISOString().slice(0, 10);
-        whereParts.push(`${config.dateField} >= '${date}T07:00:00Z' and ${config.dateField} <= '${nextDay}T08:59:59Z'`);
+        whereParts.push(`${config.dateField} >= '${date}T07:00:00Z' and ${config.dateField} <= '${nextDay}T06:59:59Z'`);
       } else {
         whereParts.push(`${config.dateField} = date'${date}'`);
       }
@@ -173,11 +203,14 @@ export async function handleExploreOpenDataRequest(request: NextRequest, config:
     if (whereParts.length > 0) odParams.set('where', whereParts.join(' and '));
 
     const odUrl = `https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/${config.datasetSlug}/records?${odParams.toString()}`;
-    const odResp = await fetch(odUrl, {
-      headers: { 'User-Agent': 'VancouverGodsEye/1.0' },
-      cache: 'no-store',
-      signal: AbortSignal.timeout(15000),
-    });
+    const [odResp, yesterdayCount] = await Promise.all([
+      fetch(odUrl, {
+        headers: { 'User-Agent': 'VancouverGodsEye/1.0' },
+        cache: 'no-store',
+        signal: AbortSignal.timeout(15000),
+      }),
+      fetchYesterdayCount(config.datasetSlug),
+    ]);
     if (odResp.ok) {
       const odData = await odResp.json();
       const results = ((odData.results || []) as Record<string, unknown>[]).map((r) => normalizeRecord(config.datasetSlug, r));
@@ -188,6 +221,7 @@ export async function handleExploreOpenDataRequest(request: NextRequest, config:
 
       return NextResponse.json({
         total_count: odData.total_count ?? results.length,
+        yesterday_count: yesterdayCount ?? cached?.yesterday_count ?? null,
         page,
         page_size: pageSize,
         latest_recency_date: latestRecency,
@@ -202,6 +236,7 @@ export async function handleExploreOpenDataRequest(request: NextRequest, config:
 
   return NextResponse.json({
     total_count: cached?.results?.length || 0,
+    yesterday_count: cached?.yesterday_count ?? null,
     page: 1,
     page_size: pageSize,
     latest_recency_date: cached?.latest_recency_date || null,

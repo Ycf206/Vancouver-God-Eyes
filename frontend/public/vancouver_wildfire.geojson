@@ -1,0 +1,895 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 23,
+  "updated_at": "2026-11-15T22:36:46.236Z",
+  "fire_danger_rating": {
+    "level": "LOW",
+    "label_en": "LOW",
+    "label_zh": "低",
+    "color": "#55a654",
+    "header_bg": "#94c595",
+    "banner_bg": "#ecf7ed",
+    "text_color": "#166534",
+    "description": "A LOW fire rating means that fires may start easily and spread quickly but there will be minimal involvement of deeper fuel layers or larger fuels. Fires will likely self-extinguish and new ignitions are unlikely.",
+    "source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+    "fetched_at": "2026-11-15T22:36:45Z"
+  },
+  "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "wildfire_4e66ce4e-195b-4c05-b09b-51b0c0086f1f",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.93975,
+          52.575083
+        ]
+      },
+      "properties": {
+        "id": "wildfire_4e66ce4e-195b-4c05-b09b-51b0c0086f1f",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "4e66ce4e-195b-4c05-b09b-51b0c0086f1f",
+        "incidentGuid": "603061C04AAD7BFBE063119E228EAE42",
+        "incidentNumberLabel": "C32391",
+        "name": "C32391",
+        "incidentName": "C32391",
+        "incidentLocation": "2.2km N of Wasko Lakes",
+        "local_area": "2.2km N of Wasko Lakes",
+        "stageOfControlCode": "HOLDING",
+        "stage_of_control_zh": "進行中",
+        "incidentSizeEstimatedHa": 26.0,
+        "fireCentreName": "Cariboo Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1794605936000,
+        "lastUpdatedTimestamp": 1794768897674,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_ff8a25e4-a922-41b8-9004-4914f9375afb",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.772479,
+          52.486131
+        ]
+      },
+      "properties": {
+        "id": "wildfire_ff8a25e4-a922-41b8-9004-4914f9375afb",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "ff8a25e4-a922-41b8-9004-4914f9375afb",
+        "incidentGuid": "6030AB41B635A41FE063119E228E6B4B",
+        "incidentNumberLabel": "C32392",
+        "name": "C32392",
+        "incidentName": "C32392",
+        "incidentLocation": "0.5km S of Little Gavin Lake",
+        "local_area": "0.5km S of Little Gavin Lake",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 0.01,
+        "fireCentreName": "Cariboo Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1794607710000,
+        "lastUpdatedTimestamp": 1794703327160,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_e8213620-e479-47ac-ad82-58f3821fcffc",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.144367,
+          52.501417
+        ]
+      },
+      "properties": {
+        "id": "wildfire_e8213620-e479-47ac-ad82-58f3821fcffc",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "e8213620-e479-47ac-ad82-58f3821fcffc",
+        "incidentGuid": "5F8DCBDA8D14C927E063119E228E3DF2",
+        "incidentNumberLabel": "G32376",
+        "name": "G32376",
+        "incidentName": "G32376",
+        "incidentLocation": "Oasis Creek",
+        "local_area": "Oasis Creek",
+        "stageOfControlCode": "HOLDING",
+        "stage_of_control_zh": "進行中",
+        "incidentSizeEstimatedHa": 3.47,
+        "fireCentreName": "Prince George Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1793843980000,
+        "lastUpdatedTimestamp": 1794583238704,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_93245fc3-9286-4835-8ebb-5470415ef540",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.458383,
+          49.947467
+        ]
+      },
+      "properties": {
+        "id": "wildfire_93245fc3-9286-4835-8ebb-5470415ef540",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "93245fc3-9286-4835-8ebb-5470415ef540",
+        "incidentGuid": "55D4A74F7ADF9DC0E063119E228E650E",
+        "incidentNumberLabel": "V10755",
+        "name": "Ainslie Creek",
+        "incidentName": "Ainslie Creek",
+        "incidentLocation": "South Ainsley 2",
+        "local_area": "South Ainsley 2",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 69705.0,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": 1,
+        "aviationResourceCount": 1,
+        "createDate": 1783217481000,
+        "lastUpdatedTimestamp": 1794516763019,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_8b58a5a9-7323-489a-aede-7d09e93fc3b9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.45475,
+          49.89345
+        ]
+      },
+      "properties": {
+        "id": "wildfire_8b58a5a9-7323-489a-aede-7d09e93fc3b9",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "8b58a5a9-7323-489a-aede-7d09e93fc3b9",
+        "incidentGuid": "55A6A086F6906FEDE063119E228E0782",
+        "incidentNumberLabel": "V10742",
+        "name": "Brunswick Creek",
+        "incidentName": "Brunswick Creek",
+        "incidentLocation": "Chaumox Road",
+        "local_area": "Chaumox Road",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 9543.0,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": 1,
+        "aviationResourceCount": 1,
+        "createDate": 1783020034000,
+        "lastUpdatedTimestamp": 1794516257085,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_640c1644-3a78-4eb0-a769-3107909cdbbc",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.324933,
+          53.445433
+        ]
+      },
+      "properties": {
+        "id": "wildfire_640c1644-3a78-4eb0-a769-3107909cdbbc",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "640c1644-3a78-4eb0-a769-3107909cdbbc",
+        "incidentGuid": "5FF588BD989255EBE063119E228E64EA",
+        "incidentNumberLabel": "G32386",
+        "name": "G32386",
+        "incidentName": "G32386",
+        "incidentLocation": "Minnow Creek",
+        "local_area": "Minnow Creek",
+        "stageOfControlCode": "HOLDING",
+        "stage_of_control_zh": "進行中",
+        "incidentSizeEstimatedHa": 0.5,
+        "fireCentreName": "Prince George Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1794353728000,
+        "lastUpdatedTimestamp": 1794354656247,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_1f9b048b-7c4c-4b67-bdc0-73f7495b135e",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.771217,
+          48.48745
+        ]
+      },
+      "properties": {
+        "id": "wildfire_1f9b048b-7c4c-4b67-bdc0-73f7495b135e",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "1f9b048b-7c4c-4b67-bdc0-73f7495b135e",
+        "incidentGuid": "5BF3A0DBF83182E5E063119E228E7D02",
+        "incidentNumberLabel": "V62262",
+        "name": "Mount Jack",
+        "incidentName": "Mount Jack",
+        "incidentLocation": "4 km west of Sooke River, south of Mount Jack",
+        "local_area": "4 km west of Sooke River, south of Mount Jack",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 337.23,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": 1,
+        "createDate": 1789947237000,
+        "lastUpdatedTimestamp": 1793913730747,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_8bf83c04-645f-460d-a709-e587a2e92773",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.0202,
+          49.2069
+        ]
+      },
+      "properties": {
+        "id": "wildfire_8bf83c04-645f-460d-a709-e587a2e92773",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "8bf83c04-645f-460d-a709-e587a2e92773",
+        "incidentGuid": "56D6850263735C04E063119E228ECED3",
+        "incidentNumberLabel": "V10942",
+        "name": "Norwegian Creek",
+        "incidentName": "Norwegian Creek",
+        "incidentLocation": "Norwegian Creek",
+        "local_area": "Norwegian Creek",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 1339.77,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": 1,
+        "aviationResourceCount": 1,
+        "createDate": 1784325621000,
+        "lastUpdatedTimestamp": 1793913373698,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_85a80d96-77fc-40bd-9325-208dbfd4424e",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.915867,
+          49.122567
+        ]
+      },
+      "properties": {
+        "id": "wildfire_85a80d96-77fc-40bd-9325-208dbfd4424e",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "85a80d96-77fc-40bd-9325-208dbfd4424e",
+        "incidentGuid": "56D7E2D31606F9CBE063119E228E5F6E",
+        "incidentNumberLabel": "V10958",
+        "name": "Daynar Creek",
+        "incidentName": "Daynar Creek",
+        "incidentLocation": "Memaloose Creek",
+        "local_area": "Memaloose Creek",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 654.76,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": 1,
+        "createDate": 1784330783000,
+        "lastUpdatedTimestamp": 1793913304376,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_480f9186-f9ec-4ec0-b1d2-4a9c3fb4b327",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.020333,
+          49.000417
+        ]
+      },
+      "properties": {
+        "id": "wildfire_480f9186-f9ec-4ec0-b1d2-4a9c3fb4b327",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "480f9186-f9ec-4ec0-b1d2-4a9c3fb4b327",
+        "incidentGuid": "56C5A6868287F635E063119E228E77FA",
+        "incidentNumberLabel": "V10885",
+        "name": "Border 2",
+        "incidentName": "Border 2",
+        "incidentLocation": "MT Hozameen",
+        "local_area": "MT Hozameen",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 6277.0,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": 1,
+        "aviationResourceCount": 1,
+        "createDate": 1784252855000,
+        "lastUpdatedTimestamp": 1793913239264,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_90edb009-6b46-4fdb-a19c-e14d4d7f4f43",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.988717,
+          49.137133
+        ]
+      },
+      "properties": {
+        "id": "wildfire_90edb009-6b46-4fdb-a19c-e14d4d7f4f43",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "90edb009-6b46-4fdb-a19c-e14d4d7f4f43",
+        "incidentGuid": "56CFC403D61F4F7EE063119E228EAB1F",
+        "incidentNumberLabel": "V10898",
+        "name": "Big Burn Creek",
+        "incidentName": "Big Burn Creek",
+        "incidentLocation": "Big Burn Creek",
+        "local_area": "Big Burn Creek",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 898.5,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": 1,
+        "aviationResourceCount": 1,
+        "createDate": 1784297447000,
+        "lastUpdatedTimestamp": 1793912951152,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_0f9c2b4a-2b74-4fb2-85de-00801c2a478e",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -114.94125,
+          49.683167
+        ]
+      },
+      "properties": {
+        "id": "wildfire_0f9c2b4a-2b74-4fb2-85de-00801c2a478e",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "0f9c2b4a-2b74-4fb2-85de-00801c2a478e",
+        "incidentGuid": "5E3B919A404D9010E063119E228EB786",
+        "incidentNumberLabel": "N12339",
+        "name": "N12339",
+        "incidentName": "N12339",
+        "incidentLocation": "Lladner Creek FSR",
+        "local_area": "Lladner Creek FSR",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 2.54,
+        "fireCentreName": "Southeast Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1792455498000,
+        "lastUpdatedTimestamp": 1793899601048,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_846da598-3999-4b73-8171-2e2f1b154a35",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.9057,
+          49.670467
+        ]
+      },
+      "properties": {
+        "id": "wildfire_846da598-3999-4b73-8171-2e2f1b154a35",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "846da598-3999-4b73-8171-2e2f1b154a35",
+        "incidentGuid": "5E4B5E4A8F16CB81E063119E228E1D44",
+        "incidentNumberLabel": "N12341",
+        "name": "N12341",
+        "incidentName": "N12341",
+        "incidentLocation": "Luke Creek",
+        "local_area": "Luke Creek",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 0.009,
+        "fireCentreName": "Southeast Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1792523357000,
+        "lastUpdatedTimestamp": 1793891312216,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_e1ad0910-39b1-4a7c-8387-ba86d76cfd3b",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.8793,
+          48.617583
+        ]
+      },
+      "properties": {
+        "id": "wildfire_e1ad0910-39b1-4a7c-8387-ba86d76cfd3b",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "e1ad0910-39b1-4a7c-8387-ba86d76cfd3b",
+        "incidentGuid": "5F6814BBEC9BA3DAE063119E228E9BC0",
+        "incidentNumberLabel": "V62369",
+        "name": "V62369",
+        "incidentName": "V62369",
+        "incidentLocation": "Clapp Creek",
+        "local_area": "Clapp Creek",
+        "stageOfControlCode": "HOLDING",
+        "stage_of_control_zh": "進行中",
+        "incidentSizeEstimatedHa": 0.009,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1793746191000,
+        "lastUpdatedTimestamp": 1793812718134,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_18a9eabc-f3d8-4bcf-b274-c64c6b454bea",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.8238,
+          50.165467
+        ]
+      },
+      "properties": {
+        "id": "wildfire_18a9eabc-f3d8-4bcf-b274-c64c6b454bea",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "18a9eabc-f3d8-4bcf-b274-c64c6b454bea",
+        "incidentGuid": "5ED5CFDF8D4934D6E063119E228EFCC6",
+        "incidentNumberLabel": "N22363",
+        "name": "N22363",
+        "incidentName": "N22363",
+        "incidentLocation": "Tamarack rd. South side of Columbia Lake",
+        "local_area": "Tamarack rd. South side of Columbia Lake",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 0.15,
+        "fireCentreName": "Southeast Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1793045231000,
+        "lastUpdatedTimestamp": 1793736778129,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_45808bc2-ec3f-4e47-b1d1-6439b25827d3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.64605,
+          57.883417
+        ]
+      },
+      "properties": {
+        "id": "wildfire_45808bc2-ec3f-4e47-b1d1-6439b25827d3",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "45808bc2-ec3f-4e47-b1d1-6439b25827d3",
+        "incidentGuid": "5CA908D2B644AFD7E063119E228ECA94",
+        "incidentNumberLabel": "G92299",
+        "name": "G92299",
+        "incidentName": "G92299",
+        "incidentLocation": "Creham Creek Muskwa Junction",
+        "local_area": "Creham Creek Muskwa Junction",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 42.0,
+        "fireCentreName": "Prince George Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1790724443000,
+        "lastUpdatedTimestamp": 1792597612359,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_5c01b72d-e558-45ac-87db-54d6e4f4b8ec",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.37745,
+          57.9273
+        ]
+      },
+      "properties": {
+        "id": "wildfire_5c01b72d-e558-45ac-87db-54d6e4f4b8ec",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "5c01b72d-e558-45ac-87db-54d6e4f4b8ec",
+        "incidentGuid": "5D5BCF25099328EFE063119E228E421A",
+        "incidentNumberLabel": "G92324",
+        "name": "G92324",
+        "incidentName": "G92324",
+        "incidentLocation": "NW of Wenger Creek",
+        "local_area": "NW of Wenger Creek",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 0.5,
+        "fireCentreName": "Prince George Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1791494458000,
+        "lastUpdatedTimestamp": 1792597510791,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_891600fd-229b-4a7a-9b54-52078d2789a0",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -125.375367,
+          52.68845
+        ]
+      },
+      "properties": {
+        "id": "wildfire_891600fd-229b-4a7a-9b54-52078d2789a0",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "891600fd-229b-4a7a-9b54-52078d2789a0",
+        "incidentGuid": "56D4DE318EB991BBE063119E228E645A",
+        "incidentNumberLabel": "C50929",
+        "name": "Lessard Lake",
+        "incidentName": "Lessard Lake",
+        "incidentLocation": "5.3km NE of Lessard Lake",
+        "local_area": "5.3km NE of Lessard Lake",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 6224.45,
+        "fireCentreName": "Cariboo Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1784317877000,
+        "lastUpdatedTimestamp": 1792104750615,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_81159f9a-8ac2-48ca-a827-ddaf94fda8d8",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -124.01185,
+          53.404317
+        ]
+      },
+      "properties": {
+        "id": "wildfire_81159f9a-8ac2-48ca-a827-ddaf94fda8d8",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "81159f9a-8ac2-48ca-a827-ddaf94fda8d8",
+        "incidentGuid": "573D4DAEABF58D70E063119E228EB22F",
+        "incidentNumberLabel": "C11112",
+        "name": "Bourgeois Creek",
+        "incidentName": "Bourgeois Creek",
+        "incidentLocation": "E of Bourgeois Creek",
+        "local_area": "E of Bourgeois Creek",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 1644.0,
+        "fireCentreName": "Cariboo Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1784765969000,
+        "lastUpdatedTimestamp": 1791311899564,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_6ad5451c-dc59-42d5-ae3c-56756371d049",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.436917,
+          50.25345
+        ]
+      },
+      "properties": {
+        "id": "wildfire_6ad5451c-dc59-42d5-ae3c-56756371d049",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "6ad5451c-dc59-42d5-ae3c-56756371d049",
+        "incidentGuid": "56D69EA07123692DE063119E228EBA73",
+        "incidentNumberLabel": "V30941",
+        "name": "Twin Two Creek",
+        "incidentName": "Twin Two Creek",
+        "incidentLocation": "Twin Two Creek",
+        "local_area": "Twin Two Creek",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 3772.0,
+        "fireCentreName": "Coastal Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1784325770000,
+        "lastUpdatedTimestamp": 1790287558118,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_5c49f7cf-a4eb-41ef-a704-b2c5d46c82ba",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.989867,
+          53.16905
+        ]
+      },
+      "properties": {
+        "id": "wildfire_5c49f7cf-a4eb-41ef-a704-b2c5d46c82ba",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "5c49f7cf-a4eb-41ef-a704-b2c5d46c82ba",
+        "incidentGuid": "56D76C79719BC683E063119E228E7E50",
+        "incidentNumberLabel": "C10952",
+        "name": "C10952",
+        "incidentName": "C10952",
+        "incidentLocation": "6.4 km S of Kluskoil Lake",
+        "local_area": "6.4 km S of Kluskoil Lake",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 1588.0,
+        "fireCentreName": "Cariboo Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1784328875000,
+        "lastUpdatedTimestamp": 1790034247326,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_9d47b295-7a2a-4150-9551-91dbc7b0fa7e",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.808667,
+          50.979117
+        ]
+      },
+      "properties": {
+        "id": "wildfire_9d47b295-7a2a-4150-9551-91dbc7b0fa7e",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "9d47b295-7a2a-4150-9551-91dbc7b0fa7e",
+        "incidentGuid": "56DA45EF5E9C0778E063119E228E8D13",
+        "incidentNumberLabel": "C40983",
+        "name": "Pear Lake",
+        "incidentName": "Pear Lake",
+        "incidentLocation": "E of Pear Lake",
+        "local_area": "E of Pear Lake",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 165909.4,
+        "fireCentreName": "Cariboo Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1784340069000,
+        "lastUpdatedTimestamp": 1790002013325,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wildfire_df69701a-e155-4a1e-93d1-9ae2d2729707",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.375117,
+          49.602167
+        ]
+      },
+      "properties": {
+        "id": "wildfire_df69701a-e155-4a1e-93d1-9ae2d2729707",
+        "facility_type": "wildfire",
+        "publishedIncidentDetailGuid": "df69701a-e155-4a1e-93d1-9ae2d2729707",
+        "incidentGuid": "56D693D4281963BAE063119E228E23C7",
+        "incidentNumberLabel": "N10947",
+        "name": "Tower Creek",
+        "incidentName": "Tower Creek",
+        "incidentLocation": "Tower Creek #2",
+        "local_area": "Tower Creek #2",
+        "stageOfControlCode": "UNDR_CNTRL",
+        "stage_of_control_zh": "受控",
+        "incidentSizeEstimatedHa": 1327.0,
+        "fireCentreName": "Southeast Fire Centre",
+        "crewResourceCount": null,
+        "aviationResourceCount": null,
+        "createDate": 1784326517000,
+        "lastUpdatedTimestamp": 1789486749055,
+        "fireOfNoteInd": false,
+        "fire_danger_rating": "LOW",
+        "fire_danger_label_zh": "低",
+        "fire_danger_color": "#55a654",
+        "fire_danger_source_url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating",
+        "fire_danger_updated_at": "2026-11-15T22:36:45Z",
+        "official_url": "https://wildfiresituation.nrs.gov.bc.ca/map",
+        "updated_at": "2026-11-15T22:36:46Z"
+      }
+    }
+  ]
+}

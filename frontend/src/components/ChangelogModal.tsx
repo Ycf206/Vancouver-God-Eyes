@@ -14,10 +14,25 @@ interface ChangelogEntry {
 
 const CHANGELOG_DATA: ChangelogEntry[] = [
   {
+    version: 'v2026.11.3',
+    title: 'v2026.11.3 更新內容',
+    date: '2026-11-16',
+    isLatest: true,
+    highlights: [
+      '新增電動車充電站 (FLO, ChargePoint)',
+      '新增私人停車場 (EasyPark)',
+      '新增空氣質素圖層',
+      '新增山火圖層',
+      '新增商業牌照探索頁',
+      '新增建築許可探索頁',
+      '修正探索周圍半徑錯誤',
+      '修正油站無法取得資料'
+    ]
+  },
+  {
     version: 'v2026.11.2',
     title: 'v2026.11.2 更新內容',
     date: '2026-11-14',
-    isLatest: true,
     highlights: [
       '新增停電, 供水, 污水圖層',
       '新增機場內部地圖圖層',
@@ -63,7 +78,8 @@ interface ChangelogModalProps {
 export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
   // 記錄展開的分頁，預設展開最新版本
   const [expandedVersions, setExpandedVersions] = useState<Record<string, boolean>>({
-    'v2026.11.2': true,
+    'v2026.11.3': true,
+    'v2026.11.2': false,
     'v2026.11.1': false,
     'v2026.11.0': false
   });

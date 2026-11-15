@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import math
 import time
@@ -6,7 +7,7 @@ import logging
 import asyncio
 import tempfile
 import requests
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -112,135 +113,188 @@ def _load_persisted_fuel_cache() -> List[Dict[str, Any]]:
                 pass
     return []
 
-async def fetch_gasbuddy_prices_live(lat: float = 49.2827, lon: float = -123.1207) -> Dict[str, Dict[str, float]]:
-    """
-    Attempt to fetch real-time station prices via py-gasbuddy or GasBuddy GraphQL API.
-    Strictly authentic: does not manufacture fake or simulated numbers!
-    """
-    price_map: Dict[str, Dict[str, float]] = {}
+FUEL_GRID_POINTS: List[Tuple[float, float]] = [
+    (49.2827, -123.1207),  # Downtown / West End / Burrard
+    (49.2810, -123.0450),  # East Hastings / Burnaby Heights
+    (49.2600, -123.1900),  # Kitsilano / UBC / West Broadway
+    (49.2550, -123.0250),  # Burnaby / Renfrew / Boundary
+    (49.2260, -123.1000),  # South Vancouver / Oak / Main / Kingsway
+    (49.2050, -123.0250),  # SE Marine / South Burnaby / River District
+    (49.3200, -123.0700),  # North Vancouver
+    (49.1700, -123.1360),  # Richmond
+]
 
-    # 1. 優先嘗試 py-gasbuddy 官方模組
+
+def _normalize_brand(name: str) -> str:
+    s = re.sub(r"[^a-z0-9]", "", (name or "").lower())
+    if "petro" in s:
+        return "petrocanada"
+    if "chevron" in s or "townpantry" in s:
+        return "chevron"
+    if "shell" in s:
+        return "shell"
+    if "esso" in s or "smartstop" in s or "7eleven" in s:
+        return "esso"
+    if "mobil" in s:
+        return "mobil"
+    if "husky" in s or "myhusky" in s:
+        return "husky"
+    if "superstore" in s or "supergas" in s:
+        return "superstore"
+    if "costco" in s:
+        return "costco"
+    if "coop" in s:
+        return "coop"
+    if "domo" in s:
+        return "domo"
+    if "canco" in s:
+        return "canco"
+    return s
+
+
+def _normalize_address(addr: str) -> str:
+    s = (addr or "").lower().strip()
+    s = re.sub(r"\bstreet\b", "st", s)
+    s = re.sub(r"\bavenue\b", "ave", s)
+    s = re.sub(r"\bdrive\b", "dr", s)
+    s = re.sub(r"\broad\b", "rd", s)
+    s = re.sub(r"\bhighway\b", "hwy", s)
+    s = re.sub(r"\bsoutheast\b", "se", s)
+    s = re.sub(r"\bsouthwest\b", "sw", s)
+    s = re.sub(r"\bnortheast\b", "ne", s)
+    s = re.sub(r"\bnorthwest\b", "nw", s)
+    s = re.sub(r"\bwest\b", "w", s)
+    s = re.sub(r"\beast\b", "e", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def _to_cents_per_litre(val: Any) -> Optional[float]:
+    if val is None or val == "":
+        return None
+    try:
+        num = float(val)
+    except (ValueError, TypeError):
+        return None
+    if num <= 0:
+        return None
+    if num < 10.0:  # Convert dollars/L (e.g. 1.859) to cents/L (185.9)
+        return round(num * 100.0, 1)
+    return round(num, 1)
+
+
+def _extract_gb_grade_price(st: Any, product_key: str) -> Optional[float]:
+    """Extract posted fuel price from both py_gasbuddy top-level dicts and legacy nested shapes."""
+    node = st.get(product_key) if isinstance(st, dict) else getattr(st, product_key, None)
+    if node is None and isinstance(st, dict):
+        nested = st.get("prices")
+        if isinstance(nested, dict):
+            node = nested.get(product_key)
+
+    if node is None:
+        return None
+
+    if isinstance(node, dict):
+        raw = node.get("price")
+        if raw is None:
+            raw = node.get("cash_price")
+        if raw is None and isinstance(node.get("credit"), dict):
+            raw = node["credit"].get("price")
+        if raw is None and isinstance(node.get("cash"), dict):
+            raw = node["cash"].get("price")
+        return _to_cents_per_litre(raw)
+
+    raw = getattr(node, "price", None)
+    if raw is None:
+        raw = getattr(node, "cash_price", None)
+    if raw is None:
+        credit_obj = getattr(node, "credit", None)
+        cash_obj = getattr(node, "cash", None)
+        raw = getattr(credit_obj, "price", None) or getattr(cash_obj, "price", None)
+    return _to_cents_per_litre(raw)
+
+
+def _extract_gb_address_line(st: Any) -> str:
+    addr_obj = st.get("address") if isinstance(st, dict) else getattr(st, "address", "")
+    if isinstance(addr_obj, dict):
+        return str(addr_obj.get("line1") or "").strip()
+    if isinstance(addr_obj, str):
+        return addr_obj.strip()
+    return str(getattr(addr_obj, "line1", "") or "").strip()
+
+
+async def fetch_gasbuddy_prices_live(lat: float = 49.2827, lon: float = -123.1207) -> Dict[str, Dict[str, Any]]:
+    """
+    Fetch real-time station prices via py-gasbuddy across Metro Vancouver grid coordinates.
+    Strictly authentic: returns actual reported GasBuddy prices only without synthesizing grades.
+    """
+    price_map: Dict[str, Dict[str, Any]] = {}
+
     try:
         gb_logger.setLevel(logging.CRITICAL)
         gb_logger.propagate = False
         from py_gasbuddy import GasBuddy
         gb = GasBuddy()
-        res = await gb.price_lookup_service(lat=lat, lon=lon, limit=12)
-        stations = res.get("stations", []) if isinstance(res, dict) else getattr(res, "stations", [])
-        for st in stations:
-            st_name = getattr(st, "name", "") or (st.get("name") if isinstance(st, dict) else "")
-            st_address = getattr(st, "address", "") or (st.get("address") if isinstance(st, dict) else "")
-            prices_obj = getattr(st, "prices", {}) or (st.get("prices") if isinstance(st, dict) else {})
 
-            key = f"{st_name}_{st_address}".lower().strip()
-            regular_val = None
-            premium_val = None
-            diesel_val = None
+        query_points = list(FUEL_GRID_POINTS)
+        if all(haversine_distance(lat, lon, gx, gy) > 2.5 for gx, gy in query_points):
+            query_points.insert(0, (lat, lon))
 
-            if isinstance(prices_obj, dict):
-                reg = prices_obj.get("regular_gas", {})
-                regular_val = reg.get("credit", {}).get("price") or reg.get("cash", {}).get("price")
-                prem = prices_obj.get("premium_gas", {})
-                premium_val = prem.get("credit", {}).get("price") or prem.get("cash", {}).get("price")
-                dsl = prices_obj.get("diesel", {})
-                diesel_val = dsl.get("credit", {}).get("price") or dsl.get("cash", {}).get("price")
-            elif hasattr(prices_obj, "regular_gas"):
-                reg = getattr(prices_obj, "regular_gas")
-                regular_val = getattr(getattr(reg, "credit", None), "price", None) or getattr(getattr(reg, "cash", None), "price", None)
+        tasks = [gb.price_lookup_service(lat=qlat, lon=qlon, limit=20) for qlat, qlon in query_points]
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
 
-            if regular_val:
-                try:
-                    p_reg = float(regular_val)
-                    if p_reg < 5.0:  # In dollars, convert to cents/L (e.g. 1.749 -> 174.9)
-                        p_reg = round(p_reg * 100, 1)
-                    p_mid = round(p_reg + 13.0, 1)
-                    p_prem = round(float(premium_val) * (100 if float(premium_val) < 5.0 else 1), 1) if premium_val else round(p_reg + 26.0, 1)
-                    p_dsl = round(float(diesel_val) * (100 if float(diesel_val) < 5.0 else 1), 1) if diesel_val else round(p_reg + 8.0, 1)
-                    price_map[key] = {
-                        "regular": p_reg,
-                        "midgrade": p_mid,
-                        "premium": p_prem,
-                        "diesel": p_dsl,
-                    }
-                except (ValueError, TypeError):
-                    pass
+        seen_ids: set = set()
+        for res in responses:
+            if isinstance(res, Exception) or res is None:
+                continue
+            stations = (
+                (res.get("results") or res.get("stations") or [])
+                if isinstance(res, dict)
+                else (getattr(res, "results", None) or getattr(res, "stations", None) or [])
+            )
+            for st in stations:
+                sid = str((st.get("station_id") if isinstance(st, dict) else getattr(st, "station_id", "")) or "").strip()
+                if sid and sid in seen_ids:
+                    continue
+
+                st_name = str((st.get("name") if isinstance(st, dict) else getattr(st, "name", "")) or "").strip()
+                st_address = _extract_gb_address_line(st)
+                st_lat = st.get("latitude") if isinstance(st, dict) else getattr(st, "latitude", None)
+                st_lon = st.get("longitude") if isinstance(st, dict) else getattr(st, "longitude", None)
+
+                p_reg = _extract_gb_grade_price(st, "regular_gas")
+                p_mid = _extract_gb_grade_price(st, "midgrade_gas")
+                p_prem = _extract_gb_grade_price(st, "premium_gas")
+                p_dsl = _extract_gb_grade_price(st, "diesel")
+
+                if p_reg is None and p_mid is None and p_prem is None and p_dsl is None:
+                    continue
+
+                if sid:
+                    seen_ids.add(sid)
+
+                key = f"{sid}_{st_name}_{st_address}".lower().strip()
+                price_map[key] = {
+                    "regular": p_reg,
+                    "midgrade": p_mid,
+                    "premium": p_prem,
+                    "diesel": p_dsl,
+                    "_meta": {
+                        "station_id": sid,
+                        "name": st_name,
+                        "brand_norm": _normalize_brand(st_name),
+                        "address": _normalize_address(st_address),
+                        "lat": float(st_lat) if st_lat is not None else None,
+                        "lon": float(st_lon) if st_lon is not None else None,
+                    },
+                }
     except Exception as e:
-        logger.debug(f"py-gasbuddy lookup fallback: {e}")
-
-    # 2. 次選以 HTTP GraphQL 取得真實公開報價
-    if not price_map:
-        try:
-            loop = asyncio.get_running_loop()
-            def _direct_graphql_fetch():
-                url = "https://www.gasbuddy.com/graphql"
-                headers = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                }
-                query = """
-                query LocationByCoordinates($lat: Float!, $lng: Float!) {
-                  locationByCoordinates(lat: $lat, lng: $lng) {
-                    stations(first: 15) {
-                      results {
-                        name
-                        address { line1 }
-                        prices {
-                          fuelProduct
-                          credit { price }
-                          cash { price }
-                        }
-                      }
-                    }
-                  }
-                }
-                """
-                payload = {"query": query, "variables": {"lat": lat, "lng": lon}}
-                r = requests.post(url, json=payload, headers=headers, timeout=8)
-                if r.status_code == 200:
-                    data = r.json()
-                    res_list = data.get("data", {}).get("locationByCoordinates", {}).get("stations", {}).get("results", [])
-                    out = {}
-                    for item in res_list:
-                        n = (item.get("name") or "").strip()
-                        a = (item.get("address", {}).get("line1") or "").strip()
-                        k = f"{n}_{a}".lower().strip()
-                        p_dict = {}
-                        for pr in item.get("prices", []):
-                            fuel_prod = (pr.get("fuelProduct") or "").lower()
-                            price_val = pr.get("credit", {}).get("price") or pr.get("cash", {}).get("price")
-                            if price_val:
-                                try:
-                                    pv = float(price_val)
-                                    if pv < 5.0:
-                                        pv = round(pv * 100, 1)
-                                    if "regular" in fuel_prod:
-                                        p_dict["regular"] = pv
-                                    elif "midgrade" in fuel_prod:
-                                        p_dict["midgrade"] = pv
-                                    elif "premium" in fuel_prod:
-                                        p_dict["premium"] = pv
-                                    elif "diesel" in fuel_prod:
-                                        p_dict["diesel"] = pv
-                                except Exception:
-                                    pass
-                        if p_dict.get("regular"):
-                            if "midgrade" not in p_dict:
-                                p_dict["midgrade"] = round(p_dict["regular"] + 13.0, 1)
-                            if "premium" not in p_dict:
-                                p_dict["premium"] = round(p_dict["regular"] + 26.0, 1)
-                            if "diesel" not in p_dict:
-                                p_dict["diesel"] = round(p_dict["regular"] + 8.0, 1)
-                            out[k] = p_dict
-                    return out
-                return {}
-            price_map = await loop.run_in_executor(None, _direct_graphql_fetch)
-        except Exception:
-            pass
+        logger.debug(f"py-gasbuddy lookup failed: {e}")
 
     return price_map
 
-def enrich_stations_with_real_prices(raw_stations: List[Dict[str, Any]], live_prices: Dict[str, Dict[str, float]]) -> List[Dict[str, Any]]:
+
+def enrich_stations_with_real_prices(raw_stations: List[Dict[str, Any]], live_prices: Dict[str, Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     真實性保證：結合官方即時報價與最後成功的官方真實價格快取。
     絕不生成任何硬編碼或演算法模擬的假價格。
@@ -249,40 +303,73 @@ def enrich_stations_with_real_prices(raw_stations: List[Dict[str, Any]], live_pr
     last_known_map: Dict[str, Dict[str, Any]] = {}
     for pst in persisted_stations:
         sid = str(pst.get("id") or "")
-        brand_addr = f"{pst.get('brand', '')}_{pst.get('address', '')}".lower().strip()
+        brand_addr = f"{_normalize_brand(pst.get('brand', ''))}_{_normalize_address(pst.get('address', ''))}"
         if sid:
             last_known_map[sid] = pst
-        if brand_addr:
+        if brand_addr != "_":
             last_known_map[brand_addr] = pst
 
+    live_entries = list(live_prices.values())
     enriched = []
+
     for st in raw_stations:
         brand = st.get("brand", "油站")
+        s_brand_norm = _normalize_brand(brand or st.get("name", ""))
         addr = st.get("address", "")
-        key = f"{brand}_{addr}".lower().strip()
+        s_addr_norm = _normalize_address(addr)
         sid = str(st.get("id", ""))
+        slat = st.get("lat")
+        slon = st.get("lon")
 
         prices = None
         source = "GasBuddy Live"
+        best_match: Optional[Dict[str, Any]] = None
+        best_score = 999.0
 
-        # 1. 優先使用本次 API 取得的即時真實價格
-        if key in live_prices:
-            prices = live_prices[key]
-        else:
-            # 依品牌或地址模糊匹配即時報價
-            for lk, l_price in live_prices.items():
-                if brand.lower() in lk or (addr and addr.lower() in lk):
-                    prices = l_price
+        # 1. 優先依地理座標距離 (+ 品牌相似度) 精準配對 GasBuddy 即時報價
+        if slat is not None and slon is not None:
+            for entry in live_entries:
+                meta = entry.get("_meta") or {}
+                elat = meta.get("lat")
+                elon = meta.get("lon")
+                if elat is None or elon is None:
+                    continue
+                d_km = haversine_distance(float(slat), float(slon), float(elat), float(elon))
+                if d_km > 0.35:
+                    continue
+                ebrand = meta.get("brand_norm") or ""
+                same_brand = bool(s_brand_norm and ebrand and s_brand_norm == ebrand)
+                if not same_brand and d_km > 0.12:
+                    continue
+                score = d_km + (0.0 if same_brand else 0.15)
+                if score < best_score:
+                    best_score = score
+                    best_match = entry
+
+        # 次選以標準化品牌 + 完整地址配對
+        if not best_match and s_addr_norm and s_addr_norm != "vancouver station":
+            for entry in live_entries:
+                meta = entry.get("_meta") or {}
+                if meta.get("address") == s_addr_norm and (not s_brand_norm or meta.get("brand_norm") == s_brand_norm):
+                    best_match = entry
                     break
 
-        # 2. 若本次 API 暫無更新或連線中斷，維持最後一次成功的官方真實記錄
+        if best_match:
+            prices = {
+                "regular": best_match.get("regular"),
+                "midgrade": best_match.get("midgrade"),
+                "premium": best_match.get("premium"),
+                "diesel": best_match.get("diesel"),
+            }
+
+        # 2. 若本次 API 暫無更新或該站無即時回報，維持最後一次成功的官方真實記錄
         if not prices:
-            prev = last_known_map.get(sid) or last_known_map.get(key)
-            if prev and isinstance(prev.get("prices"), dict) and prev["prices"].get("regular"):
+            prev = last_known_map.get(sid) or last_known_map.get(f"{s_brand_norm}_{s_addr_norm}")
+            if prev and isinstance(prev.get("prices"), dict) and any(prev["prices"].get(k) is not None for k in ("regular", "midgrade", "premium", "diesel")):
                 prices = prev["prices"]
                 source = prev.get("source") or "GasBuddy Official (Last Known)"
 
-        # 3. 若全無官方真實紀錄，設置為空或標示待更新，嚴禁製造假價格
+        # 3. 若全無官方真實紀錄，設置為空並標示待更新，嚴禁製造假價格
         if not prices:
             prices = {
                 "regular": None,
@@ -296,7 +383,7 @@ def enrich_stations_with_real_prices(raw_stations: List[Dict[str, Any]], live_pr
             **st,
             "prices": prices,
             "source": source,
-            "updated_at": "剛更新"
+            "updated_at": "剛更新" if source == "GasBuddy Live" else "待官方即時更新" if source == "待官方即時更新" else "快取"
         })
 
     return enriched
@@ -312,11 +399,22 @@ async def get_fuel_stations_data(user_lat: Optional[float] = None, user_lon: Opt
     if _fuel_cache.get("stations") and (now - _fuel_cache.get("timestamp", 0) < 55):
         stations = [dict(s) for s in _fuel_cache["stations"]]
     else:
-        # 2. 嘗試讀取磁碟原子快取 (0ms 體驗)
+        # 2. 檢查磁碟原子快取是否足夠新鮮且含有效油價
         persisted = _load_persisted_fuel_cache()
-        if persisted and (now - _fuel_cache.get("timestamp", 0) < 55):
+        disk_mtime = 0.0
+        for cand in (FUEL_CACHE_FILE, FRONTEND_FUEL_CACHE_FILE):
+            if os.path.exists(cand):
+                try:
+                    disk_mtime = max(disk_mtime, os.path.getmtime(cand))
+                except OSError:
+                    pass
+        has_valid_persisted = any(
+            isinstance(s.get("prices"), dict) and s["prices"].get("regular") is not None
+            for s in persisted
+        )
+        if persisted and has_valid_persisted and (now - disk_mtime < 55):
             _fuel_cache["stations"] = persisted
-            _fuel_cache["timestamp"] = now
+            _fuel_cache["timestamp"] = disk_mtime
             stations = [dict(s) for s in persisted]
         else:
             # 觸發背景或即時更新

@@ -128,6 +128,7 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   beach_water: 'beachWaterQuality',
   beach_water_quality: 'beachWaterQuality',
   air_quality: 'airQuality',
+  wildfire: 'wildfire',
   zoning_districts: 'zoningDistricts',
   local_area_boundary: 'localAreaBoundary',
   postal_code_fsa: 'postalCodeFSA',
@@ -155,7 +156,7 @@ function getSystemCategory(source: { id: string; category?: string; name?: strin
     'turn_restrictions', 'vancouver_railways', 'vancouver_crashes', 'drivebc_events',
   ]);
   const weatherIds = new Set([
-    'weather_monitoring', 'tides_hydrometric', 'beach_water', 'air_quality', 'aurora_forecast',
+    'weather_monitoring', 'tides_hydrometric', 'beach_water', 'air_quality', 'wildfire', 'aurora_forecast',
     'ski_resorts', 'yvr_weathercams',
   ]);
   const securityIds = new Set([

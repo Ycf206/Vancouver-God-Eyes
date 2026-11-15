@@ -85,6 +85,16 @@ jobs:
             frontend/public/vancouver_parks.geojson \
             backend/data/vancouver_drinking_fountains.geojson \
             frontend/public/vancouver_drinking_fountains.geojson \
+            backend/data/vancouver_impark.geojson \
+            frontend/public/vancouver_impark.geojson \
+            backend/data/vancouver_libraries.geojson \
+            frontend/public/vancouver_libraries.geojson \
+            backend/data/vancouver_snow_removal_routes.geojson \
+            frontend/public/vancouver_snow_removal_routes.geojson \
+            backend/data/vancouver_wildfire.geojson \
+            frontend/public/vancouver_wildfire.geojson \
+            backend/data/vancouver_fuel_cache.json \
+            frontend/public/vancouver_fuel_cache.json \
             frontend/public/logo-mobile.jpg \
             frontend/public/logo-web.jpg \
             backend/data/admin_sources_config.json 2>/dev/null || true

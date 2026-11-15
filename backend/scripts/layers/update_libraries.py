@@ -27,7 +27,7 @@ def update_libraries():
 
     if not closures:
         closures = [
-            f"{current_year}-01-01 (New Year's Day)",
+            f"{current_year}-01-01 (元旦)",
             f"{current_year}-02-16 (Family Day)",
             f"{current_year}-04-03 (Good Friday)",
             f"{current_year}-04-06 (Easter Monday)",

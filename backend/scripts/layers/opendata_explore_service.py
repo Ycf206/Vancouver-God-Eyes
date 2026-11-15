@@ -11,14 +11,24 @@ from typing import Any
 
 import requests
 
-from base import (
-    BACKEND_DATA_DIR,
-    FRONTEND_DATA_DIR,
-    HEADERS,
-    _extract_lon_lat,
-    get_source_endpoint_url,
-    update_admin_source_metadata,
-)
+try:
+    from .base import (
+        BACKEND_DATA_DIR,
+        FRONTEND_DATA_DIR,
+        HEADERS,
+        _extract_lon_lat,
+        get_source_endpoint_url,
+        update_admin_source_metadata,
+    )
+except ImportError:
+    from base import (
+        BACKEND_DATA_DIR,
+        FRONTEND_DATA_DIR,
+        HEADERS,
+        _extract_lon_lat,
+        get_source_endpoint_url,
+        update_admin_source_metadata,
+    )
 
 DATASET_CONFIGS: dict[str, dict[str, Any]] = {
     "business-licences": {
@@ -61,7 +71,52 @@ DATASET_CONFIGS: dict[str, dict[str, Any]] = {
 _QUERY_CACHE: dict[tuple, tuple[float, dict[str, Any]]] = {}
 _QUERY_CACHE_LOCK = threading.Lock()
 _CACHE_TTL_SEC = 90
+_YESTERDAY_COUNT_CACHE: dict[tuple[str, str], tuple[float, int]] = {}
+_YESTERDAY_CACHE_TTL_SEC = 300
 _OPENDATA_MAX_OFFSET = 9900
+
+# 卑詩省自 2026 年 11 月起實施永久太平洋時間 (PCT = 常年固定 UTC-7)
+_VANCOUVER_TZ = timezone(timedelta(hours=-7))
+
+
+def _yesterday_vancouver_str() -> str:
+    return (datetime.now(_VANCOUVER_TZ) - timedelta(days=1)).strftime("%Y-%m-%d")
+
+
+def _get_yesterday_count(dataset_key: str, force: bool = False) -> int | None:
+    """Count records in OpenData whose extractdate (business) or issuedate (permits) is yesterday (Vancouver time)."""
+    y_str = _yesterday_vancouver_str()
+    cache_key = (dataset_key, y_str)
+    now = time.time()
+    if not force:
+        with _QUERY_CACHE_LOCK:
+            hit = _YESTERDAY_COUNT_CACHE.get(cache_key)
+            if hit and (now - hit[0]) < _YESTERDAY_CACHE_TTL_SEC:
+                return hit[1]
+
+    if dataset_key == "business-licences":
+        y_start = datetime.strptime(y_str, "%Y-%m-%d").replace(tzinfo=_VANCOUVER_TZ)
+        y_end = y_start + timedelta(days=1) - timedelta(seconds=1)
+        start_utc = y_start.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        end_utc = y_end.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        where_expr = f"extractdate >= '{start_utc}' and extractdate <= '{end_utc}'"
+    else:
+        where_expr = f"issuedate = date'{y_str}'"
+
+    try:
+        resp = requests.get(
+            _base_records_url(dataset_key),
+            params={"lang": "en", "limit": 0, "where": where_expr},
+            headers=HEADERS,
+            timeout=12,
+        )
+        resp.raise_for_status()
+        cnt = int((resp.json() or {}).get("total_count") or 0)
+        with _QUERY_CACHE_LOCK:
+            _YESTERDAY_COUNT_CACHE[cache_key] = (now, cnt)
+        return cnt
+    except Exception:
+        return None
 
 
 def _clean_str(val: Any) -> str | None:
@@ -327,6 +382,7 @@ def _filter_local_fallback(
     start = (page - 1) * page_size
     return {
         "total_count": total,
+        "yesterday_count": _get_yesterday_count(dataset_key) or cached.get("yesterday_count"),
         "page": page,
         "page_size": page_size,
         "latest_recency_date": cached.get("latest_recency_date"),
@@ -377,8 +433,10 @@ def query_explore_dataset(
         and sort_key == cfg["default_sort"]
     )
     if is_default_first_page and cached and cached.get("results"):
+        y_cnt = _get_yesterday_count(dataset_key)
         return {
             "total_count": cached.get("api_total_count") or len(cached["results"]),
+            "yesterday_count": y_cnt if y_cnt is not None else cached.get("yesterday_count"),
             "page": 1,
             "page_size": page_size,
             "latest_recency_date": cached.get("latest_recency_date"),
@@ -459,8 +517,10 @@ def query_explore_dataset(
         if not recency and norm_results:
             recency = norm_results[0].get("extractdate") if dataset_key == "business-licences" else norm_results[0].get("issuedate")
 
+        y_cnt = _get_yesterday_count(dataset_key, force=force)
         result_payload = {
             "total_count": total_count,
+            "yesterday_count": y_cnt if y_cnt is not None else (cached or {}).get("yesterday_count"),
             "page": page,
             "page_size": page_size,
             "latest_recency_date": recency,

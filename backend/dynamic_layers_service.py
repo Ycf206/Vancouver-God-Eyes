@@ -265,6 +265,22 @@ def refresh_air_quality() -> int:
         return 0
 
 
+def refresh_wildfire() -> int:
+    """每 24 小時刷新 BC Wildfire Service 山火通報與火災危險等級圖層"""
+    file_path = "backend/scripts/layers/update_wildfire.py"
+    target_file = "vancouver_wildfire.geojson"
+    try:
+        from update_wildfire import update_wildfire
+        features = update_wildfire()
+        cnt = len(features) if features is not None else 0
+        log_data_source_update("wildfire", "BC Wildfire Service 山火通報與火災危險等級", cnt, target_file, file_path)
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_wildfire 異常: {e}")
+        log_data_source_update("wildfire", "BC Wildfire Service 山火通報與火災危險等級", None, target_file, file_path, error=e)
+        return 0
+
+
 def refresh_business_licences(target_count: int = 1000) -> int:
     """每 24 小時刷新溫哥華市政府商業牌照 (Business Licences) 最新快取"""
     file_path = "backend/scripts/layers/update_business_licences.py"
@@ -444,6 +460,9 @@ async def run_dynamic_layers_background_loop():
         if not _is_layer_recent("vancouver_air_quality.geojson", 86400):
             print("🌬️ [Dynamic Layers] 初始預熱大溫空氣質素 (AQHI) 區塊圖層...")
             await loop.run_in_executor(None, refresh_air_quality)
+        if not _is_layer_recent("vancouver_wildfire.geojson", 86400):
+            print("🔥 [Dynamic Layers] 初始預熱 BC 山火通報與火災危險等級圖層...")
+            await loop.run_in_executor(None, refresh_wildfire)
         if not _is_layer_recent("vancouver_business_licences.json", 86400):
             print("🏢 [Dynamic Layers] 初始預熱溫哥華商業牌照 (Business Licences) 快取...")
             await loop.run_in_executor(None, refresh_business_licences, 1000)
@@ -475,6 +494,7 @@ async def run_dynamic_layers_background_loop():
     last_mv_utilities_time = time.time()
     last_yvr_indoor_time = time.time()
     last_air_quality_time = time.time()
+    last_wildfire_time = time.time()
     last_business_licences_time = time.time()
     last_building_permits_time = time.time()
     last_flo_ev_time = time.time()
@@ -547,6 +567,12 @@ async def run_dynamic_layers_background_loop():
                 last_air_quality_time = now
                 print("🌬️ [Dynamic Layers] 觸發排程: 大溫空氣質素 (AQHI) 區塊圖層 24 小時同步...")
                 await loop.run_in_executor(None, refresh_air_quality)
+
+            # 8.2. BC Wildfire Service 山火與火災危險等級 (每 86400 秒 = 每日 1 次)
+            if now - last_wildfire_time >= 86400:
+                last_wildfire_time = now
+                print("🔥 [Dynamic Layers] 觸發排程: BC 山火通報與火災危險等級 24 小時同步...")
+                await loop.run_in_executor(None, refresh_wildfire)
 
             # 8.5. 溫哥華商業牌照與建築許可 (每 86400 秒 = 每日 1 次)
             if now - last_business_licences_time >= 86400:

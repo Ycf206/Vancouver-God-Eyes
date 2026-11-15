@@ -2554,7 +2554,7 @@ CURATED_STATIC_TYPES = (
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
     "road_closures", "road_construction", "traffic_conditions",
     "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "traffic_alerts", "public_trees",
-    "museums", "garbage_collection", "water_supply", "sewer_system"
+    "museums", "garbage_collection", "water_supply", "sewer_system", "wildfire"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
@@ -3054,6 +3054,7 @@ _ALLOWED_DB_ROAD_FACILITY_TYPES = {
     "water_supply",
     "sewer_system",
     "air_quality",
+    "wildfire",
 }
 
 
@@ -3126,6 +3127,39 @@ def get_air_quality_geojson():
             path = _get_air_quality_geojson_path()
         except Exception as e:
             print(f"[AirQuality] Lazy refresh error: {e}")
+    if path and os.path.exists(path):
+        return FileResponse(
+            path,
+            media_type="application/json",
+            headers={"Cache-Control": "public, max-age=300, stale-while-revalidate=3600"},
+        )
+    return JSONResponse(
+        content={"type": "FeatureCollection", "features": []},
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
+def _get_wildfire_geojson_path() -> str | None:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(base_dir, "data", "vancouver_wildfire.geojson")
+    if os.path.exists(data_path):
+        return data_path
+    pub_path = os.path.join(base_dir, "..", "frontend", "public", "vancouver_wildfire.geojson")
+    if os.path.exists(pub_path):
+        return pub_path
+    return None
+
+
+@app.get("/api/wildfire/geojson")
+def get_wildfire_geojson():
+    """取得 BC Wildfire Service 山火事件與即時火災危險等級 GeoJSON（OCI 每 24 小時快取）。"""
+    path = _get_wildfire_geojson_path()
+    if not path:
+        try:
+            dynamic_layers_service.refresh_wildfire()
+            path = _get_wildfire_geojson_path()
+        except Exception as e:
+            print(f"[Wildfire] Lazy refresh error: {e}")
     if path and os.path.exists(path):
         return FileResponse(
             path,
@@ -3293,6 +3327,10 @@ def get_road_facilities_geojson(
     # Handle Air Quality (AQHI)
     if facility_type in ("air_quality", "aqhi"):
         return get_air_quality_geojson()
+
+    # Handle Wildfire Incidents & Fire Danger Rating
+    if facility_type in ("wildfire", "wildfires"):
+        return get_wildfire_geojson()
 
     # Handle EV Charging (CoV + hourly FLO API2 cache)
     if facility_type == "ev_charging":
@@ -3761,17 +3799,257 @@ def get_explore_building_permits(
     )
     return JSONResponse(content=data, headers=cache_headers)
 
+_NEARBY_LAYER_META: dict[str, tuple[str, str, str, str]] = {
+    'aed': ('AED 去顫器', '❤️', 'aed', 'AED 去顫器'),
+    'public_washrooms': ('公共洗手間', '🚻', 'publicWashrooms', '公共洗手間'),
+    'drinking_fountains': ('飲水機', '💧', 'drinkingFountains', '飲水機'),
+    'shared_bikes': ('共享單車', '🚲', 'sharedBikes', 'Mobi 共享單車站'),
+    'bike_racks': ('單車架', '🚲', 'bikeRacks', '公共單車架'),
+    'litter_containers': ('垃圾箱', '🗑️', 'litterContainers', '公共垃圾箱'),
+    'parking_meters': ('停車收費錶', '🅿️', 'parkingMeters', '路邊停車收費錶'),
+    'accessible_parking': ('無障礙車位', '♿', 'accessibleParking', '無障礙車位'),
+    'motorcycle_parking': ('摩托車位', '🏍️', 'motorcycleParking', '摩托車專用位'),
+    'impark': ('私人停車場', '🅿️', 'impark', '私人停車場'),
+    'ev_charging': ('EV 充電站', '⚡', 'evCharging', 'EV 充電站'),
+    'fuel': ('油站', '⛽', 'fuel', '加油站'),
+    'car_sharing': ('共享汽車', '🚗', 'carSharing', '共享汽車據點'),
+    'community_centres': ('社區中心', '🏢', 'communityCentres', '社區中心'),
+    'libraries': ('圖書館', '📚', 'libraries', '公共圖書館'),
+    'schools': ('學校', '🏫', 'schools', '學校'),
+    'food_banks': ('食物銀行', '🥫', 'foodBanks', '食物銀行'),
+    'food_vendors': ('街頭餐飲', '🍔', 'foodVendors', '街頭餐飲攤位'),
+    'recycling': ('環保回收站', '♻️', 'recycling', '環保回收站'),
+    'homeless_shelters': ('無家者庇護所', '🏠', 'homelessShelters', '無家者庇護所'),
+    'parks': ('公園綠地', '🌳', 'parks', '公園綠地'),
+    'hospitals': ('醫療院所', '🏥', 'hospitals', '醫療院所'),
+    'police': ('警局', '🚓', 'police', '警察局'),
+    'fire_halls': ('消防局', '🚒', 'fireHalls', '消防局'),
+    'fire_hydrants': ('消防栓', '🧯', 'fireHydrants', '消防栓'),
+    'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi', 'VanWiFi 熱點'),
+    'tide_stations': ('潮汐水位', '🌊', 'tideStations', '潮汐水位站'),
+    'beach_water_quality': ('海灘水質', '🏖️', 'beachWaterQuality', '海灘監測點'),
+    'wildfire': ('山火', '🔥', 'wildfire', '山火事件'),
+    'banks': ('銀行', '🏦', 'banks', '銀行分行'),
+    'canada_post': ('加拿大郵政', '📮', 'canadaPost', '郵政信箱 / 郵局'),
+    'museums': ('博物館', '🏛️', 'museums', '博物館 / 藝文場所'),
+    'zoning_districts': ('土地規劃', '📐', 'zoningDistricts', '土地規劃區'),
+    'road_closures': ('交通封閉', '🚫', 'roadClosures', '道路封閉'),
+    'road_construction': ('道路施工', '🚧', 'roadConstruction', '道路施工'),
+    'traffic_conditions': ('獅門大橋', '🌉', 'trafficConditions', '路況監測'),
+}
+
+_NEARBY_STATIC_FILES: tuple[tuple[str, str, Optional[str]], ...] = (
+    ('vancouver_aed.geojson', 'aed', None),
+    ('vancouver_public_washrooms.geojson', 'public_washrooms', None),
+    ('vancouver_drinking_fountains.geojson', 'drinking_fountains', None),
+    ('vancouver_shared_bikes.geojson', 'shared_bikes', None),
+    ('vancouver_bike_racks.geojson', 'bike_racks', None),
+    ('vancouver_parking_meters.geojson', 'parking_meters', None),
+    ('vancouver_accessible_parking.geojson', 'accessible_parking', None),
+    ('vancouver_motorcycle_parking.geojson', 'motorcycle_parking', None),
+    ('vancouver_impark.geojson', 'impark', None),
+    ('vancouver_tesla.geojson', 'ev_charging', 'Tesla 充電站'),
+    ('vancouver_car_sharing.geojson', 'car_sharing', None),
+    ('vancouver_community_centres.geojson', 'community_centres', None),
+    ('vancouver_libraries.geojson', 'libraries', None),
+    ('vancouver_schools.geojson', 'schools', None),
+    ('vancouver_food_banks.geojson', 'food_banks', None),
+    ('vancouver_food_vendors.geojson', 'food_vendors', None),
+    ('vancouver_recycling.geojson', 'recycling', None),
+    ('vancouver_homeless_shelters.geojson', 'homeless_shelters', None),
+    ('vancouver_parks.geojson', 'parks', None),
+    ('vancouver_hospitals.geojson', 'hospitals', None),
+    ('vancouver_police.geojson', 'police', None),
+    ('vancouver_fire_halls.geojson', 'fire_halls', None),
+    ('vancouver_van_wifi.geojson', 'van_wifi', None),
+    ('vancouver_beach_water.geojson', 'beach_water_quality', None),
+    ('vancouver_wildfire.geojson', 'wildfire', None),
+    ('vancouver_banks.geojson', 'banks', None),
+    ('vancouver_canada_post.geojson', 'canada_post', None),
+    ('vancouver_museums.geojson', 'museums', None),
+    ('vancouver_road_closures.geojson', 'road_closures', None),
+    ('vancouver_road_construction.geojson', 'road_construction', None),
+)
+
+_nearby_static_lock = threading.Lock()
+_nearby_static_cache: Optional[list[dict]] = None
+_nearby_bus_stops_lock = threading.Lock()
+_nearby_bus_stops_cache: Optional[list[dict]] = None
+
+
+def _extract_nearby_point_coords(geometry: Optional[dict]) -> Optional[tuple[float, float]]:
+    if not isinstance(geometry, dict):
+        return None
+    gtype = geometry.get('type')
+    coords = geometry.get('coordinates')
+    if not coords:
+        return None
+    try:
+        if gtype == 'Point' and len(coords) >= 2:
+            lon, lat = float(coords[0]), float(coords[1])
+            if math.isfinite(lat) and math.isfinite(lon):
+                return (lat, lon)
+        elif gtype == 'MultiPoint' and len(coords) > 0 and len(coords[0]) >= 2:
+            lon, lat = float(coords[0][0]), float(coords[0][1])
+            if math.isfinite(lat) and math.isfinite(lon):
+                return (lat, lon)
+        elif gtype == 'LineString' and len(coords) > 0:
+            mid = coords[len(coords) // 2]
+            if len(mid) >= 2:
+                lon, lat = float(mid[0]), float(mid[1])
+                if math.isfinite(lat) and math.isfinite(lon):
+                    return (lat, lon)
+        elif gtype == 'Polygon' and len(coords) > 0 and len(coords[0]) > 0:
+            ring = coords[0]
+            pts = [pt for pt in ring if isinstance(pt, (list, tuple)) and len(pt) >= 2]
+            if pts:
+                lat = sum(float(pt[1]) for pt in pts) / len(pts)
+                lon = sum(float(pt[0]) for pt in pts) / len(pts)
+                if math.isfinite(lat) and math.isfinite(lon):
+                    return (lat, lon)
+        elif gtype == 'MultiPolygon' and len(coords) > 0 and len(coords[0]) > 0 and len(coords[0][0]) > 0:
+            pt = coords[0][0][0]
+            if len(pt) >= 2:
+                lon, lat = float(pt[0]), float(pt[1])
+                if math.isfinite(lat) and math.isfinite(lon):
+                    return (lat, lon)
+    except (TypeError, ValueError):
+        return None
+    return None
+
+
+def _resolve_nearby_feature_name(props: dict, fallback_name: str) -> str:
+    meter_id = props.get('meterid') or props.get('meter_id')
+    lot_number = props.get('lot_number')
+    lot_label = f"{'EasyPark' if props.get('company') == 'easypark' else 'ImPark'} #{lot_number}" if lot_number else None
+    candidates = (
+        props.get('name'),
+        props.get('facility_name'),
+        props.get('site_name'),
+        props.get('station_name'),
+        props.get('park_name'),
+        props.get('address'),
+        props.get('address1'),
+        props.get('location'),
+        props.get('street'),
+        f"停車錶 #{meter_id}" if meter_id else None,
+        lot_label,
+        props.get('title'),
+        props.get('brand'),
+    )
+    for cand in candidates:
+        if isinstance(cand, str) and cand.strip():
+            return cand.strip()
+    return fallback_name
+
+
+def _get_nearby_static_facilities() -> list[dict]:
+    """Load and cache static GeoJSON facilities so SQLite/empty-DB environments return full nearby items."""
+    global _nearby_static_cache
+    if _nearby_static_cache is not None:
+        return _nearby_static_cache
+
+    with _nearby_static_lock:
+        if _nearby_static_cache is not None:
+            return _nearby_static_cache
+
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        data_dir = os.path.join(base_dir, 'data')
+        public_dir = os.path.join(base_dir, '..', 'frontend', 'public')
+        items: list[dict] = []
+
+        for filename, facility_type, name_override in _NEARBY_STATIC_FILES:
+            meta = _NEARBY_LAYER_META.get(facility_type, ('公共設施', '📍', facility_type, '公共設施'))
+            fallback_name = name_override or meta[3]
+            target_path = next(
+                (p for p in (os.path.join(data_dir, filename), os.path.join(public_dir, filename)) if os.path.exists(p)),
+                None,
+            )
+            if not target_path:
+                continue
+            try:
+                with open(target_path, 'r', encoding='utf-8') as f:
+                    raw = json.load(f)
+                for idx, feat in enumerate(raw.get('features') or []):
+                    coords = _extract_nearby_point_coords(feat.get('geometry'))
+                    if not coords:
+                        continue
+                    props = feat.get('properties') if isinstance(feat.get('properties'), dict) else {}
+                    fid = str(props.get('id') or feat.get('id') or f"{facility_type}_{idx}")
+                    local_area = str(props.get('local_area') or props.get('geo_local_area') or props.get('localarea') or props.get('city') or '')
+                    items.append({
+                        'id': fid,
+                        'name': _resolve_nearby_feature_name(props, fallback_name),
+                        'facility_type': facility_type,
+                        'type_label': meta[0],
+                        'icon': meta[1],
+                        'layer_key': meta[2],
+                        'local_area': local_area,
+                        'lat': coords[0],
+                        'lon': coords[1],
+                        'properties': props,
+                    })
+            except Exception as err:
+                print(f"[Nearby] Failed reading static dataset {filename}: {err}")
+
+        _nearby_static_cache = items
+        return items
+
+
+def _get_nearby_gtfs_bus_stops() -> list[dict]:
+    """Deduplicate and cache GTFS bus stops for fast local fallback when transit_stops DB table is empty."""
+    global _nearby_bus_stops_cache
+    if _nearby_bus_stops_cache is not None:
+        return _nearby_bus_stops_cache
+
+    with _nearby_bus_stops_lock:
+        if _nearby_bus_stops_cache is not None:
+            return _nearby_bus_stops_cache
+
+        stops_by_id: dict[str, dict] = {}
+        try:
+            gtfs_meta = get_gtfs_metadata()
+            for v_obj in (gtfs_meta.get('variants') or {}).values():
+                for st in (v_obj.get('stops') or []):
+                    sid = str(st.get('stop_id') or '').strip()
+                    if not sid or sid in stops_by_id:
+                        continue
+                    try:
+                        s_lat = float(st.get('lat'))
+                        s_lon = float(st.get('lon'))
+                    except (TypeError, ValueError):
+                        continue
+                    if not (math.isfinite(s_lat) and math.isfinite(s_lon)):
+                        continue
+                    stops_by_id[sid] = {
+                        'id': sid,
+                        'name': str(st.get('name') or f"Stop #{sid}"),
+                        'lat': s_lat,
+                        'lon': s_lon,
+                        'stop_code': str(st.get('stop_code') or ''),
+                    }
+        except Exception as err:
+            print(f"[Nearby] Failed loading GTFS bus stops: {err}")
+
+        _nearby_bus_stops_cache = list(stops_by_id.values())
+        return _nearby_bus_stops_cache
+
+
 @app.get("/api/explore/nearby")
 def explore_nearby_facilities(
     lat: float,
     lon: float,
     radius: int = 500,
     layers: Optional[str] = None,
+    q: Optional[str] = None,
+    page: Optional[int] = None,
+    page_size: Optional[int] = None,
+    limit: Optional[int] = None,
     db: Session = Depends(database.get_db)
 ):
     """
     Returns facilities and transit stops within radius (meters) of given (lat, lon).
-    Calculates exact distance and walking time (minutes).
+    Calculates exact distance and walking time (minutes), with optional search (q) and full pagination.
     內建經緯度有效範圍檢查與搜尋半徑上限保護 (50m ~ 5000m)，防範全表掃描 DoS。
     """
     if not (math.isfinite(lat) and math.isfinite(lon) and -90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0):
@@ -3779,6 +4057,7 @@ def explore_nearby_facilities(
     radius = max(50, min(5000, int(radius)))
     if layers and len(layers) > 2000:
         layers = layers[:2000]
+
     def haversine_m(lat1, lon1, lat2, lon2):
         R = 6371000
         p1, p2 = math.radians(lat1), math.radians(lat2)
@@ -3798,104 +4077,221 @@ def explore_nearby_facilities(
             half_rounded = round(mins * 2) / 2
             return int(half_rounded) if half_rounded.is_integer() else half_rounded
 
-    # Bounding box filter (1 deg ~ 111 km)
+    # Bounding box filter (1 deg lat ~ 111 km; scale lon span by cos(lat) for 49N)
     deg_delta = (radius + 150) / 111000.0
+    deg_delta_lon = deg_delta / max(0.2, math.cos(math.radians(lat)))
+    min_lat, max_lat = lat - deg_delta, lat + deg_delta
+    min_lon, max_lon = lon - deg_delta_lon, lon + deg_delta_lon
 
-    road_query = db.query(models.RoadFacility).filter(
-        models.RoadFacility.lat.between(lat - deg_delta, lat + deg_delta),
-        models.RoadFacility.lon.between(lon - deg_delta, lon + deg_delta)
-    )
-
-    selected_layer_keys = set(layers.split(',')) if layers else None
+    selected_layer_keys = {k.strip() for k in layers.split(',') if k.strip()} if layers else None
 
     nearby_items = []
+    seen_facility_keys: set[tuple[str, str]] = set()
+    db_facility_types: set[str] = set()
 
-    type_labels = {
-        'aed': ('AED 去顫器', '❤️', 'aed'),
-        'public_washrooms': ('公共洗手間', '🚻', 'publicWashrooms'),
-        'drinking_fountains': ('飲水機', '💧', 'drinkingFountains'),
-        'shared_bikes': ('共享單車', '🚲', 'sharedBikes'),
-        'bike_racks': ('單車架', '🚲', 'bikeRacks'),
-        'litter_containers': ('垃圾箱', '🗑️', 'litterContainers'),
-        'parking_meters': ('停車收費錶', '🅿️', 'parkingMeters'),
-        'accessible_parking': ('無障礙車位', '♿', 'accessibleParking'),
-        'motorcycle_parking': ('摩托車位', '🏍️', 'motorcycleParking'),
-        'ev_charging': ('EV 充電站', '⚡', 'evCharging'),
-        'community_centres': ('社區中心', '🏢', 'communityCentres'),
-        'libraries': ('圖書館', '📚', 'libraries'),
-        'schools': ('學校', '🏫', 'schools'),
-        'food_banks': ('食物銀行', '🥫', 'foodBanks'),
-        'food_vendors': ('街頭餐飲', '🍔', 'foodVendors'),
-        'recycling': ('環保回收站', '♻️', 'recycling'),
-        'homeless_shelters': ('無家者庇護所', '🏠', 'homelessShelters'),
-        'parks': ('公園綠地', '🌳', 'parks'),
-        'hospitals': ('醫療院所', '🏥', 'hospitals'),
-        'police': ('警局', '🚓', 'police'),
-        'fire_halls': ('消防局', '🚒', 'fireHalls'),
-        'fire_hydrants': ('消防栓', '🧯', 'fireHydrants'),
-        'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi'),
-        'tide_stations': ('潮汐水位', '🌊', 'tideStations'),
-        'beach_water_quality': ('海灘水質', '🏖️', 'beachWaterQuality'),
-        'zoning_districts': ('土地規劃', '📐', 'zoningDistricts'),
-        'road_closures': ('交通封閉', '🚫', 'roadClosures'),
-        'road_construction': ('道路施工', '🚧', 'roadConstruction'),
-        'traffic_conditions': ('獅門大橋', '🌉', 'trafficConditions')
-    }
+    # Query scalar columns explicitly to prevent GeoAlchemy2 AsEWKB() calls on SQLite
+    try:
+        road_rows = (
+            db.query(
+                models.RoadFacility.id,
+                models.RoadFacility.facility_type,
+                models.RoadFacility.name,
+                models.RoadFacility.local_area,
+                models.RoadFacility.lat,
+                models.RoadFacility.lon,
+                models.RoadFacility.details,
+            )
+            .filter(
+                models.RoadFacility.lat.between(min_lat, max_lat),
+                models.RoadFacility.lon.between(min_lon, max_lon),
+            )
+            .all()
+        )
+    except Exception as err:
+        print(f"[Nearby] RoadFacility DB query failed, using static fallback: {err}")
+        road_rows = []
 
-    for f in road_query.all():
-        dist = haversine_m(lat, lon, f.lat, f.lon)
+    for r_id, r_type, r_name, r_area, r_lat, r_lon, r_details in road_rows:
+        if r_lat is None or r_lon is None:
+            continue
+        db_facility_types.add(r_type)
+        seen_facility_keys.add((r_type, str(r_id)))
+        dist = haversine_m(lat, lon, r_lat, r_lon)
         if dist <= radius:
-            meta = type_labels.get(f.facility_type, ('公共設施', '📍', f.facility_type))
+            meta = _NEARBY_LAYER_META.get(r_type, ('公共設施', '📍', r_type, '公共設施'))
             if selected_layer_keys and meta[2] not in selected_layer_keys:
                 continue
             walk_min = calc_walk_minutes(dist)
             nearby_items.append({
-                'id': f.id,
-                'name': f.name,
-                'facility_type': f.facility_type,
+                'id': r_id,
+                'name': r_name,
+                'facility_type': r_type,
                 'type_label': meta[0],
                 'icon': meta[1],
                 'layer_key': meta[2],
-                'local_area': f.local_area,
-                'lat': f.lat,
-                'lon': f.lon,
+                'local_area': r_area,
+                'lat': r_lat,
+                'lon': r_lon,
                 'distance_m': dist,
                 'distance_meters': dist,
                 'walk_minutes': walk_min,
                 'walking_minutes': walk_min,
-                'properties': f.details or {}
+                'properties': r_details or {}
             })
 
-    # Transit Stops in bounding box (SkyTrain & Bus)
-    stops_query = db.query(models.TransitStop).filter(
-        models.TransitStop.lat.between(lat - deg_delta, lat + deg_delta),
-        models.TransitStop.lon.between(lon - deg_delta, lon + deg_delta)
-    )
-    for s in stops_query.all():
-        dist = haversine_m(lat, lon, s.lat, s.lon)
+    # Static GeoJSON fallback for any facility types not returned from SQLite/DB
+    for item in _get_nearby_static_facilities():
+        it_ft = item['facility_type']
+        if it_ft in db_facility_types and it_ft != 'ev_charging':
+            continue
+        if (it_ft, item['id']) in seen_facility_keys:
+            continue
+        it_lat, it_lon = item['lat'], item['lon']
+        if not (min_lat <= it_lat <= max_lat and min_lon <= it_lon <= max_lon):
+            continue
+        if selected_layer_keys and item['layer_key'] not in selected_layer_keys:
+            continue
+        dist = haversine_m(lat, lon, it_lat, it_lon)
         if dist <= radius:
-            is_skytrain = s.stop_group == 'skytrain'
+            seen_facility_keys.add((it_ft, item['id']))
+            walk_min = calc_walk_minutes(dist)
+            nearby_items.append({
+                'id': item['id'],
+                'name': item['name'],
+                'facility_type': it_ft,
+                'type_label': item['type_label'],
+                'icon': item['icon'],
+                'layer_key': item['layer_key'],
+                'local_area': item['local_area'],
+                'lat': it_lat,
+                'lon': it_lon,
+                'distance_m': dist,
+                'distance_meters': dist,
+                'walk_minutes': walk_min,
+                'walking_minutes': walk_min,
+                'properties': item['properties'],
+            })
+
+    # Merged live EV stations (CoV + FLO + ChargePoint)
+    if not selected_layer_keys or 'evCharging' in selected_layer_keys:
+        try:
+            ev_meta = _NEARBY_LAYER_META['ev_charging']
+            for feat in _get_merged_ev_geojson().get('features') or []:
+                coords = _extract_nearby_point_coords(feat.get('geometry'))
+                if not coords:
+                    continue
+                ev_lat, ev_lon = coords
+                if not (min_lat <= ev_lat <= max_lat and min_lon <= ev_lon <= max_lon):
+                    continue
+                props = feat.get('properties') if isinstance(feat.get('properties'), dict) else {}
+                ev_id = str(props.get('id') or feat.get('id') or f"ev_{ev_lon}_{ev_lat}")
+                if ('ev_charging', ev_id) in seen_facility_keys:
+                    continue
+                dist = haversine_m(lat, lon, ev_lat, ev_lon)
+                if dist <= radius:
+                    seen_facility_keys.add(('ev_charging', ev_id))
+                    walk_min = calc_walk_minutes(dist)
+                    nearby_items.append({
+                        'id': ev_id,
+                        'name': _resolve_nearby_feature_name(props, ev_meta[3]),
+                        'facility_type': 'ev_charging',
+                        'type_label': ev_meta[0],
+                        'icon': ev_meta[1],
+                        'layer_key': ev_meta[2],
+                        'local_area': str(props.get('local_area') or props.get('city') or ''),
+                        'lat': ev_lat,
+                        'lon': ev_lon,
+                        'distance_m': dist,
+                        'distance_meters': dist,
+                        'walk_minutes': walk_min,
+                        'walking_minutes': walk_min,
+                        'properties': props,
+                    })
+        except Exception as err:
+            print(f"[Nearby] EV merge skipped: {err}")
+
+    # Transit Stops in bounding box (SkyTrain & Bus) — scalar columns avoid AsEWKB() on SQLite
+    try:
+        stop_rows = (
+            db.query(
+                models.TransitStop.stop_id,
+                models.TransitStop.name,
+                models.TransitStop.lat,
+                models.TransitStop.lon,
+                models.TransitStop.stop_group,
+            )
+            .filter(
+                models.TransitStop.lat.between(min_lat, max_lat),
+                models.TransitStop.lon.between(min_lon, max_lon),
+            )
+            .all()
+        )
+    except Exception as err:
+        print(f"[Nearby] TransitStop DB query failed, using static fallback: {err}")
+        stop_rows = []
+
+    seen_stop_ids: set[str] = set()
+    db_has_bus_stops = False
+    for s_id, s_name, s_lat, s_lon, s_group in stop_rows:
+        if s_lat is None or s_lon is None:
+            continue
+        is_skytrain = s_group == 'skytrain'
+        if not is_skytrain:
+            db_has_bus_stops = True
+        seen_stop_ids.add(str(s_id))
+        dist = haversine_m(lat, lon, s_lat, s_lon)
+        if dist <= radius:
             layer_key = 'skytrainStops' if is_skytrain else 'busStops'
             is_allowed = not selected_layer_keys or layer_key in selected_layer_keys or (is_skytrain and 'skytrainRoutes' in selected_layer_keys)
             if not is_allowed:
                 continue
             walk_min = calc_walk_minutes(dist)
             nearby_items.append({
-                'id': s.stop_id,
-                'name': s.name,
+                'id': s_id,
+                'name': s_name,
                 'facility_type': 'skytrain_stations' if is_skytrain else 'bus_stops',
                 'type_label': '天車站' if is_skytrain else '公車站',
                 'icon': '🚉' if is_skytrain else '🚏',
                 'layer_key': layer_key,
                 'local_area': '',
-                'lat': s.lat,
-                'lon': s.lon,
+                'lat': s_lat,
+                'lon': s_lon,
                 'distance_m': dist,
                 'distance_meters': dist,
                 'walk_minutes': walk_min,
                 'walking_minutes': walk_min,
-                'properties': {'stop_id': s.stop_id, 'stop_group': s.stop_group}
+                'properties': {'stop_id': s_id, 'stop_group': s_group}
             })
+
+    # Supplementary GTFS Bus stops when TransitStop table has no bus stops populated
+    is_bus_allowed = not selected_layer_keys or 'busStops' in selected_layer_keys
+    if is_bus_allowed and not db_has_bus_stops:
+        for bs in _get_nearby_gtfs_bus_stops():
+            if bs['id'] in seen_stop_ids:
+                continue
+            b_lat, b_lon = bs['lat'], bs['lon']
+            if not (min_lat <= b_lat <= max_lat and min_lon <= b_lon <= max_lon):
+                continue
+            dist = haversine_m(lat, lon, b_lat, b_lon)
+            if dist <= radius:
+                seen_stop_ids.add(bs['id'])
+                walk_min = calc_walk_minutes(dist)
+                nearby_items.append({
+                    'id': bs['id'],
+                    'name': bs['name'],
+                    'facility_type': 'bus_stops',
+                    'type_label': '公車站',
+                    'icon': '🚏',
+                    'layer_key': 'busStops',
+                    'local_area': '',
+                    'lat': b_lat,
+                    'lon': b_lon,
+                    'distance_m': dist,
+                    'distance_meters': dist,
+                    'walk_minutes': walk_min,
+                    'walking_minutes': walk_min,
+                    'properties': {'stop_id': bs['id'], 'stop_code': bs['stop_code'], 'stop_group': 'bus'},
+                })
 
     # Supplementary SkyTrain stations from skytrain_network.json to ensure 100% discovery
     is_skytrain_layer_on = not selected_layer_keys or 'skytrainStops' in selected_layer_keys or 'skytrainRoutes' in selected_layer_keys
@@ -3988,14 +4384,59 @@ def explore_nearby_facilities(
         except Exception:
             pass
 
+    q_clean = (q or '').strip().lower()
+    if q_clean:
+        def _matches_nearby_q(it: dict) -> bool:
+            props = it.get('properties') or {}
+            hay = ' '.join(
+                str(v) for v in (
+                    it.get('name'),
+                    it.get('type_label'),
+                    str(it.get('facility_type') or '').replace('_', ' '),
+                    it.get('local_area'),
+                    props.get('address'),
+                    props.get('address1'),
+                    props.get('street'),
+                    props.get('location'),
+                    props.get('operator'),
+                    props.get('brand'),
+                    props.get('lot_number'),
+                )
+                if v
+            ).lower()
+            return q_clean in hay
+
+        nearby_items = [it for it in nearby_items if _matches_nearby_q(it)]
+
     # Sort all by distance ascending
     nearby_items.sort(key=lambda x: x['distance_m'])
+    total = len(nearby_items)
+
+    if page is not None or page_size is not None:
+        ps = max(10, min(500, int(page_size or 50)))
+        total_pages = max(1, math.ceil(total / ps))
+        cur_page = max(1, min(int(page or 1), total_pages))
+        start_idx = (cur_page - 1) * ps
+        sliced_items = nearby_items[start_idx:start_idx + ps]
+    elif limit is not None:
+        ps = max(50, min(10000, int(limit)))
+        total_pages = max(1, math.ceil(total / ps))
+        cur_page = 1
+        sliced_items = nearby_items[:ps]
+    else:
+        ps = max(1, total)
+        total_pages = 1
+        cur_page = 1
+        sliced_items = nearby_items
 
     return {
         'center': {'lat': lat, 'lon': lon},
         'radius_m': radius,
-        'total': len(nearby_items),
-        'items': nearby_items[:150]
+        'total': total,
+        'page': cur_page,
+        'page_size': ps,
+        'total_pages': total_pages,
+        'items': sliced_items
     }
 
 def _get_rapidbus_main_variants(gtfs_meta):
@@ -4099,21 +4540,30 @@ def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
         return _stops_geojson_cache[group]
 
     try:
-        stops = db.query(models.TransitStop).filter(models.TransitStop.stop_group == group).all()
+        stops = (
+            db.query(
+                models.TransitStop.stop_id,
+                models.TransitStop.name,
+                models.TransitStop.lat,
+                models.TransitStop.lon,
+            )
+            .filter(models.TransitStop.stop_group == group)
+            .all()
+        )
     except Exception:
         stops = []
 
     features = []
-    for stop in stops:
+    for stop_id, stop_name, stop_lat, stop_lon in stops:
         features.append({
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [stop.lon, stop.lat]
+                "coordinates": [stop_lon, stop_lat]
             },
             "properties": {
-                "stop_id": stop.stop_id,
-                "name": stop.name
+                "stop_id": stop_id,
+                "name": stop_name
             }
         })
 
@@ -4790,6 +5240,7 @@ def set_admin_github_token(payload: dict = Body(...)):
 
 
 CANONICAL_WORKFLOW_MAP: dict[str, str] = {
+    "impark_parking": "update-private-parking.yml",
     "shared_bikes": "update-shared-bikes-hourly.yml",
     "escooter": "update-escooter-hourly.yml",
     "turn_restrictions": "update-traffic-turn-restrictions.yml",
@@ -4864,6 +5315,7 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "sewer_system": ["vancouver_sewer_system.geojson", "vancouver_sewer_lines.geojson"],
     "mobile_coverage": ["vancouver_mobile_coverage.geojson"],
     "air_quality": ["vancouver_air_quality.geojson"],
+    "wildfire": ["vancouver_wildfire.geojson"],
     "ev_charging_flo": ["flo_ev_live_cache.json"],
     "ev_charging_chargepoint": ["chargepoint_ev_live_cache.json"],
     "business_licences": ["vancouver_business_licences.json"],
@@ -5189,6 +5641,12 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
         aq_cnt, aq_ts = _extract_disk_file_meta(aq_file)
         aq_runtime = _unix_to_iso(_oci_runtime_ts.get("air_quality"))
         oci_live_updates["air_quality"] = (_max_iso_ts(aq_runtime, aq_ts), aq_cnt if aq_cnt > 0 else None)
+
+    if "wildfire" in src_by_id:
+        wf_file = os.path.join(data_dir, "vancouver_wildfire.geojson")
+        wf_cnt, wf_ts = _extract_disk_file_meta(wf_file)
+        wf_runtime = _unix_to_iso(_oci_runtime_ts.get("wildfire"))
+        oci_live_updates["wildfire"] = (_max_iso_ts(wf_runtime, wf_ts), wf_cnt if wf_cnt >= 0 else None)
 
     if "ev_charging_flo" in src_by_id:
         fl_file = os.path.join(data_dir, "flo_ev_live_cache.json")
@@ -5547,6 +6005,11 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         cnt = dynamic_layers_service.refresh_air_quality()
         _oci_runtime_ts["air_quality"] = time.time()
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時更新大溫哥華空氣質素健康指數 (AQHI) 分區圖層，共 {cnt} 個監測分區。")
+    if sid == "wildfire":
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_wildfire()
+        _oci_runtime_ts["wildfire"] = time.time()
+        return (cnt if cnt is not None else None, f"OCI 伺服器已即時同步 BC Wildfire Service 山火通報與火災危險等級，共 {cnt or 0} 筆事件。")
     if sid in ("ev_charging_flo", "flo_ev"):
         import dynamic_layers_service
         cnt = dynamic_layers_service.refresh_flo_ev()
@@ -5610,7 +6073,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
             # 判斷是否為批次觸發
             if source_id == 'all_oci' or (source_id == 'all' and target_runner == 'oci'):
                 target_name = "全部 OCI 伺服器即時服務"
-                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss", "yvr_indoor", "water_supply", "sewer_system", "air_quality", "ev_charging_flo", "ev_charging_chargepoint"):
+                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping", "shared_bikes", "escooter", "food_vendors", "yvr_news_rss", "yvr_indoor", "water_supply", "sewer_system", "air_quality", "wildfire", "ev_charging_flo", "ev_charging_chargepoint"):
                     try:
                         _refresh_single_oci_service(idx_s)
                     except Exception:

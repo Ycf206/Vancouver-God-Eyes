@@ -437,19 +437,23 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "type": "api",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
-    "record_count": 178,
+    "record_count": 338,
     "unit": "處商業停車場場域",
     "last_updated": "2026-10-24T17:00:00Z",
     "status": "healthy",
-    "data_pipeline_notes": "ImPark (Reef Parking) 官方開放據點清單 -> 解析各場次停車位數量、每小時與全日收費費率、無障礙設施與充電樁 -> 寫入 vancouver_impark.geojson",
+    "data_pipeline_notes": "ImPark (Reef Parking) 官方開放據點清單 + EasyPark Find Parking & Lot Details 網頁爬蟲 -> 合併大溫哥華私營與公營委辦停車場位置、時租/月租/季節性/年租費率、SPARC 無障礙與 EV 充電設施、Pay-by-Phone/Zone 代碼 -> 寫入 vancouver_impark.geojson",
     "runner": "github_actions",
-    "workflow_file": "update-impark-parking.yml",
+    "workflow_file": "update-private-parking.yml",
     "category": "道路",
     "enabled": true,
     "source_links": [
       {
         "label": "ImPark Lots API",
         "url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.25143536989855&lngLoc=-123.21715982244642&latMin=49.185169174402894&lngMin=-123.40358407781751&latMax=49.31761273382262&lngMax=-123.03073556707533&csr=0&branchName="
+      },
+      {
+        "label": "EasyPark Find Parking",
+        "url": "https://easypark.ca/find-parking"
       }
     ],
     "source_url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.25143536989855&lngLoc=-123.21715982244642&latMin=49.185169174402894&lngMin=-123.40358407781751&latMax=49.31761273382262&lngMax=-123.03073556707533&csr=0&branchName="
@@ -1753,6 +1757,34 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "source_url": "https://gis.metrovancouver.org/maps/air"
   },
   {
+    "id": "wildfire",
+    "name": "BC Wildfire Service 山火與火災危險等級",
+    "type": "geojson",
+    "cron_expr": "0 0 * * *",
+    "schedule_interval": "每 24 小時",
+    "record_count": 23,
+    "unit": "起 BC 省現役山火通報",
+    "last_updated": "2026-11-15T22:16:10Z",
+    "status": "healthy",
+    "data_pipeline_notes": "BC Wildfire Service Public Published Incident API (OUT_CNTRL / HOLDING / UNDR_CNTRL) + City of North Vancouver Current Fire Danger Rating 即時網頁狀態 -> 每 24 小時由 OCI 常駐快取排程自動同步並寫入 vancouver_wildfire.geojson",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "天氣",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "BC Wildfire Service 地圖與通報",
+        "url": "https://wildfiresituation.nrs.gov.bc.ca/map"
+      },
+      {
+        "type": "web",
+        "label": "CNV Fire Danger Current Rating",
+        "url": "https://www.cnv.org/home-property/fire-department/fire-danger-rating"
+      }
+    ],
+    "source_url": "https://wildfiresituation.nrs.gov.bc.ca/wfnews-api/publicPublishedIncident"
+  },
+  {
     "id": "ev_charging_flo",
     "name": "FLO 電動車充電站即時狀態 (API2)",
     "type": "api",
@@ -1813,7 +1845,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "name": "溫哥華商業牌照",
     "type": "api",
     "cron_expr": "0 2 * * *",
-    "schedule_interval": "每 24 小時",
+    "schedule_interval": "每日更新 1 次",
     "record_count": 207448,
     "unit": "筆商業牌照記錄",
     "last_updated": "2026-11-14T08:08:51Z",
@@ -1841,7 +1873,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "name": "溫哥華建築許可",
     "type": "api",
     "cron_expr": "0 2 * * *",
-    "schedule_interval": "每 24 小時",
+    "schedule_interval": "每日更新 1 次",
     "record_count": 52672,
     "unit": "筆建築許可記錄",
     "last_updated": "2026-11-12T08:00:00Z",
