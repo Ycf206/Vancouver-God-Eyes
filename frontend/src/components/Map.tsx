@@ -19661,10 +19661,9 @@ export default function AppMap() {
                 const rawDangerLevel = String(
                   wildfireGeoJson?.fire_danger_rating?.level || p.fire_danger_rating || 'LOW'
                 ).toUpperCase();
-                const dangerMap: Record<string, { level: string; zh: string; badgeBg: string; badgeText: string; bannerBg: string; borderColor: string; textColor: string }> = {
+                const dangerMap: Record<string, { level: string; badgeBg: string; badgeText: string; bannerBg: string; borderColor: string; textColor: string }> = {
                   LOW: {
                     level: 'LOW',
-                    zh: '低',
                     badgeBg: '#55a654',
                     badgeText: '#ffffff',
                     bannerBg: '#ecf7ed',
@@ -19673,7 +19672,6 @@ export default function AppMap() {
                   },
                   MODERATE: {
                     level: 'MODERATE',
-                    zh: '中',
                     badgeBg: '#eab308',
                     badgeText: '#0f172a',
                     bannerBg: '#fefce8',
@@ -19682,7 +19680,6 @@ export default function AppMap() {
                   },
                   HIGH: {
                     level: 'HIGH',
-                    zh: '高',
                     badgeBg: '#df9035',
                     badgeText: '#ffffff',
                     bannerBg: '#fff7ed',
@@ -19691,7 +19688,6 @@ export default function AppMap() {
                   },
                   EXTREME: {
                     level: 'EXTREME',
-                    zh: '極高',
                     badgeBg: '#d3352f',
                     badgeText: '#ffffff',
                     bannerBg: '#fef2f2',
@@ -19728,19 +19724,19 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 即時 Fire Danger Rating 顏色區塊 */}
+                    {/* 即時火災危險等級顏色區塊 */}
                     <div
                       style={{ backgroundColor: dangerCfg.bannerBg, borderColor: dangerCfg.borderColor }}
                       className="p-2.5 rounded-lg border flex items-center justify-between gap-2"
                     >
                       <span style={{ color: dangerCfg.textColor }} className="font-bold text-[11px] leading-snug">
-                        Fire Danger Rating
+                        火災危險等級
                       </span>
                       <span
                         style={{ backgroundColor: dangerCfg.badgeBg, color: dangerCfg.badgeText }}
                         className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0 shadow-xs tracking-wide"
                       >
-                        {dangerCfg.level} · {dangerCfg.zh}
+                        {dangerCfg.level}
                       </span>
                     </div>
 
