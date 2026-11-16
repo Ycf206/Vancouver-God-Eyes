@@ -44,6 +44,38 @@ jobs:
           cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
           
           echo "Working directory: $(pwd)"
+
+          git_fetch_retry() {
+            local attempt=1
+            local max_attempts=4
+            while [ "$attempt" -le "$max_attempts" ]; do
+              if git -c http.postBuffer=524288000 fetch "$@"; then
+                return 0
+              fi
+              echo "⚠️ git fetch $* failed (attempt $attempt/$max_attempts), retrying in $((attempt * 5))s..."
+              sleep $((attempt * 5))
+              attempt=$((attempt + 1))
+            done
+            return 1
+          }
+
+          # 修復先前後端容器以 root + mkstemp 寫入的 0600 檔案權限，確保 ubuntu 可讀取備份
+          HOST_UID=$(id -u)
+          HOST_GID=$(id -g)
+          PERM_FIX_CMD="chown -R ${HOST_UID}:${HOST_GID} /app/data 2>/dev/null || true; find /app/data -type d -exec chmod 755 {} + 2>/dev/null || true; find /app/data -type f ! -name '.admin_session_key' -exec chmod 644 {} + 2>/dev/null || true; [ -f /app/data/.admin_session_key ] && chmod 600 /app/data/.admin_session_key || true"
+          RUNNING_BACKEND_CID=$(docker compose ps --status running -q backend 2>/dev/null || true)
+          if [ -n "$RUNNING_BACKEND_CID" ]; then
+            docker compose exec -T backend sh -c "$PERM_FIX_CMD" || true
+          elif [ -n "$(docker compose images -q backend 2>/dev/null || true)" ]; then
+            docker compose run -T --rm --no-deps --entrypoint sh backend -c "$PERM_FIX_CMD" || true
+          fi
+          if command -v sudo >/dev/null 2>&1; then
+            sudo -n chown -R "${HOST_UID}:${HOST_GID}" backend/data frontend/public 2>/dev/null || true
+            sudo -n find backend/data -type d -exec chmod 755 {} + 2>/dev/null || true
+            sudo -n find backend/data -type f ! -name '.admin_session_key' -exec chmod 644 {} + 2>/dev/null || true
+            sudo -n chmod -R a+rX frontend/public 2>/dev/null || true
+            [ -f backend/data/.admin_session_key ] && sudo -n chmod 600 backend/data/.admin_session_key 2>/dev/null || true
+          fi
           
           # 備份保護本機 .env、前端環境變數與所有後台持久化執行狀態檔 (防止 git reset / origin/data 覆蓋)
           [ -f .env ] && cp .env /tmp/godseye_root_env.bak || true
@@ -58,7 +90,7 @@ jobs:
           # 檢查是否有指定緊急系統還原目標
           if [ -n "$ROLLBACK_TARGET" ]; then
             echo "🚨 啟動緊急系統還原程序，目標：$ROLLBACK_TARGET ..."
-            git fetch --all --tags
+            git_fetch_retry --all --tags
             if [ "$ROLLBACK_TARGET" = "PREV" ]; then
               git checkout HEAD~1
             else
@@ -66,12 +98,12 @@ jobs:
             fi
             echo "✅ 已切換至還原版本：$(git rev-parse HEAD)"
           else
-            # 強制同步至遠端最新 commit，徹底避免本機快取與衝突阻止更新
-            git fetch origin main
+            # 強制同步至遠端最新 commit，徹底避免本機快取與衝突阻止更新（含 503 重試）
+            git_fetch_retry origin main
             git checkout main
             git reset --hard origin/main
           fi
-          git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+          git_fetch_retry origin data:refs/remotes/origin/data 2>/dev/null || true
           git checkout refs/remotes/origin/data -- backend/data frontend/public 2>/dev/null || true
           # 確保核心圖資與後台設定以最新 main 分支為基準，防止 data 分支舊快取損壞屬性與格式
           git checkout HEAD -- \
@@ -98,7 +130,7 @@ jobs:
             frontend/public/logo-mobile.jpg \
             frontend/public/logo-web.jpg \
             backend/data/admin_sources_config.json 2>/dev/null || true
-          git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/admin_sources_config.json -e backend/data/admin_layers_config.json -e backend/data/vancouver_yvr_flights.json -e backend/data/vancouver_air_quality.geojson -e backend/data/flo_ev_parks.json -e backend/data/flo_ev_live_cache.json -e backend/data/flo_ev_details_cache.json -e backend/data/chargepoint_ev_devices.json -e backend/data/chargepoint_ev_live_cache.json -e backend/data/chargepoint_ev_details_cache.json -e backend/data/vancouver_business_licences.json -e backend/data/vancouver_building_permits.json
+          git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/.admin_session_key -e backend/data/admin_schedule_history.json -e backend/data/schedule_history_config.json -e backend/data/system_logs.json -e backend/data/system_logs_config.json -e backend/data/stats_pv.json -e backend/data/issue_reports.jsonl -e backend/data/system_maintenance.json -e backend/data/admin_sources_config.json -e backend/data/admin_layers_config.json -e backend/data/vancouver_yvr_flights.json -e backend/data/vancouver_air_quality.geojson -e backend/data/flo_ev_parks.json -e backend/data/flo_ev_live_cache.json -e backend/data/flo_ev_details_cache.json -e backend/data/chargepoint_ev_devices.json -e backend/data/chargepoint_ev_live_cache.json -e backend/data/chargepoint_ev_details_cache.json -e backend/data/vancouver_business_licences.json -e backend/data/vancouver_building_permits.json
 
           # 還原 .env、前端環境變數、持久化執行狀態檔與合併管理員設定檔
           [ -f /tmp/godseye_root_env.bak ] && cp /tmp/godseye_root_env.bak .env || true

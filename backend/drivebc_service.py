@@ -2,11 +2,11 @@ from __future__ import annotations
 import os
 import json
 import time
-import tempfile
 import asyncio
 import requests
 from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Any, Optional
+from atomic_io import atomic_write_json as _shared_atomic_write_json
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BACKEND_DIR, "data")
@@ -22,20 +22,7 @@ DRIVEBC_API_URL = "https://www.drivebc.ca/api/eventspolling/"
 
 
 def _atomic_write_json(file_path: str, data: Any):
-    dir_name = os.path.dirname(file_path)
-    os.makedirs(dir_name, exist_ok=True)
-    temp_fd, temp_path = tempfile.mkstemp(dir=dir_name, prefix=".tmp_drivebc_", suffix=".json")
-    try:
-        with os.fdopen(temp_fd, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        os.replace(temp_path, file_path)
-    except Exception:
-        if os.path.exists(temp_path):
-            try:
-                os.remove(temp_path)
-            except OSError:
-                pass
-        raise
+    _shared_atomic_write_json(file_path, data, indent=2, prefix=".tmp_drivebc_", suffix=".json")
 
 
 def _load_disk_cache() -> Optional[Dict[str, Any]]:

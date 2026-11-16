@@ -2,7 +2,6 @@ import os
 import sys
 import json
 import time
-import tempfile
 import requests
 from datetime import datetime, timezone
 
@@ -22,6 +21,10 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS_DIR = os.path.dirname(CURRENT_DIR)
 BACKEND_DIR = os.path.dirname(SCRIPTS_DIR)
 PROJECT_ROOT = os.path.dirname(BACKEND_DIR)
+
+if BACKEND_DIR not in sys.path:
+    sys.path.append(BACKEND_DIR)
+from atomic_io import atomic_write_json
 
 BACKEND_DATA_DIR = os.path.join(BACKEND_DIR, 'data')
 FRONTEND_DATA_DIR = os.path.join(PROJECT_ROOT, 'frontend', 'public')
@@ -231,17 +234,10 @@ def update_admin_source_metadata(source_id: str, record_count: int = None, updat
                 changed = True
                 break
         if changed:
-            fd, tmp_path = tempfile.mkstemp(dir=BACKEND_DATA_DIR, prefix=".tmp_admin_cfg_", suffix=".json")
             try:
-                with os.fdopen(fd, "w", encoding="utf-8") as f:
-                    json.dump(cfg, f, ensure_ascii=False, indent=2)
-                os.replace(tmp_path, cfg_path)
+                atomic_write_json(cfg_path, cfg, indent=2, prefix=".tmp_admin_cfg_", suffix=".json")
             except Exception:
-                if os.path.exists(tmp_path):
-                    try:
-                        os.remove(tmp_path)
-                    except OSError:
-                        pass
+                pass
         # 寫入系統運作日誌與調度歷史
         try:
             if BACKEND_DIR not in sys.path:
@@ -292,21 +288,14 @@ def save_layer_geojson(filename, data_or_features, is_feature_list=True, compact
                 fc["total_count"] = len(fc["features"])
 
     def _atomic_write_json(target_path, payload):
-        import tempfile
-        target_dir = os.path.dirname(target_path)
-        os.makedirs(target_dir, exist_ok=True)
-        fd, tmp_path = tempfile.mkstemp(dir=target_dir, prefix=".layer_", suffix=".tmp")
-        try:
-            with os.fdopen(fd, "w", encoding="utf-8") as f:
-                if compact:
-                    json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
-                else:
-                    json.dump(payload, f, ensure_ascii=False, indent=2)
-            os.replace(tmp_path, target_path)
-        except Exception:
-            if os.path.exists(tmp_path):
-                os.unlink(tmp_path)
-            raise
+        atomic_write_json(
+            target_path,
+            payload,
+            indent=None if compact else 2,
+            separators=(",", ":") if compact else None,
+            prefix=".layer_",
+            suffix=".tmp",
+        )
 
     backend_path = os.path.join(BACKEND_DATA_DIR, filename)
     _atomic_write_json(backend_path, fc)

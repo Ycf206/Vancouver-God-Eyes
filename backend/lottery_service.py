@@ -3,10 +3,10 @@ import json
 import time
 import logging
 import asyncio
-import tempfile
 import requests
 from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, Optional
+from atomic_io import atomic_write_json as _shared_atomic_write_json
 
 logger = logging.getLogger(__name__)
 
@@ -30,21 +30,7 @@ def get_vancouver_now() -> datetime:
     return datetime.now(PCT_TZ)
 
 def _atomic_write_json(target_path: str, payload: Any) -> None:
-    parent_dir = os.path.dirname(os.path.abspath(target_path))
-    os.makedirs(parent_dir, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(prefix=".lottery_", suffix=".tmp", dir=parent_dir)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp_path, target_path)
-    except Exception:
-        try:
-            os.unlink(tmp_path)
-        except OSError:
-            pass
-        raise
+    _shared_atomic_write_json(target_path, payload, indent=2, prefix=".lottery_", suffix=".tmp", fsync=True)
 
 def calculate_next_draw_date(draw_days: list[int]) -> str:
     """

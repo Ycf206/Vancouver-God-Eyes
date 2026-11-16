@@ -20,7 +20,6 @@ from datetime import datetime, timezone
 import json
 import os
 import sys
-import tempfile
 import threading
 import time
 from typing import Any
@@ -33,7 +32,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.append(CURRENT_DIR)
 
-from base import BACKEND_DATA_DIR, update_admin_source_metadata
+from base import BACKEND_DATA_DIR, atomic_write_json as _shared_atomic_write_json, update_admin_source_metadata
 
 API1_URL = "https://mc-ca.chargepoint.com/map-prod/v2"
 API2_URL = "https://mc-ca.chargepoint.com/map-prod/v3/station/info"
@@ -124,19 +123,7 @@ def _get_session() -> requests.Session:
 
 
 def _atomic_write_json(target_path: str, payload: Any) -> None:
-    parent = os.path.dirname(os.path.abspath(target_path))
-    os.makedirs(parent, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(prefix=".tmp_cp_", suffix=".json", dir=parent)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
-        os.replace(tmp_path, target_path)
-    finally:
-        if os.path.exists(tmp_path):
-            try:
-                os.remove(tmp_path)
-            except OSError:
-                pass
+    _shared_atomic_write_json(target_path, payload, indent=None, separators=(",", ":"), prefix=".tmp_cp_", suffix=".json")
 
 
 def _normalize_cp_status(raw: str | None) -> str:

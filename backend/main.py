@@ -6,8 +6,8 @@ import asyncio
 import requests
 import time
 import threading
-import tempfile
 import hmac
+from atomic_io import atomic_write_json as _shared_atomic_write_json, atomic_write_lines as _shared_atomic_write_lines
 import secrets
 import ipaddress
 import socket
@@ -46,41 +46,12 @@ _road_seed_lock = threading.Lock()
 
 def _atomic_write_json(path: str, payload, indent: int = 2) -> None:
     """透過暫存檔 + os.replace 執行原子寫入，徹底杜絕高並發寫檔截斷或 JSON 損毀崩潰"""
-    import json as _json
-    abs_path = os.path.abspath(path)
-    dir_name = os.path.dirname(abs_path)
-    os.makedirs(dir_name, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=dir_name, prefix=".tmp_", suffix=".json")
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            _json.dump(payload, f, ensure_ascii=False, indent=indent)
-        os.replace(tmp_path, abs_path)
-    except Exception:
-        try:
-            if os.path.exists(tmp_path):
-                os.remove(tmp_path)
-        except Exception:
-            pass
-        raise
+    _shared_atomic_write_json(path, payload, indent=indent)
 
 
-def _atomic_write_lines(path: str, lines: list[str]) -> None:
+def _atomic_write_lines(path: str, lines: list[str], mode: int = 0o644) -> None:
     """透過暫存檔 + os.replace 原子更新 JSONL / .env 文字檔"""
-    abs_path = os.path.abspath(path)
-    dir_name = os.path.dirname(abs_path)
-    os.makedirs(dir_name, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=dir_name, prefix=".tmp_", suffix=".txt")
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            f.writelines(lines)
-        os.replace(tmp_path, abs_path)
-    except Exception:
-        try:
-            if os.path.exists(tmp_path):
-                os.remove(tmp_path)
-        except Exception:
-            pass
-        raise
+    _shared_atomic_write_lines(path, lines, mode=mode)
 
 
 def _get_client_ip(request: Request) -> str:
@@ -148,11 +119,7 @@ def _get_admin_signing_key() -> bytes:
                 file_secret = f.read().strip()
         if not file_secret or len(file_secret) < 32:
             file_secret = secrets.token_hex(32)
-            _atomic_write_lines(key_file, [file_secret])
-            try:
-                os.chmod(key_file, 0o600)
-            except Exception:
-                pass
+            _atomic_write_lines(key_file, [file_secret], mode=0o600)
     except Exception:
         file_secret = secrets.token_hex(32)
     combined = f"{env_secret}:{file_secret}".encode("utf-8")
@@ -3602,7 +3569,6 @@ def fetch_311_by_date(target_date: str) -> list[dict]:
     """
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", target_date or ""):
         return []
-    import tempfile
     import urllib.request
     import urllib.parse
     cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', '311_dates')
@@ -3679,19 +3645,16 @@ def fetch_311_by_date(target_date: str) -> list[dict]:
                 matched_records.append(r)
 
     if matched_records:
-        tmp_path = None
         try:
-            fd, tmp_path = tempfile.mkstemp(dir=cache_dir, prefix=f".311_{target_date}_", suffix=".tmp")
-            with os.fdopen(fd, 'w', encoding='utf-8') as f:
-                json.dump(matched_records, f, ensure_ascii=False, indent=2)
-            os.replace(tmp_path, cache_file)
-            tmp_path = None
+            _shared_atomic_write_json(
+                cache_file,
+                matched_records,
+                indent=2,
+                prefix=f".311_{target_date}_",
+                suffix=".tmp",
+            )
         except Exception:
-            if tmp_path and os.path.exists(tmp_path):
-                try:
-                    os.unlink(tmp_path)
-                except OSError:
-                    pass
+            pass
 
     return matched_records
 

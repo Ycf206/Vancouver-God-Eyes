@@ -11,11 +11,13 @@ import sys
 import json
 import time
 import argparse
-import tempfile
 from datetime import datetime, timezone
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.dirname(SCRIPT_DIR)
+if BACKEND_DIR not in sys.path:
+    sys.path.append(BACKEND_DIR)
+from atomic_io import atomic_write_json
 PROJECT_ROOT = os.path.dirname(BACKEND_DIR)
 DATA_DIR = os.path.join(BACKEND_DIR, "data")
 PUBLIC_DIR = os.path.join(PROJECT_ROOT, "frontend", "public")
@@ -77,20 +79,7 @@ SOURCE_DATA_FILES = {
 
 
 def _atomic_write_json(path: str, payload) -> None:
-    parent = os.path.dirname(os.path.abspath(path))
-    os.makedirs(parent, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=parent, prefix=".tmp_sync_", suffix=".json")
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-        os.replace(tmp_path, path)
-    except Exception:
-        if os.path.exists(tmp_path):
-            try:
-                os.remove(tmp_path)
-            except OSError:
-                pass
-        raise
+    atomic_write_json(path, payload, indent=2, prefix=".tmp_sync_", suffix=".json")
 
 
 def _extract_record_count(source_id: str) -> int:

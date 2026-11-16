@@ -5,13 +5,13 @@ import time
 import math
 import re
 import random
-import tempfile
 import urllib.parse
 import subprocess
 import asyncio
 import requests
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Any, Optional, Tuple
+from atomic_io import atomic_write_json as _shared_atomic_write_json
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.abspath(os.path.join(BACKEND_DIR, "..", "frontend"))
@@ -315,21 +315,7 @@ def _parse_updated_age(data: Dict[str, Any]) -> float:
         return 1e9
 
 def _atomic_write_json(target_path: str, payload: Dict[str, Any]) -> None:
-    parent_dir = os.path.dirname(os.path.abspath(target_path))
-    os.makedirs(parent_dir, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(prefix=".yvr_flights_", suffix=".tmp", dir=parent_dir)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp_path, target_path)
-    except Exception:
-        try:
-            os.unlink(tmp_path)
-        except OSError:
-            pass
-        raise
+    _shared_atomic_write_json(target_path, payload, indent=2, prefix=".yvr_flights_", suffix=".tmp", fsync=True)
 
 def _load_valid_disk_cache(today_str: str) -> Tuple[Optional[Dict[str, Any]], float]:
     if not os.path.exists(OUTPUT_BACKEND_FILE):

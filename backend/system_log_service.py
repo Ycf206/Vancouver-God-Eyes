@@ -1,13 +1,13 @@
 import os
 import json
 import time
-import tempfile
 import threading
 import logging
 import atexit
 import uuid
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any, Optional
+from atomic_io import atomic_write_json as _shared_atomic_write_json
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -36,21 +36,8 @@ def _generate_unique_log_id(prefix: str = "syslog") -> str:
 
 
 def _atomic_write_json(path: str, payload: Any) -> None:
-    """Thread/process-safe atomic JSON write via temp file + os.replace to prevent file truncation/corruption."""
-    dir_name = os.path.dirname(os.path.abspath(path))
-    os.makedirs(dir_name, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=dir_name, prefix=".tmp_", suffix=".json")
-    try:
-        with os.fdopen(fd, 'w', encoding='utf-8') as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-        os.replace(tmp_path, path)
-    except Exception:
-        try:
-            if os.path.exists(tmp_path):
-                os.remove(tmp_path)
-        except Exception:
-            pass
-        raise
+    """Thread/process-safe atomic JSON write via shared helper preserving host permissions."""
+    _shared_atomic_write_json(path, payload, indent=2)
 
 
 def _is_ts_on_or_after(ts_str: Optional[str], cutoff: datetime) -> bool:

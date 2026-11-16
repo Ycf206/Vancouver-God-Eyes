@@ -20,7 +20,6 @@ from datetime import datetime, timezone
 import json
 import os
 import sys
-import tempfile
 import threading
 import time
 from typing import Any
@@ -33,7 +32,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.append(CURRENT_DIR)
 
-from base import BACKEND_DATA_DIR, get_source_endpoint_url, update_admin_source_metadata
+from base import BACKEND_DATA_DIR, atomic_write_json as _shared_atomic_write_json, get_source_endpoint_url, update_admin_source_metadata
 
 API1_URL = "https://emobility.flo.ca/v3.0/map/markers/search"
 API2_URL = "https://emobility.flo.ca/v3.0/parks/station/{station_id}"
@@ -131,19 +130,7 @@ def _get_thread_session(pool_maxsize: int = 8) -> requests.Session:
 
 
 def _atomic_write_json(path: str, payload: dict[str, Any]) -> None:
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=os.path.dirname(path), prefix=".tmp_flo_", suffix=".json")
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-        os.replace(tmp_path, path)
-    except Exception:
-        if os.path.exists(tmp_path):
-            try:
-                os.remove(tmp_path)
-            except OSError:
-                pass
-        raise
+    _shared_atomic_write_json(path, payload, indent=2, prefix=".tmp_flo_", suffix=".json")
 
 
 def _query_api1_box(

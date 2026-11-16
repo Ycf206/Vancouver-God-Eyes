@@ -10,9 +10,14 @@ Guarantees:
 
 import os
 import re
+import sys
 import json
-import tempfile
 from datetime import datetime, timezone
+
+_BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _BACKEND_DIR not in sys.path:
+    sys.path.append(_BACKEND_DIR)
+from atomic_io import atomic_write_json
 
 
 def _parse_ts(ts_str: str) -> float:
@@ -159,20 +164,7 @@ def merge_admin_config():
             if bak.get("logs") and not cur.get("logs"):
                 cur["logs"] = bak["logs"][:150]
 
-            parent_dir = os.path.dirname(os.path.abspath(cur_p))
-            fd, tmp_p = tempfile.mkstemp(prefix=".admin_cfg_", suffix=".tmp", dir=parent_dir)
-            try:
-                with os.fdopen(fd, "w", encoding="utf-8") as f:
-                    json.dump(cur, f, indent=2, ensure_ascii=False)
-                    f.flush()
-                    os.fsync(f.fileno())
-                os.replace(tmp_p, cur_p)
-            except Exception:
-                try:
-                    os.unlink(tmp_p)
-                except OSError:
-                    pass
-                raise
+            atomic_write_json(cur_p, cur, indent=2, prefix=".admin_cfg_", suffix=".tmp", fsync=True)
             print("✅ Merged admin_sources_config.json safely without overwriting newer timestamps!")
         except Exception as e:
             print(f"⚠️ Merge admin config warning: {e}")

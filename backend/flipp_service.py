@@ -2,13 +2,13 @@ from __future__ import annotations
 import os
 import json
 import time
-import tempfile
 import asyncio
 import random
 import requests
 from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Any, Optional
 from concurrent.futures import ThreadPoolExecutor
+from atomic_io import atomic_write_json as _shared_atomic_write_json
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BACKEND_DIR, "data")
@@ -65,21 +65,7 @@ MERCHANT_WEBSITES: Dict[str, str] = {
 }
 
 def _atomic_write_json(target_path: str, payload: Any) -> None:
-    parent_dir = os.path.dirname(os.path.abspath(target_path))
-    os.makedirs(parent_dir, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(prefix=".flipp_", suffix=".tmp", dir=parent_dir)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp_path, target_path)
-    except Exception:
-        try:
-            os.unlink(tmp_path)
-        except OSError:
-            pass
-        raise
+    _shared_atomic_write_json(target_path, payload, indent=2, prefix=".flipp_", suffix=".tmp", fsync=True)
 
 def _get_cache_paths() -> tuple[str, str]:
     b_path = os.path.join(DATA_DIR, CACHE_FILE_NAME)

@@ -3,7 +3,6 @@ import re
 import sys
 import json
 import time
-import tempfile
 from datetime import datetime, timezone
 import requests
 
@@ -15,6 +14,7 @@ from base import (
     BACKEND_DATA_DIR,
     FRONTEND_DATA_DIR,
     HEADERS,
+    atomic_write_json as _shared_atomic_write_json,
     get_source_endpoint_url,
     update_admin_source_metadata,
 )
@@ -102,19 +102,7 @@ def _convert_bounds_polygon(raw_poly) -> list[list[float]]:
 
 
 def _atomic_save_json(target_path: str, payload: dict) -> None:
-    target_dir = os.path.dirname(target_path)
-    os.makedirs(target_dir, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(prefix=".yvr_indoor_", suffix=".tmp", dir=target_dir)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
-        os.replace(tmp_path, target_path)
-    finally:
-        if os.path.exists(tmp_path):
-            try:
-                os.remove(tmp_path)
-            except Exception:
-                pass
+    _shared_atomic_write_json(target_path, payload, indent=None, separators=(",", ":"), prefix=".yvr_indoor_", suffix=".tmp")
 
 
 def _resolve_yvr_feed_urls(session: requests.Session) -> tuple[str, str | None]:

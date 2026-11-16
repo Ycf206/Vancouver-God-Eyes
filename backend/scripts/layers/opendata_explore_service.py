@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import tempfile
 import threading
 import time
 from datetime import datetime, timedelta, timezone
@@ -17,6 +16,7 @@ try:
         FRONTEND_DATA_DIR,
         HEADERS,
         _extract_lon_lat,
+        atomic_write_json as _shared_atomic_write_json,
         get_source_endpoint_url,
         update_admin_source_metadata,
     )
@@ -26,6 +26,7 @@ except ImportError:
         FRONTEND_DATA_DIR,
         HEADERS,
         _extract_lon_lat,
+        atomic_write_json as _shared_atomic_write_json,
         get_source_endpoint_url,
         update_admin_source_metadata,
     )
@@ -197,19 +198,7 @@ def _normalize_record(dataset_key: str, row: dict[str, Any]) -> dict[str, Any]:
 
 
 def _atomic_write_json(path: str, payload: dict[str, Any]) -> None:
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=os.path.dirname(path), prefix=".tmp_od_", suffix=".json")
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
-        os.replace(tmp_path, path)
-    except Exception:
-        if os.path.exists(tmp_path):
-            try:
-                os.remove(tmp_path)
-            except OSError:
-                pass
-        raise
+    _shared_atomic_write_json(path, payload, indent=None, separators=(",", ":"), prefix=".tmp_od_", suffix=".json")
 
 
 def _base_records_url(dataset_key: str) -> str:
