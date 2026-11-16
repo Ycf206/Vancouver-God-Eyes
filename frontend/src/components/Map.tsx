@@ -1473,6 +1473,14 @@ function translateEvStatus(status?: string): string {
   const s = String(status || '').trim();
   if (/^available$/i.test(s)) return '可使用';
   if (/^(?:in\s*use|occupied|busy|charging)$/i.test(s)) return '使用中';
+  if (/^(?:out[\s_-]*of[\s_-]*service|out[\s_-]*of[\s_-]*order|unavailable|offline|disconnected|faulted|broken|disabled)$/i.test(s)) {
+    return '暫停使用';
+  }
+  if (/^(?:maintenance[\s_-]*required|under[\s_-]*maintenance|in[\s_-]*maintenance|maintenance)$/i.test(s)) {
+    return '維護中';
+  }
+  if (/^reserved$/i.test(s)) return '已預約';
+  if (/^unknown$/i.test(s)) return '未知';
   return s || '—';
 }
 
@@ -3320,7 +3328,7 @@ export default function AppMap() {
         else if (type === 'litter_containers' && !layers.litterContainers) facilityClosed = true;
         else if (type === 'van_wifi' && !layers.vanWifi) facilityClosed = true;
         else if (type === 'tide_stations' && !layers.tideStations) facilityClosed = true;
-        else if ((type === 'traffic_conditions' || type === 'traffic_corridor') && !layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== 'lions_gate_bridge_atis' && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
+        else if ((type === 'traffic_conditions' || type === 'traffic_corridor') && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== 'lions_gate_bridge_atis' && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
         else if ((type === 'traffic_alerts' || type === 'traffic_incident') && !layers.trafficAlerts && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
         else if (type === 'drivebc' && !layers.driveBC && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
@@ -3348,7 +3356,7 @@ export default function AppMap() {
         }
       }
 
-      if (!layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && searchTarget?.id !== selectedFacility?.id) {
+      if (!(isExploreOpen && exploreTab === 'traffic') && searchTarget?.id !== selectedFacility?.id) {
         if (searchTarget?.category === 'traffic_corridor') {
           setSearchTarget(null);
         }
@@ -3649,14 +3657,14 @@ export default function AppMap() {
   // Periodic polling for TomTom traffic corridors and alerts (every 180s / 3 mins)
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-    if (layers.trafficAlerts || layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic')) {
+    if (layers.trafficAlerts || (isExploreOpen && exploreTab === 'traffic')) {
       const pollTomTomData = async () => {
         const map = mapRef.current?.getMap();
         if (!map) return;
         const apiUrl = getApiUrl();
         const t = Date.now();
 
-        if (layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic')) {
+        if (isExploreOpen && exploreTab === 'traffic') {
           try {
             const res = await fetch(`${apiUrl}/api/traffic/jams?t=${t}`);
             if (res.ok) {
@@ -3707,7 +3715,7 @@ export default function AppMap() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [layers.trafficAlerts, layers.trafficConditions, isExploreOpen, exploreTab]);
+  }, [layers.trafficAlerts, isExploreOpen, exploreTab]);
 
   // 當離開探索 - 路況分頁時，若開啟著獅門大橋 popup 則自動關閉
   useEffect(() => {
@@ -5962,15 +5970,15 @@ export default function AppMap() {
       });
     }
 
-    // Explore Traffic Tab: Major Highways & Bridges Only & Layer Traffic Conditions
-    const isExploreTrafficCorridorsVisible = isExploreTrafficActive || Boolean(layers.trafficConditions);
+    // Explore Traffic Tab: Major Highways & Bridges Only (僅於「探索 - 路況」顯示主要幹道向量與 popup，不於單純開啟路況圖層時疊加顯示)
+    const isExploreTrafficCorridorsVisible = isExploreTrafficActive;
     if (isExploreTrafficCorridorsVisible) {
       style.sources['traffic_conditions'] = { 
         type: 'geojson', 
         data: `${apiUrl}/api/traffic/jams` 
       };
 
-      const trafficLayerFilter = layers.trafficConditions ? undefined : [
+      const trafficLayerFilter = [
         'any',
         ['==', ['get', 'is_key_corridor'], true],
         ['in', ['get', 'corridor_group'], ['literal', ['hwy1', 'massey', 'lions_gate', 'knight', 'ironworkers', 'oak']]],
