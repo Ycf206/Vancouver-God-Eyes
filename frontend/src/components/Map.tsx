@@ -21065,41 +21065,21 @@ export default function AppMap() {
             </div>
           )}
 
-          {/* 火災危險等級圖例 (Fire Danger Rating Legend — 罪案地區風格深色卡片) */}
+          {/* 火災危險等級圖例 (Fire Danger Rating Legend — 深色卡片) */}
           {layers.wildfire && (() => {
             const activeLevel = String(
               wildfireGeoJson?.fire_danger_rating?.level || 'LOW'
             ).toUpperCase();
             const dangerTiers = [
-              { level: 'LOW', label: 'LOW', zh: '低', barBg: '#55a654', badgeText: '#86efac' },
-              { level: 'MODERATE', label: 'MODERATE', zh: '中', barBg: '#f3df46', badgeText: '#fde047' },
-              { level: 'HIGH', label: 'HIGH', zh: '高', barBg: '#df9035', badgeText: '#fdba74' },
-              { level: 'EXTREME', label: 'EXTREME', zh: '極高', barBg: '#d3352f', badgeText: '#fca5a5' },
+              { level: 'LOW', zh: '低', barBg: '#55a654' },
+              { level: 'MODERATE', zh: '中', barBg: '#f3df46' },
+              { level: 'HIGH', zh: '高', barBg: '#df9035' },
+              { level: 'EXTREME', zh: '極高', barBg: '#d3352f' },
             ];
-            const activeTier = dangerTiers.find((t) => t.level === activeLevel) || dangerTiers[0];
             return (
-              <div className="pointer-events-auto w-[min(320px,calc(100vw-16px))] sm:w-[340px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200">
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-1.5">
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{
-                        backgroundColor: activeTier.barBg,
-                        boxShadow: `0 0 6px ${activeTier.barBg}99`,
-                      }}
-                    />
-                    <span className="text-[11px] font-bold text-gray-200">Fire Danger Rating</span>
-                  </div>
-                  <span
-                    className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded bg-white/10 border border-white/10"
-                    style={{ color: activeTier.badgeText }}
-                  >
-                    {activeTier.level} · {activeTier.zh}
-                  </span>
-                </div>
-
+              <div className="pointer-events-auto w-[min(320px,calc(100vw-16px))] sm:w-[340px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200">
                 {/* 4 階危險等級指示條 */}
-                <div className="grid grid-cols-4 gap-1.5 mb-1.5">
+                <div className="grid grid-cols-4 gap-1.5">
                   {dangerTiers.map((tier) => {
                     const isActive = tier.level === activeLevel;
                     return (
@@ -21111,19 +21091,15 @@ export default function AppMap() {
                           style={{ backgroundColor: tier.barBg }}
                         />
                         <span
-                          className={`text-[9px] whitespace-nowrap font-mono ${
+                          className={`text-[10px] whitespace-nowrap ${
                             isActive ? 'text-white font-bold' : 'text-gray-400'
                           }`}
                         >
-                          {tier.label}
+                          {tier.zh}
                         </span>
                       </div>
                     );
                   })}
-                </div>
-
-                <div className="text-[10px] text-gray-400 text-center pt-1 border-t border-[#262b38]/80">
-                  目前等級: {activeTier.zh} ({activeTier.label}) · 數據只供參考
                 </div>
               </div>
             );
@@ -25981,9 +25957,6 @@ export default function AppMap() {
             <div className="p-3 sm:p-4 border-b border-[#262c3d] bg-[#1a1f2b] flex items-center justify-between shrink-0">
               <span className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
                 <span>航線分佈與執飛頻率指南</span>
-                <span className="text-[10.5px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40 font-mono font-normal">
-                  YVR 官方手冊
-                </span>
               </span>
               <div className="flex items-center gap-2.5">
                 <a

@@ -15,7 +15,7 @@ interface ChangelogEntry {
 const CHANGELOG_DATA: ChangelogEntry[] = [
   {
     version: 'v2026.11.3',
-    title: 'v2026.11.3 更新內容',
+    title: '更新內容',
     date: '2026-11-16',
     isLatest: true,
     highlights: [
@@ -31,7 +31,7 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
   },
   {
     version: 'v2026.11.2',
-    title: 'v2026.11.2 更新內容',
+    title: '更新內容',
     date: '2026-11-14',
     highlights: [
       '新增停電, 供水, 污水圖層',
@@ -45,7 +45,7 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
   },
   {
     version: 'v2026.11.1',
-    title: 'v2026.11.1 更新內容',
+    title: '更新內容',
     date: '2026-11-07',
     highlights: [
       '新增巴士轉車站',
@@ -62,7 +62,7 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
   },
   {
     version: 'v2026.11.0',
-    title: 'v2026.11.0 更新內容',
+    title: '更新內容',
     date: '2026-11-01',
     highlights: [
       '釋出正式版'
