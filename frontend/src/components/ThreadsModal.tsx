@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AtSign,
   X,
@@ -10,15 +10,15 @@ import {
   ExternalLink,
   Image as ImageIcon,
   Film,
-  Layers,
   MessageSquareText,
   Clock,
   AlertCircle,
   KeyRound,
-  Quote,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
-import { formatDateTime } from '@/utils/time';
+import { formatDateOnly, formatDateTime } from '@/utils/time';
 import { useUIStore } from '@/store/useUIStore';
 
 interface ThreadsChildMedia {
@@ -73,6 +73,8 @@ interface ThreadsModalProps {
 type SortMode = 'newest' | 'oldest' | 'media_first';
 type MediaFilter = 'all' | 'image' | 'video' | 'text';
 
+const PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const;
+
 function formatRelativeAgo(isoStr?: string | null): string {
   if (!isoStr) return '';
   const dt = new Date(isoStr);
@@ -95,48 +97,20 @@ function formatSystemDateTimeWithAgo(
   return rel ? `${formatted} (${rel})` : formatted;
 }
 
-function getMediaBadge(post: ThreadsPost): { label: string; icon: React.ReactNode; cls: string } | null {
-  const mt = (post.media_type || '').toUpperCase();
-  if (mt === 'CAROUSEL_ALBUM') {
-    return {
-      label: `輪播 (${post.children?.length || 0})`,
-      icon: <Layers className="w-3 h-3" />,
-      cls: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
-    };
-  }
-  if (mt === 'VIDEO') {
-    return {
-      label: '影片',
-      icon: <Film className="w-3 h-3" />,
-      cls: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
-    };
-  }
-  if (mt === 'IMAGE') {
-    return {
-      label: '圖片',
-      icon: <ImageIcon className="w-3 h-3" />,
-      cls: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
-    };
-  }
-  if (post.is_quote_post) {
-    return {
-      label: '引用',
-      icon: <Quote className="w-3 h-3" />,
-      cls: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
-    };
-  }
-  return null;
-}
-
 export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
   const { timeFormat, timeZone } = useUIStore();
   const [data, setData] = useState<ThreadsApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
   const [sortMode, setSortMode] = useState<SortMode>('newest');
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>('all');
+  const [pageSize, setPageSize] = useState<number>(20);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageInput, setPageInput] = useState<string>('1');
   const [notice, setNotice] = useState<string | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   const fetchPosts = useCallback(async (forceRefresh = false) => {
     if (forceRefresh) {
@@ -169,14 +143,14 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
         if (json.cooldown_remaining && json.cooldown_remaining > 0) {
           setNotice(`剛剛已重新整理，請稍候 ${json.cooldown_remaining} 秒再試。`);
         } else if (json.configured && json.status === 'ok') {
-          setNotice('已同步最新 Threads 帖文！');
+          setNotice('已同步最新 Threads 內容！');
         }
       }
     } catch (err) {
       setData((prev) => ({
         configured: prev?.configured ?? false,
         status: 'error',
-        error: `無法載入 Threads 帖文：${err instanceof Error ? err.message : '連線失敗'}`,
+        error: `無法載入 Threads 資料：${err instanceof Error ? err.message : '連線失敗'}`,
         updated_at: prev?.updated_at ?? null,
         profile: prev?.profile ?? null,
         posts: prev?.posts ?? [],
@@ -192,15 +166,6 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
     fetchPosts(false);
   }, [isOpen, fetchPosts]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
-
   const filteredPosts = useMemo(() => {
     const raw = data?.posts || [];
     const tokens = searchQuery
@@ -214,6 +179,11 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
       if (mediaFilter === 'image' && mt !== 'IMAGE' && mt !== 'CAROUSEL_ALBUM') return false;
       if (mediaFilter === 'video' && mt !== 'VIDEO') return false;
       if (mediaFilter === 'text' && post.has_media) return false;
+
+      if (selectedDate) {
+        const postDay = formatDateOnly(post.timestamp, timeZone);
+        if (postDay !== selectedDate) return false;
+      }
 
       if (tokens.length > 0) {
         const hay = `${post.text || ''} ${post.username || ''} ${post.shortcode || ''}`.toLowerCase();
@@ -236,21 +206,55 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
       sorted.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
     }
     return sorted;
-  }, [data?.posts, searchQuery, sortMode, mediaFilter]);
+  }, [data?.posts, searchQuery, selectedDate, sortMode, mediaFilter, timeZone]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    setPageInput('1');
+  }, [searchQuery, selectedDate, sortMode, mediaFilter, pageSize]);
+
+  useEffect(() => {
+    setPageInput(String(safePage));
+  }, [safePage]);
+
+  const pagedPosts = useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return filteredPosts.slice(start, start + pageSize);
+  }, [filteredPosts, safePage, pageSize]);
+
+  const goToPage = useCallback(
+    (target: number) => {
+      const clamped = Math.max(1, Math.min(totalPages, target));
+      setCurrentPage(clamped);
+      setPageInput(String(clamped));
+      listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    [totalPages]
+  );
+
+  const commitPageInput = useCallback(() => {
+    const parsed = parseInt(pageInput, 10);
+    if (Number.isNaN(parsed)) {
+      setPageInput(String(safePage));
+      return;
+    }
+    goToPage(parsed);
+  }, [pageInput, safePage, goToPage]);
 
   if (!isOpen) return null;
 
   const profile = data?.profile;
   const username = profile?.username || data?.posts?.[0]?.username || '';
   const totalAll = data?.posts?.length ?? 0;
+  const isFiltered = Boolean(searchQuery.trim() || selectedDate || mediaFilter !== 'all');
 
   return (
-    <div
-      className="fixed inset-0 z-[150] flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-4 animate-in fade-in duration-200"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-4 animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-[660px] bg-[#1e2025] border border-[#373a40] rounded-xl shadow-2xl overflow-hidden text-gray-200 flex flex-col max-h-[88vh]"
+        className="relative w-full max-w-[680px] bg-[#1e2025] border border-[#373a40] rounded-xl shadow-2xl overflow-hidden text-gray-200 flex flex-col max-h-[88vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -267,27 +271,20 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                 <AtSign className="w-5 h-5" />
               </span>
             )}
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                  Threads
-                </h2>
-                {username && (
-                  <a
-                    href={`https://www.threads.net/@${username}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/15 text-zinc-200 border border-white/15 transition-colors"
-                  >
-                    <span>@{username}</span>
-                    <ExternalLink className="w-2.5 h-2.5 opacity-80" />
-                  </a>
-                )}
-              </div>
-              {data?.updated_at && (
-                <p className="text-[11px] text-gray-400 truncate mt-0.5">
-                  最後更新：{formatSystemDateTimeWithAgo(data.updated_at, timeFormat, timeZone)}
-                </p>
+            <div className="min-w-0 flex flex-col">
+              <h2 className="text-sm sm:text-base font-bold text-white tracking-wide leading-tight">
+                Threads
+              </h2>
+              {username && (
+                <a
+                  href={`https://www.threads.net/@${username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11.5px] font-medium text-gray-400 hover:text-white transition-colors mt-0.5 w-fit truncate"
+                >
+                  <span>@{username}</span>
+                  <ExternalLink className="w-3 h-3 opacity-80 shrink-0" />
+                </a>
               )}
             </div>
           </div>
@@ -297,15 +294,15 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
               type="button"
               onClick={() => fetchPosts(true)}
               disabled={refreshing || loading}
-              className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#262830] hover:bg-[#31343e] border border-[#3b3e47] text-gray-200 hover:text-white transition-colors disabled:opacity-50"
-              title="重新整理最新帖文"
+              className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#262830] hover:bg-[#31343e] border border-[#3b3e47] text-gray-200 hover:text-white transition-colors disabled:opacity-50 cursor-pointer"
+              title="重新整理"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-sky-400' : ''}`} />
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+              className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors cursor-pointer"
               title="關閉"
             >
               <X className="w-5 h-5" />
@@ -313,7 +310,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
           </div>
         </div>
 
-        {/* Search + Sort + Filter Controls */}
+        {/* Search + Date + Sort + Filter Controls */}
         <div className="px-4 sm:px-5 py-3 border-b border-[#2d2e34] bg-[#1b1c21] flex flex-col gap-2.5 shrink-0">
           <div className="flex flex-col sm:flex-row gap-2">
             {/* Search Bar */}
@@ -324,14 +321,36 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="搜尋帖文內容、關鍵字或代碼..."
-                className="w-full pl-8.5 pr-8 py-1.5 rounded-lg bg-[#25272e] border border-[#373a42] text-xs text-gray-100 placeholder:text-gray-500 focus:outline-none focus:border-sky-500/70 transition-colors"
+                className="w-full pl-9 pr-8 py-1.5 rounded-lg bg-[#25272e] border border-[#373a42] text-xs text-gray-100 placeholder:text-gray-500 focus:outline-none focus:border-sky-500/70 transition-colors"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-0.5"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-0.5 cursor-pointer"
                   title="清除搜尋"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Date Filter */}
+            <div className="relative flex items-center shrink-0">
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full sm:w-auto bg-[#25272e] border border-[#373a42] text-gray-200 rounded-lg pl-2.5 pr-7 py-1.5 text-xs font-mono focus:outline-none focus:border-sky-500/70 [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:[filter:brightness(0)_invert(1)]"
+                title="依日期篩選"
+                aria-label="依日期篩選"
+              />
+              {selectedDate && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedDate('')}
+                  className="absolute right-1.5 text-gray-400 hover:text-white p-0.5 rounded transition-colors cursor-pointer"
+                  title="清除日期篩選"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -354,7 +373,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
             </div>
           </div>
 
-          {/* Media Filter Pills & Count */}
+          {/* Media Filter Pills & Total Count */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-1.5 flex-wrap">
               {(
@@ -371,7 +390,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                     key={chip.id}
                     type="button"
                     onClick={() => setMediaFilter(chip.id)}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-colors ${
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-colors cursor-pointer ${
                       active
                         ? 'bg-sky-500/20 text-sky-300 border-sky-500/50'
                         : 'bg-[#25272e] text-gray-400 border-[#343740] hover:text-gray-200 hover:border-gray-500'
@@ -384,7 +403,9 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
               })}
             </div>
             <span className="text-[11px] text-gray-400 font-mono">
-              顯示 {filteredPosts.length} / {totalAll} 篇
+              {isFiltered
+                ? `符合 ${filteredPosts.length.toLocaleString()} / 帖文總數：${totalAll.toLocaleString()}`
+                : `帖文總數：${totalAll.toLocaleString()}`}
             </span>
           </div>
 
@@ -396,7 +417,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
         </div>
 
         {/* Posts List */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
+        <div ref={listRef} className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
           {loading && !data ? (
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
@@ -404,10 +425,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                   key={i}
                   className="bg-[#25272e] border border-[#343740] rounded-xl p-4 animate-pulse space-y-2.5"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-gray-700" />
-                    <div className="h-3 w-28 bg-gray-700 rounded" />
-                  </div>
+                  <div className="h-3 w-36 bg-gray-700 rounded" />
                   <div className="h-3 w-full bg-gray-700/80 rounded" />
                   <div className="h-3 w-3/4 bg-gray-700/80 rounded" />
                 </div>
@@ -421,7 +439,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
               <div className="space-y-1">
                 <h3 className="text-sm font-bold text-white">尚未連結 Threads API 存取權杖</h3>
                 <p className="text-xs text-gray-400 max-w-md leading-relaxed">
-                  請於 GitHub Repository Secrets 新增 <code className="px-1 py-0.5 rounded bg-black/40 text-amber-300">THREADS_ACCESS_TOKEN</code>（及選填 <code className="px-1 py-0.5 rounded bg-black/40 text-amber-300">THREADS_USER_ID</code>），或於本機 <code className="px-1 py-0.5 rounded bg-black/40 text-sky-300">backend/.env</code> 填入後重新整理，系統即會每小時自動抓取您的 Threads 帖文。
+                  請於 GitHub Repository Secrets 新增 <code className="px-1 py-0.5 rounded bg-black/40 text-amber-300">THREADS_ACCESS_TOKEN</code>，或於本機 <code className="px-1 py-0.5 rounded bg-black/40 text-sky-300">backend/.env</code> 填入後點擊右上角重新整理即可載入貼文。
                 </p>
               </div>
               <a
@@ -443,53 +461,40 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                 </div>
               )}
 
-              {filteredPosts.length === 0 ? (
+              {pagedPosts.length === 0 ? (
                 <div className="py-12 text-center text-xs text-gray-400">
                   {totalAll === 0
-                    ? '目前尚未擷取到任何 Threads 帖文，請按右上角重新整理按鈕試試。'
+                    ? '目前尚未擷取到任何帖文，請按右上角重新整理按鈕試試。'
                     : '找不到符合搜尋或篩選條件的帖文。'}
                 </div>
               ) : (
-                filteredPosts.map((post) => {
-                  const badge = getMediaBadge(post);
+                pagedPosts.map((post) => {
                   const mt = (post.media_type || 'TEXT_POST').toUpperCase();
                   return (
                     <article
                       key={post.id}
                       className="bg-[#25272e] hover:bg-[#292b33] border border-[#353842] rounded-xl p-3.5 sm:p-4 transition-colors space-y-2.5"
                     >
-                      {/* Post Meta Header */}
+                      {/* Post Header: Date/Time + External Permalink Icon Button */}
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 min-w-0">
-                          {profile?.profile_picture_url ? (
-                            <img
-                              src={profile.profile_picture_url}
-                              alt={post.username || username || 'Threads'}
-                              className="w-7 h-7 rounded-full object-cover border border-[#444752] shrink-0"
-                            />
-                          ) : (
-                            <span className="w-7 h-7 rounded-full bg-zinc-800 border border-zinc-600/60 flex items-center justify-center text-zinc-200 shrink-0">
-                              <AtSign className="w-3.5 h-3.5" />
-                            </span>
-                          )}
-                          <div className="min-w-0">
-                            <div className="text-xs font-bold text-white truncate">
-                              @{post.username || username || 'threads'}
-                            </div>
-                            <div className="flex items-center gap-1 text-[10.5px] text-gray-400">
-                              <Clock className="w-2.5 h-2.5 shrink-0" />
-                              <span>{formatSystemDateTimeWithAgo(post.timestamp, timeFormat, timeZone)}</span>
-                            </div>
-                          </div>
+                        <div className="flex items-center gap-1.5 text-[11px] text-gray-400 min-w-0">
+                          <Clock className="w-3 h-3 shrink-0" />
+                          <span className="truncate">
+                            {formatSystemDateTimeWithAgo(post.timestamp, timeFormat, timeZone)}
+                          </span>
                         </div>
 
-                        {badge && (
-                          <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-semibold shrink-0 ${badge.cls}`}
+                        {post.permalink && (
+                          <a
+                            href={post.permalink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 -m-1 rounded-lg text-gray-400 hover:text-sky-300 hover:bg-white/10 transition-colors shrink-0"
+                            title="在 Threads 查看原文"
+                            aria-label="在 Threads 查看原文"
                           >
-                            {badge.icon}
-                            <span>{badge.label}</span>
-                          </span>
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
                         )}
                       </div>
 
@@ -500,13 +505,14 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                         </p>
                       )}
 
-                      {/* Single Image */}
+                      {/* Single Image -> opens direct image URL */}
                       {mt === 'IMAGE' && post.media_url && (
                         <a
-                          href={post.permalink || post.media_url}
+                          href={post.media_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block rounded-lg overflow-hidden border border-[#3a3d47] bg-black/30"
+                          className="block rounded-lg overflow-hidden border border-[#3a3d47] bg-black/30 hover:border-sky-500/50 transition-colors"
+                          title="開啟原始圖片"
                         >
                           <img
                             src={post.media_url}
@@ -531,7 +537,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                         </div>
                       )}
 
-                      {/* Carousel Album */}
+                      {/* Carousel Album -> each image opens its own direct image URL */}
                       {mt === 'CAROUSEL_ALBUM' && post.children && post.children.length > 0 && (
                         <div className="flex gap-2 overflow-x-auto pb-1.5">
                           {post.children.map((ch) => {
@@ -554,35 +560,21 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                             return (
                               <a
                                 key={ch.id}
-                                href={post.permalink || imgSrc}
+                                href={imgSrc}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="shrink-0 rounded-lg overflow-hidden border border-[#3a3d47] bg-black/30"
+                                className="shrink-0 rounded-lg overflow-hidden border border-[#3a3d47] bg-black/30 hover:border-sky-500/50 transition-colors"
+                                title="開啟原始圖片"
                               >
                                 <img
                                   src={imgSrc}
-                                  alt="Threads 輪播圖片"
+                                  alt="Threads 附圖"
                                   loading="lazy"
                                   className="h-52 w-auto max-w-[280px] object-cover"
                                 />
                               </a>
                             );
                           })}
-                        </div>
-                      )}
-
-                      {/* Footer Permalink */}
-                      {post.permalink && (
-                        <div className="pt-1 flex justify-end border-t border-[#32353f]/70">
-                          <a
-                            href={post.permalink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-400 hover:text-sky-300 transition-colors"
-                          >
-                            <span>在 Threads 查看原文</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
                         </div>
                       )}
                     </article>
@@ -592,6 +584,82 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
             </>
           )}
         </div>
+
+        {/* Footer: Last Updated + Page Size + Pagination Controls */}
+        {(totalAll > 0 || data?.updated_at) && (
+          <div className="px-4 sm:px-5 py-2.5 border-t border-[#2d2e34] bg-[#191a1e] flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-400 shrink-0">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <span>每頁</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                  aria-label="每頁顯示數量"
+                  className="bg-[#25272e] border border-[#373a42] rounded-md px-1.5 py-0.5 text-[11px] text-gray-200 font-mono focus:outline-none focus:border-sky-500/70 cursor-pointer"
+                >
+                  {PAGE_SIZE_OPTIONS.map((sz) => (
+                    <option key={sz} value={sz} className="bg-[#1e2025] text-gray-200">
+                      {sz}
+                    </option>
+                  ))}
+                </select>
+                <span>篇</span>
+              </div>
+              {data?.updated_at && (
+                <span className="text-[10.5px] text-gray-500 truncate">
+                  最後更新：{formatSystemDateTimeWithAgo(data.updated_at, timeFormat, timeZone)}
+                </span>
+              )}
+            </div>
+
+            {filteredPosts.length > 0 && (
+              <div className="flex items-center gap-1.5 ml-auto">
+                <button
+                  type="button"
+                  onClick={() => goToPage(safePage - 1)}
+                  disabled={safePage <= 1}
+                  className="flex items-center justify-center w-7 h-7 rounded-md bg-[#25272e] hover:bg-[#31343e] border border-[#373a42] text-gray-200 disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  title="上一頁"
+                  aria-label="上一頁"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+
+                <div className="flex items-center gap-1 font-mono text-gray-300">
+                  <input
+                    type="number"
+                    min={1}
+                    max={totalPages}
+                    value={pageInput}
+                    onChange={(e) => setPageInput(e.target.value)}
+                    onBlur={commitPageInput}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        commitPageInput();
+                      }
+                    }}
+                    aria-label="頁碼"
+                    className="w-12 text-center bg-[#25272e] border border-[#373a42] rounded-md py-0.5 text-[11px] text-white font-mono focus:outline-none focus:border-sky-500/70 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span className="text-gray-500">/</span>
+                  <span>{totalPages}</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => goToPage(safePage + 1)}
+                  disabled={safePage >= totalPages}
+                  className="flex items-center justify-center w-7 h-7 rounded-md bg-[#25272e] hover:bg-[#31343e] border border-[#373a42] text-gray-200 disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  title="下一頁"
+                  aria-label="下一頁"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

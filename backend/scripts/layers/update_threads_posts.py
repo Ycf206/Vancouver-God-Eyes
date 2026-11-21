@@ -57,8 +57,8 @@ POST_FIELDS = (
     "children{id,media_type,media_url,thumbnail_url},is_quote_post"
 )
 PROFILE_FIELDS = "id,username,name,threads_profile_picture_url,threads_biography"
-MAX_PAGES = 4
-PAGE_LIMIT = 50
+MAX_PAGES = 200
+PAGE_LIMIT = 100
 
 # Refresh long-lived token every ~25 days (Meta allows refresh once >= 24h old and < 60 days old)
 TOKEN_REFRESH_INTERVAL_SEC = 25 * 86400
@@ -413,6 +413,7 @@ def update_threads_posts() -> dict[str, Any]:
     default_username = str(profile.get("username") or "")
     posts: list[dict[str, Any]] = []
     seen_ids: set[str] = set()
+    seen_urls: set[str] = set()
     next_url: str | None = f"{THREADS_API_BASE}/{user_id}/threads"
     next_params: dict[str, Any] | None = {
         "fields": POST_FIELDS,
@@ -423,8 +424,9 @@ def update_threads_posts() -> dict[str, Any]:
 
     try:
         for page_idx in range(MAX_PAGES):
-            if not next_url:
+            if not next_url or next_url in seen_urls:
                 break
+            seen_urls.add(next_url)
             resp = session.get(next_url, params=next_params, headers=headers, timeout=25)
             next_params = None
             if resp.status_code != 200:
