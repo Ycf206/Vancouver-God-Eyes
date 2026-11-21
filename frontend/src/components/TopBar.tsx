@@ -1207,7 +1207,7 @@ export default function TopBar() {
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
                 >
                   <AtSign className="w-4 h-4 text-zinc-200 shrink-0" />
-                  <span>Threads 帖文</span>
+                  <span>Threads</span>
                 </button>
                 <button
                   onClick={() => { setIsDonateModalOpen(true); setIsMobileMenuOpen(false); }}
@@ -1275,7 +1275,7 @@ export default function TopBar() {
               ? 'border-white/60 text-white bg-[#2c2d33]'
               : 'border-[#373a40] text-gray-300 hover:border-zinc-400/60 hover:text-white'
           }`}
-          title="查看 Threads 最新帖文"
+          title="Threads"
         >
           <AtSign className="w-4 h-4 text-zinc-300 group-hover:text-white group-hover:scale-110 transition-transform shrink-0" />
           <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[96px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">

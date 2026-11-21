@@ -18,6 +18,8 @@ import {
   Quote,
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
+import { formatDateTime } from '@/utils/time';
+import { useUIStore } from '@/store/useUIStore';
 
 interface ThreadsChildMedia {
   id: string;
@@ -71,27 +73,26 @@ interface ThreadsModalProps {
 type SortMode = 'newest' | 'oldest' | 'media_first';
 type MediaFilter = 'all' | 'image' | 'video' | 'text';
 
-function formatPostTime(isoStr?: string | null): string {
+function formatRelativeAgo(isoStr?: string | null): string {
   if (!isoStr) return '';
   const dt = new Date(isoStr);
-  if (Number.isNaN(dt.getTime())) return isoStr;
-  const diffSec = Math.floor((Date.now() - dt.getTime()) / 1000);
-  let rel = '';
-  if (diffSec >= 0 && diffSec < 60) rel = '剛剛';
-  else if (diffSec >= 60 && diffSec < 3600) rel = `${Math.floor(diffSec / 60)} 分鐘前`;
-  else if (diffSec >= 3600 && diffSec < 86400) rel = `${Math.floor(diffSec / 3600)} 小時前`;
-  else if (diffSec >= 86400 && diffSec < 86400 * 7) rel = `${Math.floor(diffSec / 86400)} 天前`;
+  if (Number.isNaN(dt.getTime())) return '';
+  const diffSec = Math.max(0, Math.floor((Date.now() - dt.getTime()) / 1000));
+  if (diffSec < 60) return '剛剛';
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}分鐘前`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}小時前`;
+  return `${Math.floor(diffSec / 86400)}天前`;
+}
 
-  const formatted = dt.toLocaleString('zh-TW', {
-    timeZone: 'America/Vancouver',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-  return rel ? `${rel} · ${formatted}` : formatted;
+function formatSystemDateTimeWithAgo(
+  isoStr?: string | null,
+  timeFormat: '12h' | '24h' = '24h',
+  timeZone?: string
+): string {
+  if (!isoStr) return '';
+  const formatted = formatDateTime(isoStr, timeFormat, timeZone);
+  const rel = formatRelativeAgo(isoStr);
+  return rel ? `${formatted} (${rel})` : formatted;
 }
 
 function getMediaBadge(post: ThreadsPost): { label: string; icon: React.ReactNode; cls: string } | null {
@@ -128,6 +129,7 @@ function getMediaBadge(post: ThreadsPost): { label: string; icon: React.ReactNod
 }
 
 export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
+  const { timeFormat, timeZone } = useUIStore();
   const [data, setData] = useState<ThreadsApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -268,7 +270,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                  Threads 帖文
+                  Threads
                 </h2>
                 {username && (
                   <a
@@ -282,11 +284,11 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                   </a>
                 )}
               </div>
-              <p className="text-[11px] text-gray-400 truncate mt-0.5">
-                {data?.updated_at
-                  ? `最後更新：${formatPostTime(data.updated_at)}（每小時自動同步）`
-                  : '官方 Meta Threads API · 每小時自動快取同步'}
-              </p>
+              {data?.updated_at && (
+                <p className="text-[11px] text-gray-400 truncate mt-0.5">
+                  最後更新：{formatSystemDateTimeWithAgo(data.updated_at, timeFormat, timeZone)}
+                </p>
+              )}
             </div>
           </div>
 
@@ -476,7 +478,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                             </div>
                             <div className="flex items-center gap-1 text-[10.5px] text-gray-400">
                               <Clock className="w-2.5 h-2.5 shrink-0" />
-                              <span>{formatPostTime(post.timestamp)}</span>
+                              <span>{formatSystemDateTimeWithAgo(post.timestamp, timeFormat, timeZone)}</span>
                             </div>
                           </div>
                         </div>
