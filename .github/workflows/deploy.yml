@@ -35,12 +35,13 @@ jobs:
         ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
         THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
         THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+        THREADS_APP_SECRET: ${{ secrets.THREADS_APP_SECRET }}
         ROLLBACK_TARGET: ${{ github.event.inputs.rollback_target }}
       with:
         host: ${{ secrets.OCI_HOST_IP }}
         username: ubuntu
         key: ${{ secrets.OCI_SSH_KEY }}
-        envs: TOMTOM_API_KEY,ADMIN_API_SECRET,ADMIN_PASSWORD,THREADS_ACCESS_TOKEN,THREADS_USER_ID,ROLLBACK_TARGET
+        envs: TOMTOM_API_KEY,ADMIN_API_SECRET,ADMIN_PASSWORD,THREADS_ACCESS_TOKEN,THREADS_USER_ID,THREADS_APP_SECRET,ROLLBACK_TARGET
         script: |
           set -e
           cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
@@ -64,7 +65,7 @@ jobs:
           # 修復先前後端容器以 root + mkstemp 寫入的 0600 檔案權限，確保 ubuntu 可讀取備份
           HOST_UID=$(id -u)
           HOST_GID=$(id -g)
-          PERM_FIX_CMD="chown -R ${HOST_UID}:${HOST_GID} /app/data 2>/dev/null || true; find /app/data -type d -exec chmod 755 {} + 2>/dev/null || true; find /app/data -type f ! -name '.admin_session_key' -exec chmod 644 {} + 2>/dev/null || true; [ -f /app/data/.admin_session_key ] && chmod 600 /app/data/.admin_session_key || true"
+          PERM_FIX_CMD="chown -R ${HOST_UID}:${HOST_GID} /app/data 2>/dev/null || true; find /app/data -type d -exec chmod 755 {} + 2>/dev/null || true; find /app/data -type f ! -name '.admin_session_key' ! -name '.threads_token_state.json' -exec chmod 644 {} + 2>/dev/null || true; [ -f /app/data/.admin_session_key ] && chmod 600 /app/data/.admin_session_key || true; [ -f /app/data/.threads_token_state.json ] && chmod 600 /app/data/.threads_token_state.json || true"
           RUNNING_BACKEND_CID=$(docker compose ps --status running -q backend 2>/dev/null || true)
           if [ -n "$RUNNING_BACKEND_CID" ]; then
             docker compose exec -T backend sh -c "$PERM_FIX_CMD" || true
@@ -74,9 +75,10 @@ jobs:
           if command -v sudo >/dev/null 2>&1; then
             sudo -n chown -R "${HOST_UID}:${HOST_GID}" backend/data frontend/public 2>/dev/null || true
             sudo -n find backend/data -type d -exec chmod 755 {} + 2>/dev/null || true
-            sudo -n find backend/data -type f ! -name '.admin_session_key' -exec chmod 644 {} + 2>/dev/null || true
+            sudo -n find backend/data -type f ! -name '.admin_session_key' ! -name '.threads_token_state.json' -exec chmod 644 {} + 2>/dev/null || true
             sudo -n chmod -R a+rX frontend/public 2>/dev/null || true
             [ -f backend/data/.admin_session_key ] && sudo -n chmod 600 backend/data/.admin_session_key 2>/dev/null || true
+            [ -f backend/data/.threads_token_state.json ] && sudo -n chmod 600 backend/data/.threads_token_state.json 2>/dev/null || true
           fi
           
           # 備份保護本機 .env、前端環境變數與所有後台持久化執行狀態檔 (防止 git reset / origin/data 覆蓋)
@@ -85,7 +87,7 @@ jobs:
           [ -f frontend/.env.local ] && cp frontend/.env.local /tmp/godseye_frontend_env.bak || true
           [ -f backend/data/admin_sources_config.json ] && cp backend/data/admin_sources_config.json /tmp/godseye_admin_cfg.bak || true
           mkdir -p /tmp/godseye_runtime_bak
-          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key system_maintenance.json admin_layers_config.json vancouver_yvr_flights.json vancouver_air_quality.geojson flo_ev_parks.json flo_ev_live_cache.json flo_ev_details_cache.json chargepoint_ev_devices.json chargepoint_ev_live_cache.json chargepoint_ev_details_cache.json vancouver_business_licences.json vancouver_building_permits.json vancouver_threads_posts.json; do
+          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key .threads_token_state.json system_maintenance.json admin_layers_config.json vancouver_yvr_flights.json vancouver_air_quality.geojson flo_ev_parks.json flo_ev_live_cache.json flo_ev_details_cache.json chargepoint_ev_devices.json chargepoint_ev_live_cache.json chargepoint_ev_details_cache.json vancouver_business_licences.json vancouver_building_permits.json vancouver_threads_posts.json; do
             [ -f "backend/data/$rt_file" ] && cp -f "backend/data/$rt_file" "/tmp/godseye_runtime_bak/$rt_file" || true
           done
 
@@ -132,14 +134,14 @@ jobs:
             frontend/public/logo-mobile.jpg \
             frontend/public/logo-web.jpg \
             backend/data/admin_sources_config.json 2>/dev/null || true
-          git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/.admin_session_key -e backend/data/admin_schedule_history.json -e backend/data/schedule_history_config.json -e backend/data/system_logs.json -e backend/data/system_logs_config.json -e backend/data/stats_pv.json -e backend/data/issue_reports.jsonl -e backend/data/system_maintenance.json -e backend/data/admin_sources_config.json -e backend/data/admin_layers_config.json -e backend/data/vancouver_yvr_flights.json -e backend/data/vancouver_air_quality.geojson -e backend/data/flo_ev_parks.json -e backend/data/flo_ev_live_cache.json -e backend/data/flo_ev_details_cache.json -e backend/data/chargepoint_ev_devices.json -e backend/data/chargepoint_ev_live_cache.json -e backend/data/chargepoint_ev_details_cache.json -e backend/data/vancouver_business_licences.json -e backend/data/vancouver_building_permits.json -e backend/data/vancouver_threads_posts.json
+          git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/.admin_session_key -e backend/data/.threads_token_state.json -e backend/data/admin_schedule_history.json -e backend/data/schedule_history_config.json -e backend/data/system_logs.json -e backend/data/system_logs_config.json -e backend/data/stats_pv.json -e backend/data/issue_reports.jsonl -e backend/data/system_maintenance.json -e backend/data/admin_sources_config.json -e backend/data/admin_layers_config.json -e backend/data/vancouver_yvr_flights.json -e backend/data/vancouver_air_quality.geojson -e backend/data/flo_ev_parks.json -e backend/data/flo_ev_live_cache.json -e backend/data/flo_ev_details_cache.json -e backend/data/chargepoint_ev_devices.json -e backend/data/chargepoint_ev_live_cache.json -e backend/data/chargepoint_ev_details_cache.json -e backend/data/vancouver_business_licences.json -e backend/data/vancouver_building_permits.json -e backend/data/vancouver_threads_posts.json
 
           # 還原 .env、前端環境變數、持久化執行狀態檔與合併管理員設定檔
           [ -f /tmp/godseye_root_env.bak ] && cp /tmp/godseye_root_env.bak .env || true
           [ -f /tmp/godseye_backend_env.bak ] && cp /tmp/godseye_backend_env.bak backend/.env || true
           [ -f /tmp/godseye_frontend_env.bak ] && cp /tmp/godseye_frontend_env.bak frontend/.env.local || true
           mkdir -p backend/data
-          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key system_maintenance.json admin_layers_config.json vancouver_yvr_flights.json vancouver_air_quality.geojson flo_ev_parks.json flo_ev_live_cache.json flo_ev_details_cache.json chargepoint_ev_devices.json chargepoint_ev_live_cache.json chargepoint_ev_details_cache.json vancouver_business_licences.json vancouver_building_permits.json vancouver_threads_posts.json; do
+          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key .threads_token_state.json system_maintenance.json admin_layers_config.json vancouver_yvr_flights.json vancouver_air_quality.geojson flo_ev_parks.json flo_ev_live_cache.json flo_ev_details_cache.json chargepoint_ev_devices.json chargepoint_ev_live_cache.json chargepoint_ev_details_cache.json vancouver_business_licences.json vancouver_building_permits.json vancouver_threads_posts.json; do
             [ -f "/tmp/godseye_runtime_bak/$rt_file" ] && cp -f "/tmp/godseye_runtime_bak/$rt_file" "backend/data/$rt_file" || true
           done
           rm -rf /tmp/godseye_runtime_bak || true
@@ -223,6 +225,18 @@ jobs:
               fi
             done
             echo "✅ THREADS_USER_ID successfully synced to backend"
+          fi
+          if [ -n "$THREADS_APP_SECRET" ]; then
+            mkdir -p backend
+            touch backend/.env .env
+            for env_f in backend/.env .env; do
+              if grep -q "^THREADS_APP_SECRET=" "$env_f" 2>/dev/null; then
+                sed -i "s|^THREADS_APP_SECRET=.*|THREADS_APP_SECRET=$THREADS_APP_SECRET|" "$env_f"
+              else
+                echo "THREADS_APP_SECRET=$THREADS_APP_SECRET" >> "$env_f"
+              fi
+            done
+            echo "✅ THREADS_APP_SECRET successfully synced to backend"
           fi
 
           # 自動清除舊版曾寫入前端公開變數的機密項目，並收緊 .env 檔案權限

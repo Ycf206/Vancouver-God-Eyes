@@ -47,6 +47,8 @@ from base import (
 
 CANADA_PNG_FILENAME = "canada_night_lights_z5.png"
 BC_PNG_FILENAME = "bc_night_lights_z8.png"
+CANADA_MASK_FILENAME = "canada_mask_z5.png"
+BC_MASK_FILENAME = "bc_mask_z8.png"
 META_FILENAME = "vancouver_night_lights_meta.json"
 LEGACY_GEOJSON_FILENAME = "vancouver_night_lights.geojson"
 
@@ -62,6 +64,8 @@ GIBS_TILE_URL_TEMPLATE = (
 
 # Full Canada z=5 grid (9 x 6 = 54 tiles -> 2304 x 1536 px)
 # lon: -146.25° to -45.00° | lat: 40.98° to 74.02°
+# Uses 30th percentile across 12 monthly nights to suppress Arctic winter snow/aurora false glow
+# while preserving permanent year-round Canadian city & town lights, clipped strictly to Canada ADM0 mask.
 CANADA_GRID = {
     "zoom": 5,
     "tx_min": 3,
@@ -71,6 +75,8 @@ CANADA_GRID = {
     "sample_count": 12,
     "step_days": 30,
     "min_valid_nights": 3,
+    "percentile": 0.30,
+    "mask_file": CANADA_MASK_FILENAME,
 }
 
 # Southern BC / Metro Vancouver / Vancouver Island / Okanagan high-res z=8 grid (5 x 3 = 15 tiles -> 1280 x 768 px)
@@ -84,18 +90,20 @@ BC_GRID = {
     "sample_count": 24,
     "step_days": 15,
     "min_valid_nights": 3,
+    "percentile": 0.45,
+    "mask_file": BC_MASK_FILENAME,
 }
 
-# Radiance brightness (0-255 median pixel value) -> 7 discrete color tiers (inspired by Bortle / VIIRS palettes)
-# Pixels with median <= 24 (dark ocean & unlit wilderness) map to index 0 (fully transparent).
+# Radiance brightness (0-255 percentile pixel value) -> 7 discrete color tiers (inspired by Bortle / VIIRS palettes)
+# Pixels with value <= 29 (dark ocean, unlit wilderness & faint atmospheric scatter) map to index 0 (transparent).
 NIGHT_LIGHT_TIERS: list[dict[str, Any]] = [
-    {"level": 1, "min_val": 25, "max_val": 54, "color": "#1e3a8a", "rgb": [30, 58, 138], "label_zh": "極弱", "group": "低亮度"},
-    {"level": 2, "min_val": 55, "max_val": 89, "color": "#4338ca", "rgb": [67, 56, 202], "label_zh": "微弱", "group": "低亮度"},
-    {"level": 3, "min_val": 90, "max_val": 124, "color": "#7e22ce", "rgb": [126, 34, 206], "label_zh": "輕中", "group": "中亮度"},
-    {"level": 4, "min_val": 125, "max_val": 159, "color": "#be185d", "rgb": [190, 24, 93], "label_zh": "中等", "group": "中亮度"},
-    {"level": 5, "min_val": 160, "max_val": 194, "color": "#ea580c", "rgb": [234, 88, 12], "label_zh": "較強", "group": "高亮度"},
-    {"level": 6, "min_val": 195, "max_val": 229, "color": "#f59e0b", "rgb": [245, 158, 11], "label_zh": "強光", "group": "高亮度"},
-    {"level": 7, "min_val": 230, "max_val": 255, "color": "#fef08a", "rgb": [254, 240, 138], "label_zh": "極強", "group": "都會核心"},
+    {"level": 1, "min_val": 30, "max_val": 59, "color": "#1e3a8a", "rgb": [30, 58, 138], "label_zh": "極弱", "group": "低亮度"},
+    {"level": 2, "min_val": 60, "max_val": 94, "color": "#4338ca", "rgb": [67, 56, 202], "label_zh": "微弱", "group": "低亮度"},
+    {"level": 3, "min_val": 95, "max_val": 129, "color": "#7e22ce", "rgb": [126, 34, 206], "label_zh": "輕中", "group": "中亮度"},
+    {"level": 4, "min_val": 130, "max_val": 164, "color": "#be185d", "rgb": [190, 24, 93], "label_zh": "中等", "group": "中亮度"},
+    {"level": 5, "min_val": 165, "max_val": 199, "color": "#ea580c", "rgb": [234, 88, 12], "label_zh": "較強", "group": "高亮度"},
+    {"level": 6, "min_val": 200, "max_val": 231, "color": "#f59e0b", "rgb": [245, 158, 11], "label_zh": "強光", "group": "高亮度"},
+    {"level": 7, "min_val": 232, "max_val": 255, "color": "#fef08a", "rgb": [254, 240, 138], "label_zh": "極強", "group": "都會核心"},
 ]
 
 # Precomputed lookup table: grayscale 0..255 -> tier index 0..7
@@ -270,18 +278,33 @@ def _compute_median_index_mosaic(
         print(f"  ⚠️ [{label}] NASA GIBS 有效取樣夜數不足 ({len(valid_nights)} 晚)")
         return None, {}
 
-    print(f"  📊 [{label}] 成功合成 {len(valid_nights)} 晚完整影像，正在計算像素級一年中位數...")
+    print(f"  📊 [{label}] 成功合成 {len(valid_nights)} 晚完整影像，正在套用加拿大國界遮罩與計算年代表亮度...")
 
-    # Fast C-accelerated mask: only pixels whose max across all nights >= 25 can ever have median >= 25
+    # Optional Canada national boundary mask (0 = outside Canada/US/ocean, 255 = inside Canada)
+    mask_bytes: bytes | None = None
+    mask_filename = grid_cfg.get("mask_file")
+    if mask_filename:
+        mask_path = os.path.join(BACKEND_DATA_DIR, mask_filename)
+        if os.path.exists(mask_path):
+            try:
+                with Image.open(mask_path) as m_raw:
+                    m_img = m_raw.convert("L")
+                    if m_img.size != (width, height):
+                        m_img = m_img.resize((width, height), Image.Resampling.NEAREST)
+                    mask_bytes = m_img.tobytes()
+            except Exception as exc:
+                print(f"  ⚠️ [{label}] 無法讀取國界遮罩 {mask_filename}: {exc}")
+
+    # Fast C-accelerated mask: only pixels whose max across all nights >= 30 can ever qualify
     max_mosaic = valid_nights[0][1]
     for _, im in valid_nights[1:]:
         max_mosaic = ImageChops.lighter(max_mosaic, im)
-    lit_mask = max_mosaic.point(lambda v: 1 if v >= 25 else 0).tobytes()
+    lit_mask = max_mosaic.point(lambda v: 1 if v >= 30 else 0).tobytes()
 
     night_buffers = [im.tobytes() for _, im in valid_nights]
     n_nights = len(night_buffers)
-    mid = n_nights // 2
-    is_even = (n_nights % 2 == 0)
+    pct = float(grid_cfg.get("percentile", 0.50))
+    pct_idx = max(0, min(n_nights - 1, int(round((n_nights - 1) * pct))))
 
     out_buf = bytearray(width * height)
     tier_counts: dict[int, int] = {t["level"]: 0 for t in NIGHT_LIGHT_TIERS}
@@ -294,13 +317,16 @@ def _compute_median_index_mosaic(
         row_mask = lit_mask[row_start:row_end]
         if b"\x01" not in row_mask:
             continue
+        country_row = mask_bytes[row_start:row_end] if mask_bytes is not None else None
         for c, flag in enumerate(row_mask):
             if not flag:
                 continue
+            if country_row is not None and country_row[c] == 0:
+                continue
             idx = row_start + c
             vals = sorted(buf[idx] for buf in night_buffers)
-            med = (vals[mid - 1] + vals[mid]) // 2 if is_even else vals[mid]
-            tier_idx = lut[med]
+            agg_val = vals[pct_idx]
+            tier_idx = lut[agg_val]
             if tier_idx:
                 out_buf[idx] = tier_idx
                 tier_counts[tier_idx] += 1

@@ -3228,6 +3228,25 @@ def _load_night_light_raster(key: str) -> tuple[object | None, float]:
     return idx_img, mtime
 
 
+def _downsample_2x_exact_max(img_l):
+    """Exact non-overlapping 2x2 block max-pool in C-speed Pillow without border dilation."""
+    from PIL import Image, ImageChops
+
+    w, h = img_l.size
+    w2 = (w // 2) * 2
+    h2 = (h // 2) * 2
+    if w2 < 2 or h2 < 2:
+        return img_l.resize((max(1, w // 2), max(1, h // 2)), Image.Resampling.NEAREST)
+    nw, nh = w2 // 2, h2 // 2
+    padded = Image.new("L", (w2 + 1, h2 + 1), 0)
+    padded.paste(img_l.crop((0, 0, w2, h2)), (0, 0))
+    a = padded.crop((0, 0, w2, h2)).resize((nw, nh), Image.Resampling.NEAREST)
+    b = padded.crop((1, 0, w2 + 1, h2)).resize((nw, nh), Image.Resampling.NEAREST)
+    c = padded.crop((0, 1, w2, h2 + 1)).resize((nw, nh), Image.Resampling.NEAREST)
+    d = padded.crop((1, 1, w2 + 1, h2 + 1)).resize((nw, nh), Image.Resampling.NEAREST)
+    return ImageChops.lighter(ImageChops.lighter(a, b), ImageChops.lighter(c, d))
+
+
 def _blit_night_light_grid(
     out_tile,
     src_img,
@@ -3236,9 +3255,9 @@ def _blit_night_light_grid(
     x: int,
     y: int,
 ) -> bool:
-    """Slice & resample (max-pool down / nearest up) a grid mosaic onto a 256x256 mode='L' tile."""
+    """Slice & resample (exact 2x2 max-pool down / nearest up) a grid mosaic onto a 256x256 mode='L' tile."""
     import math
-    from PIL import Image, ImageFilter
+    from PIL import Image
 
     src_z = cfg["zoom"]
     tx_min = cfg["tx_min"]
@@ -3273,18 +3292,15 @@ def _blit_night_light_grid(
     cy1 = max(cy0 + 1, min(src_h, int(math.ceil(iy1))))
 
     patch = src_img.crop((cx0, cy0, cx1, cy1))
-    # When zooming out (z < src_z), iteratively 2x max-pool so bright urban cores never vanish
+    # When zooming out (z < src_z), iteratively 2x2 exact max-pool so bright urban cores never vanish
+    # without dilating border cities across the Canada-US border.
     if z < src_z:
         steps = src_z - z
         for _ in range(steps):
             pw, ph = patch.size
             if pw <= dw and ph <= dh:
                 break
-            patch = patch.filter(ImageFilter.MaxFilter(3))
-            patch = patch.resize(
-                (max(dw, (pw + 1) // 2), max(dh, (ph + 1) // 2)),
-                Image.Resampling.NEAREST,
-            )
+            patch = _downsample_2x_exact_max(patch)
 
     if patch.size != (dw, dh):
         patch = patch.resize((dw, dh), Image.Resampling.NEAREST)

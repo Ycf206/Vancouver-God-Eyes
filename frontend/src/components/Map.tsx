@@ -5601,7 +5601,7 @@ export default function AppMap() {
         const apiBase = getApiUrl();
         style.sources['street_lighting_night_lights'] = {
           type: 'raster',
-          tiles: [`${apiBase}/api/night-lights/tiles/{z}/{x}/{y}.png`],
+          tiles: [`${apiBase}/api/night-lights/tiles/{z}/{x}/{y}.png?v=can2`],
           tileSize: 256,
           minzoom: 2,
           maxzoom: 8,
@@ -13391,7 +13391,6 @@ export default function AppMap() {
                     Array.isArray(p.about_details) ? p.about_details : []
                   );
                   const images = parseJsonProp<string[]>(p.images, Array.isArray(p.images) ? p.images : []);
-                  const lotUrl = p.lot_url ? String(p.lot_url) : 'https://findparking.easypark.ca/';
                   const displayName = formatTitleCase(p.name || p.lot_name || selectedFacility.name || 'EasyPark 停車場');
 
                   const hasSec1 = Boolean(lotNumber || hourlyRate || dailyMax || dailyTerms.length > 0);
@@ -13707,17 +13706,15 @@ export default function AppMap() {
                         </div>
                       )}
 
-                      {lotUrl && (
-                        <a
-                          href={lotUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full mt-0.5 py-2 px-3 bg-[#ea580c] hover:bg-[#c2410c] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
-                        >
-                          <span>查看 EasyPark 官方停車場頁面</span>
-                          <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
-                        </a>
-                      )}
+                      <a
+                        href="https://easypark.ca/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full mt-0.5 py-2 px-3 bg-[#ea580c] hover:bg-[#c2410c] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
+                      >
+                        <span>前往 EasyPark 官方停車場網頁</span>
+                        <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
+                      </a>
                     </div>
                   );
                 }
@@ -13916,8 +13913,20 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2.5 text-xs text-gray-700">
-                    <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center text-[11px] text-red-700 font-medium leading-relaxed">
-                      <span>北美規模最大的私營停車場管理公司之一，擁有超過 3,000 個停車場，涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
+                    <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center justify-between gap-2 text-[11px] text-red-700 font-medium leading-relaxed">
+                      <span className="flex-1 min-w-0">北美規模最大的私營停車場管理公司之一，擁有超過 3,000 個停車場，涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
+                      {streetView && (
+                        <a
+                          href={streetView}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="shrink-0 p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-700 border border-red-400/40 transition-colors cursor-pointer flex items-center justify-center"
+                          title="查看街景照片"
+                        >
+                          <Images className="w-4 h-4" />
+                        </a>
+                      )}
                     </div>
 
                     {hasRateOrDetailBox && (
@@ -14061,17 +14070,15 @@ export default function AppMap() {
                       </div>
                     )}
 
-                    {streetView && (
-                      <a
-                        href={streetView}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full mt-0.5 py-2 px-3 bg-[#d9261c] hover:bg-[#b81d14] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
-                      >
-                        <span>查看 Google 街景照片</span>
-                        <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
-                      </a>
-                    )}
+                    <a
+                      href="https://impark.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full mt-0.5 py-2 px-3 bg-[#d9261c] hover:bg-[#b81d14] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
+                    >
+                      <span>前往 ImPark 官方停車場網頁</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
+                    </a>
                   </div>
                 );
               })()}
@@ -22237,14 +22244,6 @@ export default function AppMap() {
           {/* 夜間燈光亮度圖例 (NASA Black Marble VIIRS 一年夜晚中位數，比照 AQHI 風格) */}
           {layers.streetLighting && streetLightingFilter.nightLights && (
             <div className="pointer-events-auto w-[min(320px,calc(100vw-16px))] sm:w-[340px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200 flex flex-col gap-2">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="font-bold text-white flex items-center gap-1.5">
-                  <Lightbulb className="w-3.5 h-3.5 text-amber-300" />
-                  <span>夜間燈光亮度</span>
-                </span>
-                <span className="text-[9.5px] text-gray-400">NASA Black Marble (VIIRS) · 全加拿大一年中位數</span>
-              </div>
-
               <div className="grid grid-cols-7 h-5 rounded-md overflow-hidden border border-white/15">
                 {NIGHT_LIGHT_LEGEND_TIERS.map((cell) => (
                   <div
@@ -24692,7 +24691,7 @@ export default function AppMap() {
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-amber-500/20 text-amber-300">
-                <Lightbulb className="w-3.5 h-3.5" />
+                <SlidersHorizontal className="w-3.5 h-3.5" />
               </span>
               <span className="font-bold text-xs text-white">燈光篩選</span>
             </div>
