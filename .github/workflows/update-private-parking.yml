@@ -1,4 +1,4 @@
-name: "Update 私人停車場情報 ImPark + EasyPark (每月)"
+name: "Update 私人停車場情報 ImPark + EasyPark + Indigo (每月)"
 
 on:
   schedule:
@@ -33,7 +33,7 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run layer update script (私人停車場 ImPark + EasyPark)
+      - name: Run layer update script (私人停車場 ImPark + EasyPark + Indigo)
         run: |
           python backend/scripts/layers/update_private_parking.py
 
@@ -73,13 +73,13 @@ jobs:
 
             git add backend/data/vancouver_impark.geojson frontend/public/vancouver_impark.geojson
             if git diff -I '"updated_at"' -I '"generated_at"' --staged --quiet; then
-              echo "No substantive feature changes detected for 私人停車場情報 (ImPark + EasyPark)."
+              echo "No substantive feature changes detected for 私人停車場情報 (ImPark + EasyPark + Indigo)."
               git reset --hard HEAD >/dev/null 2>&1 || true
               has_changes="false"
               break
             fi
 
-            git commit -m "chore(data): auto-update 私人停車場 ImPark + EasyPark (impark_parking) [skip ci]"
+            git commit -m "chore(data): auto-update 私人停車場 ImPark + EasyPark + Indigo (impark_parking) [skip ci]"
             if git push origin HEAD:data; then
               has_changes="true"
               break
@@ -99,7 +99,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步 [私人停車場 (ImPark + EasyPark)] 更新狀態與圖資至 OCI 伺服器..."
+            echo "🔄 同步 [私人停車場 (ImPark + EasyPark + Indigo)] 更新狀態與圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
             mkdir -p backend/data frontend/public
             if [ "${{ steps.git_push.outputs.has_changes }}" = "true" ]; then
@@ -107,4 +107,4 @@ jobs:
               git checkout refs/remotes/origin/data -- backend/data/vancouver_impark.geojson frontend/public/vancouver_impark.geojson 2>/dev/null || git checkout origin/data -- backend/data/vancouver_impark.geojson frontend/public/vancouver_impark.geojson 2>/dev/null || true
             fi
             python3 backend/scripts/record_workflow_sync.py --source "impark_parking" --workflow "update-private-parking.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "impark_parking" --workflow "update-private-parking.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
-            echo "✅ OCI 伺服器 [私人停車場 (ImPark + EasyPark)] 資料與後台時間戳同步完成！"
+            echo "✅ OCI 伺服器 [私人停車場 (ImPark + EasyPark + Indigo)] 資料與後台時間戳同步完成！"

@@ -36,7 +36,7 @@ import {
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, Weight, SquareParking, Trophy,
   TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
-  Layers, Building2, BuildingComplex, Hammer, Faucet, Droplets, Telescope,
+  Layers, Building2, BuildingComplex, Hammer, Faucet, Droplets, Telescope, Lightbulb, Images, TentTree,
   ChevronLeft, ChevronRight, ArrowLeftToLine, ArrowRightToLine
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
@@ -69,12 +69,16 @@ const registerCastleIcon = (mapInstance: any) => registerSvgIcon(mapInstance, 'l
 const LUCIDE_FAUCET_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M10.083 5.428 5.57 4.083a2 2 0 10.001 3.834l4.512-1.345"/><path d="M12 8v3"/><path d="m13.917 5.428 4.511-1.345a2 2 0 110 3.834l-4.51-1.345"/><path d="M18 17v-4.006"/><path d="M22 11v8"/><path d="M22 12h-3a1 1 0 00-1 .994h-2.539a4 4 0 00-6.915-.012L7 13a5 5 0 00-5 5v1a1 1 0 001 1h2a1 1 0 001-1v-1a1 1 0 01.995-1l1.552.018a4 4 0 006.907 0L18 17a1 1 0 001 1h3"/><circle cx="12" cy="6" r="2"/></svg>`;
 const LUCIDE_DROPLETS_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>`;
 const LUCIDE_FLAME_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`;
+const LUCIDE_PILL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>`;
+const LUCIDE_TENT_TREE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="2"/><path d="m14 5 3-3 3 3"/><path d="m14 10 3-3 3 3"/><path d="M17 14V2"/><path d="M17 14H7l-5 8h20Z"/><path d="M8 14v8"/><path d="m9 14 5 8"/></svg>`;
 const registerAllVectorSvgIcons = (mapInstance: Parameters<typeof registerDamIcon>[0]) => {
   registerDamIcon(mapInstance);
   registerCastleIcon(mapInstance);
   registerSvgIcon(mapInstance, 'lucide-faucet', LUCIDE_FAUCET_SVG);
   registerSvgIcon(mapInstance, 'lucide-droplets', LUCIDE_DROPLETS_SVG);
   registerSvgIcon(mapInstance, 'lucide-flame', LUCIDE_FLAME_SVG);
+  registerSvgIcon(mapInstance, 'lucide-pill', LUCIDE_PILL_SVG);
+  registerSvgIcon(mapInstance, 'lucide-tent-tree', LUCIDE_TENT_TREE_SVG);
   registerYvrIndoorIcons(mapInstance);
 };
 
@@ -222,6 +226,151 @@ function pushClusteredUtilityLayers(
       }
     }
   );
+}
+
+type StreetLightingFilterKey = 'conduits' | 'poles' | 'junctionBoxes' | 'nightLights';
+
+const NIGHT_LIGHT_LEGEND_TIERS: ReadonlyArray<{
+  level: number;
+  hex: string;
+  label: string;
+  darkText: boolean;
+}> = [
+  { level: 1, hex: '#1e3a8a', label: '極弱', darkText: false },
+  { level: 2, hex: '#4338ca', label: '微弱', darkText: false },
+  { level: 3, hex: '#7e22ce', label: '輕中', darkText: false },
+  { level: 4, hex: '#be185d', label: '中等', darkText: false },
+  { level: 5, hex: '#ea580c', label: '較強', darkText: false },
+  { level: 6, hex: '#f59e0b', label: '強光', darkText: true },
+  { level: 7, hex: '#fef08a', label: '極強', darkText: true },
+];
+
+const STREET_LIGHTING_OPTIONS: ReadonlyArray<{
+  key: StreetLightingFilterKey;
+  label: string;
+  desc: string;
+  swatchClass: string;
+  activeTextClass: string;
+  toggleBgClass: string;
+  clusterColors: [string, string, string];
+  dotGlowColor?: string;
+  dotCoreColor?: string;
+}> = [
+  {
+    key: 'conduits',
+    label: '路燈網絡',
+    desc: '地下供電導管線',
+    swatchClass: 'bg-amber-500 border-white',
+    activeTextClass: 'text-amber-300',
+    toggleBgClass: 'bg-amber-500',
+    clusterColors: ['#f59e0b', '#d97706', '#b45309'],
+  },
+  {
+    key: 'poles',
+    label: '路燈',
+    desc: '街燈燈柱點位',
+    swatchClass: 'bg-yellow-400 border-white',
+    activeTextClass: 'text-yellow-300',
+    toggleBgClass: 'bg-yellow-500',
+    clusterColors: ['#eab308', '#ca8a04', '#a16207'],
+    dotGlowColor: '#fde047',
+    dotCoreColor: '#eab308',
+  },
+  {
+    key: 'junctionBoxes',
+    label: '路燈接線盒',
+    desc: '電力接線盒點位',
+    swatchClass: 'bg-orange-500 border-white',
+    activeTextClass: 'text-orange-300',
+    toggleBgClass: 'bg-orange-500',
+    clusterColors: ['#f97316', '#ea580c', '#c2410c'],
+    dotGlowColor: '#fdba74',
+    dotCoreColor: '#ea580c',
+  },
+  {
+    key: 'nightLights',
+    label: '夜間燈光',
+    desc: 'NASA Black Marble 一年中位數',
+    swatchClass: 'bg-purple-500 border-white',
+    activeTextClass: 'text-purple-300',
+    toggleBgClass: 'bg-purple-600',
+    clusterColors: ['#7e22ce', '#be185d', '#f59e0b'],
+  },
+];
+
+function pushClusteredStreetLightingLayers(
+  targetLayers: Array<Record<string, unknown>>,
+  opts: {
+    prefix: string;
+    sourceId: string;
+    clusterColors: [string, string, string];
+    dotGlowColor?: string;
+    dotCoreColor?: string;
+    clusterOnlyMaxZoom?: number;
+  }
+) {
+  const { prefix, sourceId, clusterColors, dotGlowColor, dotCoreColor, clusterOnlyMaxZoom } = opts;
+  const clusterCircle: Record<string, unknown> = {
+    id: `${prefix}-cluster-layer`,
+    type: 'circle',
+    source: sourceId,
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-color': ['step', ['get', 'point_count'], clusterColors[0], 20, clusterColors[1], 100, clusterColors[2]],
+      'circle-radius': ['step', ['get', 'point_count'], 15, 20, 20, 100, 26],
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff',
+      'circle-opacity': 0.92,
+    },
+  };
+  const clusterCount: Record<string, unknown> = {
+    id: `${prefix}-cluster-count`,
+    type: 'symbol',
+    source: sourceId,
+    filter: ['has', 'point_count'],
+    layout: {
+      'text-field': '{point_count_abbreviated}',
+      'text-size': 12,
+      'text-font': ['Open Sans Bold'],
+    },
+    paint: { 'text-color': '#ffffff' },
+  };
+  if (clusterOnlyMaxZoom !== undefined) {
+    clusterCircle.maxzoom = clusterOnlyMaxZoom;
+    clusterCount.maxzoom = clusterOnlyMaxZoom;
+  }
+  targetLayers.push(clusterCircle, clusterCount);
+
+  if (dotGlowColor && dotCoreColor) {
+    targetLayers.push(
+      {
+        id: `${prefix}-glow`,
+        type: 'circle',
+        source: sourceId,
+        filter: ['!', ['has', 'point_count']],
+        minzoom: 12,
+        paint: {
+          'circle-color': dotGlowColor,
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 3, 14, 5, 16, 7.5, 18, 10],
+          'circle-opacity': 0.35,
+          'circle-blur': 0.8,
+        },
+      },
+      {
+        id: `${prefix}-layer`,
+        type: 'circle',
+        source: sourceId,
+        filter: ['!', ['has', 'point_count']],
+        minzoom: 12,
+        paint: {
+          'circle-color': dotCoreColor,
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 2.2, 14, 3.6, 16, 5.2, 18, 6.5],
+          'circle-stroke-width': 1.2,
+          'circle-stroke-color': '#ffffff',
+        },
+      }
+    );
+  }
 }
 
 const MV_UTILITY_ATTR_ROWS: Array<{ key: string; label: string; format?: (v: unknown) => string }> = [
@@ -654,6 +803,7 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   sewerSystem: { label: '污水', prefixes: ['sewer-system', 'sewer_system'] },
   zoningDistricts: { label: '土地規劃', prefixes: ['zoning-districts', 'zoning_districts'] },
   publicTrees: { label: '街道樹木', prefixes: ['public-trees', 'public_trees'] },
+  streetLighting: { label: '燈光', prefixes: ['street-lighting', 'street_lighting'] },
   airportIndoor: { label: '機場內部地圖', prefixes: ['yvr-indoor'] },
 };
 
@@ -1232,6 +1382,10 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'consulates-layer',
   'consulates-icon-layer',
   'consulates-symbol-layer',
+  'pharmacies-layer',
+  'pharmacies-icon-layer',
+  'picnic-sites-layer',
+  'picnic-sites-icon-layer',
   'water-supply-mains-layer',
   'water-supply-cluster-layer',
   'water-supply-layer',
@@ -1573,6 +1727,113 @@ function formatEasyParkTransientLines(raw: string): string[] {
   return out.length > 0 ? out : [raw];
 }
 
+function translateEasyParkTextToZh(raw: string): string {
+  if (!raw) return '';
+  return String(raw)
+    .replace(/Monday\s*(?:to|-|–)\s*Sunday\s*(?:&|and)\s*Holidays/gi, '星期一至日及公眾假期')
+    .replace(/Monday\s*(?:to|-|–)\s*Sunday/gi, '星期一至日')
+    .replace(/Monday\s*(?:to|-|–)\s*Friday/gi, '星期一至五')
+    .replace(/Saturdays?\s*(?:to|-|–)\s*Sundays?\s*(?:&|and)\s*Holidays/gi, '星期六、日及公眾假期')
+    .replace(/Saturdays?\s*(?:&|and)\s*Sundays?/gi, '星期六及日')
+    .replace(/\bMon\s*-\s*Sun\b/gi, '星期一至日')
+    .replace(/\bMon\s*-\s*Fri\b/gi, '星期一至五')
+    .replace(/\bSat\s*-\s*Sun\b/gi, '星期六至日')
+    .replace(/\bHolidays\b/gi, '公眾假期')
+    .replace(/April\s+1\s*(?:-|–|to)\s*September\s+30/gi, '4 月 1 日至 9 月 30 日')
+    .replace(/October\s+1\s*(?:-|–|to)\s*March\s+31/gi, '10 月 1 日至 3 月 31 日')
+    .replace(/Daily\s+Maximum\s+Rate/gi, '每日最高費率')
+    .replace(/Daily\s+Maximum/gi, '每日最高')
+    .replace(/Day\s+Maximum/gi, '日間最高')
+    .replace(/Evening\s+Maximum/gi, '夜間最高')
+    .replace(/Evening\s+Flat\s+Rate/gi, '夜間定額收費')
+    .replace(/Early\s+Bird\s+Rate\s*\(\s*in\s+before\s+([^)]+)\)/gi, '早鳥優惠（$1 前進場）')
+    .replace(/Early\s+Bird\s+Rate/gi, '早鳥優惠')
+    .replace(/FIFA\s+Rate/gi, 'FIFA 活動費率')
+    .replace(/General\s+event/gi, '一般活動')
+    .replace(/Event\s+rate/gi, '活動費率')
+    .replace(/on\s+all\s+event\s+dates/gi, '於所有活動日適用')
+    .replace(/Pay\s+on\s+entry/gi, '入場付款')
+    .replace(/includes\s+29%\s+TransLink\s+Parking\s+Rights\s+Tax\s+and\s+5%\s+GST/gi, '已含 29% TransLink 停車稅及 5% GST')
+    .replace(/TransLink\s+Parking\s+Rights\s+Tax/gi, 'TransLink 停車稅')
+    .replace(/\bper\s+half\s+hour\b/gi, '每半小時')
+    .replace(/\bper\s+30\s+mins?\b/gi, '每 30 分鐘')
+    .replace(/\bper\s+hour\b/gi, '每小時')
+    .replace(/\bHourly\b/gi, '每小時')
+    .replace(/\bMaximum\b/gi, '最高')
+    .replace(/Random\s+Ungated/gi, '非固定車位（無閘門）')
+    .replace(/Random\s+Gated|Gated\s+Random/gi, '非固定車位（閘門管制）')
+    .replace(/Reserved\s+Gated|Gated\s+Reserved/gi, '固定車位（閘門管制）')
+    .replace(/Reserved\s+Ungated/gi, '固定車位（無閘門）')
+    .replace(/Access\s+hours:\s*24\/7\s*Controlled\s+access/gi, '進出時段：24 小時門禁管制')
+    .replace(/Access\s+hours:/gi, '進出時段：')
+    .replace(/24\/7\s*Controlled\s+access/gi, '24 小時門禁管制')
+    .replace(/Unattended\s+facility/gi, '無人值守停車場')
+    .replace(/Attended\s+facility/gi, '駐場管理員停車場')
+    .replace(/Height\s+restriction\s+of\s+/gi, '高度限制：')
+    .replace(/Height\s+restriction:/gi, '高度限制：')
+    .replace(/Gated\s+from\s+/gi, '閘門開放時段：')
+    .replace(/Elevator\s+access\s+available\s+prior\s+to\s+/gi, '電梯開放至 ')
+    .replace(/Payment\s+for\s+parking\s+is\s+still\s+required\s+in\s+addition\s+to\s+any\s+charging\s+costs/gi, '除充電費用外仍需繳付停車費')
+    .replace(/EV\s+Charging\s+Stations\s+Available/gi, '提供電動車充電樁')
+    .replace(/EV\s+Charging\s+Stations?/gi, '電動車充電樁')
+    .replace(/Located\s+beneath\s+/gi, '位於以下建築下方：')
+    .replace(/Located\s+at\s+/gi, '位於 ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function formatEasyParkRateZh(raw?: string | null): string {
+  if (!raw) return '';
+  return translateEasyParkTextToZh(String(raw)).replace(/(\$\d+(?:\.\d+)?)\s*每小時/g, '每小時 $1');
+}
+
+function formatEasyParkDailyMaxZh(raw?: string | null): string {
+  if (!raw) return '';
+  const s = String(raw).trim();
+  if (!s) return '';
+  if (/^\d+(?:\.\d+)?$/.test(s)) return `$${s}`;
+  return translateEasyParkTextToZh(s);
+}
+
+function formatPrivateParkingFeatureZh(feat: string): string {
+  const s = String(feat || '').trim();
+  const low = s.toLowerCase();
+  if (low === 'daily') return '時 / 日租';
+  if (low === 'monthly') return '月租';
+  if (low === 'seasonal') return '季節性';
+  if (low === 'annual') return '年租';
+  if (low === 'evcharging' || low.includes('ev') || low.includes('charg')) return '電動車充電樁';
+  if (low === 'sparc') return 'SPARC 無障礙車位';
+  if (low === 'eventparking' || low === 'event') return '活動泊車';
+  if (low === 'gatedcompound') return '閘門式車場';
+  if (low === 'opensurface') return '露天地面車場';
+  if (low === 'heightrestriction') return '高度限制';
+  if (s.includes('Parker Pete')) return '道路救援';
+  if (low.includes('attendant')) return '駐場管理員';
+  if (low.includes('heater')) return '引擎加熱器';
+  if (low.includes('wash')) return '洗車';
+  if (low.includes('valet')) return '代客泊車';
+  if (low === 'motorcycles') return '電單車位';
+  return s;
+}
+
+function formatPaymentMethodLabel(pm: string): string {
+  const map: Record<string, string> = {
+    visa: 'Visa',
+    mastercard: 'MasterCard',
+    amex: 'Amex',
+    zipby: 'ZipBy',
+    honk: 'Honk',
+    parkmobile: 'ParkMobile',
+    passport: 'Passport',
+    applepay: 'Apple Pay',
+    googlepay: 'Google Pay',
+    debit: 'Debit',
+    cash: 'Cash',
+  };
+  return map[String(pm || '').toLowerCase()] || pm;
+}
+
 const ZONING_CLASSIFICATION_ITEMS = [
   { key: 'Commercial', label: '商業', color: '#fbbf24', stroke: '#d97706', border: 'border-amber-500/40', bg: 'bg-amber-500/10' },
   { key: 'Industrial', label: '工業', color: '#a78bfa', stroke: '#7c3aed', border: 'border-violet-500/40', bg: 'bg-violet-500/10' },
@@ -1829,8 +2090,40 @@ export default function AppMap() {
   const [showTimePeriodInfo, setShowTimePeriodInfo] = useState(false);
   const [timeInfoHovered, setTimeInfoHovered] = useState(false);
   const [timeInfoPinned, setTimeInfoPinned] = useState(false);
+  const [easyparkAboutHovered, setEasyparkAboutHovered] = useState(false);
+  const [easyparkAboutPinned, setEasyparkAboutPinned] = useState(false);
+  const [easyparkImageModal, setEasyparkImageModal] = useState<{
+    title: string;
+    images: string[];
+    index: number;
+  } | null>(null);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
   const [mobileCoverageLegendOpen, setMobileCoverageLegendOpen] = useState(true);
+  const [streetLightingLegendOpen, setStreetLightingLegendOpen] = useState(true);
+  const [streetLightingFilter, setStreetLightingFilter] = useState<Record<StreetLightingFilterKey, boolean>>({
+    conduits: false,
+    poles: false,
+    junctionBoxes: false,
+    nightLights: false,
+  });
+  const toggleStreetLightingFilter = useCallback((key: StreetLightingFilterKey, nextVal?: boolean) => {
+    setStreetLightingFilter((prev) => {
+      const target = nextVal !== undefined ? nextVal : !prev[key];
+      if (target && !prev[key]) {
+        const opt = STREET_LIGHTING_OPTIONS.find((o) => o.key === key);
+        setLoadingHeavyLayers((curr) => ({ ...curr, streetLighting: `燈光 · ${opt?.label || key}` }));
+        setTimeout(() => {
+          setLoadingHeavyLayers((curr) => {
+            if (!curr.streetLighting) return curr;
+            const next = { ...curr };
+            delete next.streetLighting;
+            return next;
+          });
+        }, 4000);
+      }
+      return { ...prev, [key]: target };
+    });
+  }, []);
   const [expandedMobileCarriers, setExpandedMobileCarriers] = useState<Partial<Record<MobileCarrierId, boolean>>>({});
   const [airQualityGeoJson, setAirQualityGeoJson] = useState<{ type: 'FeatureCollection'; features: any[] } | null>(null);
   const [wildfireGeoJson, setWildfireGeoJson] = useState<{
@@ -1860,6 +2153,7 @@ export default function AppMap() {
     companies: {
       impark: boolean;
       easyPark: boolean;
+      indigo: boolean;
     };
   }>({
     hourly: true,
@@ -1871,6 +2165,7 @@ export default function AppMap() {
     companies: {
       impark: true,
       easyPark: true,
+      indigo: true,
     }
   });
   const [courierLegendOpen, setCourierLegendOpen] = useState(true);
@@ -2930,10 +3225,24 @@ export default function AppMap() {
       const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
       if (hasSpeed && !safetyCamerasFilter.redLightSpeed) setSelectedFacility(null);
       if (!hasSpeed && !safetyCamerasFilter.redLightOnly) setSelectedFacility(null);
-    } else if (selectedFacility.facility_type === 'impark' || String(selectedFacility.id ?? '').startsWith('impark_') || String(selectedFacility.id ?? '').startsWith('easypark_')) {
+    } else if (
+      selectedFacility.facility_type === 'impark' ||
+      String(selectedFacility.id ?? '').startsWith('impark_') ||
+      String(selectedFacility.id ?? '').startsWith('easypark_') ||
+      String(selectedFacility.id ?? '').startsWith('indigo_')
+    ) {
       const props = selectedFacility.properties || (selectedFacility as any);
-      const comp = String(props.company || (String(selectedFacility.id ?? '').startsWith('easypark_') ? 'easypark' : 'impark')).toLowerCase();
-      const compEnabled = comp === 'easypark' ? Boolean(imparkFilter.companies?.easyPark) : Boolean(imparkFilter.companies?.impark);
+      const fidStr = String(selectedFacility.id ?? '');
+      const comp = String(
+        props.company ||
+          (fidStr.startsWith('easypark_') ? 'easypark' : fidStr.startsWith('indigo_') ? 'indigo' : 'impark')
+      ).toLowerCase();
+      const compEnabled =
+        comp === 'easypark'
+          ? Boolean(imparkFilter.companies?.easyPark)
+          : comp === 'indigo'
+            ? Boolean(imparkFilter.companies?.indigo)
+            : Boolean(imparkFilter.companies?.impark);
       if (!compEnabled) {
         setSelectedFacility(null);
         return;
@@ -2971,6 +3280,11 @@ export default function AppMap() {
       if (!matchRate || !matchSparc || !matchEv) setSelectedFacility(null);
     }
   }, [selectedFacility, carSharingFilter, bikewaysFilter, zoningFilter, safetyCamerasFilter, imparkFilter]);
+
+  useEffect(() => {
+    setEasyparkAboutHovered(false);
+    setEasyparkAboutPinned(false);
+  }, [selectedFacility?.id]);
 
   useEffect(() => {
     if (!layers.airQuality) return;
@@ -3346,6 +3660,8 @@ export default function AppMap() {
         else if (type === 'railways' && !layers.railways) facilityClosed = true;
         else if (type === 'airport_indoor' && !layers.airportIndoor) facilityClosed = true;
         else if (type === 'consulates' && !layers.consulates) facilityClosed = true;
+        else if (type === 'pharmacies' && !layers.pharmacies) facilityClosed = true;
+        else if (type === 'picnic_sites' && !layers.picnicSites) facilityClosed = true;
         else if (type === 'water_supply' && !layers.waterSupply) facilityClosed = true;
         else if (type === 'sewer_system' && !layers.sewerSystem) facilityClosed = true;
         else if (type === 'job' && (!isExploreOpen || !openExploreTabs?.includes('jobs'))) facilityClosed = true;
@@ -4445,7 +4761,7 @@ export default function AppMap() {
     // 當開啟大量資料圖層時，顯示「載入中」提示
     const newLoading: { [key: string]: string } = {};
     for (const [key, conf] of Object.entries(HEAVY_LAYERS_CONFIG)) {
-      if (key === 'contours') continue;
+      if (key === 'contours' || key === 'streetLighting') continue;
       const k = key as keyof typeof layers;
       if (!prev[k] && layers[k]) {
         newLoading[key] = conf.label;
@@ -5123,7 +5439,7 @@ export default function AppMap() {
     return () => {
       map.off('styledata', handleStyleData);
     };
-  }, [mapStyleType, isMarineTideActive, layers.airportIndoor, layers.consulates, layers.waterSupply, layers.sewerSystem]);
+  }, [mapStyleType, isMarineTideActive, layers.airportIndoor, layers.consulates, layers.pharmacies, layers.picnicSites, layers.waterSupply, layers.sewerSystem]);
 
   const isBusTrackHidden = Boolean(searchedBusRoute || selectedBus);
   const mapStyle = useMemo(() => {
@@ -5310,6 +5626,51 @@ export default function AppMap() {
     }
     if (layers.consulates) {
       style.sources['consulates'] = { type: 'geojson', data: '/vancouver_consulates.geojson' };
+    }
+    if (layers.pharmacies) {
+      style.sources['pharmacies'] = { type: 'geojson', data: '/vancouver_pharmacies.geojson' };
+    }
+    if (layers.picnicSites) {
+      style.sources['picnic_sites'] = { type: 'geojson', data: '/vancouver_picnic_sites.geojson' };
+    }
+    if (layers.streetLighting) {
+      if (streetLightingFilter.nightLights) {
+        style.sources['street_lighting_night_lights'] = {
+          type: 'geojson',
+          data: '/vancouver_night_lights.geojson',
+        };
+      }
+      if (streetLightingFilter.conduits) {
+        style.sources['street_lighting_conduits'] = {
+          type: 'geojson',
+          data: '/vancouver_street_lighting_conduits.geojson',
+        };
+        style.sources['street_lighting_conduits_clusters'] = {
+          type: 'geojson',
+          data: '/vancouver_street_lighting_conduits_clusters.geojson',
+          cluster: true,
+          clusterMaxZoom: 14,
+          clusterRadius: 45,
+        };
+      }
+      if (streetLightingFilter.poles) {
+        style.sources['street_lighting_poles'] = {
+          type: 'geojson',
+          data: '/vancouver_street_lighting_poles.geojson',
+          cluster: true,
+          clusterMaxZoom: 14,
+          clusterRadius: 45,
+        };
+      }
+      if (streetLightingFilter.junctionBoxes) {
+        style.sources['street_lighting_junction_boxes'] = {
+          type: 'geojson',
+          data: '/vancouver_street_lighting_junction_boxes.geojson',
+          cluster: true,
+          clusterMaxZoom: 14,
+          clusterRadius: 45,
+        };
+      }
     }
     if (layers.waterSupply) {
       style.sources['water_supply'] = {
@@ -5728,6 +6089,19 @@ export default function AppMap() {
           'line-color': ['get', 'color'],
           'line-width': ['interpolate', ['linear'], ['zoom'], 9, 0.8, 13, 1.5, 16, 2.2],
           'line-opacity': 0.72,
+        },
+      });
+    }
+
+    // Energy / Lighting: NASA Black Marble (VIIRS) 夜間燈光一年中位數色塊圖層 (置於底圖之上、點位之下，無點擊 Popup)
+    if (layers.streetLighting && streetLightingFilter.nightLights) {
+      style.layers.push({
+        id: 'street-lighting-night-lights-fill',
+        type: 'fill',
+        source: 'street_lighting_night_lights',
+        paint: {
+          'fill-color': ['coalesce', ['get', 'color'], '#7e22ce'],
+          'fill-opacity': 0.56,
         },
       });
     }
@@ -6266,14 +6640,20 @@ export default function AppMap() {
     }
 
     
-    // Road Facilities: Private Parking Lots (ImPark + EasyPark)
-    if (layers.impark && (imparkFilter.companies?.impark || imparkFilter.companies?.easyPark)) {
+    // Road Facilities: Private Parking Lots (ImPark + EasyPark + Indigo)
+    if (
+      layers.impark &&
+      (imparkFilter.companies?.impark || imparkFilter.companies?.easyPark || imparkFilter.companies?.indigo)
+    ) {
       const imparkFilters: any[] = ['all'];
       const compAllowed: string[] = [];
       if (imparkFilter.companies?.impark) compAllowed.push('impark');
       if (imparkFilter.companies?.easyPark) compAllowed.push('easypark');
+      if (imparkFilter.companies?.indigo) compAllowed.push('indigo');
       if (compAllowed.length === 1) {
         imparkFilters.push(['==', ['coalesce', ['get', 'company'], 'impark'], compAllowed[0]]);
+      } else if (compAllowed.length === 2) {
+        imparkFilters.push(['in', ['coalesce', ['get', 'company'], 'impark'], ['literal', compAllowed]]);
       }
 
       const allRatesOn = imparkFilter.hourly && imparkFilter.monthly && imparkFilter.seasonal && imparkFilter.annual;
@@ -6305,7 +6685,15 @@ export default function AppMap() {
         ...(imparkFilterExpr ? { filter: imparkFilterExpr } : {}),
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
-          'circle-color': ['case', ['==', ['coalesce', ['get', 'company'], 'impark'], 'easypark'], '#ea580c', '#d9261c'],
+          'circle-color': [
+            'match',
+            ['coalesce', ['get', 'company'], 'impark'],
+            'easypark',
+            '#ea580c',
+            'indigo',
+            '#c026d3',
+            '#d9261c',
+          ],
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
@@ -6317,7 +6705,7 @@ export default function AppMap() {
         minzoom: 13,
         ...(imparkFilterExpr ? { filter: imparkFilterExpr } : {}),
         layout: {
-          'text-field': 'P',
+          'text-field': ['case', ['==', ['coalesce', ['get', 'company'], 'impark'], 'indigo'], 'I', 'P'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8.5, 15, 10.5, 17, 12],
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': false
@@ -6861,6 +7249,59 @@ export default function AppMap() {
       });
     }
 
+    if (layers.pharmacies) {
+      style.layers.push({
+        id: 'pharmacies-layer',
+        type: 'circle',
+        source: 'pharmacies',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
+          'circle-color': layerCustomColors?.pharmacies || '#0d9488',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'pharmacies-icon-layer',
+        type: 'symbol',
+        source: 'pharmacies',
+        minzoom: 14,
+        layout: {
+          'icon-image': 'lucide-pill',
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 14, 0.22, 15, 0.36, 17, 0.46],
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true
+        }
+      });
+    }
+
+    // Nature: Reservable Picnic Sites (公園野餐區 - 靜態資料)
+    if (layers.picnicSites) {
+      style.layers.push({
+        id: 'picnic-sites-layer',
+        type: 'circle',
+        source: 'picnic_sites',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 4.5, 13, 7, 15, 9.5, 17, 11],
+          'circle-color': layerCustomColors?.picnicSites || '#d97706',
+          'circle-stroke-width': 1.8,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'picnic-sites-icon-layer',
+        type: 'symbol',
+        source: 'picnic_sites',
+        minzoom: 12,
+        layout: {
+          'icon-image': 'lucide-tent-tree',
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 12, 0.24, 14, 0.34, 16, 0.46],
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true
+        }
+      });
+    }
+
     // Energy / Utilities: Metro Vancouver Water Supply (供水 - Lucide: faucet + Water Mains 管線)
     if (layers.waterSupply) {
       style.layers.push({
@@ -6937,6 +7378,65 @@ export default function AppMap() {
         clusterHighColor: '#115e59',
         iconImage: 'lucide-droplets',
       });
+    }
+
+    // Energy / Utilities: Street Lighting (燈光 - 路燈網絡 / 路燈 / 路燈接線盒，聚合顯示無 popup)
+    if (layers.streetLighting) {
+      if (streetLightingFilter.conduits) {
+        const conduitCfg = STREET_LIGHTING_OPTIONS[0];
+        pushClusteredStreetLightingLayers(style.layers, {
+          prefix: 'street-lighting-conduits',
+          sourceId: 'street_lighting_conduits_clusters',
+          clusterColors: conduitCfg.clusterColors,
+          clusterOnlyMaxZoom: 14,
+        });
+        style.layers.push(
+          {
+            id: 'street-lighting-conduits-casing',
+            type: 'line',
+            source: 'street_lighting_conduits',
+            minzoom: 14,
+            layout: { 'line-cap': 'round', 'line-join': 'round' },
+            paint: {
+              'line-color': '#1e1b18',
+              'line-width': ['interpolate', ['linear'], ['zoom'], 14, 2.4, 16, 3.6, 18, 5.2],
+              'line-opacity': 0.55,
+            },
+          },
+          {
+            id: 'street-lighting-conduits-layer',
+            type: 'line',
+            source: 'street_lighting_conduits',
+            minzoom: 14,
+            layout: { 'line-cap': 'round', 'line-join': 'round' },
+            paint: {
+              'line-color': layerCustomColors?.streetLighting || '#f59e0b',
+              'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1.4, 16, 2.2, 18, 3.4],
+              'line-opacity': 0.9,
+            },
+          }
+        );
+      }
+      if (streetLightingFilter.poles) {
+        const poleCfg = STREET_LIGHTING_OPTIONS[1];
+        pushClusteredStreetLightingLayers(style.layers, {
+          prefix: 'street-lighting-poles',
+          sourceId: 'street_lighting_poles',
+          clusterColors: poleCfg.clusterColors,
+          dotGlowColor: poleCfg.dotGlowColor,
+          dotCoreColor: poleCfg.dotCoreColor,
+        });
+      }
+      if (streetLightingFilter.junctionBoxes) {
+        const jbCfg = STREET_LIGHTING_OPTIONS[2];
+        pushClusteredStreetLightingLayers(style.layers, {
+          prefix: 'street-lighting-junction-boxes',
+          sourceId: 'street_lighting_junction_boxes',
+          clusterColors: jbCfg.clusterColors,
+          dotGlowColor: jbCfg.dotGlowColor,
+          dotCoreColor: jbCfg.dotCoreColor,
+        });
+      }
     }
 
     // Government Facilities: Disaster Support Hubs (災害支援中心 - 海嘯與地震緊急集合點)
@@ -8911,6 +9411,7 @@ export default function AppMap() {
     imparkFilter.evCharger,
     imparkFilter.companies?.impark,
     imparkFilter.companies?.easyPark,
+    imparkFilter.companies?.indigo,
     layers.accessibleParking, 
     layers.motorcycleParking, 
     motorcycleParkingFilter.maxRate,
@@ -8990,6 +9491,13 @@ export default function AppMap() {
     layers.roadClosures,
     layers.roadConstruction,
     layers.powerOutages,
+    layers.streetLighting,
+    streetLightingFilter.conduits,
+    streetLightingFilter.poles,
+    streetLightingFilter.junctionBoxes,
+    streetLightingFilter.nightLights,
+    layers.pharmacies,
+    layers.picnicSites,
     layers.waterSupply,
     layers.sewerSystem,
     layers.beachWaterQuality,
@@ -9491,6 +9999,8 @@ export default function AppMap() {
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('police') ||
             layerId.startsWith('consulates') ||
+            layerId.startsWith('pharmacies') ||
+            layerId.startsWith('picnic-sites') ||
             layerId.startsWith('water-supply') ||
             layerId.startsWith('sewer-system') ||
             layerId.startsWith('disaster-hubs') ||
@@ -9551,6 +10061,8 @@ export default function AppMap() {
             if (layerId.startsWith('fedex')) facilityType = 'fedex';
             else if (layerId.startsWith('purolator')) facilityType = 'purolator';
             else if (layerId.startsWith('consulates')) facilityType = 'consulates';
+            else if (layerId.startsWith('pharmacies')) facilityType = 'pharmacies';
+            else if (layerId.startsWith('picnic-sites')) facilityType = 'picnic_sites';
             else if (layerId.startsWith('water-supply')) facilityType = 'water_supply';
             else if (layerId.startsWith('sewer-system')) facilityType = 'sewer_system';
             else if (isImpark) facilityType = 'impark';
@@ -9575,7 +10087,12 @@ export default function AppMap() {
             let facilityName = props.name;
             if (!facilityName) {
               if (isImpark) {
-                const op = props.company === 'easypark' ? 'EasyPark' : 'ImPark';
+                const op =
+                  props.company === 'easypark'
+                    ? 'EasyPark'
+                    : props.company === 'indigo'
+                      ? 'Indigo'
+                      : 'ImPark';
                 facilityName = props.lot_name || (`${op} Lot ` + (props.lot_number ?? ''));
               }
               else if (isGarbage) facilityName = props.zone_name || '廢物回收分區';
@@ -12146,10 +12663,15 @@ export default function AppMap() {
                   if (t === 'road_construction') return { label: '道路施工', bg: 'bg-[#EA580C] text-white' };
                   if (t === 'traffic_cameras') return { label: '交通攝影機', bg: 'bg-[#0284C7] text-white' };
                   if (t === 'impark') {
-                    const isEasyPark = selectedFacility.properties?.company === 'easypark' || String(selectedFacility.id ?? '').startsWith('easypark_');
-                    return isEasyPark
-                      ? { label: 'EasyPark', bg: 'bg-[#ea580c] text-white' }
-                      : { label: 'ImPark', bg: 'bg-[#d9261c] text-white' };
+                    const comp = String(selectedFacility.properties?.company || '').toLowerCase();
+                    const fid = String(selectedFacility.id ?? '');
+                    if (comp === 'easypark' || fid.startsWith('easypark_')) {
+                      return { label: 'EasyPark', bg: 'bg-[#ea580c] text-white' };
+                    }
+                    if (comp === 'indigo' || fid.startsWith('indigo_')) {
+                      return { label: 'Indigo', bg: 'bg-[#c026d3] text-white' };
+                    }
+                    return { label: 'ImPark', bg: 'bg-[#d9261c] text-white' };
                   }
                   if (t === 'safety_cameras') {
                     const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
@@ -12176,6 +12698,7 @@ export default function AppMap() {
                   if (t === 'van_wifi') return { label: 'VanWiFi', bg: 'bg-sky-600 text-white' };
                   if (t === 'parks') return { label: '公園', bg: 'bg-emerald-600 text-white' };
                   if (t === 'parks_facilities') return { label: '公園設施', bg: 'bg-teal-600 text-white' };
+                  if (t === 'picnic_sites') return { label: '野餐', bg: 'bg-amber-600 text-white' };
                   if (t === 'community_gardens') return { label: '社區花園', bg: 'bg-lime-600 text-white' };
                   if (t === 'public_trees') return { label: '市區行道樹', bg: 'bg-emerald-700 text-white' };
                   if (t === 'drinking_fountains') return { label: '飲水器', bg: 'bg-sky-600 text-white' };
@@ -12214,6 +12737,7 @@ export default function AppMap() {
                   if (t === 'drivebc') return { label: 'Drive BC', bg: 'bg-[#ea580c] text-white' };
                   if (t === 'airport_indoor') return { label: '機場', bg: 'bg-sky-600 text-white' };
                   if (t === 'consulates') return { label: '領事館', bg: 'bg-indigo-600 text-white' };
+                  if (t === 'pharmacies') return { label: '藥房', bg: 'bg-teal-600 text-white' };
                   if (t === 'water_supply') return { label: '供水', bg: 'bg-sky-600 text-white rounded-full px-2' };
                   if (t === 'sewer_system') return { label: '污水', bg: 'bg-teal-700 text-white rounded-full px-2' };
                   if (t === 'job') return { label: '工作', bg: 'bg-indigo-600 text-white' };
@@ -12227,8 +12751,8 @@ export default function AppMap() {
                   if (!baseHeaderBadge) return null;
                   const t = selectedFacility.facility_type;
                   const typeToKeyMap: Record<string, string> = {
-                    parks: 'parks', libraries: 'libraries', community_centres: 'communityCentres',
-                    schools: 'schools', police: 'police', fire_halls: 'fireHalls', hospitals: 'hospitals',
+                    parks: 'parks', picnic_sites: 'picnicSites', libraries: 'libraries', community_centres: 'communityCentres',
+                    schools: 'schools', police: 'police', fire_halls: 'fireHalls', hospitals: 'hospitals', pharmacies: 'pharmacies',
                     disaster_hubs: 'disasterHubs', consulates: 'consulates', food_banks: 'foodBanks', food_vendors: 'foodVendors',
                     fuel: 'fuel', ev_charging: 'evCharging', tesla: 'tesla', parking_meters: 'parkingMeters',
                     motorcycle_parking: 'motorcycleParking', accessible_parking: 'accessibleParking',
@@ -12452,6 +12976,23 @@ export default function AppMap() {
                   if (selectedFacility.facility_type === 'consulates') {
                     return selectedFacility.properties?.office_name || selectedFacility.properties?.name || selectedFacility.name || '領事館';
                   }
+                  if (selectedFacility.facility_type === 'pharmacies') {
+                    return formatTitleCase(selectedFacility.properties?.name || selectedFacility.name || '社區藥房');
+                  }
+                  if (selectedFacility.facility_type === 'picnic_sites') {
+                    return selectedFacility.properties?.name || selectedFacility.name || '公園野餐區';
+                  }
+                  if (selectedFacility.facility_type === 'impark') {
+                    const p = selectedFacility.properties || {};
+                    const comp = String(p.company || '').toLowerCase();
+                    const fid = String(selectedFacility.id ?? '');
+                    if (comp === 'easypark' || fid.startsWith('easypark_')) {
+                      return formatTitleCase(p.name || p.lot_name || selectedFacility.name || '停車場');
+                    }
+                    if (comp === 'indigo' || fid.startsWith('indigo_')) {
+                      return p.lot_name || p.name || selectedFacility.name || 'Indigo 停車場';
+                    }
+                  }
                   if (selectedFacility.facility_type === 'water_supply' || selectedFacility.facility_type === 'sewer_system') {
                     return selectedFacility.properties?.name || selectedFacility.name || (selectedFacility.facility_type === 'water_supply' ? '供水設施' : '污水設施');
                   }
@@ -12482,8 +13023,8 @@ export default function AppMap() {
                           style={(() => {
                             const t = selectedFacility.facility_type;
                             const typeToKeyMap: Record<string, string> = {
-                              parks: 'parks', libraries: 'libraries', community_centres: 'communityCentres',
-                              schools: 'schools', police: 'police', fire_halls: 'fireHalls', hospitals: 'hospitals',
+                              parks: 'parks', picnic_sites: 'picnicSites', libraries: 'libraries', community_centres: 'communityCentres',
+                              schools: 'schools', police: 'police', fire_halls: 'fireHalls', hospitals: 'hospitals', pharmacies: 'pharmacies',
                               disaster_hubs: 'disasterHubs', food_banks: 'foodBanks', food_vendors: 'foodVendors',
                               fuel: 'fuel', ev_charging: 'evCharging', tesla: 'tesla', parking_meters: 'parkingMeters',
                               motorcycle_parking: 'motorcycleParking', accessible_parking: 'accessibleParking',
@@ -12532,7 +13073,8 @@ export default function AppMap() {
                           selectedFacility.facility_type === 'accessible_parking' ? 'bg-sky-600' :
                           selectedFacility.facility_type === 'motorcycle_parking' ? 'bg-blue-700' :
                           selectedFacility.facility_type === 'ev_charging' ? 'bg-emerald-600' :
-                          selectedFacility.facility_type === 'impark' ? ((selectedFacility.properties?.company === 'easypark' || String(selectedFacility.id ?? '').startsWith('easypark_')) ? 'bg-[#ea580c]' : 'bg-[#d9261c]') :
+                          selectedFacility.facility_type === 'impark' ? ((selectedFacility.properties?.company === 'easypark' || String(selectedFacility.id ?? '').startsWith('easypark_')) ? 'bg-[#ea580c]' : (selectedFacility.properties?.company === 'indigo' || String(selectedFacility.id ?? '').startsWith('indigo_')) ? 'bg-[#c026d3]' : 'bg-[#d9261c]') :
+                          selectedFacility.facility_type === 'picnic_sites' ? 'bg-amber-600' :
                           selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
                           selectedFacility.facility_type === 'car_sharing' ? (selectedFacility.properties?.operator === 'Modo' ? 'bg-red-700' : 'bg-sky-600') :
                           selectedFacility.facility_type === 'shared_bikes' ? 'bg-[#00A3AD]' :
@@ -12575,7 +13117,7 @@ export default function AppMap() {
                             ? !!selectedFacility.properties?.address
                             : selectedFacility.facility_type === 'wildfire'
                               ? !!(selectedFacility.properties?.incidentLocation || selectedFacility.local_area)
-                              : (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'consulates' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                              : (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'consulates' || selectedFacility.facility_type === 'pharmacies' || selectedFacility.facility_type === 'picnic_sites' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                               selectedFacility.facility_type === 'ev_charging' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || selectedFacility.facility_type === 'business_licence' || selectedFacility.facility_type === 'building_permit' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark))) && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
@@ -12635,6 +13177,8 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'schools') return selectedFacility.properties?.address || selectedFacility.properties?.street_address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'police') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'consulates') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'pharmacies') return selectedFacility.properties?.address || selectedFacility.local_area || 'British Columbia';
+                              if (selectedFacility.facility_type === 'picnic_sites') return `${selectedFacility.properties?.category_zh || '公園野餐區'} · 溫哥華公園局`;
                               if (selectedFacility.facility_type === 'water_supply') {
                                 return selectedFacility.properties?.plan_area || '';
                               }
@@ -12717,6 +13261,14 @@ export default function AppMap() {
                               }
                               if (selectedFacility.facility_type === 'impark') {
                                 const p = selectedFacility.properties || {};
+                                const comp = String(p.company || '').toLowerCase();
+                                const fid = String(selectedFacility.id ?? '');
+                                if (comp === 'easypark' || fid.startsWith('easypark_')) {
+                                  return p.city || 'Vancouver';
+                                }
+                                if (comp === 'indigo' || fid.startsWith('indigo_')) {
+                                  return [p.address1, p.city].filter(Boolean).join(', ') || 'Vancouver, BC';
+                                }
                                 const lotTag = p.lot_number ? `Lot #${p.lot_number}` : '';
                                 const addrLine = p.address1 || selectedFacility.local_area || p.city || 'Vancouver, BC';
                                 return [lotTag, addrLine].filter(Boolean).join(' · ');
@@ -12841,7 +13393,7 @@ export default function AppMap() {
               })()}
 
               
-              {/* Private Parking Lot Details (ImPark & EasyPark) */}
+              {/* Private Parking Lot Details (ImPark, EasyPark & Indigo) */}
               {selectedFacility.facility_type === 'impark' && (() => {
                 const p = selectedFacility.properties || {};
                 const parseJsonProp = <T,>(val: unknown, fallback: T): T => {
@@ -12860,7 +13412,453 @@ export default function AppMap() {
                   return val as T;
                 };
 
-                const isEasyPark = p.company === 'easypark' || String(selectedFacility.id ?? '').startsWith('easypark_');
+                const compStr = String(p.company || '').toLowerCase();
+                const fidStr = String(selectedFacility.id ?? '');
+                const isEasyPark = compStr === 'easypark' || fidStr.startsWith('easypark_');
+                const isIndigo = compStr === 'indigo' || fidStr.startsWith('indigo_');
+
+                // ---------- EasyPark 専用詳情版面 ----------
+                if (isEasyPark) {
+                  const lotNumber = p.lot_number !== null && p.lot_number !== undefined && String(p.lot_number).trim() !== '' ? String(p.lot_number) : null;
+                  const hourlyRate = p.rate ? formatEasyParkRateZh(String(p.rate)) : null;
+                  const dailyMax = p.daily_max ? formatEasyParkDailyMaxZh(String(p.daily_max)) : null;
+                  const dailyTerms = parseJsonProp<string[]>(p.rates_daily_terms, Array.isArray(p.rates_daily_terms) ? p.rates_daily_terms : []);
+                  const monthlyRateVal = p.monthly_rate ? translateEasyParkTextToZh(String(p.monthly_rate)) : null;
+                  const monthlyTerms = parseJsonProp<string[]>(p.rates_monthly_terms, Array.isArray(p.rates_monthly_terms) ? p.rates_monthly_terms : []);
+                  const monthlyApplyUrl = p.rates_monthly_apply_url ? String(p.rates_monthly_apply_url) : '';
+                  const eventTerms = parseJsonProp<string[]>(p.rates_event_terms, Array.isArray(p.rates_event_terms) ? p.rates_event_terms : []);
+                  const stalls = p.stalls !== null && p.stalls !== undefined && p.stalls !== '' ? Number(p.stalls) : null;
+                  const zoneNumbers = parseJsonProp<Array<{ platform?: string; number?: string }>>(
+                    p.zone_numbers,
+                    Array.isArray(p.zone_numbers) ? p.zone_numbers : []
+                  );
+                  const paymentMethods = parseJsonProp<string[]>(
+                    p.payment_methods,
+                    Array.isArray(p.payment_methods) ? p.payment_methods : []
+                  );
+                  const epFeatures = parseJsonProp<string[]>(p.features, Array.isArray(p.features) ? p.features : []);
+                  const featLower = epFeatures.map((x) => String(x).toLowerCase());
+                  const hasEventFeature = featLower.some((x) => x.includes('event'));
+                  const hasHeightFeature = featLower.some((x) => x === 'heightrestriction' || x.includes('height'));
+                  const heightVal = hasHeightFeature && p.height_restriction ? String(p.height_restriction).trim() : null;
+                  const aboutDetails = parseJsonProp<string[]>(
+                    p.about_details,
+                    Array.isArray(p.about_details) ? p.about_details : []
+                  );
+                  const images = parseJsonProp<string[]>(p.images, Array.isArray(p.images) ? p.images : []);
+                  const lotUrl = p.lot_url ? String(p.lot_url) : 'https://findparking.easypark.ca/';
+                  const displayName = formatTitleCase(p.name || p.lot_name || selectedFacility.name || 'EasyPark 停車場');
+
+                  const hasSec1 = Boolean(lotNumber || hourlyRate || dailyMax || dailyTerms.length > 0);
+                  const hasSec2 = Boolean(monthlyRateVal || monthlyTerms.length > 0);
+                  const hasSec3 = Boolean(
+                    (stalls !== null && Number.isFinite(stalls)) ||
+                      zoneNumbers.length > 0 ||
+                      paymentMethods.length > 0 ||
+                      (hasEventFeature && eventTerms.length > 0) ||
+                      epFeatures.length > 0 ||
+                      aboutDetails.length > 0 ||
+                      heightVal
+                  );
+
+                  return (
+                    <div className="flex flex-col gap-2.5 text-xs text-gray-700">
+                      {/* 橙色區塊（不含英文 EasyPark Vancouver；右方附圖片預覽按鈕） */}
+                      <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2 text-[11px] text-orange-800 font-medium leading-relaxed">
+                        <span className="flex-1 min-w-0">溫哥華市政府非牟利公營停車機構，負責管理市中心商業區與各大公園之公開收費停車場。</span>
+                        {images.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEasyparkImageModal({ title: displayName, images, index: 0 });
+                            }}
+                            className="shrink-0 p-1.5 rounded-lg bg-orange-500/15 hover:bg-orange-500/25 text-orange-700 border border-orange-400/40 transition-colors cursor-pointer flex items-center justify-center"
+                            title={`查看停車場實景圖片 (${images.length} 張)`}
+                          >
+                            <Images className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* 灰色詳細資料區塊 */}
+                      {(hasSec1 || hasSec2 || hasSec3) && (
+                        <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
+                          {hasSec1 && (
+                            <div className="flex flex-col gap-1.5">
+                              {lotNumber && (
+                                <div className="flex justify-between items-center text-gray-700 gap-2">
+                                  <span className="text-gray-600 shrink-0">編號</span>
+                                  <span className="text-gray-900 font-semibold font-mono text-right">#{lotNumber}</span>
+                                </div>
+                              )}
+                              {hourlyRate && (
+                                <div className="flex justify-between items-start text-gray-700 gap-2">
+                                  <span className="text-gray-600 shrink-0">每小時</span>
+                                  <span className="text-gray-900 font-semibold text-right break-words">{hourlyRate}</span>
+                                </div>
+                              )}
+                              {dailyMax && (
+                                <div className="flex justify-between items-center text-gray-700 gap-2">
+                                  <span className="text-gray-600 shrink-0">每日最高</span>
+                                  <span className="text-gray-900 font-semibold font-mono text-right">{dailyMax}</span>
+                                </div>
+                              )}
+                              {dailyTerms.length > 0 && (
+                                <div className="flex flex-col gap-1 pt-0.5">
+                                  <span className="text-gray-600 font-medium">時租詳情</span>
+                                  <div className="bg-white/85 rounded border border-gray-200/70 px-2 py-1.5 text-[10.5px] text-gray-700 space-y-1 leading-snug">
+                                    {dailyTerms.map((line, i) => (
+                                      <div key={i} className="break-words">{translateEasyParkTextToZh(line)}</div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {hasSec2 && (
+                            <div className={`flex flex-col gap-1.5 ${hasSec1 ? 'pt-2 border-t border-gray-200/70' : ''}`}>
+                              {monthlyRateVal && (
+                                <div className="flex justify-between items-center text-gray-700 gap-2">
+                                  <span className="text-gray-600 shrink-0">月費</span>
+                                  <span className="text-gray-900 font-semibold font-mono text-right">{monthlyRateVal}</span>
+                                </div>
+                              )}
+                              {(monthlyTerms.length > 0 || monthlyApplyUrl) && (
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-gray-600 font-medium">月租詳情</span>
+                                  <div className="bg-white/85 rounded border border-gray-200/70 px-2 py-1.5 text-[10.5px] text-gray-700 space-y-1 leading-snug">
+                                    {monthlyTerms.map((line, i) => (
+                                      <div key={i} className="break-words">{translateEasyParkTextToZh(line)}</div>
+                                    ))}
+                                    {monthlyApplyUrl && (
+                                      <a
+                                        href={monthlyApplyUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 text-orange-700 hover:underline font-medium"
+                                      >
+                                        <span>申請月租車位</span>
+                                        <ExternalLink className="w-3 h-3" />
+                                      </a>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {hasSec3 && (
+                            <div className={`flex flex-col gap-1.5 ${(hasSec1 || hasSec2) ? 'pt-2 border-t border-gray-200/70' : ''}`}>
+                              {stalls !== null && Number.isFinite(stalls) && (
+                                <div className="flex justify-between items-center text-gray-700 gap-2">
+                                  <span className="text-gray-600 shrink-0">總車位數</span>
+                                  <span className="text-gray-900 font-semibold font-mono">{stalls.toLocaleString()} 位</span>
+                                </div>
+                              )}
+
+                              {zoneNumbers.length > 0 && (
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-gray-600">區域編號</span>
+                                  <div className="flex flex-wrap gap-1">
+                                    {zoneNumbers.map((z, i) => (
+                                      <span
+                                        key={i}
+                                        className="px-1.5 py-0.5 rounded font-mono text-[10px] bg-orange-50 border border-orange-200 text-orange-800"
+                                      >
+                                        {z.platform ? `${z.platform} ${z.number}` : z.number}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {paymentMethods.length > 0 && (
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-gray-600">付款方法</span>
+                                  <div className="flex flex-wrap gap-1">
+                                    {paymentMethods.map((pm, i) => (
+                                      <span
+                                        key={i}
+                                        className="px-1.5 py-0.5 rounded text-[10px] bg-white border border-gray-200 text-gray-700 font-medium"
+                                      >
+                                        {formatPaymentMethodLabel(pm)}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {hasEventFeature && eventTerms.length > 0 && (
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-gray-600 font-medium">活動費率</span>
+                                  <div className="bg-amber-50/80 rounded border border-amber-200/80 px-2 py-1.5 text-[10.5px] text-amber-950 space-y-0.5 leading-snug">
+                                    {eventTerms.map((line, i) => (
+                                      <div key={i} className="break-words">{translateEasyParkTextToZh(line)}</div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {(epFeatures.length > 0 || aboutDetails.length > 0) && (
+                                <div className="flex flex-col gap-1.5 pt-1 border-t border-gray-200/60">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span className="text-[11px] text-gray-600 font-medium">場地設施與服務</span>
+                                    {aboutDetails.length > 0 && (
+                                      <div
+                                        className="relative shrink-0"
+                                        onPointerEnter={(e) => {
+                                          if (e.pointerType !== 'touch') setEasyparkAboutHovered(true);
+                                        }}
+                                        onPointerLeave={(e) => {
+                                          if (e.pointerType !== 'touch') setEasyparkAboutHovered(false);
+                                        }}
+                                      >
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setEasyparkAboutPinned((prev) => !prev);
+                                          }}
+                                          aria-expanded={easyparkAboutHovered || easyparkAboutPinned}
+                                          className="p-1.5 -m-0.5 rounded-full text-orange-700 hover:text-orange-950 hover:bg-orange-500/20 transition-all cursor-pointer flex items-center justify-center"
+                                          title="查看場地詳細說明"
+                                        >
+                                          <Info className="w-3.5 h-3.5" />
+                                        </button>
+
+                                        <div
+                                          onClick={(e) => e.stopPropagation()}
+                                          className={`absolute right-0 bottom-full mb-1.5 w-[250px] max-w-[calc(100vw-64px)] max-h-[220px] overflow-y-auto z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
+                                            (easyparkAboutHovered || easyparkAboutPinned)
+                                              ? 'opacity-100 scale-100 pointer-events-auto'
+                                              : 'opacity-0 scale-95 pointer-events-none'
+                                          }`}
+                                        >
+                                          <div className="flex items-center justify-between pb-1 border-b border-gray-700/60">
+                                            <span className="font-bold text-white text-[11px] flex items-center gap-1">
+                                              <Info className="w-3 h-3 text-orange-400" />
+                                              場地詳細說明
+                                            </span>
+                                          </div>
+                                          <ul className="flex flex-col gap-1 text-[10.5px] text-gray-200 pl-3 list-disc leading-snug">
+                                            {aboutDetails.map((detailLine, di) => (
+                                              <li key={di} className="break-words">
+                                                {translateEasyParkTextToZh(detailLine)}
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                  {epFeatures.length > 0 && (
+                                    <div className="flex flex-wrap gap-1.5">
+                                      {epFeatures.map((feat: string, idx: number) => (
+                                        <span
+                                          key={idx}
+                                          className="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700 text-[10.5px] font-medium shadow-2xs"
+                                        >
+                                          {formatPrivateParkingFeatureZh(feat)}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {heightVal && (
+                                <div className="flex justify-between items-center text-gray-700 gap-2 pt-1 border-t border-gray-200/60">
+                                  <span className="text-gray-600 shrink-0">高度限制</span>
+                                  <span className="text-gray-900 font-semibold font-mono text-right">{heightVal}</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {lotUrl && (
+                        <a
+                          href={lotUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full mt-0.5 py-2 px-3 bg-[#ea580c] hover:bg-[#c2410c] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
+                        >
+                          <span>查看 EasyPark 官方停車場頁面</span>
+                          <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
+                        </a>
+                      )}
+                    </div>
+                  );
+                }
+
+                // ---------- Indigo 専用詳情版面 (紫紅色主題) ----------
+                if (isIndigo) {
+                  const lotNumber = p.lot_number ? String(p.lot_number).trim() : null;
+                  const capacity = p.capacity !== null && p.capacity !== undefined && p.capacity !== '' ? Number(p.capacity) : null;
+                  const structureType = p.structure_type ? String(p.structure_type).trim() : null;
+                  const hours = p.hours ? String(p.hours).trim() : null;
+                  const heightVal = p.height_restriction ? String(p.height_restriction).trim() : null;
+                  const stayRestrictions = p.stay_restrictions ? String(p.stay_restrictions).trim() : null;
+                  const phone = p.phone ? String(p.phone).trim() : null;
+                  const email = p.email ? String(p.email).trim() : null;
+                  const paymentMethods = parseJsonProp<string[]>(
+                    p.payment_methods,
+                    Array.isArray(p.payment_methods) ? p.payment_methods : []
+                  );
+                  const descLines = parseJsonProp<string[]>(
+                    p.long_description_lines,
+                    Array.isArray(p.long_description_lines) ? p.long_description_lines : []
+                  );
+                  const indigoFeatures = parseJsonProp<string[]>(p.features, Array.isArray(p.features) ? p.features : []);
+                  const lotUrl = p.lot_url ? String(p.lot_url) : 'https://indigoneo.ca/en/map';
+                  const hasInfoBox = Boolean(
+                    lotNumber ||
+                      (capacity !== null && Number.isFinite(capacity)) ||
+                      structureType ||
+                      hours ||
+                      heightVal ||
+                      stayRestrictions ||
+                      paymentMethods.length > 0 ||
+                      descLines.length > 0 ||
+                      phone ||
+                      email ||
+                      indigoFeatures.length > 0
+                  );
+
+                  return (
+                    <div className="flex flex-col gap-2.5 text-xs text-gray-700">
+                      <div className="bg-fuchsia-500/10 p-2.5 rounded-lg border border-fuchsia-500/25 flex items-center text-[11px] text-fuchsia-800 font-medium leading-relaxed">
+                        <span>全球領先的停車場管理公司 Indigo，於大溫哥華商業大樓、住宅社區、購物中心及交通樞紐提供時租、月租及線上預約泊車服務。</span>
+                      </div>
+
+                      {hasInfoBox && (
+                        <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                          {lotNumber && (
+                            <div className="flex justify-between items-center text-gray-700 gap-2">
+                              <span className="text-gray-600 shrink-0">編號</span>
+                              <span className="text-gray-900 font-semibold font-mono text-right">{lotNumber}</span>
+                            </div>
+                          )}
+                          {capacity !== null && Number.isFinite(capacity) && (
+                            <div className="flex justify-between items-center text-gray-700 gap-2">
+                              <span className="text-gray-600 shrink-0">總車位數</span>
+                              <span className="text-gray-900 font-semibold font-mono">{capacity.toLocaleString()} 位</span>
+                            </div>
+                          )}
+                          {structureType && (
+                            <div className="flex justify-between items-center text-gray-700 gap-2">
+                              <span className="text-gray-600 shrink-0">車場類型</span>
+                              <span className="text-gray-900 font-medium text-right">{structureType}</span>
+                            </div>
+                          )}
+                          {hours && (
+                            <div className="flex justify-between items-start text-gray-700 gap-2">
+                              <span className="text-gray-600 shrink-0">開放時間</span>
+                              <span className="text-gray-900 font-medium text-right break-words">{hours}</span>
+                            </div>
+                          )}
+                          {heightVal && (
+                            <div className="flex justify-between items-center text-gray-700 gap-2">
+                              <span className="text-gray-600 shrink-0">高度限制</span>
+                              <span className="text-gray-900 font-semibold font-mono text-right">{heightVal}</span>
+                            </div>
+                          )}
+                          {stayRestrictions && (
+                            <div className="flex justify-between items-start text-gray-700 gap-2">
+                              <span className="text-gray-600 shrink-0">停泊限制</span>
+                              <span className="text-gray-900 font-medium text-right break-words">{stayRestrictions}</span>
+                            </div>
+                          )}
+
+                          {paymentMethods.length > 0 && (
+                            <div className="flex flex-col gap-1 pt-1.5 border-t border-gray-200/60">
+                              <span className="text-gray-600">付款方法</span>
+                              <div className="flex flex-wrap gap-1">
+                                {paymentMethods.map((pm, i) => (
+                                  <span
+                                    key={i}
+                                    className="px-1.5 py-0.5 rounded text-[10px] bg-fuchsia-50 border border-fuchsia-200 text-fuchsia-800 font-medium"
+                                  >
+                                    {formatPaymentMethodLabel(pm)}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {descLines.length > 0 && (
+                            <div className="flex flex-col gap-1 pt-1.5 border-t border-gray-200/60">
+                              <span className="text-gray-600 font-medium">場地說明</span>
+                              <div className="bg-white/85 rounded border border-gray-200/70 px-2 py-1.5 text-[10.5px] text-gray-700 space-y-1 leading-snug">
+                                {descLines.map((ln, i) => (
+                                  <div key={i} className="break-words">{translateEasyParkTextToZh(ln)}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {(phone || email) && (
+                            <div className="flex flex-col gap-1 pt-1.5 border-t border-gray-200/60">
+                              {phone && (
+                                <div className="flex justify-between items-center gap-2">
+                                  <span className="text-gray-600 shrink-0">聯絡電話</span>
+                                  <a
+                                    href={`tel:${phone.replace(/[^\d+]/g, '')}`}
+                                    className="font-bold text-fuchsia-700 font-mono hover:underline text-right"
+                                  >
+                                    {formatPhoneNumber(phone)}
+                                  </a>
+                                </div>
+                              )}
+                              {email && (
+                                <div className="flex justify-between items-center gap-2">
+                                  <span className="text-gray-600 shrink-0">電子郵件</span>
+                                  <a
+                                    href={`mailto:${email}`}
+                                    className="text-gray-800 hover:text-fuchsia-700 font-medium truncate max-w-[185px] text-right"
+                                  >
+                                    {email}
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {indigoFeatures.length > 0 && (
+                            <div className="flex flex-col gap-1.5 pt-1.5 border-t border-gray-200/60">
+                              <span className="text-[11px] text-gray-600 font-medium">場地設施與服務：</span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {indigoFeatures.map((feat, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700 text-[10.5px] font-medium shadow-2xs"
+                                  >
+                                    {formatPrivateParkingFeatureZh(feat)}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      <a
+                        href={lotUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full mt-0.5 py-2 px-3 bg-[#c026d3] hover:bg-[#a21caf] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
+                      >
+                        <span>查看 Indigo 官方停車場頁面</span>
+                        <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
+                      </a>
+                    </div>
+                  );
+                }
+
+                // ---------- ImPark 原有版面 ----------
                 const hasTransient = Boolean(p.hasTransientRates);
                 const transientRate = parseJsonProp<{ label?: string; value?: string } | null>(p.lowestTransientRate, null);
                 const hasMonthly = Boolean(p.hasMonthlyRates);
@@ -12873,8 +13871,6 @@ export default function AppMap() {
                 const annualRates = parseJsonProp<Array<{ label?: string; value?: string }>>(p.annual_rates, []);
                 const payZones = parseJsonProp<Array<{ provider?: string; code?: string }>>(p.pay_zones, []);
                 const streetView = p.street_view_url || p.streetViewUrl;
-                const lotUrl = p.lot_url;
-                const reservationUrl = p.reservation_url;
                 const hasRateOrDetailBox =
                   hasTransient ||
                   Boolean(transientRate?.value) ||
@@ -12892,18 +13888,10 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2.5 text-xs text-gray-700">
-                    {/* Brand Info Banner */}
-                    {isEasyPark ? (
-                      <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center text-[11px] text-orange-800 font-medium leading-relaxed">
-                        <span>溫哥華市政府非牟利公營停車機構 (EasyPark Vancouver)，負責管理市中心商業區與各大公園之公開收費停車場。</span>
-                      </div>
-                    ) : (
-                      <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center text-[11px] text-red-700 font-medium leading-relaxed">
-                        <span>北美規模最大的私營停車場管理公司之一，擁有超過 3,000 個停車場，涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
-                      </div>
-                    )}
+                    <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center text-[11px] text-red-700 font-medium leading-relaxed">
+                      <span>北美規模最大的私營停車場管理公司之一，擁有超過 3,000 個停車場，涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
+                    </div>
 
-                    {/* Details & Rates Grey Box */}
                     {hasRateOrDetailBox && (
                       <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
                         {(hasTransient || Boolean(transientRate?.value) || dailyRates.length > 0) && (
@@ -12911,23 +13899,15 @@ export default function AppMap() {
                             <div className="flex justify-between items-center text-gray-700 gap-2">
                               <span className="font-medium shrink-0">{hasTransient ? '臨時方案' : '費率說明'}</span>
                               <span className="text-gray-900 font-semibold text-right">
-                                {isEasyPark ? (transientRate?.label || '時租 / 臨時費率') : translateImParkRateLabel(transientRate?.label)}
+                                {translateImParkRateLabel(transientRate?.label)}
                               </span>
                             </div>
                             {transientRate?.value && (
                               <div className="flex justify-between items-start text-gray-700 gap-2">
-                                <span className="shrink-0">{isEasyPark ? '基本費率' : '最低階梯費率'}</span>
-                                {isEasyPark ? (
-                                  <div className="flex flex-col items-end gap-0.5 text-gray-900 font-semibold text-right font-mono break-words">
-                                    {formatEasyParkTransientLines(transientRate.value).map((line, i) => (
-                                      <span key={i}>{line}</span>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <span className="text-gray-900 font-semibold text-right font-mono break-words">
-                                    {transientRate.value}
-                                  </span>
-                                )}
+                                <span className="shrink-0">最低階梯費率</span>
+                                <span className="text-gray-900 font-semibold text-right font-mono break-words">
+                                  {transientRate.value}
+                                </span>
                               </div>
                             )}
                             {dailyRates.length > 0 && (
@@ -13016,11 +13996,7 @@ export default function AppMap() {
                                 {payZones.map((pz, i) => (
                                   <span
                                     key={i}
-                                    className={`px-1.5 py-0.5 rounded font-mono text-[10px] border ${
-                                      isEasyPark
-                                        ? 'bg-orange-50 border-orange-200 text-orange-800'
-                                        : 'bg-sky-50 border-sky-200 text-sky-800'
-                                    }`}
+                                    className="px-1.5 py-0.5 rounded font-mono text-[10px] border bg-sky-50 border-sky-200 text-sky-800"
                                   >
                                     {pz.provider ? `${pz.provider} ${pz.code}` : pz.code}
                                   </span>
@@ -13039,32 +14015,17 @@ export default function AppMap() {
                           </div>
                         )}
 
-                        {/* Features & Services */}
                         {features.length > 0 && (
                           <>
                             <div className="border-t border-gray-200/60 my-0.5" />
                             <div className="flex flex-col gap-1.5">
                               <span className="text-[11px] text-gray-600 font-medium">場地設施與服務：</span>
                               <div className="flex flex-wrap gap-1.5">
-                                {features.map((feat: string, idx: number) => {
-                                  let zhLabel = feat;
-                                  if (feat.includes('Parker Pete')) zhLabel = '道路救援';
-                                  else if (feat.includes('attendant') || feat.includes('Attendant')) zhLabel = '駐場管理員';
-                                  else if (feat.includes('EV') || feat.includes('Charg')) zhLabel = '電動車充電樁';
-                                  else if (feat.includes('Heater') || feat.includes('Block Heater')) zhLabel = '引擎加熱器';
-                                  else if (feat.includes('Wash') || feat.includes('Car Wash')) zhLabel = '洗車';
-                                  else if (feat.includes('Valet')) zhLabel = '代客泊車';
-                                  else if (feat === 'Daily') zhLabel = '時 / 日租';
-                                  else if (feat === 'Monthly') zhLabel = '月租';
-                                  else if (feat === 'Seasonal') zhLabel = '季節性';
-                                  else if (feat === 'Annual') zhLabel = '年租';
-                                  else if (feat === 'Motorcycles') zhLabel = '電單車位';
-                                  return (
-                                    <span key={idx} className="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700 text-[10.5px] font-medium shadow-2xs">
-                                      {zhLabel}
-                                    </span>
-                                  );
-                                })}
+                                {features.map((feat: string, idx: number) => (
+                                  <span key={idx} className="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700 text-[10.5px] font-medium shadow-2xs">
+                                    {formatPrivateParkingFeatureZh(feat)}
+                                  </span>
+                                ))}
                               </div>
                             </div>
                           </>
@@ -13072,7 +14033,6 @@ export default function AppMap() {
                       </div>
                     )}
 
-                    {/* Action Buttons */}
                     {streetView && (
                       <a
                         href={streetView}
@@ -13081,28 +14041,6 @@ export default function AppMap() {
                         className="w-full mt-0.5 py-2 px-3 bg-[#d9261c] hover:bg-[#b81d14] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
                       >
                         <span>查看 Google 街景照片</span>
-                        <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
-                      </a>
-                    )}
-                    {isEasyPark && lotUrl && (
-                      <a
-                        href={lotUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full mt-0.5 py-2 px-3 bg-[#ea580c] hover:bg-[#c2410c] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
-                      >
-                        <span>查看 EasyPark 官方停車場頁面</span>
-                        <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
-                      </a>
-                    )}
-                    {isEasyPark && reservationUrl && (
-                      <a
-                        href={reservationUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
-                      >
-                        <span>線上預約停車位</span>
                         <ExternalLink className="w-3.5 h-3.5 text-white shrink-0" />
                       </a>
                     )}
@@ -14976,6 +15914,205 @@ export default function AppMap() {
                         </a>
                       </div>
                     )}
+                  </div>
+                );
+              })()}
+
+              {/* Community Pharmacies (社區藥房) Details */}
+              {selectedFacility.facility_type === 'pharmacies' && (() => {
+                const p = selectedFacility.properties || {};
+                const manager = p.manager ? String(p.manager).trim() : '';
+                const phone = p.phone ? String(p.phone).trim() : '';
+                const fax = p.fax ? String(p.fax).trim() : '';
+                const website = p.website || 'https://www.bcpharmacists.org/list-community-pharmacies';
+                const hasDetails = Boolean(manager || phone || fax);
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {hasDetails && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        {manager && (
+                          <div className="flex justify-between items-start text-gray-600 gap-2">
+                            <span className="shrink-0">藥房經理</span>
+                            <span className="text-gray-900 font-medium text-right break-words">
+                              {manager}
+                            </span>
+                          </div>
+                        )}
+
+                        {phone && (
+                          <div className={`flex justify-between items-start text-gray-600 gap-2 ${manager ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span className="shrink-0">聯絡電話</span>
+                            <a
+                              href={`tel:${phone.replace(/[^\d+]/g, '')}`}
+                              className="font-bold text-teal-700 font-mono hover:underline text-right"
+                            >
+                              {formatPhoneNumber(phone)}
+                            </a>
+                          </div>
+                        )}
+
+                        {fax && (
+                          <div className={`flex justify-between items-start text-gray-600 gap-2 ${(manager || phone) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span className="shrink-0">傳真</span>
+                            <span className="font-mono text-gray-800 font-medium text-right">
+                              {formatPhoneNumber(fax)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-teal-600 hover:bg-teal-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
+                      >
+                        <span className="truncate">前往卑詩省藥劑師學會名錄</span>
+                        <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Picnic Sites (公園野餐區) Details */}
+              {selectedFacility.facility_type === 'picnic_sites' && (() => {
+                const p = selectedFacility.properties || {};
+                const categoryZh = p.category_zh ? String(p.category_zh) : '';
+                const maxPersons = p.max_persons != null ? Number(p.max_persons) : null;
+                const shelteredZh = p.sheltered_zh ? String(p.sheltered_zh) : '';
+                const isSheltered = Boolean(p.sheltered);
+                const amenitiesZh = p.amenities_zh ? String(p.amenities_zh) : '';
+                const nearbyZh = p.nearby_zh ? String(p.nearby_zh) : '';
+                const inflatablesZh = p.inflatables_zh ? String(p.inflatables_zh) : '';
+                const foodTrucksZh = p.food_trucks_zh ? String(p.food_trucks_zh) : '';
+                const electricZh = p.electric_outlets_zh ? String(p.electric_outlets_zh) : '';
+                const kitchenZh = p.kitchen_zh ? String(p.kitchen_zh) : '';
+                const parkingZh = p.parking_zh ? String(p.parking_zh) : '';
+                const sharedSiteZh = p.shared_site_zh ? String(p.shared_site_zh) : '';
+                const importantNoteZh = p.important_note_zh ? String(p.important_note_zh) : '';
+                const residentialRate = p.residential_rate ? String(p.residential_rate) : '';
+                const corporateRate = p.corporate_rate ? String(p.corporate_rate) : '';
+                const website = p.website || 'https://vancouver.ca/parks-recreation-culture/picnics.aspx';
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs text-gray-700">
+                    {/* 分類與人數摘要列 */}
+                    <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                      <div className="bg-amber-50/90 border border-amber-200/80 rounded-lg px-2.5 py-1.5 flex flex-col">
+                        <span className="text-[10px] text-amber-800/80">公園等級</span>
+                        <span className="font-bold text-amber-950">{categoryZh || '公園野餐區'}</span>
+                      </div>
+                      <div className="bg-emerald-50/90 border border-emerald-200/80 rounded-lg px-2.5 py-1.5 flex flex-col">
+                        <span className="text-[10px] text-emerald-800/80">最高容納人數</span>
+                        <span className="font-bold text-emerald-950 font-mono">
+                          {maxPersons != null && Number.isFinite(maxPersons) ? `${maxPersons} 人` : '—'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 預約收費 */}
+                    {(residentialRate || corporateRate) && (
+                      <div className="bg-amber-500/10 border border-amber-500/25 rounded-lg px-2.5 py-2 flex items-center justify-between gap-2 text-[11px]">
+                        <span className="font-semibold text-amber-950 shrink-0">預約收費</span>
+                        <div className="flex items-center gap-2.5 font-mono">
+                          {residentialRate && (
+                            <span className="text-amber-950">
+                              <span className="text-amber-800/80 font-sans mr-1">居民</span>
+                              <strong>{residentialRate}</strong>
+                            </span>
+                          )}
+                          {corporateRate && (
+                            <span className="text-amber-950">
+                              <span className="text-amber-800/80 font-sans mr-1">企業</span>
+                              <strong>{corporateRate}</strong>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 重要施工 / 停車提醒 */}
+                    {importantNoteZh && (
+                      <div className="bg-rose-50 border border-rose-200 rounded-lg px-2.5 py-1.5 text-[10.5px] text-rose-800 font-medium leading-snug">
+                        ⚠️ {importantNoteZh}
+                      </div>
+                    )}
+
+                    {/* 場地詳情灰框 */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {shelteredZh && (
+                        <div className="flex justify-between items-start gap-2">
+                          <span className="text-gray-600 shrink-0">遮雨設施</span>
+                          <span className={`font-semibold text-right break-words ${isSheltered ? 'text-emerald-700' : 'text-gray-800'}`}>
+                            {shelteredZh}
+                          </span>
+                        </div>
+                      )}
+                      {amenitiesZh && (
+                        <div className="flex justify-between items-start gap-2 pt-1.5 border-t border-gray-100">
+                          <span className="text-gray-600 shrink-0">場地設備</span>
+                          <span className="text-gray-900 font-medium text-right break-words">{amenitiesZh}</span>
+                        </div>
+                      )}
+                      {nearbyZh && (
+                        <div className="flex justify-between items-start gap-2 pt-1.5 border-t border-gray-100">
+                          <span className="text-gray-600 shrink-0">鄰近設施</span>
+                          <span className="text-gray-800 text-right break-words">{nearbyZh}</span>
+                        </div>
+                      )}
+                      {kitchenZh && (
+                        <div className="flex justify-between items-start gap-2 pt-1.5 border-t border-gray-100">
+                          <span className="text-gray-600 shrink-0">廚房設備</span>
+                          <span className="text-gray-800 text-right break-words">{kitchenZh}</span>
+                        </div>
+                      )}
+                      {sharedSiteZh && (
+                        <div className="flex justify-between items-start gap-2 pt-1.5 border-t border-gray-100">
+                          <span className="text-gray-600 shrink-0">場地共用</span>
+                          <span className="text-gray-800 text-right break-words">{sharedSiteZh}</span>
+                        </div>
+                      )}
+                      {parkingZh && (
+                        <div className="flex justify-between items-start gap-2 pt-1.5 border-t border-gray-100">
+                          <span className="text-gray-600 shrink-0">停車資訊</span>
+                          <span className="text-gray-800 text-right break-words">{parkingZh}</span>
+                        </div>
+                      )}
+                      {inflatablesZh && (
+                        <div className="flex justify-between items-start gap-2 pt-1.5 border-t border-gray-100">
+                          <span className="text-gray-600 shrink-0">充氣設施</span>
+                          <span className="text-gray-800 text-right break-words">{inflatablesZh}</span>
+                        </div>
+                      )}
+                      {foodTrucksZh && (
+                        <div className="flex justify-between items-start gap-2 pt-1.5 border-t border-gray-100">
+                          <span className="text-gray-600 shrink-0">餐車規定</span>
+                          <span className="text-gray-800 text-right break-words">{foodTrucksZh}</span>
+                        </div>
+                      )}
+                      {electricZh && (
+                        <div className="flex justify-between items-start gap-2 pt-1.5 border-t border-gray-100">
+                          <span className="text-gray-600 shrink-0">電源插座</span>
+                          <span className="text-gray-800 text-right break-words">{electricZh}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
+                      >
+                        <span className="truncate">前往溫哥華市政府野餐預約網頁</span>
+                        <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                      </a>
+                    </div>
                   </div>
                 );
               })()}
@@ -21069,6 +22206,53 @@ export default function AppMap() {
             </div>
           )}
 
+          {/* 夜間燈光亮度圖例 (NASA Black Marble VIIRS 一年夜晚中位數，比照 AQHI 風格) */}
+          {layers.streetLighting && streetLightingFilter.nightLights && (
+            <div className="pointer-events-auto w-[min(320px,calc(100vw-16px))] sm:w-[340px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200 flex flex-col gap-2">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-bold text-white flex items-center gap-1.5">
+                  <Lightbulb className="w-3.5 h-3.5 text-amber-300" />
+                  <span>夜間燈光亮度</span>
+                </span>
+                <span className="text-[9.5px] text-gray-400">NASA Black Marble (VIIRS) · 一年中位數</span>
+              </div>
+
+              <div className="grid grid-cols-7 h-5 rounded-md overflow-hidden border border-white/15">
+                {NIGHT_LIGHT_LEGEND_TIERS.map((cell) => (
+                  <div
+                    key={cell.level}
+                    style={{ backgroundColor: cell.hex }}
+                    className={`flex items-center justify-center text-[10px] font-mono font-bold tabular-nums leading-none ${
+                      cell.darkText ? 'text-slate-950' : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)]'
+                    }`}
+                    title={`亮度等級 ${cell.level} (${cell.label})`}
+                  >
+                    {cell.level}
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-4 gap-1 pt-1.5 border-t border-[#262b38]/80 text-center leading-tight">
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-indigo-300">低亮度</span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">(1-2)</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-fuchsia-300">中亮度</span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">(3-4)</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-orange-400">高亮度</span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">(5-6)</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-yellow-200">都會核心</span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">(7)</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* 火災危險等級圖例 (Fire Danger Rating Legend — 深色卡片) */}
           {layers.wildfire && (() => {
             const activeLevel = String(
@@ -22638,20 +23822,20 @@ export default function AppMap() {
               {/* 營運公司篩選 */}
               <div className="flex flex-col gap-1 pb-2 border-b border-[#262b38]">
                 <span className="text-[10px] text-gray-400 font-semibold">營運公司</span>
-                <div className="grid grid-cols-2 gap-1.5">
+                <div className="grid grid-cols-3 gap-1.5">
                   <button
                     type="button"
                     onClick={() => setImparkFilter(prev => ({
                       ...prev,
                       companies: { ...prev.companies, impark: !prev.companies?.impark }
                     }))}
-                    className={`flex items-center justify-center gap-1.5 py-1 px-2 rounded border text-xs font-medium transition-all cursor-pointer ${
+                    className={`flex items-center justify-center gap-1 py-1 px-1.5 rounded border text-[11px] font-medium transition-all cursor-pointer ${
                       imparkFilter.companies?.impark
                         ? 'bg-red-950/40 border-red-500/60 text-white'
                         : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
                     }`}
                   >
-                    <span className={`w-2 h-2 rounded-full ${imparkFilter.companies?.impark ? 'bg-[#d9261c]' : 'bg-gray-600'}`} />
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${imparkFilter.companies?.impark ? 'bg-[#d9261c]' : 'bg-gray-600'}`} />
                     <span>ImPark</span>
                   </button>
                   <button
@@ -22660,14 +23844,29 @@ export default function AppMap() {
                       ...prev,
                       companies: { ...prev.companies, easyPark: !prev.companies?.easyPark }
                     }))}
-                    className={`flex items-center justify-center gap-1.5 py-1 px-2 rounded border text-xs font-medium transition-all cursor-pointer ${
+                    className={`flex items-center justify-center gap-1 py-1 px-1.5 rounded border text-[11px] font-medium transition-all cursor-pointer ${
                       imparkFilter.companies?.easyPark
                         ? 'bg-orange-950/40 border-orange-500/60 text-white'
                         : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
                     }`}
                   >
-                    <span className={`w-2 h-2 rounded-full ${imparkFilter.companies?.easyPark ? 'bg-[#ea580c]' : 'bg-gray-600'}`} />
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${imparkFilter.companies?.easyPark ? 'bg-[#ea580c]' : 'bg-gray-600'}`} />
                     <span>EasyPark</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImparkFilter(prev => ({
+                      ...prev,
+                      companies: { ...prev.companies, indigo: !prev.companies?.indigo }
+                    }))}
+                    className={`flex items-center justify-center gap-1 py-1 px-1.5 rounded border text-[11px] font-medium transition-all cursor-pointer ${
+                      imparkFilter.companies?.indigo
+                        ? 'bg-fuchsia-950/45 border-fuchsia-500/60 text-white'
+                        : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${imparkFilter.companies?.indigo ? 'bg-[#c026d3]' : 'bg-gray-600'}`} />
+                    <span>Indigo</span>
                   </button>
                 </div>
               </div>
@@ -22764,6 +23963,7 @@ export default function AppMap() {
               <div className="flex items-center gap-1.5">
                 <span className={`w-2 h-2 rounded-full ${imparkFilter.companies?.impark ? 'bg-[#d9261c]' : 'bg-gray-600'}`} />
                 <span className={`w-2 h-2 rounded-full ${imparkFilter.companies?.easyPark ? 'bg-[#ea580c]' : 'bg-gray-600'}`} />
+                <span className={`w-2 h-2 rounded-full ${imparkFilter.companies?.indigo ? 'bg-[#c026d3]' : 'bg-gray-600'}`} />
                 <span className="text-[10.5px] text-gray-300">時/月/季/年</span>
                 {imparkFilter.sparc && <span className="text-[10px] text-blue-300">SPARC</span>}
                 {imparkFilter.evCharger && <span className="text-[10px] text-emerald-300">EV</span>}
@@ -23446,6 +24646,132 @@ export default function AppMap() {
                 type="button"
                 onClick={() => setMobileCoverageLegendOpen(true)}
                 className="text-[10px] text-purple-400 hover:underline shrink-0 cursor-pointer"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 燈光圖層篩選面板 (市政街燈與供電網絡，預設全部關閉) */}
+      {layers.streetLighting && (
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="relative pointer-events-auto shrink-0 w-[min(276px,calc(100vw-16px))] sm:w-[276px] max-w-full bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-400/40 select-none animate-in fade-in duration-200"
+        >
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-amber-500/20 text-amber-300">
+                <Lightbulb className="w-3.5 h-3.5" />
+              </span>
+              <span className="font-bold text-xs text-white">燈光篩選</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setStreetLightingLegendOpen(!streetLightingLegendOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors cursor-pointer"
+              title={streetLightingLegendOpen ? '收合' : '展開'}
+            >
+              {streetLightingLegendOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {streetLightingLegendOpen ? (() => {
+            const activeCount = STREET_LIGHTING_OPTIONS.filter((o) => streetLightingFilter[o.key]).length;
+            const allActive = activeCount === STREET_LIGHTING_OPTIONS.length;
+            const handleToggleAll = () => {
+              const target = !allActive;
+              for (const opt of STREET_LIGHTING_OPTIONS) {
+                if (streetLightingFilter[opt.key] !== target) {
+                  toggleStreetLightingFilter(opt.key, target);
+                }
+              }
+            };
+            return (
+              <div className="flex flex-col gap-2 text-[11px]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-400">
+                    縮小顯示區域數量，放大顯示精確位置 ({activeCount}/{STREET_LIGHTING_OPTIONS.length})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleToggleAll}
+                    className={`px-2 py-0.5 rounded text-[10px] font-medium border transition-colors cursor-pointer ${
+                      allActive
+                        ? 'bg-amber-500/20 border-amber-400/60 text-amber-200'
+                        : 'bg-[#10141e]/80 border-[#262b38] text-gray-300 hover:text-white'
+                    }`}
+                  >
+                    {allActive ? '全部關閉' : '全部顯示'}
+                  </button>
+                </div>
+
+                {STREET_LIGHTING_OPTIONS.map((opt) => {
+                  const isActive = streetLightingFilter[opt.key];
+                  return (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => toggleStreetLightingFilter(opt.key)}
+                      className={`w-full flex items-center justify-between p-1.5 rounded-lg border transition-all text-left cursor-pointer ${
+                        isActive
+                          ? 'bg-amber-950/35 border-amber-500/50'
+                          : 'bg-[#1a1f2e]/60 border-gray-700/50 opacity-75 hover:opacity-100'
+                      }`}
+                      title={isActive ? `點擊隱藏${opt.label}` : `點擊顯示${opt.label}`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span
+                          className={`w-2.5 h-2.5 rounded-full border shrink-0 ${
+                            isActive ? opt.swatchClass : 'bg-gray-600 border-gray-500'
+                          }`}
+                        />
+                        <div className="flex flex-col min-w-0">
+                          <span className={`font-bold text-xs truncate ${isActive ? 'text-white' : 'text-gray-400'}`}>
+                            {opt.label}
+                          </span>
+                          <span className={`text-[10px] ${isActive ? opt.activeTextClass : 'text-gray-500'}`}>
+                            {opt.desc}
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        className={`w-7 h-4 rounded-full transition-colors p-0.5 flex items-center shrink-0 ${
+                          isActive ? `${opt.toggleBgClass} justify-end` : 'bg-gray-700 justify-start'
+                        }`}
+                      >
+                        <span className="w-3 h-3 rounded-full bg-white shadow-xs" />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })() : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300">
+              <div className="flex items-center gap-2 flex-wrap">
+                {STREET_LIGHTING_OPTIONS.map((opt) => {
+                  const isActive = streetLightingFilter[opt.key];
+                  return (
+                    <span key={opt.key} className="inline-flex items-center gap-1">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          isActive ? opt.swatchClass.split(' ')[0] : 'bg-gray-600'
+                        }`}
+                      />
+                      <span className={`text-[10px] ${isActive ? 'text-gray-200' : 'text-gray-500 line-through'}`}>
+                        {opt.label}
+                      </span>
+                    </span>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                onClick={() => setStreetLightingLegendOpen(true)}
+                className="text-[10px] text-amber-400 hover:underline shrink-0 cursor-pointer ml-2"
               >
                 展開
               </button>
@@ -26202,6 +27528,104 @@ export default function AppMap() {
           <Check className="w-4 h-4 text-emerald-400" />
           <span>已複製名稱至剪貼簿！</span>
         </div>
+      )}
+
+      {/* EasyPark 停車場實景圖片 Lightbox Modal */}
+      {easyparkImageModal && easyparkImageModal.images.length > 0 && typeof document !== 'undefined' && createPortal(
+        <div
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
+          onClick={() => setEasyparkImageModal(null)}
+        >
+          <div
+            className="relative max-w-4xl w-full bg-[#161922] border border-orange-500/50 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[86vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="p-1 rounded bg-orange-500/20 text-orange-400 shrink-0">
+                  <Images className="w-4 h-4" />
+                </span>
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate">
+                    {easyparkImageModal.title}
+                  </h4>
+                  <span className="text-[11px] text-gray-400">
+                    停車場實景圖片 ({easyparkImageModal.index + 1} / {easyparkImageModal.images.length})
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <a
+                  href={easyparkImageModal.images[easyparkImageModal.index]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-orange-300 hover:bg-white/10 transition-colors flex items-center gap-1 text-xs"
+                  title="於新分頁開啟原始圖片"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setEasyparkImageModal(null)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="relative p-3 sm:p-5 flex items-center justify-center bg-black/95 overflow-auto flex-1 min-h-0">
+              {easyparkImageModal.images.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setEasyparkImageModal((prev) =>
+                      prev
+                        ? {
+                            ...prev,
+                            index: (prev.index - 1 + prev.images.length) % prev.images.length,
+                          }
+                        : null
+                    )
+                  }
+                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/70 hover:bg-orange-600/80 text-white border border-white/20 transition-colors cursor-pointer z-10"
+                  title="上一張"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+              )}
+
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={easyparkImageModal.images[easyparkImageModal.index]}
+                alt={easyparkImageModal.title}
+                className="max-w-full max-h-[66vh] object-contain rounded-lg shadow-2xl border border-white/10"
+              />
+
+              {easyparkImageModal.images.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setEasyparkImageModal((prev) =>
+                      prev
+                        ? {
+                            ...prev,
+                            index: (prev.index + 1) % prev.images.length,
+                          }
+                        : null
+                    )
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/70 hover:bg-orange-600/80 text-white border border-white/20 transition-colors cursor-pointer z-10"
+                  title="下一張"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
 
       {/* 1.3.1 貨車路線詳細地圖 Modal (Truck Route Map Lightbox) */}

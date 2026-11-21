@@ -1,0 +1,383 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "source": "City of Vancouver — Picnic Sites",
+  "total_count": 11,
+  "updated_at": "2026-11-21T01:35:00.000Z",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "picnic_fraser_river_park",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.150863,
+          49.206912
+        ]
+      },
+      "properties": {
+        "id": "picnic_fraser_river_park",
+        "facility_type": "picnic_sites",
+        "name": "Fraser River Park",
+        "local_area": "Vancouver",
+        "category_en": "Neighbourhood parks",
+        "category_zh": "社區公園",
+        "max_persons": 150,
+        "sheltered": false,
+        "sheltered_zh": "無遮雨棚",
+        "amenities_zh": "4 張綠色野餐桌、預約標示牌",
+        "nearby_zh": "草地、洗手間、步道",
+        "inflatables_zh": "僅限持許可證並獲授權後方可使用",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "無電源插座",
+        "parking_zh": "",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$93",
+        "corporate_rate": "$279",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_memorial_south_park",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.087275,
+          49.232052
+        ]
+      },
+      "properties": {
+        "id": "picnic_memorial_south_park",
+        "facility_type": "picnic_sites",
+        "name": "Memorial South Park",
+        "local_area": "Vancouver",
+        "category_en": "Neighbourhood parks",
+        "category_zh": "社區公園",
+        "max_persons": 75,
+        "sheltered": false,
+        "sheltered_zh": "無遮雨棚",
+        "amenities_zh": "4 張綠色野餐桌、2 個燒烤爐 (BBQ)、預約標示牌",
+        "nearby_zh": "網球場、池塘、草地、兒童遊樂場、公園東側洗手間",
+        "inflatables_zh": "不允許充氣遊樂設施",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "無電源插座",
+        "parking_zh": "",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$93",
+        "corporate_rate": "$279",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_new_brighton_park",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.038249,
+          49.289659
+        ]
+      },
+      "properties": {
+        "id": "picnic_new_brighton_park",
+        "facility_type": "picnic_sites",
+        "name": "New Brighton Park",
+        "local_area": "Vancouver",
+        "category_en": "Neighbourhood parks",
+        "category_zh": "社區公園",
+        "max_persons": 150,
+        "sheltered": false,
+        "sheltered_zh": "無遮雨棚",
+        "amenities_zh": "5 張綠色野餐桌、預約標示牌",
+        "nearby_zh": "草地、洗手間、游泳池、兒童遊樂場、小賣部",
+        "inflatables_zh": "不允許充氣遊樂設施",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "無電源插座",
+        "parking_zh": "可由 McGill Street、Commissioner Street Overpass 或 Bridgeway Avenue 進入停車場",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$93",
+        "corporate_rate": "$279",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_jericho_pond",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.193504,
+          49.271018
+        ]
+      },
+      "properties": {
+        "id": "picnic_jericho_pond",
+        "facility_type": "picnic_sites",
+        "name": "Jericho Pond",
+        "local_area": "Vancouver",
+        "category_en": "Specialty parks",
+        "category_zh": "特色公園",
+        "max_persons": 150,
+        "sheltered": false,
+        "sheltered_zh": "無遮雨棚",
+        "amenities_zh": "5 張綠色野餐桌",
+        "nearby_zh": "海灘、小賣部、洗手間",
+        "inflatables_zh": "不允許充氣遊樂設施",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "無電源插座",
+        "parking_zh": "",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$134",
+        "corporate_rate": "$402",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_locarno_beach",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.204267,
+          49.274988
+        ]
+      },
+      "properties": {
+        "id": "picnic_locarno_beach",
+        "facility_type": "picnic_sites",
+        "name": "Locarno Beach",
+        "local_area": "Vancouver",
+        "category_en": "Specialty parks",
+        "category_zh": "特色公園",
+        "max_persons": 150,
+        "sheltered": false,
+        "sheltered_zh": "無遮雨棚",
+        "amenities_zh": "5 張綠色野餐桌、預約標示牌、熱炭棄置坑、水龍頭",
+        "nearby_zh": "海灘、小賣部、洗手間",
+        "inflatables_zh": "不允許充氣遊樂設施",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "無電源插座",
+        "parking_zh": "",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$134",
+        "corporate_rate": "$402",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_maple_grove_park",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.160832,
+          49.223547
+        ]
+      },
+      "properties": {
+        "id": "picnic_maple_grove_park",
+        "facility_type": "picnic_sites",
+        "name": "Maple Grove Park",
+        "local_area": "Vancouver",
+        "category_en": "Specialty parks",
+        "category_zh": "特色公園",
+        "max_persons": 75,
+        "sheltered": false,
+        "sheltered_zh": "無遮雨棚",
+        "amenities_zh": "4 張綠色野餐桌、預約標示牌、2 個燒烤爐 (BBQ)",
+        "nearby_zh": "棒球場（需另行預約）、兒童遊樂場、泳池、洗手間",
+        "inflatables_zh": "不允許充氣遊樂設施、超大型燒烤爐或餐飲外燴設備",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "無電源插座",
+        "parking_zh": "",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$134",
+        "corporate_rate": "$402",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_riverfront_park",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.051524,
+          49.20548
+        ]
+      },
+      "properties": {
+        "id": "picnic_riverfront_park",
+        "facility_type": "picnic_sites",
+        "name": "Riverfront Park",
+        "local_area": "Vancouver",
+        "category_en": "Specialty parks",
+        "category_zh": "特色公園",
+        "max_persons": 75,
+        "sheltered": true,
+        "sheltered_zh": "有部分遮雨棚（有頂蓋區域較其他有頂野餐區略小）",
+        "amenities_zh": "2 張有頂蓋野餐桌、4 張露天野餐桌、水龍頭、2 個燒烤爐 (BBQ)",
+        "nearby_zh": "半場籃球場、網球場、兒童遊樂場、河濱步道、無障礙洗手間",
+        "inflatables_zh": "不允許充氣遊樂設施",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "無電源插座",
+        "parking_zh": "",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$134",
+        "corporate_rate": "$402",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_john_hendry_trout_lake",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.061042,
+          49.254377
+        ]
+      },
+      "properties": {
+        "id": "picnic_john_hendry_trout_lake",
+        "facility_type": "picnic_sites",
+        "name": "John Hendry / Trout Lake",
+        "local_area": "Vancouver",
+        "category_en": "Premium parks",
+        "category_zh": "精選公園",
+        "max_persons": 150,
+        "sheltered": true,
+        "sheltered_zh": "有遮雨棚",
+        "amenities_zh": "預約標示牌、水龍頭",
+        "nearby_zh": "小賣部、湖畔洗手間、兒童遊樂場",
+        "inflatables_zh": "不允許充氣遊樂設施",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "無電源插座",
+        "parking_zh": "",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$249",
+        "corporate_rate": "$747",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_stanley_park_prospect_point",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148887,
+          49.310545
+        ]
+      },
+      "properties": {
+        "id": "picnic_stanley_park_prospect_point",
+        "facility_type": "picnic_sites",
+        "name": "Stanley Park Prospect Point",
+        "local_area": "Vancouver",
+        "category_en": "Premium parks",
+        "category_zh": "精選公園",
+        "max_persons": 150,
+        "sheltered": true,
+        "sheltered_zh": "有遮雨棚",
+        "amenities_zh": "熱炭棄置坑",
+        "nearby_zh": "棒球場、穿梭巴士站、洗手間",
+        "inflatables_zh": "僅限持許可證並獲授權後方可使用",
+        "food_trucks_zh": "僅限持許可證並獲授權後方可使用",
+        "electric_outlets_zh": "",
+        "parking_zh": "鄰近收費停車場（設 2 個無障礙車位）",
+        "kitchen_zh": "",
+        "shared_site_zh": "",
+        "important_note_zh": "受持續施工影響，Prospect Point 野餐區目前提供 35 個停車位。",
+        "residential_rate": "$249",
+        "corporate_rate": "$747",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_stanley_park_railway",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133248,
+          49.30205
+        ]
+      },
+      "properties": {
+        "id": "picnic_stanley_park_railway",
+        "facility_type": "picnic_sites",
+        "name": "Stanley Park Railway",
+        "local_area": "Vancouver",
+        "category_en": "Premium parks",
+        "category_zh": "精選公園",
+        "max_persons": 150,
+        "sheltered": true,
+        "sheltered_zh": "有遮雨棚",
+        "amenities_zh": "可申請使用廚房：共用流理台（不設烹飪電器及雪櫃）、2 個電源插座、冷水供應",
+        "nearby_zh": "Lumbermen's Arch、小火車 (Miniature Train)、溫哥華水族館、兒童遊樂場",
+        "inflatables_zh": "不允許充氣遊樂設施",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "2 個電源插座（設於廚房內）",
+        "parking_zh": "",
+        "kitchen_zh": "可按需求申請使用廚房（共用流理台，無烹飪電器或雪櫃，提供冷水）",
+        "shared_site_zh": "與 Stanley Park Railway #2 共用場地",
+        "important_note_zh": "",
+        "residential_rate": "$249",
+        "corporate_rate": "$747",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "picnic_stanley_park_second_beach",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.147909,
+          49.292229
+        ]
+      },
+      "properties": {
+        "id": "picnic_stanley_park_second_beach",
+        "facility_type": "picnic_sites",
+        "name": "Stanley Park Second Beach",
+        "local_area": "Vancouver",
+        "category_en": "Premium parks",
+        "category_zh": "精選公園",
+        "max_persons": 150,
+        "sheltered": true,
+        "sheltered_zh": "有遮雨棚（許可野餐桌設於涼亭內）",
+        "amenities_zh": "可申請使用廚房：附 3 個冷水洗手槽之流理台（不設烹飪電器及雪櫃）、4 個電源插座（僅限 15 安培）",
+        "nearby_zh": "兒童遊樂場、迷你高爾夫球場 (Pitch & Putt)、戶外泳池、洗手間、無障礙收費停車位",
+        "inflatables_zh": "不允許充氣遊樂設施",
+        "food_trucks_zh": "不允許餐車進入",
+        "electric_outlets_zh": "4 個電源插座（僅限 15 安培，設於廚房內）",
+        "parking_zh": "鄰近設有無障礙收費停車位",
+        "kitchen_zh": "可按需求申請使用廚房（3 個冷水洗手槽之流理台，無烹飪電器或雪櫃）",
+        "shared_site_zh": "",
+        "important_note_zh": "",
+        "residential_rate": "$249",
+        "corporate_rate": "$747",
+        "website": "https://vancouver.ca/parks-recreation-culture/picnics.aspx"
+      }
+    }
+  ]
+}

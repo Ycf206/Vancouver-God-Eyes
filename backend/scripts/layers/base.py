@@ -60,6 +60,9 @@ DATASET_ID_TO_SOURCE_ID = {
     "schools": "schools",
     "food-vendors": "food_vendors",
     "litter-containers": "litter_containers",
+    "street-lighting-conduits": "street_lighting",
+    "street-lighting-poles": "street_lighting",
+    "street-lighting-junction-boxes": "street_lighting",
 }
 
 def get_source_endpoint_url(source_id: str, default_url: str = None) -> str:
@@ -203,6 +206,7 @@ FILENAME_TO_SOURCE_ID = {
     "vancouver_mobile_coverage.geojson": "mobile_coverage",
     "vancouver_air_quality.geojson": "air_quality",
     "vancouver_wildfire.geojson": "wildfire",
+    "vancouver_pharmacies.geojson": "pharmacies",
 }
 
 

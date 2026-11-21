@@ -60,6 +60,8 @@ LAYERS_MAP = {
     "yvr_indoor": "update_yvr_indoor",
     "yvr_flights": "update_yvr_flights",
     "bchydro_outages": "update_bchydro_outages",
+    "street_lighting": "update_street_lighting",
+    "pharmacies": "update_pharmacies",
 }
 
 def run_layer(layer_id):

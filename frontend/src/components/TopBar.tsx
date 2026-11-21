@@ -4,11 +4,11 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, MoreHorizontal, Compass, Filter, Check, 
   Milestone, Store, Trees, Landmark, Droplets, Clock, Sparkles, Navigation,
-  CircleDollarSign, Toilet, Fuel, EvCharger, Hospital, TrainFront, ParkingMeter, Package, Waves, Fence, Repeat, BusFront, Dam,
+  CircleDollarSign, Toilet, Fuel, EvCharger, Hospital, TrainFront, ParkingMeter, Package, Waves, Fence, Repeat, BusFront, Dam, Pill,
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
   UserShield, FireExtinguisher, Flame, Zap, ZapOff, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
-  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle, Faucet
+  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle, Faucet, TentTree
 } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
@@ -181,15 +181,18 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'homeless_shelters' || lk === 'homelessShelters') return <Bed className={`${cls} text-rose-400`} />;
   if (c === 'parks' || lk === 'parks') return <Trees className={`${cls} text-emerald-400`} />;
   if (c === 'parks_facilities' || lk === 'parksFacilities') return <Park className={`${cls} text-teal-400`} />;
+  if (c === 'picnic_sites' || lk === 'picnicSites') return <TentTree className={`${cls} text-amber-400`} />;
   if (c === 'public_trees' || c === 'street_trees' || c === 'heritage_trees' || lk === 'publicTrees') return <TreePine className={`${cls} text-emerald-400`} />;
   if (c === 'drinking_fountains' || lk === 'drinkingFountains') return <Droplets className={`${cls} text-sky-400`} />;
   if (c === 'public_washrooms' || lk === 'publicWashrooms') return <Toilet className={`${cls} text-cyan-400`} />;
   if (c === 'police' || lk === 'police') return <UserShield className={`${cls} text-blue-400`} />;
   if (c === 'fire_halls' || lk === 'fireHalls') return <FireExtinguisher className={`${cls} text-rose-400`} />;
   if (c === 'hospitals' || lk === 'hospitals') return <Hospital className={`${cls} text-emerald-400`} />;
+  if (c === 'pharmacies' || lk === 'pharmacies') return <Pill className={`${cls} text-teal-400`} />;
   if (c === 'disaster_hubs' || lk === 'disasterHubs') return <LifeBuoy className={`${cls} text-amber-400`} />;
   if (c === 'consulates' || lk === 'consulates') return <Castle className={`${cls} text-indigo-400`} />;
   if (c === 'van_wifi' || lk === 'vanWifi') return <Wifi className={`${cls} text-cyan-400`} />;
+  if (c === 'street_lighting' || lk === 'streetLighting') return <Lightbulb className={`${cls} text-amber-300`} />;
   if (c === 'power_outages' || c === 'power_outage' || lk === 'powerOutages') return <ZapOff className={`${cls} text-amber-400`} />;
   if (c === 'water_supply' || lk === 'waterSupply') return <Faucet className={`${cls} text-sky-400`} />;
   if (c === 'sewer_system' || lk === 'sewerSystem') return <Droplets className={`${cls} text-teal-400`} />;
@@ -316,11 +319,11 @@ export default function TopBar() {
       iconColor: 'text-emerald-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
-          'parks', 'parksFacilities', 'communityGardens', 'publicTrees',
+          'parks', 'parksFacilities', 'picnicSites', 'communityGardens', 'publicTrees',
           'drinkingFountains', 'publicWashrooms', 'skiResorts', 'beachWaterQuality', 'wildfire'
         ];
         const targetCats = [
-          'parks', 'parks_facilities', 'community_gardens', 'public_trees',
+          'parks', 'parks_facilities', 'picnic_sites', 'community_gardens', 'public_trees',
           'drinking_fountains', 'public_washrooms', 'ski_resort', 'beach_water_quality', 'wildfire'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
@@ -335,11 +338,11 @@ export default function TopBar() {
       iconColor: 'text-blue-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
-          'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
+          'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals', 'pharmacies',
           'disasterHubs', 'borderCrossings', 'consulates'
         ];
         const targetCats = [
-          'police', 'crime_areas', 'fire_halls', 'fire_hydrants', 'hospitals',
+          'police', 'crime_areas', 'fire_halls', 'fire_hydrants', 'hospitals', 'pharmacies',
           'disaster_hubs', 'border_crossing', 'consulates'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
@@ -353,8 +356,8 @@ export default function TopBar() {
       icon: ZapOff,
       iconColor: 'text-amber-400',
       matcher: (item: SearchTarget) => {
-        const targetKeys = ['powerOutages', 'waterSupply', 'sewerSystem'];
-        const targetCats = ['power_outages', 'power_outage', 'bchydro_outages', 'water_supply', 'sewer_system'];
+        const targetKeys = ['streetLighting', 'powerOutages', 'waterSupply', 'sewerSystem'];
+        const targetCats = ['street_lighting', 'power_outages', 'power_outage', 'bchydro_outages', 'water_supply', 'sewer_system'];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
           targetKeys.some(k => item.id?.startsWith(k));
@@ -1096,10 +1099,12 @@ export default function TopBar() {
                             item.category === 'water_supply' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60 font-bold' :
                             item.category === 'sewer_system' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60 font-bold' :
                             item.category === 'hospitals' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
+                            item.category === 'pharmacies' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
                             item.category === 'disaster_hubs' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
                             item.category === 'fuel' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
                             item.category === 'tesla' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-bold' :
                             item.category === 'impark' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-semibold' :
+                            item.category === 'picnic_sites' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60 font-semibold' :
                             item.category === 'parking_meters' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
                             item.category === 'accessible_parking' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
                             item.category === 'aed' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :

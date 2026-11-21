@@ -113,6 +113,9 @@ export interface UIState {
     trafficSignals: boolean;
     turnRestrictions: boolean;
     mobileCoverage: boolean;
+    pharmacies: boolean;
+    streetLighting: boolean;
+    picnicSites: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -387,6 +390,9 @@ export const useUIStore = create<UIState>()(
         trafficSignals: false,
         turnRestrictions: false,
         mobileCoverage: false,
+        pharmacies: false,
+        streetLighting: false,
+        picnicSites: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
@@ -529,7 +535,7 @@ export const useUIStore = create<UIState>()(
             const st = state.searchTarget;
             const isTargetMatch =
               st.layer_key === layer ||
-              (layer === 'impark' && (st.category === 'impark' || String(st.id ?? '').startsWith('impark_'))) ||
+              (layer === 'impark' && (st.category === 'impark' || String(st.id ?? '').startsWith('impark_') || String(st.id ?? '').startsWith('easypark_') || String(st.id ?? '').startsWith('indigo_'))) ||
               (layer === 'recycling' && (st.category === 'recycling' || String(st.id ?? '').startsWith('recycling_'))) ||
               (layer === 'fuel' && (st.category === 'fuel' || String(st.id ?? '').startsWith('fuel_'))) ||
               (layer === 'tesla' && (st.category === 'tesla' || String(st.id ?? '').startsWith('tesla_'))) ||
@@ -538,6 +544,8 @@ export const useUIStore = create<UIState>()(
               (layer === 'airports' && st.category === 'airports') ||
               (layer === 'airportIndoor' && st.category === 'airport_indoor') ||
               (layer === 'consulates' && st.category === 'consulates') ||
+              (layer === 'pharmacies' && st.category === 'pharmacies') ||
+              (layer === 'picnicSites' && st.category === 'picnic_sites') ||
               (layer === 'waterSupply' && st.category === 'water_supply') ||
               (layer === 'sewerSystem' && st.category === 'sewer_system') ||
               ((layer === 'bcferriesTerminals' || layer === 'bcferriesRoutes') && st.category === 'ferry_terminal') ||

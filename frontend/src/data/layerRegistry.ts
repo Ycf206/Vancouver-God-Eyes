@@ -46,6 +46,7 @@ export type LayerIconKey =
   | 'Landmark'
   | 'LetterU'
   | 'LifeBuoy'
+  | 'Lightbulb'
   | 'LineSquiggle'
   | 'Mail'
   | 'Map'
@@ -58,6 +59,7 @@ export type LayerIconKey =
   | 'Parasol'
   | 'Park'
   | 'ParkingMeter'
+  | 'Pill'
   | 'Plane'
   | 'Recycle'
   | 'Repeat'
@@ -69,6 +71,7 @@ export type LayerIconKey =
   | 'Siren'
   | 'Snowflake'
   | 'Soup'
+  | 'TentTree'
   | 'TeslaIcon'
   | 'Toilet'
   | 'TrafficCone'
@@ -476,7 +479,7 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     buttonLabel: '私人停車場',
     categoryId: 'road',
     category: '道路',
-    keywords: ['impark', 'easypark', 'parking', '私人停車場', '停車場', '泊車'],
+    keywords: ['impark', 'easypark', 'indigo', 'indigoneo', 'parking', '私人停車場', '停車場', '泊車'],
     iconKey: 'ImParkIcon',
     colorClass: 'text-[#d9261c]',
     activeBg: 'bg-[#2d1417]',
@@ -1131,13 +1134,28 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     buttonLabel: '休憩',
     categoryId: 'nature',
     category: '自然',
-    keywords: ['park facility', 'playground', 'tennis', '休憩', '遊樂場', '球場', '野餐'],
+    keywords: ['park facility', 'playground', 'tennis', '休憩', '遊樂場', '球場'],
     iconKey: 'Park',
     colorClass: 'text-teal-400',
     activeBg: 'bg-[#122826]',
     activeBorder: 'border-teal-500/50',
     activeShadow: 'shadow-[0_0_6px_rgba(20,184,166,0.15)]',
     defaultColor: '#14b8a6',
+  },
+  {
+    id: 'picnicSites',
+    layerKey: 'picnicSites',
+    name: '公園野餐區',
+    buttonLabel: '野餐',
+    categoryId: 'nature',
+    category: '自然',
+    keywords: ['picnic', 'picnics', 'bbq', 'shelter', '野餐', '野餐區', '燒烤', '公園野餐'],
+    iconKey: 'TentTree',
+    colorClass: 'text-amber-400',
+    activeBg: 'bg-[#2a2214]',
+    activeBorder: 'border-amber-500/50',
+    activeShadow: 'shadow-[0_0_6px_rgba(217,119,6,0.18)]',
+    defaultColor: '#d97706',
   },
   {
     id: 'communityGardens',
@@ -1328,6 +1346,21 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     defaultColor: '#10b981',
   },
   {
+    id: 'pharmacies',
+    layerKey: 'pharmacies',
+    name: '社區藥房',
+    buttonLabel: '藥房',
+    categoryId: 'government',
+    category: '安全',
+    keywords: ['pharmacy', 'pharmacies', 'drugstore', 'drug mart', 'chemist', '藥房', '藥局', '社區藥房', '西藥房', '配藥'],
+    iconKey: 'Pill',
+    colorClass: 'text-teal-400',
+    activeBg: 'bg-[#112826]',
+    activeBorder: 'border-teal-500/50',
+    activeShadow: 'shadow-[0_0_6px_rgba(20,184,166,0.15)]',
+    defaultColor: '#14b8a6',
+  },
+  {
     id: 'disasterHubs',
     layerKey: 'disasterHubs',
     name: '災害支援中心',
@@ -1359,6 +1392,21 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
   },
 
   // ===================== 能源 ENERGY =====================
+  {
+    id: 'streetLighting',
+    layerKey: 'streetLighting',
+    name: '市政街燈與供電網絡',
+    buttonLabel: '燈光',
+    categoryId: 'utilities',
+    category: '能源',
+    keywords: ['street lighting', 'street light', 'lighting', 'pole', 'conduit', 'junction box', '燈光', '路燈', '街燈', '路燈網絡', '接線盒'],
+    iconKey: 'Lightbulb',
+    colorClass: 'text-amber-300',
+    activeBg: 'bg-[#2a2412]',
+    activeBorder: 'border-amber-400/50',
+    activeShadow: 'shadow-[0_0_6px_rgba(251,191,36,0.2)]',
+    defaultColor: '#fbbf24',
+  },
   {
     id: 'powerOutages',
     layerKey: 'powerOutages',

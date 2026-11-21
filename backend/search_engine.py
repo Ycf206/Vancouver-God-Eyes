@@ -237,6 +237,11 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "公園設施": ("parks_facilities",),
     "球場": ("parks_facilities",),
     "遊樂場": ("parks_facilities",),
+    "野餐": ("picnic_sites",),
+    "野餐區": ("picnic_sites",),
+    "燒烤": ("picnic_sites",),
+    "picnic": ("picnic_sites",),
+    "picnics": ("picnic_sites",),
     "社區花園": ("community_gardens",),
     "海灘": ("beach_water_quality",),
     "泳灘": ("beach_water_quality",),
@@ -276,6 +281,15 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "hospital": ("hospitals",),
     "hospitals": ("hospitals",),
     "clinic": ("hospitals",),
+    "藥房": ("pharmacies",),
+    "藥局": ("pharmacies",),
+    "西藥房": ("pharmacies",),
+    "社區藥房": ("pharmacies",),
+    "配藥": ("pharmacies",),
+    "pharmacy": ("pharmacies",),
+    "pharmacies": ("pharmacies",),
+    "drugstore": ("pharmacies",),
+    "drug mart": ("pharmacies",),
     "警察": ("police",),
     "警局": ("police",),
     "警察局": ("police",),
@@ -363,6 +377,9 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "impark": ("impark",),
     "easypark": ("impark",),
     "easy park": ("impark",),
+    "indigo": ("impark",),
+    "indigoneo": ("impark",),
+    "parkindigo": ("impark",),
     "收費錶": ("parking_meters",),
     "咪錶": ("parking_meters",),
     "meter": ("parking_meters",),
@@ -513,6 +530,7 @@ CATEGORY_TIER_BONUS: dict[str, int] = {
     "museums": 34,
     "libraries": 34,
     "schools": 32,
+    "pharmacies": 30,
     "parks": 32,
     "community_centres": 32,
     "police": 32,
@@ -541,6 +559,7 @@ CATEGORY_TIER_BONUS: dict[str, int] = {
     "shared_bikes": 18,
     "escooter": 18,
     "parks_facilities": 18,
+    "picnic_sites": 24,
     "community_gardens": 18,
     "public_art": 18,
     "food_vendors": 18,
@@ -933,6 +952,7 @@ GEOJSON_LAYER_CONFIGS: list[tuple[str, str, str, str, str, str, int, Optional[st
     ("libraries", "libraries", "libraries", "圖書館", "📚", "libraries", 16, None),
     ("museums", "museums", "museums", "博物館", "🏛️", "museums", 16, None),
     ("hospitals", "hospitals", "hospitals", "醫療機構", "🏥", "hospitals", 15, None),
+    ("pharmacies", "pharmacies", "pharmacies", "藥房", "💊", "pharmacies", 16, None),
     ("police", "police", "police", "警察局", "👮", "police", 16, None),
     ("fire_halls", "fire_halls", "fire_halls", "消防局", "🚒", "fireHalls", 16, None),
     ("disaster_hubs", "disaster_hubs", "disaster_hubs", "災害支援中心", "🛟", "disasterHubs", 16, None),
@@ -940,6 +960,7 @@ GEOJSON_LAYER_CONFIGS: list[tuple[str, str, str, str, str, str, int, Optional[st
     ("aed", "aed", "aed", "AED 去顫器", "💓", "aed", 17, None),
     ("parks", "parks", "parks", "公園", "🌲", "parks", 15, None),
     ("parks_facilities", "parks_facilities", "parks_facilities", "公園設施", "🛝", "parksFacilities", 16, None),
+    ("picnic_sites", "picnic_sites", "picnic_sites", "野餐區", "🏕️", "picnicSites", 16, None),
     ("community_gardens", "community_gardens", "community_gardens", "社區花園", "🌻", "communityGardens", 16, None),
     ("community_centres", "community_centres", "community_centres", "社區中心", "🏛️", "communityCentres", 16, None),
     ("beach_water", "beach_water_quality", "beach_water_quality", "海灘水質", "🏖️", "beachWaterQuality", 15, None),
@@ -1001,7 +1022,7 @@ _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
     "fuel": "油站 加油站 汽油 柴油 gas station fuel petrol",
     "tesla": "tesla 特斯拉 超級充電 目的地充電 supercharger ev charger",
     "ev_charging": "充電 充電站 充電樁 電動車 ev charging charger flo chargepoint cp j1772 ccs combo nacs chademo",
-    "impark": "停車場 泊車 時租 月租 季節 年租 私人停車場 impark easypark parking lot",
+    "impark": "停車場 泊車 時租 月租 季節 年租 私人停車場 impark easypark indigo indigoneo parking lot",
     "accessible_parking": "無障礙車位 殘障車位 傷健車位 accessible parking disability",
     "motorcycle_parking": "摩托車 電單車 重機 停車位 motorcycle parking",
     "parking_meters": "停車收費錶 咪錶 路邊泊車 parking meter paybyphone",
@@ -1021,6 +1042,7 @@ _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
     "museums": "博物館 美術館 展覽館 museum gallery",
     "parks": "公園 綠地 森林 park",
     "parks_facilities": "公園設施 球場 網球場 籃球場 泳池 遊樂場 playground court",
+    "picnic_sites": "野餐 野餐區 公園野餐 燒烤 bbq 預約野餐 picnic picnics shelter gazebo",
     "community_gardens": "社區花園 農圃 community garden",
     "beach_water_quality": "海灘 泳灘 沙灘 水質 大腸桿菌 beach swimming",
     "wildfire": "山火 林火 野火 火險 火災危險等級 wildfire fire danger bc wildfire service",
@@ -1028,6 +1050,7 @@ _LAYER_ALIAS_KEYWORDS: dict[str, str] = {
     "fire_halls": "消防局 消防隊 救火 fire hall rescue",
     "consulates": "領事館 總領事館 名譽領事館 大使館 外交 簽證 護照 consulate consulates consular consul embassy",
     "hospitals": "醫院 醫療機構 診所 急症 急診 upcc hospital clinic emergency",
+    "pharmacies": "藥房 藥局 西藥房 社區藥房 配藥 處方 藥劑師 pharmacy pharmacies drugstore drug mart shoppers london drugs rexall prescription",
     "disaster_hubs": "災害支援中心 緊急集合點 防災 disaster hub earthquake",
     "aed": "aed 自動體外心臟去顫器 急救 defibrillator",
     "van_wifi": "vanwifi wifi 免費無線上網 free wifi",
@@ -2096,16 +2119,26 @@ class LayerSearchEngine:
                     title = sname
                 elif fstem == "impark":
                     lnum = str(props.get("lot_number") or "").strip()
-                    op = str(props.get("operator") or ("EasyPark" if str(props.get("company") or "").lower() == "easypark" else "ImPark")).strip()
+                    comp_l = str(props.get("company") or "").lower()
+                    op = str(
+                        props.get("operator")
+                        or ("EasyPark" if comp_l == "easypark" else ("Indigo" if comp_l == "indigo" else "ImPark"))
+                    ).strip()
                     if lnum:
                         exact_codes.append(lnum)
                     for pz in (props.get("pay_zones") or []):
                         if isinstance(pz, dict) and pz.get("code"):
                             exact_codes.append(str(pz["code"]).strip())
-                    raw_lot = str(props.get("lot_name") or "").strip()
+                    for zn in (props.get("zone_numbers") or []):
+                        if isinstance(zn, dict) and zn.get("number"):
+                            exact_codes.append(str(zn["number"]).strip())
+                    raw_lot = str(props.get("lot_name") or props.get("name") or "").strip()
                     if raw_lot:
                         if op.lower() not in raw_lot.lower():
-                            title = f"{op} Lot #{lnum} - {raw_lot}" if lnum else f"{op} - {raw_lot}"
+                            if lnum and lnum.lower() not in raw_lot.lower():
+                                title = f"{op} Lot #{lnum} - {raw_lot}"
+                            else:
+                                title = f"{op} - {raw_lot}"
                         else:
                             title = raw_lot
                     else:
@@ -2361,6 +2394,7 @@ class LayerSearchEngine:
                         props.get("connectors"),
                         props.get("email"),
                         props.get("fax"),
+                        props.get("manager"),
                         alias_kw,
                     )
                     if v

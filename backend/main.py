@@ -2521,15 +2521,15 @@ CURATED_STATIC_TYPES = (
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
     "road_closures", "road_construction", "traffic_conditions",
     "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "traffic_alerts", "public_trees",
-    "museums", "garbage_collection", "water_supply", "sewer_system", "wildfire"
+    "museums", "garbage_collection", "water_supply", "sewer_system", "wildfire", "pharmacies", "picnic_sites"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
-    "schools", "libraries", "food_vendors", "homeless_shelters", "parks", "parks_facilities",
+    "schools", "libraries", "food_vendors", "homeless_shelters", "parks", "parks_facilities", "picnic_sites",
     "community_gardens", "community_centres", "drinking_fountains", "public_washrooms", "fire_halls",
-    "traffic_cameras", "safety_cameras", "shared_bikes", "escooter", "museums"
+    "traffic_cameras", "safety_cameras", "shared_bikes", "escooter", "museums", "pharmacies"
 )
 
 def sync_curated_point_types(db: Session):
@@ -3784,7 +3784,9 @@ _NEARBY_LAYER_META: dict[str, tuple[str, str, str, str]] = {
     'recycling': ('環保回收站', '♻️', 'recycling', '環保回收站'),
     'homeless_shelters': ('無家者庇護所', '🏠', 'homelessShelters', '無家者庇護所'),
     'parks': ('公園綠地', '🌳', 'parks', '公園綠地'),
+    'picnic_sites': ('野餐區', '🏕️', 'picnicSites', '公園野餐區'),
     'hospitals': ('醫療院所', '🏥', 'hospitals', '醫療院所'),
+    'pharmacies': ('藥房', '💊', 'pharmacies', '社區藥房'),
     'police': ('警局', '🚓', 'police', '警察局'),
     'fire_halls': ('消防局', '🚒', 'fireHalls', '消防局'),
     'fire_hydrants': ('消防栓', '🧯', 'fireHydrants', '消防栓'),
@@ -3821,7 +3823,9 @@ _NEARBY_STATIC_FILES: tuple[tuple[str, str, Optional[str]], ...] = (
     ('vancouver_recycling.geojson', 'recycling', None),
     ('vancouver_homeless_shelters.geojson', 'homeless_shelters', None),
     ('vancouver_parks.geojson', 'parks', None),
+    ('vancouver_picnic_sites.geojson', 'picnic_sites', None),
     ('vancouver_hospitals.geojson', 'hospitals', None),
+    ('vancouver_pharmacies.geojson', 'pharmacies', None),
     ('vancouver_police.geojson', 'police', None),
     ('vancouver_fire_halls.geojson', 'fire_halls', None),
     ('vancouver_van_wifi.geojson', 'van_wifi', None),
@@ -5283,6 +5287,14 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "ev_charging_chargepoint": ["chargepoint_ev_live_cache.json"],
     "business_licences": ["vancouver_business_licences.json"],
     "building_permits": ["vancouver_building_permits.json"],
+    "pharmacies": ["vancouver_pharmacies.geojson"],
+    "street_lighting": [
+        "vancouver_street_lighting_conduits.geojson",
+        "vancouver_street_lighting_conduits_clusters.geojson",
+        "vancouver_street_lighting_poles.geojson",
+        "vancouver_street_lighting_junction_boxes.geojson",
+        "vancouver_night_lights.geojson",
+    ],
 }
 
 

@@ -188,21 +188,21 @@ def refresh_bchydro_outages(outage_type: str = "all") -> int:
             res_c = update_current_outages()
             cnt_c = res_c.get("count", 0) if isinstance(res_c, dict) else 0
             total_cnt += cnt_c
-            log_data_source_update("bchydro_current", "BC Hydro 現正停電與警報", cnt_c, "bchydro_outages_current.json", file_path)
+            log_data_source_update("bchydro_current", "現正停電與警報", cnt_c, "bchydro_outages_current.json", file_path)
         if outage_type in ("all", "restored"):
             res_r = update_restored_outages()
             cnt_r = res_r.get("count", 0) if isinstance(res_r, dict) else 0
             total_cnt += cnt_r
-            log_data_source_update("bchydro_restored", "BC Hydro 恢復供電 (14天)", cnt_r, "bchydro_outages_restored.json", file_path)
+            log_data_source_update("bchydro_restored", "恢復供電 (14天)", cnt_r, "bchydro_outages_restored.json", file_path)
         if outage_type in ("all", "planned"):
             res_p = update_planned_outages()
             cnt_p = res_p.get("count", 0) if isinstance(res_p, dict) else 0
             total_cnt += cnt_p
-            log_data_source_update("bchydro_planned", "BC Hydro 預期停電", cnt_p, "bchydro_outages_planned.json", file_path)
+            log_data_source_update("bchydro_planned", "預期停電", cnt_p, "bchydro_outages_planned.json", file_path)
         return total_cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_bchydro_outages 異常: {e}")
-        log_data_source_update("bchydro_current", "BC Hydro 停電資料", None, "bchydro_outages_current.json", file_path, error=e)
+        log_data_source_update("bchydro_current", "停電資料", None, "bchydro_outages_current.json", file_path, error=e)
         return 0
 
 
@@ -257,27 +257,27 @@ def refresh_air_quality() -> int:
         from update_air_quality import update_air_quality
         features = update_air_quality()
         cnt = len(features) if features else 0
-        log_data_source_update("air_quality", "Metro Vancouver 空氣質素健康指數圖層", cnt, target_file, file_path)
+        log_data_source_update("air_quality", "空氣污染", cnt, target_file, file_path)
         return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_air_quality 異常: {e}")
-        log_data_source_update("air_quality", "Metro Vancouver 空氣質素健康指數圖層", None, target_file, file_path, error=e)
+        log_data_source_update("air_quality", "空氣污染", None, target_file, file_path, error=e)
         return 0
 
 
 def refresh_wildfire() -> int:
-    """每 24 小時刷新 BC Wildfire Service 山火通報與火災危險等級圖層"""
+    """每 24 小時刷新山火通報與火災危險等級圖層"""
     file_path = "backend/scripts/layers/update_wildfire.py"
     target_file = "vancouver_wildfire.geojson"
     try:
         from update_wildfire import update_wildfire
         features = update_wildfire()
         cnt = len(features) if features is not None else 0
-        log_data_source_update("wildfire", "BC Wildfire Service 山火通報與火災危險等級", cnt, target_file, file_path)
+        log_data_source_update("wildfire", "山火", cnt, target_file, file_path)
         return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_wildfire 異常: {e}")
-        log_data_source_update("wildfire", "BC Wildfire Service 山火通報與火災危險等級", None, target_file, file_path, error=e)
+        log_data_source_update("wildfire", "山火", None, target_file, file_path, error=e)
         return 0
 
 
@@ -327,11 +327,11 @@ def refresh_flo_ev() -> int:
         from update_flo_ev import refresh_flo_api2
         features = refresh_flo_api2(update_admin_meta=True)
         cnt = len(features) if features else 0
-        log_data_source_update("ev_charging_flo", "FLO 電動車充電站即時狀態 (API2)", cnt, target_file, file_path)
+        log_data_source_update("ev_charging_flo", "電動車充電站 (FLO)", cnt, target_file, file_path)
         return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_flo_ev 異常: {e}")
-        log_data_source_update("ev_charging_flo", "FLO 電動車充電站即時狀態 (API2)", None, target_file, file_path, error=e)
+        log_data_source_update("ev_charging_flo", "電動車充電站 (FLO)", None, target_file, file_path, error=e)
         return 0
 
 
@@ -354,11 +354,11 @@ def refresh_chargepoint_ev() -> int:
         from update_chargepoint_ev import refresh_chargepoint_api2
         features = refresh_chargepoint_api2(update_admin_meta=True)
         cnt = len(features) if features else 0
-        log_data_source_update("ev_charging_chargepoint", "ChargePoint 電動車充電站即時狀態 (API2)", cnt, target_file, file_path)
+        log_data_source_update("ev_charging_chargepoint", "電動車充電站 (Charge Point)", cnt, target_file, file_path)
         return cnt
     except Exception as e:
         print(f"⚠️ [Dynamic Layers] refresh_chargepoint_ev 異常: {e}")
-        log_data_source_update("ev_charging_chargepoint", "ChargePoint 電動車充電站即時狀態 (API2)", None, target_file, file_path, error=e)
+        log_data_source_update("ev_charging_chargepoint", "電動車充電站 (Charge Point)", None, target_file, file_path, error=e)
         return 0
 
 

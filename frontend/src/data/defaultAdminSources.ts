@@ -437,26 +437,38 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "type": "api",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
-    "record_count": 338,
+    "record_count": 730,
     "unit": "處商業停車場場域",
-    "last_updated": "2026-10-24T17:00:00Z",
+    "last_updated": "2026-11-21T01:42:14Z",
     "status": "healthy",
-    "data_pipeline_notes": "ImPark (Reef Parking) 官方開放據點清單 + EasyPark Find Parking & Lot Details 網頁爬蟲 -> 合併大溫哥華私營與公營委辦停車場位置、時租/月租/季節性/年租費率、SPARC 無障礙與 EV 充電設施、Pay-by-Phone/Zone 代碼 -> 寫入 vancouver_impark.geojson",
+    "data_pipeline_notes": "ImPark (Reef Parking) API + EasyPark 新版公開 API + Indigo (indigoneo.ca API1/API2) -> 每月經 GitHub Actions 一次更新三間停車場營運商大溫哥華位置、時租/月租/活動/季節性費率、場地圖片、SPARC 無障礙、EV 充電與 Zone 區域編號 -> 寫入 vancouver_impark.geojson",
     "runner": "github_actions",
     "workflow_file": "update-private-parking.yml",
     "category": "道路",
     "enabled": true,
     "source_links": [
       {
+        "type": "api",
         "label": "ImPark Lots API",
-        "url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.25143536989855&lngLoc=-123.21715982244642&latMin=49.185169174402894&lngMin=-123.40358407781751&latMax=49.31761273382262&lngMax=-123.03073556707533&csr=0&branchName="
+        "url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.231405747636195&lngLoc=-123.10900119980765&latMin=49.098730747823055&lngMin=-123.48699955185843&latMax=49.36372538454293&lngMax=-122.73100284775687&csr=0&branchName="
       },
       {
-        "label": "EasyPark Find Parking",
-        "url": "https://easypark.ca/find-parking"
+        "type": "api",
+        "label": "EasyPark Lots API",
+        "url": "https://easypark-api-489514297582.northamerica-northeast1.run.app/public/lots?org=6a60f81f5e9fe19bedcf61c4"
+      },
+      {
+        "type": "api",
+        "label": "Indigo Locations API",
+        "url": "https://salesforce.parkindigo.com/locations?location.language=en&location.address.countries=CA&box.first.x=49.42&box.first.y=-123.55&box.second.x=49.00&box.second.y=-122.45"
+      },
+      {
+        "type": "web",
+        "label": "Indigo Neo 官網地圖",
+        "url": "https://indigoneo.ca/en/map"
       }
     ],
-    "source_url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.25143536989855&lngLoc=-123.21715982244642&latMin=49.185169174402894&lngMin=-123.40358407781751&latMax=49.31761273382262&lngMax=-123.03073556707533&csr=0&branchName="
+    "source_url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.231405747636195&lngLoc=-123.10900119980765&latMin=49.098730747823055&lngMin=-123.48699955185843&latMax=49.36372538454293&lngMax=-122.73100284775687&csr=0&branchName="
   },
   {
     "id": "border_wait_times",
@@ -1506,7 +1518,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "bchydro_current",
-    "name": "BC Hydro 現正停電與警報",
+    "name": "現正停電與警報",
     "type": "json",
     "cron_expr": "0 * * * *",
     "schedule_interval": "每 1 小時",
@@ -1529,7 +1541,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "bchydro_restored",
-    "name": "BC Hydro 恢復供電 (14天)",
+    "name": "恢復供電 (14天)",
     "type": "json",
     "cron_expr": "0 * * * *",
     "schedule_interval": "每 1 小時",
@@ -1552,7 +1564,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "bchydro_planned",
-    "name": "BC Hydro 預期停電",
+    "name": "預期停電",
     "type": "json",
     "cron_expr": "0 * * * *",
     "schedule_interval": "每 1 小時",
@@ -1603,7 +1615,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "consulates",
-    "name": "各國駐卑詩省領事館 (Consulates)",
+    "name": "領事館",
     "type": "geojson",
     "cron_expr": "0 6 1 */3 *",
     "schedule_interval": "每 3 個月",
@@ -1687,7 +1699,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "mobile_coverage",
-    "name": "大溫哥華流動網絡涵蓋範圍 (Telus / Rogers / Virgin Plus / Bell / Freedom)",
+    "name": "流動網絡",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每 6 個月",
@@ -1730,7 +1742,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "air_quality",
-    "name": "Metro Vancouver 空氣質素健康指數圖層",
+    "name": "空氣污染",
     "type": "geojson",
     "cron_expr": "0 0 * * *",
     "schedule_interval": "每 24 小時",
@@ -1758,7 +1770,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "wildfire",
-    "name": "BC Wildfire Service 山火與火災危險等級",
+    "name": "山火",
     "type": "geojson",
     "cron_expr": "0 0 * * *",
     "schedule_interval": "每 24 小時",
@@ -1786,7 +1798,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "ev_charging_flo",
-    "name": "FLO 電動車充電站即時狀態 (API2)",
+    "name": "電動車充電站 (FLO)",
     "type": "api",
     "cron_expr": "0 * * * *",
     "schedule_interval": "每 1 小時",
@@ -1814,7 +1826,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "ev_charging_chargepoint",
-    "name": "ChargePoint 電動車充電站即時狀態 (API2)",
+    "name": "電動車充電站 (Charge Point)",
     "type": "api",
     "cron_expr": "0 * * * *",
     "schedule_interval": "每 1 小時",
@@ -1895,5 +1907,71 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records/?lang=en"
+  },
+  {
+    "id": "street_lighting",
+    "name": "燈光",
+    "type": "api",
+    "cron_expr": "0 4 1 * *",
+    "schedule_interval": "每月 1 號 04:00",
+    "record_count": 136753,
+    "unit": "筆路燈設施與夜間燈光色塊圖徵",
+    "last_updated": "2026-11-21T01:43:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Vancouver Open Data v2.1 API (conduits / poles / junction-boxes) + NASA Black Marble (VIIRS NOAA-20) 近一年夜晚中位數 (經由 NASA GIBS WMTS) -> GitHub Actions 每月 1 號同步產出聚合切片與夜間燈光色塊 -> 寫入 vancouver_street_lighting_*.geojson 與 vancouver_night_lights.geojson",
+    "runner": "github_actions",
+    "workflow_file": "update-street-lighting.yml",
+    "category": "能源",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "路燈網絡 OpenData v2.1 API",
+        "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-conduits/records/?lang=en"
+      },
+      {
+        "type": "api",
+        "label": "路燈 OpenData v2.1 API",
+        "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-poles/records/?lang=en"
+      },
+      {
+        "type": "api",
+        "label": "路燈接線盒 OpenData v2.1 API",
+        "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-junction-boxes/records/?lang=en"
+      },
+      {
+        "type": "api",
+        "label": "NASA Black Marble (VIIRS) GIBS WMTS",
+        "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/1.0.0/WMTSCapabilities.xml"
+      }
+    ],
+    "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/street-lighting-conduits/records/?lang=en"
+  },
+  {
+    "id": "pharmacies",
+    "name": "藥房",
+    "type": "scraper",
+    "cron_expr": "30 4 1 * *",
+    "schedule_interval": "每月 1 號 04:30",
+    "record_count": 1554,
+    "unit": "間持牌社區藥房",
+    "last_updated": "2026-11-17T03:50:15Z",
+    "status": "healthy",
+    "data_pipeline_notes": "卑詩省藥劑師學會 (CPBC) 社區藥房名錄網頁爬取 -> BC Address Geocoder 地理編碼定位 -> GitHub Actions 每月 1 號更新寫入 vancouver_pharmacies.geojson -> 納入安全圖層與頂部搜尋欄索引",
+    "runner": "github_actions",
+    "workflow_file": "update-pharmacies.yml",
+    "category": "安全",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "CPBC 社區藥房官方名錄",
+        "url": "https://www.bcpharmacists.org/list-community-pharmacies"
+      },
+      {
+        "type": "api",
+        "label": "BC Address Geocoder API",
+        "url": "https://geocoder.api.gov.bc.ca/addresses.json"
+      }
+    ],
+    "source_url": "https://www.bcpharmacists.org/list-community-pharmacies"
   }
 ];

@@ -75,6 +75,13 @@ SOURCE_DATA_FILES = {
     "fedex": ["vancouver_fedex.geojson"],
     "purolator": ["vancouver_purolator.geojson"],
     "vancouver_crashes": ["vancouver_crashes.json"],
+    "pharmacies": ["vancouver_pharmacies.geojson"],
+    "street_lighting": [
+        "vancouver_street_lighting_conduits.geojson",
+        "vancouver_street_lighting_poles.geojson",
+        "vancouver_street_lighting_junction_boxes.geojson",
+        "vancouver_night_lights.geojson",
+    ],
 }
 
 
@@ -82,40 +89,49 @@ def _atomic_write_json(path: str, payload) -> None:
     atomic_write_json(path, payload, indent=2, prefix=".tmp_sync_", suffix=".json")
 
 
-def _extract_record_count(source_id: str) -> int:
+def _count_single_file_records(fname: str) -> int:
     import re
+    for base_dir in (DATA_DIR, PUBLIC_DIR):
+        fpath = os.path.join(base_dir, fname)
+        if not os.path.exists(fpath):
+            continue
+        try:
+            fsize = os.path.getsize(fpath)
+            with open(fpath, "r", encoding="utf-8") as f:
+                head = f.read(4096)
+            m = re.search(r'"total_count"\s*:\s*(\d+)', head)
+            if m:
+                cnt = int(m.group(1))
+                if cnt > 0:
+                    return cnt
+            if fsize > 15 * 1024 * 1024:
+                continue
+            with open(fpath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, list):
+                return len(data)
+            if isinstance(data, dict):
+                if "features" in data and isinstance(data["features"], list):
+                    return len(data["features"])
+                if "results" in data and isinstance(data["results"], list):
+                    return len(data["results"])
+                if "data" in data and isinstance(data["data"], dict) and isinstance(data["data"].get("eflyer_list"), list):
+                    return len(data["data"]["eflyer_list"])
+                if isinstance(data.get("total_count"), int) and data["total_count"] > 0:
+                    return data["total_count"]
+        except Exception:
+            continue
+    return 0
+
+
+def _extract_record_count(source_id: str) -> int:
     filenames = SOURCE_DATA_FILES.get(source_id, [])
+    if source_id == "street_lighting":
+        return sum(_count_single_file_records(fname) for fname in filenames)
     for fname in filenames:
-        for base_dir in (DATA_DIR, PUBLIC_DIR):
-            fpath = os.path.join(base_dir, fname)
-            if not os.path.exists(fpath):
-                continue
-            try:
-                fsize = os.path.getsize(fpath)
-                with open(fpath, "r", encoding="utf-8") as f:
-                    head = f.read(4096)
-                m = re.search(r'"total_count"\s*:\s*(\d+)', head)
-                if m:
-                    cnt = int(m.group(1))
-                    if cnt > 0:
-                        return cnt
-                if fsize > 15 * 1024 * 1024:
-                    continue
-                with open(fpath, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                if isinstance(data, list):
-                    return len(data)
-                if isinstance(data, dict):
-                    if "features" in data and isinstance(data["features"], list):
-                        return len(data["features"])
-                    if "results" in data and isinstance(data["results"], list):
-                        return len(data["results"])
-                    if "data" in data and isinstance(data["data"], dict) and isinstance(data["data"].get("eflyer_list"), list):
-                        return len(data["data"]["eflyer_list"])
-                    if isinstance(data.get("total_count"), int) and data["total_count"] > 0:
-                        return data["total_count"]
-            except Exception:
-                continue
+        cnt = _count_single_file_records(fname)
+        if cnt > 0:
+            return cnt
     return 0
 
 

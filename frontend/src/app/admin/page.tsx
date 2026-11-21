@@ -135,8 +135,10 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   public_trees: 'publicTrees',
   museums: 'museums',
   consulates: 'consulates',
+  pharmacies: 'pharmacies',
   water_supply: 'waterSupply',
   sewer_system: 'sewerSystem',
+  street_lighting: 'streetLighting',
   mobile_coverage: 'mobileCoverage',
 };
 
@@ -160,12 +162,12 @@ function getSystemCategory(source: { id: string; category?: string; name?: strin
     'ski_resorts', 'yvr_weathercams',
   ]);
   const securityIds = new Set([
-    'consulates', 'aed', 'fire_hydrants',
+    'consulates', 'pharmacies', 'aed', 'fire_hydrants',
   ]);
   const energyIds = new Set([
     'bchydro_current', 'bchydro_restored', 'bchydro_planned',
     'bchydro_outages_current', 'bchydro_outages_restored', 'bchydro_outages_planned',
-    'power_outages', 'powerOutages', 'water_supply', 'sewer_system', 'zoning_districts', 'contours',
+    'power_outages', 'powerOutages', 'water_supply', 'sewer_system', 'street_lighting', 'zoning_districts', 'contours',
   ]);
 
   if (transitIds.has(source.id)) return '交通';

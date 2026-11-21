@@ -9,16 +9,34 @@ import requests
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from base import get_source_endpoint_url, load_existing_geojson, save_layer_geojson
+from base import (
+    get_source_endpoint_url,
+    load_existing_geojson,
+    save_layer_geojson,
+    update_admin_source_metadata,
+)
 
 IMPARK_DEFAULT_URL = (
     "https://lots.impark.com/api/lots/IMP/en?"
-    "latLoc=49.25143536989855&lngLoc=-123.21715982244642"
-    "&latMin=49.185169174402894&lngMin=-123.40358407781751"
-    "&latMax=49.31761273382262&lngMax=-123.03073556707533&csr=0&branchName="
+    "latLoc=49.231405747636195&lngLoc=-123.10900119980765"
+    "&latMin=49.098730747823055&lngMin=-123.48699955185843"
+    "&latMax=49.36372538454293&lngMax=-122.73100284775687&csr=0&branchName="
 )
-EASYPARK_FIND_URL = "https://easypark.ca/find-parking"
-EASYPARK_DETAIL_BASE = "https://easypark.ca/find-parking/locations-and-lot-information/lot-details"
+
+EASYPARK_API_URL = (
+    "https://easypark-api-489514297582.northamerica-northeast1.run.app/public/lots"
+    "?org=6a60f81f5e9fe19bedcf61c4"
+)
+EASYPARK_WEB_BASE = "https://findparking.easypark.ca"
+
+INDIGO_LIST_URL = (
+    "https://salesforce.parkindigo.com/locations"
+    "?location.language=en&location.address.countries=CA"
+    "&box.first.x=49.42&box.first.y=-123.55"
+    "&box.second.x=49.00&box.second.y=-122.45"
+)
+INDIGO_DETAIL_TEMPLATE = "https://salesforce.parkindigo.com/locations/{slug}?language=en"
+INDIGO_WEB_BASE = "https://indigoneo.ca/en/car-park"
 
 METRO_VANCOUVER_CITIES = {
     "vancouver",
@@ -46,65 +64,106 @@ METRO_VANCOUVER_CITIES = {
     "university endowment lands",
 }
 
-REQUEST_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-    ),
-    "Accept-Language": "en-CA,en;q=0.9",
+CITY_DISPLAY_MAP = {
+    "vancouver": "Vancouver",
+    "burnaby": "Burnaby",
+    "richmond": "Richmond",
+    "surrey": "Surrey",
+    "north vancouver": "North Vancouver",
+    "west vancouver": "West Vancouver",
+    "new westminster": "New Westminster",
+    "coquitlam": "Coquitlam",
+    "port coquitlam": "Port Coquitlam",
+    "port moody": "Port Moody",
+    "delta": "Delta",
+    "langley": "Langley",
+    "langley city": "Langley City",
+    "langley twp": "Langley Twp",
+    "maple ridge": "Maple Ridge",
+    "pitt meadows": "Pitt Meadows",
+    "white rock": "White Rock",
+    "bowen island": "Bowen Island",
+    "lions bay": "Lions Bay",
+    "anmore": "Anmore",
+    "belcarra": "Belcarra",
+    "tsawwassen": "Tsawwassen",
+    "university endowment lands": "University Endowment Lands",
+}
+
+CHROME_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+)
+
+EASYPARK_HEADERS = {
+    "accept": "*/*",
+    "accept-language": "zh-HK,zh;q=0.9,en-HK;q=0.8,en-US;q=0.7,en;q=0.6,zh-TW;q=0.5",
+    "origin": "https://findparking.easypark.ca",
+    "referer": "https://findparking.easypark.ca/",
+    "user-agent": CHROME_UA,
+}
+
+INDIGO_HEADERS = {
+    "accept": "*/*",
+    "accept-language": "zh-HK,zh;q=0.9,en-HK;q=0.8,en-US;q=0.7,en;q=0.6,zh-TW;q=0.5",
+    "origin": "https://indigoneo.ca",
+    "referer": "https://indigoneo.ca/",
+    "user-agent": CHROME_UA,
 }
 
 
-def _clean_text(s: str) -> str:
-    if not s:
+def _clean_text(s: Any) -> str:
+    if s is None:
         return ""
-    s = html.unescape(s)
-    s = s.replace("\u200b", "").replace("\ufeff", "").replace("\xa0", " ")
-    return re.sub(r"\s+", " ", s).strip()
+    txt = html.unescape(str(s))
+    txt = txt.replace("\u200b", "").replace("\ufeff", "").replace("\xa0", " ")
+    return re.sub(r"\s+", " ", txt).strip()
 
 
-def _html_to_lines(raw_html: str) -> list[str]:
-    if not raw_html:
-        return []
+def _normalize_city(raw_city: Any) -> str:
+    c = _clean_text(raw_city)
+    if not c:
+        return ""
+    return CITY_DISPLAY_MAP.get(c.lower(), c)
+
+
+def _html_to_clean_lines(raw_html: Any) -> tuple[list[str], str]:
+    """Convert EasyPark rich-text HTML terms into clean text lines and optional apply URL."""
+    if not raw_html or not isinstance(raw_html, str):
+        return [], ""
+    link_url = ""
+    m_link = re.search(r'href=["\'](https?://[^"\']+)["\']', raw_html, re.I)
+    if m_link:
+        link_url = m_link.group(1).strip()
+
     body = re.sub(r"(?is)<(script|style|noscript)[^>]*>.*?</\1>", "\n", raw_html)
-    body = re.sub(r"(?i)<(?:br\s*/?|/p|/div|/li|/tr|/h[1-6]|/td|/th)>", "\n", body)
+    body = re.sub(r"(?i)<(?:br\s*/?|/p|/div|/li|/tr|/h[1-6])>", "\n", body)
     body = re.sub(r"<[^>]+>", " ", body)
     lines: list[str] = []
     for raw_ln in body.splitlines():
         cleaned = _clean_text(raw_ln)
-        if cleaned:
-            lines.append(cleaned)
-    return lines
+        if not cleaned:
+            continue
+        if cleaned.lower().startswith("learn more and apply for monthly parking"):
+            continue
+        lines.append(cleaned)
+    return lines, link_url
 
 
-def _extract_tables(raw_html: str) -> list[list[list[str]]]:
-    tables: list[list[list[str]]] = []
-    for tbl_html in re.findall(r"(?is)<table[^>]*>(.*?)</table>", raw_html):
-        rows: list[list[str]] = []
-        for tr_html in re.findall(r"(?is)<tr[^>]*>(.*?)</tr>", tbl_html):
-            cells = [
-                _clean_text(re.sub(r"<[^>]+>", " ", c))
-                for c in re.findall(r"(?is)<t[dh][^>]*>(.*?)</t[dh]>", tr_html)
-            ]
-            cells = [c for c in cells if c]
-            if cells:
-                rows.append(cells)
-        if rows:
-            tables.append(rows)
-    return tables
-
-
+# ===================== 1. ImPark =====================
 def _fetch_impark_lots(url: str) -> list[dict[str, Any]]:
     features: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
     try:
-        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+        resp = requests.get(url, headers={"User-Agent": CHROME_UA}, timeout=30)
         if resp.status_code != 200:
+            print(f"⚠️ ImPark API HTTP {resp.status_code}")
             return features
         lots = resp.json()
         for lot in lots:
             addr = lot.get("address") or {}
-            city = (addr.get("city") or "").strip()
-            if city.lower() != "vancouver":
+            city = _normalize_city(addr.get("city"))
+            if city.lower() not in METRO_VANCOUVER_CITIES:
                 continue
 
             loc = lot.get("location") or {}
@@ -113,10 +172,15 @@ def _fetch_impark_lots(url: str) -> list[dict[str, Any]]:
             if lat == 0 or lng == 0:
                 continue
 
+            fid = f"impark_{lot.get('lotId') or lot.get('lotNumber')}"
+            if fid in seen_ids:
+                continue
+            seen_ids.add(fid)
+
             feat_list: list[str] = []
             for f in lot.get("features") or []:
                 if isinstance(f, dict) and f.get("value"):
-                    feat_list.append(_clean_text(str(f["value"])))
+                    feat_list.append(_clean_text(f["value"]))
                 elif isinstance(f, str) and f.strip():
                     feat_list.append(_clean_text(f))
 
@@ -129,23 +193,23 @@ def _fetch_impark_lots(url: str) -> list[dict[str, Any]]:
             features.append(
                 {
                     "type": "Feature",
-                    "id": f"impark_{lot.get('lotId') or lot.get('lotNumber')}",
+                    "id": fid,
                     "geometry": {
                         "type": "Point",
                         "coordinates": [round(lng, 6), round(lat, 6)],
                     },
                     "properties": {
-                        "id": f"impark_{lot.get('lotId') or lot.get('lotNumber')}",
+                        "id": fid,
                         "facility_type": "impark",
                         "company": "impark",
                         "operator": "ImPark",
                         "lot_id": lot.get("lotId"),
                         "lot_number": lot.get("lotNumber"),
-                        "lot_name": _clean_text(str(lot.get("lotName") or f"Lot {lot.get('lotNumber')}")),
-                        "address1": _clean_text(str(addr.get("address1") or "")),
-                        "address2": _clean_text(str(addr.get("address2") or "")),
+                        "lot_name": _clean_text(lot.get("lotName") or f"Lot {lot.get('lotNumber')}"),
+                        "address1": _clean_text(addr.get("address1")),
+                        "address2": _clean_text(addr.get("address2")),
                         "city": city or "Vancouver",
-                        "postal_code": _clean_text(str(addr.get("postalCode") or "")),
+                        "postal_code": _clean_text(addr.get("postalCode")),
                         "hasTransientRates": has_transient,
                         "lowestTransientRate": lot.get("lowestTransientRate"),
                         "hasMonthlyRates": has_monthly,
@@ -164,339 +228,444 @@ def _fetch_impark_lots(url: str) -> list[dict[str, Any]]:
             )
     except Exception as e:
         print(f"⚠️ 線上更新 ImPark 停車場失敗: {e}")
+    features.sort(key=lambda f: str((f.get("properties") or {}).get("lot_number") or ""))
     return features
 
 
-def _parse_easypark_detail_html(raw_html: str) -> dict[str, Any]:
-    if not raw_html or "oops! an error has occurred" in _clean_text(raw_html).lower():
-        return {}
-
-    lines = _html_to_lines(raw_html)
-    tables = _extract_tables(raw_html)
-
-    pay_zones: list[dict[str, str]] = []
-    monthly_rates: list[dict[str, str]] = []
-    seasonal_rates: list[dict[str, str]] = []
-    annual_rates: list[dict[str, str]] = []
-
-    for tbl in tables:
-        flat = " ".join(" ".join(r) for r in tbl).lower()
-        if "zone number" in flat or any(r[0].lower() in ("zipby", "honk", "parkmobile", "passport") for r in tbl if r):
-            for r in tbl:
-                if len(r) == 2 and r[0].lower() != "zone number":
-                    pay_zones.append({"provider": r[0], "code": r[1]})
-                elif len(r) == 2 and r[0].lower() == "zone number":
-                    pay_zones.append({"provider": "Zone", "code": r[1]})
-                elif len(r) >= 2 and r[0].lower() == "zone number":
-                    pay_zones.append({"provider": "Zone", "code": " ".join(r[1:])})
-        elif tbl and len(tbl[0]) >= 2 and tbl[0][0].lower() == "category" and tbl[0][1].lower() == "rate":
-            row_texts = " ".join(" ".join(r) for r in tbl[1:]).lower()
-            is_seasonal_tbl = any(
-                k in row_texts for k in ("high season", "low season", "annual", "seasonal")
-            )
-            for r in tbl[1:]:
-                if len(r) < 2:
-                    continue
-                lbl, val = r[0], r[1]
-                if not lbl or not val:
-                    continue
-                low_lbl = lbl.lower()
-                if is_seasonal_tbl:
-                    if "annual" in low_lbl:
-                        annual_rates.append({"label": lbl, "value": val})
-                    else:
-                        seasonal_rates.append({"label": lbl, "value": val})
-                else:
-                    monthly_rates.append({"label": lbl, "value": val})
-
-    def _find_idx(target: str, start: int = 0) -> int:
-        tl = target.lower()
-        for i in range(start, len(lines)):
-            if lines[i].lower() == tl or lines[i].lower().startswith(tl + " "):
-                return i
-        return -1
-
-    def _next_boundary(start: int, stops: tuple[str, ...]) -> int:
-        low_stops = tuple(s.lower() for s in stops)
-        for i in range(start, len(lines)):
-            ll = lines[i].lower()
-            if any(ll == s or ll.startswith(s + ":") or ll.startswith(s + " ") for s in low_stops):
-                return i
-        return len(lines)
-
-
-    zone_code_simple = ""
-    zc_idx = _find_idx("Zone Code:")
-    if zc_idx != -1 and zc_idx + 1 < len(lines):
-        cand = lines[zc_idx + 1]
-        if cand.lower() not in ("open in google maps", "n/a", "basic rates"):
-            zone_code_simple = cand
-
-    basic_rates_lines: list[str] = []
-    sparc_note = ""
-    ev_note = ""
-    event_rate_note = ""
-
-    br_idx = _find_idx("Basic Rates")
-    if br_idx != -1:
-        end_br = _next_boundary(br_idx + 1, ("About this Lot", "Detailed Rates", "Also in this Section"))
-        chunk = lines[br_idx + 1 : end_br]
-        skip_next_event = False
-        for ln in chunk:
-            ll = ln.lower()
-            if skip_next_event:
-                skip_next_event = False
-                if ln not in ("-", "N/A"):
-                    event_rate_note = ln
-                continue
-            if "stalls for people with disabilities" in ll or "sparc decals" in ll:
-                sparc_note = (sparc_note + " " + ln).strip()
-            elif "ev charging stations available" in ll or ("ev charging" in ll and "payment for parking" in ll):
-                ev_note = (ev_note + " " + ln).strip()
-            elif ll == "event rate":
-                skip_next_event = True
-            elif ll.startswith("event rate"):
-                rest = ln[len("event rate") :].strip(" :-")
-                if rest and rest != "-":
-                    event_rate_note = rest
-            elif not sparc_note and not ev_note:
-                basic_rates_lines.append(ln)
-
-    about_notes: list[str] = []
-    capacity: int | None = None
-    height_restriction = ""
-    hours_summary = ""
-    ab_idx = _find_idx("About this Lot")
-    if ab_idx != -1:
-        end_ab = _next_boundary(ab_idx + 1, ("Detailed Rates", "Also in this Section"))
-        ab_chunk = lines[ab_idx + 1 : end_ab]
-        # Skip inline Zone Number table rows already captured, or capture standalone Zone Number
-        skip_tokens = {"zone number", "zipby", "honk", "parkmobile", "passport"}
-        if not pay_zones:
-            zn_idx = _find_idx("Zone Number", ab_idx + 1)
-            if zn_idx != -1 and zn_idx + 1 < end_ab:
-                zcand = lines[zn_idx + 1].strip()
-                if zcand.isdigit() and len(zcand) >= 3:
-                    pay_zones.append({"provider": "Zone Number", "code": zcand})
-        pay_zone_codes = {z["code"] for z in pay_zones}
-        for ln in ab_chunk:
-            ll = ln.lower()
-            if ll in skip_tokens or ln in pay_zone_codes:
-                continue
-            if ll.startswith(("see the", "view a pdf", "here")):
-                continue
-            if capacity is None:
-                m_cap = re.search(r"(\d[\d,]*)\s+(?:parking\s+)?(?:stalls|spaces)\b", ln, re.I)
-                if m_cap:
-                    capacity = int(m_cap.group(1).replace(",", ""))
-            if not height_restriction and "height restriction" in ll:
-                height_restriction = ln
-            if not hours_summary and any(
-                k in ll for k in ("gated from", "24/7", "24 hours", "monday to", "mon-sun", "6am", "park is open")
-            ):
-                hours_summary = ln
-            about_notes.append(ln)
-
-    daily_rates: list[str] = []
-    dr_tab = _find_idx("Detailed Rates")
-    if dr_tab != -1:
-        # Second occurrence marks actual tab content sections
-        sec_start = dr_tab + 1
-        d_heading = _find_idx("Daily Rates", sec_start)
-        if d_heading != -1:
-            # Skip tab header item if repeated right after
-            next_d = _find_idx("Daily Rates", d_heading + 1)
-            if next_d != -1 and next_d - d_heading <= 4:
-                d_heading = next_d
-        m_heading = _find_idx("Monthly Rates", d_heading if d_heading != -1 else sec_start)
-        s_heading = _find_idx("Seasonal Rates", m_heading if m_heading != -1 else sec_start)
-        end_all = _next_boundary(sec_start, ("Also in this Section", "Reserve Your Parking"))
-
-        if d_heading != -1:
-            d_end = min(x for x in (m_heading, s_heading, end_all) if x != -1 and x > d_heading)
-            for ln in lines[d_heading + 1 : d_end]:
-                ll = ln.lower()
-                if ll in ("daily rates", "monthly rates", "seasonal rates"):
-                    continue
-                if "visa, mastercard" in ll or "pay by apps" in ll or "include gst" in ll or "cash payments" in ll:
-                    continue
-                daily_rates.append(ln)
-
-    basic_summary = " ".join(basic_rates_lines).strip()
-    if zone_code_simple and not pay_zones:
-        pay_zones.append({"provider": "Zone", "code": zone_code_simple})
-
-    return {
-        "pay_zones": pay_zones,
-        "basic_rates_summary": basic_summary,
-        "daily_rates": daily_rates[:10],
-        "monthly_rates": monthly_rates,
-        "seasonal_rates": seasonal_rates,
-        "annual_rates": annual_rates,
-        "capacity": capacity,
-        "height_restriction": height_restriction,
-        "hours": hours_summary,
-        "about_notes": about_notes[:8],
-        "sparc_note": sparc_note,
-        "ev_note": ev_note,
-        "event_rate": event_rate_note,
-    }
-
-
-def _fetch_easypark_single(marker: dict[str, str]) -> dict[str, Any] | None:
-    city = _clean_text(marker.get("city", ""))
-    if city.lower() not in METRO_VANCOUVER_CITIES:
-        return None
+# ===================== 2. EasyPark (Cloud Run API) =====================
+def _fetch_easypark_lots(api_url: str = EASYPARK_API_URL) -> list[dict[str, Any]]:
+    features: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
     try:
-        lat = float(marker.get("lat") or 0)
-        lng = float(marker.get("lng") or 0)
-    except ValueError:
-        return None
-    if lat == 0 or lng == 0:
+        resp = requests.get(api_url, headers=EASYPARK_HEADERS, timeout=30)
+        if resp.status_code != 200:
+            print(f"⚠️ EasyPark API HTTP {resp.status_code}")
+            return features
+        lots = resp.json()
+        if not isinstance(lots, list):
+            return features
+
+        for lot in lots:
+            if not isinstance(lot, dict):
+                continue
+            city = _normalize_city(lot.get("city"))
+            if city.lower() not in METRO_VANCOUVER_CITIES:
+                continue
+
+            lat = lot.get("latitude")
+            lng = lot.get("longitude")
+            if (lat is None or lng is None) and isinstance(lot.get("location"), dict):
+                coords = lot["location"].get("coordinates") or []
+                if len(coords) >= 2:
+                    lng, lat = coords[0], coords[1]
+            try:
+                lat_f = float(lat)
+                lng_f = float(lng)
+            except (TypeError, ValueError):
+                continue
+            if lat_f == 0 or lng_f == 0:
+                continue
+
+            lot_number = lot.get("lotNumber")
+            slug = _clean_text(lot.get("slug"))
+            raw_id = _clean_text(lot.get("_id"))
+            name = _clean_text(lot.get("name")) or _clean_text(lot.get("street"))
+            street = _clean_text(lot.get("street")) or name
+
+            fid_suffix = str(lot_number) if lot_number not in (None, "") else (slug or raw_id)
+            fid = f"easypark_{fid_suffix}"
+            if fid in seen_ids:
+                fid = f"easypark_{fid_suffix}_{raw_id[-6:]}"
+            seen_ids.add(fid)
+
+            feat_list = [
+                _clean_text(x) for x in (lot.get("features") or []) if _clean_text(x)
+            ]
+            feat_lower = {f.lower() for f in feat_list}
+
+            zone_numbers: list[dict[str, str]] = []
+            pay_zones: list[dict[str, str]] = []
+            for z in lot.get("zoneNumbers") or []:
+                if not isinstance(z, dict):
+                    continue
+                plat = _clean_text(z.get("platform"))
+                num = _clean_text(z.get("number"))
+                if num:
+                    zone_numbers.append({"platform": plat, "number": num})
+                    pay_zones.append({"provider": plat or "Zone", "code": num})
+
+            payment_methods = [
+                _clean_text(pm) for pm in (lot.get("paymentMethods") or []) if _clean_text(pm)
+            ]
+
+            images: list[str] = []
+            for img in lot.get("images") or []:
+                if isinstance(img, dict) and img.get("url"):
+                    images.append(str(img["url"]).strip())
+                elif isinstance(img, str) and img.strip():
+                    images.append(img.strip())
+
+            about_details = [
+                _clean_text(x) for x in (lot.get("aboutDetails") or []) if _clean_text(x)
+            ]
+
+            rates_obj = lot.get("rates") if isinstance(lot.get("rates"), dict) else {}
+            daily_terms_lines, _ = _html_to_clean_lines(
+                (rates_obj.get("daily") or {}).get("terms") if isinstance(rates_obj.get("daily"), dict) else None
+            )
+            monthly_terms_lines, monthly_apply_url = _html_to_clean_lines(
+                (rates_obj.get("monthly") or {}).get("terms") if isinstance(rates_obj.get("monthly"), dict) else None
+            )
+            event_terms_lines, _ = _html_to_clean_lines(
+                (rates_obj.get("event") or {}).get("terms") if isinstance(rates_obj.get("event"), dict) else None
+            )
+            seasonal_terms_lines, _ = _html_to_clean_lines(
+                (rates_obj.get("seasonal") or {}).get("terms") if isinstance(rates_obj.get("seasonal"), dict) else None
+            )
+
+            rate_val = _clean_text(lot.get("rate")) or None
+            daily_max_val = _clean_text(lot.get("dailyMax")) or None
+            monthly_rate_val = _clean_text(lot.get("monthlyRate")) or None
+            height_restriction_val = _clean_text(lot.get("heightRestriction")) or None
+            stalls_val = lot.get("stalls")
+
+            has_transient = ("daily" in feat_lower) or bool(rate_val) or bool(daily_terms_lines)
+            has_monthly = ("monthly" in feat_lower) or bool(monthly_rate_val) or bool(monthly_terms_lines)
+            has_seasonal = ("seasonal" in feat_lower) or bool(seasonal_terms_lines)
+            has_annual = "annual" in feat_lower
+            has_sparc = "sparc" in feat_lower
+            has_ev = ("evcharging" in feat_lower) or any("ev" in f for f in feat_lower)
+
+            features.append(
+                {
+                    "type": "Feature",
+                    "id": fid,
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [round(lng_f, 6), round(lat_f, 6)],
+                    },
+                    "properties": {
+                        "id": fid,
+                        "facility_type": "impark",
+                        "company": "easypark",
+                        "operator": "EasyPark",
+                        "lot_id": raw_id or fid,
+                        "lot_number": lot_number,
+                        "name": name,
+                        "lot_name": name,
+                        "address1": street,
+                        "address2": "",
+                        "city": city or "Vancouver",
+                        "postal_code": "",
+                        "slug": slug,
+                        "rate": rate_val,
+                        "daily_max": daily_max_val,
+                        "monthly_rate": monthly_rate_val,
+                        "stalls": stalls_val,
+                        "capacity": stalls_val,
+                        "height_restriction": height_restriction_val,
+                        "zone_numbers": zone_numbers,
+                        "pay_zones": pay_zones,
+                        "payment_methods": payment_methods,
+                        "features": feat_list,
+                        "about_details": about_details,
+                        "images": images,
+                        "rates_daily_terms": daily_terms_lines,
+                        "rates_monthly_terms": monthly_terms_lines,
+                        "rates_monthly_apply_url": monthly_apply_url,
+                        "rates_event_terms": event_terms_lines,
+                        "rates_seasonal_terms": seasonal_terms_lines,
+                        "hasTransientRates": has_transient,
+                        "lowestTransientRate": {"label": "時租費率", "value": rate_val} if rate_val else None,
+                        "hasMonthlyRates": has_monthly,
+                        "lowestMonthlyRate": {"label": "月租費率", "value": monthly_rate_val} if monthly_rate_val else None,
+                        "hasSeasonalRates": has_seasonal,
+                        "hasAnnualRates": has_annual,
+                        "hasSparc": has_sparc,
+                        "hasEvCharger": has_ev,
+                        "street_view_url": "",
+                        "directions_url": f"https://www.google.com/maps/dir/?api=1&destination={lat_f},{lng_f}",
+                        "lot_url": f"{EASYPARK_WEB_BASE}/",
+                    },
+                }
+            )
+    except Exception as e:
+        print(f"⚠️ 線上更新 EasyPark 停車場失敗: {e}")
+
+    features.sort(key=lambda f: str((f.get("properties") or {}).get("lot_number") or ""))
+    return features
+
+
+# ===================== 3. Indigo (API1 list + API2 detail) =====================
+INDIGO_SERVICE_LABEL_MAP = {
+    "electricCharging": "電動車充電樁",
+    "electricPlugin": "電動車插座",
+    "accessibilityForDisabled": "無障礙車位",
+    "valetParking": "代客泊車",
+    "toilets": "洗手間",
+    "carWash": "洗車服務",
+    "carService": "車輛維修保養",
+    "jumpStartBattery": "電瓶救援充電",
+    "tyreInflation": "輪胎打氣",
+    "carRental": "租車服務",
+    "bicycleRental": "單車租借",
+    "parentAndChild": "親子車位",
+    "umbrella": "雨傘借用",
+}
+
+INDIGO_PAYMENT_LABEL_MAP = {
+    "visa": "Visa",
+    "masterCard": "MasterCard",
+    "americanExpress": "American Express",
+    "debit": "Debit",
+    "cash": "Cash",
+    "phone": "Pay by Phone",
+}
+
+
+def _extract_indigo_lot_number(name: str, grs_id: str) -> str:
+    m = re.search(r"\b(?:Lot\s*#?\s*|V)(\d{2,5}[A-Za-z]?)\b", name, re.I)
+    if m:
+        return m.group(0).replace("  ", " ").strip()
+    return grs_id
+
+
+def _format_indigo_opening_hours(detail: dict[str, Any]) -> str:
+    if detail.get("isOpen247"):
+        return "24 小時全天開放"
+    oh = _clean_text(detail.get("openingHours"))
+    if oh:
+        return oh
+    days = [
+        ("openingHoursMonday", "週一"),
+        ("openingHoursTuesday", "週二"),
+        ("openingHoursWednesday", "週三"),
+        ("openingHoursThursday", "週四"),
+        ("openingHoursFriday", "週五"),
+        ("openingHoursSaturday", "週六"),
+        ("openingHoursSunday", "週日"),
+    ]
+    parts = [f"{lbl}: {_clean_text(detail.get(k))}" for k, lbl in days if _clean_text(detail.get(k))]
+    return " · ".join(parts)
+
+
+def _fetch_indigo_detail(summary: dict[str, Any]) -> dict[str, Any] | None:
+    slug = _clean_text(summary.get("id"))
+    if not slug:
         return None
 
-    lot_num_raw = _clean_text(marker.get("LotNumber", ""))
-    locurl = _clean_text(marker.get("locurl", ""))
-    lot_url = f"{EASYPARK_DETAIL_BASE}/{locurl}" if locurl else EASYPARK_FIND_URL
-    title = _clean_text(marker.get("title", ""))
-    street = _clean_text(marker.get("street", ""))
-    reservation_url = _clean_text(marker.get("ReservationURL", ""))
-    xml_feats = [
-        _clean_text(x)
-        for x in (marker.get("features") or "").split(",")
-        if _clean_text(x)
+    detail = dict(summary)
+    try:
+        resp = requests.get(
+            INDIGO_DETAIL_TEMPLATE.format(slug=slug),
+            headers=INDIGO_HEADERS,
+            timeout=20,
+        )
+        if resp.status_code == 200:
+            djson = resp.json()
+            if isinstance(djson, dict):
+                detail.update(djson)
+    except Exception:
+        pass
+
+    addr = detail.get("address") or {}
+    city = _normalize_city(addr.get("city"))
+    if city and city.lower() not in METRO_VANCOUVER_CITIES:
+        return None
+
+    geo = detail.get("geoLocation") or {}
+    try:
+        lat_f = float(geo.get("x") or 0)
+        lng_f = float(geo.get("y") or 0)
+    except (TypeError, ValueError):
+        return None
+    if lat_f == 0 or lng_f == 0:
+        return None
+
+    addr_lines = [_clean_text(ln) for ln in (addr.get("lines") or []) if _clean_text(ln)]
+    address1 = ", ".join(addr_lines)
+    postal_code = _clean_text(addr.get("zipCode"))
+    name = _clean_text(detail.get("name")) or address1 or slug
+    grs_id = _clean_text(detail.get("grsId") or detail.get("siteIdentification"))
+    lot_number = _extract_indigo_lot_number(name, grs_id)
+
+    services = detail.get("services") if isinstance(detail.get("services"), dict) else {}
+    feat_list: list[str] = []
+    for k, zh_lbl in INDIGO_SERVICE_LABEL_MAP.items():
+        if services.get(k):
+            feat_list.append(zh_lbl)
+
+    if detail.get("isOpen247"):
+        feat_list.append("24 小時開放")
+    if detail.get("motorcyclesAllowed"):
+        feat_list.append("電單車位")
+    if detail.get("reservationsEnabled"):
+        feat_list.append("支援線上預約")
+    if detail.get("seasonTicketsEnabled"):
+        feat_list.append("月租方案")
+    if detail.get("payAsYouGoEnabled"):
+        feat_list.append("隨停即付")
+
+    structure_parts: list[str] = []
+    if detail.get("garageIsUnderground"):
+        structure_parts.append("地下停車場")
+    if detail.get("mscpGarageIsAboveGround"):
+        structure_parts.append("多層室內停車場")
+    if detail.get("isOnSurface"):
+        structure_parts.append("露天地面停車場")
+    structure_type = " / ".join(structure_parts)
+
+    payments = detail.get("payments") if isinstance(detail.get("payments"), dict) else {}
+    payment_methods = [
+        lbl for k, lbl in INDIGO_PAYMENT_LABEL_MAP.items() if payments.get(k)
     ]
 
-    detail: dict[str, Any] = {}
-    if locurl:
-        try:
-            resp = requests.get(lot_url, headers=REQUEST_HEADERS, timeout=20)
-            if resp.status_code == 200:
-                detail = _parse_easypark_detail_html(resp.text)
-        except Exception:
-            detail = {}
-
-    feat_lower = {f.lower() for f in xml_feats}
-    basic_summary = detail.get("basic_rates_summary") or ""
-    daily_rates = detail.get("daily_rates") or []
-    monthly_rates = detail.get("monthly_rates") or []
-    seasonal_rates = detail.get("seasonal_rates") or []
-    annual_rates = detail.get("annual_rates") or []
-
-    has_transient = ("daily" in feat_lower) or (
-        bool(basic_summary) and "customer parking only" not in basic_summary.lower() and "$" in basic_summary
-    )
-    has_monthly = ("monthly" in feat_lower) or bool(monthly_rates)
-    has_seasonal = ("seasonal" in feat_lower) or bool(seasonal_rates)
-    has_annual = ("annual" in feat_lower) or bool(annual_rates)
-    has_sparc = ("sparc" in feat_lower) or bool(detail.get("sparc_note"))
-    has_ev = any("ev" in x for x in feat_lower) or bool(detail.get("ev_note"))
-
-    merged_features = list(xml_feats)
-    if has_ev and not any("ev" in f.lower() for f in merged_features):
-        merged_features.append("EV Charging")
-    if has_sparc and not any("sparc" in f.lower() for f in merged_features):
-        merged_features.append("SPARC")
-
-    lowest_transient = None
-    if basic_summary:
-        lowest_transient = {
-            "label": "臨停 / 日租費率" if has_transient else "場地說明",
-            "value": basic_summary,
-        }
-    elif daily_rates:
-        lowest_transient = {"label": "臨停 / 日租費率", "value": daily_rates[0]}
-
-    lowest_monthly = monthly_rates[0] if monthly_rates else None
+    hr_raw = detail.get("heightRestriction")
+    height_restriction = ""
     try:
-        lot_num: Any = int(lot_num_raw) if lot_num_raw.isdigit() else lot_num_raw
-    except Exception:
-        lot_num = lot_num_raw
+        if hr_raw is not None and float(hr_raw) > 0:
+            height_restriction = f"{float(hr_raw):.2f} m"
+    except (TypeError, ValueError):
+        pass
+    if not height_restriction and detail.get("heightIsOver3m5"):
+        height_restriction = "3.5 m 以上"
 
-    slug_key = re.sub(r"[^a-z0-9]+", "_", (locurl or lot_num_raw or title).lower()).strip("_")
-    fid = f"easypark_{lot_num_raw or slug_key}"
+    long_desc_raw = str(detail.get("longDescription") or "").strip()
+    long_desc_lines = [
+        _clean_text(ln) for ln in long_desc_raw.splitlines() if _clean_text(ln)
+    ]
+    short_desc = _clean_text(detail.get("shortDescription"))
+    desc_lower = f"{long_desc_raw} {short_desc}".lower()
 
+    prices_raw = detail.get("prices") if isinstance(detail.get("prices"), list) else []
+    prices_clean: list[dict[str, Any]] = []
+    for pr in prices_raw:
+        if isinstance(pr, dict):
+            prices_clean.append(pr)
+
+    has_monthly = bool(detail.get("seasonTicketsEnabled")) or ("monthly" in desc_lower)
+    has_transient = (
+        bool(detail.get("reservationsEnabled"))
+        or bool(detail.get("payAsYouGoEnabled"))
+        or bool(prices_clean)
+        or any(k in desc_lower for k in ("hourly", "daily", "evening", "transient", "visitor", "customer"))
+        or not has_monthly
+    )
+    has_ev = bool(services.get("electricCharging") or services.get("electricPlugin"))
+    has_sparc = bool(services.get("accessibilityForDisabled"))
+
+    fid = f"indigo_{slug}"
     return {
         "type": "Feature",
         "id": fid,
         "geometry": {
             "type": "Point",
-            "coordinates": [round(lng, 6), round(lat, 6)],
+            "coordinates": [round(lng_f, 6), round(lat_f, 6)],
         },
         "properties": {
             "id": fid,
             "facility_type": "impark",
-            "company": "easypark",
-            "operator": "EasyPark",
-            "lot_id": fid,
-            "lot_number": lot_num,
-            "lot_name": title or (f"EasyPark Lot {lot_num}" if lot_num else street),
-            "address1": street,
+            "company": "indigo",
+            "operator": "Indigo",
+            "lot_id": slug,
+            "grs_id": grs_id,
+            "lot_number": lot_number,
+            "name": name,
+            "lot_name": name,
+            "address1": address1,
             "address2": "",
             "city": city or "Vancouver",
-            "postal_code": "",
+            "postal_code": postal_code,
+            "capacity": detail.get("totalSpaces"),
+            "phone": _clean_text(detail.get("phone")),
+            "email": _clean_text(detail.get("email")),
+            "is_open_247": bool(detail.get("isOpen247")),
+            "hours": _format_indigo_opening_hours(detail),
+            "height_restriction": height_restriction,
+            "structure_type": structure_type,
+            "stay_restrictions": _clean_text(detail.get("stayRestrictions")),
+            "long_description_lines": long_desc_lines,
+            "short_description": short_desc,
+            "payment_methods": payment_methods,
+            "prices": prices_clean,
+            "reservations_enabled": bool(detail.get("reservationsEnabled")),
+            "season_tickets_enabled": bool(detail.get("seasonTicketsEnabled")),
+            "pay_as_you_go_enabled": bool(detail.get("payAsYouGoEnabled")),
             "hasTransientRates": has_transient,
-            "lowestTransientRate": lowest_transient,
+            "lowestTransientRate": None,
             "hasMonthlyRates": has_monthly,
-            "lowestMonthlyRate": lowest_monthly,
-            "hasSeasonalRates": has_seasonal,
-            "hasAnnualRates": has_annual,
+            "lowestMonthlyRate": None,
+            "hasSeasonalRates": False,
+            "hasAnnualRates": False,
             "hasSparc": has_sparc,
             "hasEvCharger": has_ev,
-            "daily_rates": daily_rates,
-            "monthly_rates": monthly_rates,
-            "seasonal_rates": seasonal_rates,
-            "annual_rates": annual_rates,
-            "pay_zones": detail.get("pay_zones") or [],
-            "hours": detail.get("hours") or "",
-            "height_restriction": detail.get("height_restriction") or "",
-            "about_notes": detail.get("about_notes") or [],
-            "sparc_note": detail.get("sparc_note") or "",
-            "ev_note": detail.get("ev_note") or "",
-            "event_rate": detail.get("event_rate") or "",
-            "capacity": detail.get("capacity"),
-            "features": merged_features,
+            "features": feat_list,
+            "pay_zones": [],
             "rates": [],
             "street_view_url": "",
-            "directions_url": f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}",
-            "lot_url": lot_url,
-            "reservation_url": reservation_url,
+            "directions_url": f"https://www.google.com/maps/dir/?api=1&destination={lat_f},{lng_f}",
+            "lot_url": f"{INDIGO_WEB_BASE}/{slug}",
+            "reservation_url": detail.get("externalSeasonTicketUrl") or "",
         },
     }
 
 
-def _fetch_easypark_lots(find_url: str = EASYPARK_FIND_URL) -> list[dict[str, Any]]:
-    features: list[dict[str, Any]] = []
+def _fetch_indigo_lots(list_url: str = INDIGO_LIST_URL) -> list[dict[str, Any]]:
+    summaries: list[dict[str, Any]] = []
+    seen_slugs: set[str] = set()
     try:
-        resp = requests.get(find_url, headers=REQUEST_HEADERS, timeout=25)
-        if resp.status_code != 200:
-            print(f"⚠️ EasyPark Find Parking HTTP {resp.status_code}")
-            return features
-        markers_raw = re.findall(r"<marker\s+([^>]+?)/?>", resp.text)
-        markers = [dict(re.findall(r'([A-Za-z0-9_]+)="([^"]*)"', raw)) for raw in markers_raw]
-        metro_markers = [
-            mk for mk in markers if _clean_text(mk.get("city", "")).lower() in METRO_VANCOUVER_CITIES
-        ]
-        print(f"ℹ️ EasyPark 探索頁面共發現 {len(markers)} 筆據點，大溫哥華區共 {len(metro_markers)} 筆，正在並行擷取詳情...")
-        with ThreadPoolExecutor(max_workers=12) as pool:
-            futs = [pool.submit(_fetch_easypark_single, mk) for mk in metro_markers]
-            for fut in as_completed(futs):
-                feat = fut.result()
-                if feat:
-                    features.append(feat)
-        features.sort(key=lambda f: str((f.get("properties") or {}).get("lot_number") or ""))
+        page = 0
+        total_pages = 1
+        while page < total_pages and page < 30:
+            sep = "&" if "?" in list_url else "?"
+            url = f"{list_url}{sep}page={page}"
+            resp = requests.get(url, headers=INDIGO_HEADERS, timeout=25)
+            if resp.status_code != 200:
+                print(f"⚠️ Indigo API1 page={page} HTTP {resp.status_code}")
+                break
+            data = resp.json()
+            total_pages = int(data.get("totalPages") or 1)
+            for item in data.get("content") or []:
+                if not isinstance(item, dict) or item.get("toBeDeleted"):
+                    continue
+                slug = _clean_text(item.get("id"))
+                if not slug or slug in seen_slugs:
+                    continue
+                seen_slugs.add(slug)
+                summaries.append(item)
+            page += 1
     except Exception as e:
-        print(f"⚠️ 線上更新 EasyPark 停車場失敗: {e}")
+        print(f"⚠️ 線上更新 Indigo 停車場清單失敗: {e}")
+        return []
+
+    if not summaries:
+        return []
+
+    print(f"ℹ️ Indigo API1 共取得 {len(summaries)} 筆大溫哥華場站，正在並行擷取 API2 詳情...")
+    features: list[dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=12) as pool:
+        futs = [pool.submit(_fetch_indigo_detail, s) for s in summaries]
+        for fut in as_completed(futs):
+            feat = fut.result()
+            if feat:
+                features.append(feat)
+
+    features.sort(key=lambda f: str((f.get("properties") or {}).get("lot_id") or ""))
     return features
 
 
+# ===================== Combined Updater =====================
 def update_private_parking():
-    print("🅿️ 正在更新大溫私人停車場情報 (ImPark + EasyPark)...")
+    print("🅿️ 正在更新大溫私人停車場情報 (ImPark + EasyPark + Indigo)...")
     impark_url = get_source_endpoint_url("impark_parking", IMPARK_DEFAULT_URL)
-    impark_features = _fetch_impark_lots(impark_url)
-    easypark_features = _fetch_easypark_lots(EASYPARK_FIND_URL)
+    if not impark_url or "latMin=49.185169174402894" in impark_url:
+        impark_url = IMPARK_DEFAULT_URL
 
-    if not impark_features or not easypark_features:
+    impark_features = _fetch_impark_lots(impark_url)
+    easypark_features = _fetch_easypark_lots(EASYPARK_API_URL)
+    indigo_features = _fetch_indigo_lots(INDIGO_LIST_URL)
+
+    if not impark_features or not easypark_features or not indigo_features:
         existing = load_existing_geojson("vancouver_impark.geojson") or {}
         existing_feats = existing.get("features") or []
         if not impark_features:
@@ -509,13 +678,20 @@ def update_private_parking():
             easypark_features = [
                 f for f in existing_feats if (f.get("properties") or {}).get("company") == "easypark"
             ]
+        if not indigo_features:
+            print("ℹ️ Indigo 本次未取得資料，保留現有快取...")
+            indigo_features = [
+                f for f in existing_feats if (f.get("properties") or {}).get("company") == "indigo"
+            ]
 
-    combined = impark_features + easypark_features
+    combined = impark_features + easypark_features + indigo_features
     if combined:
         save_layer_geojson("vancouver_impark.geojson", combined)
+        update_admin_source_metadata("impark_parking", record_count=len(combined))
         print(
             f"✅ 私人停車場更新完成：ImPark {len(impark_features)} 處 + "
-            f"EasyPark {len(easypark_features)} 處，共 {len(combined)} 處場站。"
+            f"EasyPark {len(easypark_features)} 處 + Indigo {len(indigo_features)} 處，"
+            f"共 {len(combined)} 處場站。"
         )
     return combined
 
