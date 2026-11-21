@@ -31,8 +31,10 @@ jobs:
             frontend/public/vancouver_street_lighting_poles.geojson \
             backend/data/vancouver_street_lighting_junction_boxes.geojson \
             frontend/public/vancouver_street_lighting_junction_boxes.geojson \
-            backend/data/vancouver_night_lights.geojson \
-            frontend/public/vancouver_night_lights.geojson 2>/dev/null || true
+            backend/data/canada_night_lights_z5.png \
+            backend/data/bc_night_lights_z8.png \
+            backend/data/vancouver_night_lights_meta.json \
+            frontend/public/vancouver_night_lights_meta.json 2>/dev/null || true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -63,8 +65,10 @@ jobs:
             frontend/public/vancouver_street_lighting_poles.geojson
             backend/data/vancouver_street_lighting_junction_boxes.geojson
             frontend/public/vancouver_street_lighting_junction_boxes.geojson
-            backend/data/vancouver_night_lights.geojson
-            frontend/public/vancouver_night_lights.geojson
+            backend/data/canada_night_lights_z5.png
+            backend/data/bc_night_lights_z8.png
+            backend/data/vancouver_night_lights_meta.json
+            frontend/public/vancouver_night_lights_meta.json
           )
 
           mkdir -p /tmp/wf_stage
@@ -136,8 +140,10 @@ jobs:
                 frontend/public/vancouver_street_lighting_poles.geojson \
                 backend/data/vancouver_street_lighting_junction_boxes.geojson \
                 frontend/public/vancouver_street_lighting_junction_boxes.geojson \
-                backend/data/vancouver_night_lights.geojson \
-                frontend/public/vancouver_night_lights.geojson 2>/dev/null || true
+                backend/data/canada_night_lights_z5.png \
+                backend/data/bc_night_lights_z8.png \
+                backend/data/vancouver_night_lights_meta.json \
+                frontend/public/vancouver_night_lights_meta.json 2>/dev/null || true
             fi
             python3 backend/scripts/record_workflow_sync.py --source "street_lighting" --workflow "update-street-lighting.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "street_lighting" --workflow "update-street-lighting.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
             echo "✅ OCI 伺服器 [燈光] 資料與後台時間戳同步完成！"

@@ -18,9 +18,9 @@ from base import (
 
 IMPARK_DEFAULT_URL = (
     "https://lots.impark.com/api/lots/IMP/en?"
-    "latLoc=49.231405747636195&lngLoc=-123.10900119980765"
-    "&latMin=49.098730747823055&lngMin=-123.48699955185843"
-    "&latMax=49.36372538454293&lngMax=-122.73100284775687&csr=0&branchName="
+    "latLoc=49.304039344629544&lngLoc=-123.28565867846936"
+    "&latMin=49.03872383213182&lngMin=-124.04165538257092"
+    "&latMax=49.56793395318879&lngMax=-122.5296619743678&csr=0&branchName="
 )
 
 EASYPARK_API_URL = (
@@ -95,6 +95,14 @@ CHROME_UA = (
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
 )
 
+IMPARK_HEADERS = {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "zh-HK,zh;q=0.9,en-HK;q=0.8,en-US;q=0.7,en;q=0.6,zh-TW;q=0.5",
+    "referer": "https://lots.impark.com/imp",
+    "x-requested-with": "XMLHttpRequest",
+    "user-agent": CHROME_UA,
+}
+
 EASYPARK_HEADERS = {
     "accept": "*/*",
     "accept-language": "zh-HK,zh;q=0.9,en-HK;q=0.8,en-US;q=0.7,en;q=0.6,zh-TW;q=0.5",
@@ -155,9 +163,17 @@ def _fetch_impark_lots(url: str) -> list[dict[str, Any]]:
     features: list[dict[str, Any]] = []
     seen_ids: set[str] = set()
     try:
-        resp = requests.get(url, headers={"User-Agent": CHROME_UA}, timeout=30)
-        if resp.status_code != 200:
-            print(f"⚠️ ImPark API HTTP {resp.status_code}")
+        resp = None
+        for attempt in range(3):
+            try:
+                resp = requests.get(url, headers=IMPARK_HEADERS, timeout=30)
+                if resp.status_code == 200:
+                    break
+            except Exception:
+                if attempt == 2:
+                    raise
+        if resp is None or resp.status_code != 200:
+            print(f"⚠️ ImPark API HTTP {resp.status_code if resp is not None else 'N/A'}")
             return features
         lots = resp.json()
         for lot in lots:
@@ -658,31 +674,46 @@ def _fetch_indigo_lots(list_url: str = INDIGO_LIST_URL) -> list[dict[str, Any]]:
 def update_private_parking():
     print("🅿️ 正在更新大溫私人停車場情報 (ImPark + EasyPark + Indigo)...")
     impark_url = get_source_endpoint_url("impark_parking", IMPARK_DEFAULT_URL)
-    if not impark_url or "latMin=49.185169174402894" in impark_url:
+    if (
+        not impark_url
+        or "latMin=49.185169174402894" in impark_url
+        or "latMin=49.098730747823055" in impark_url
+    ):
         impark_url = IMPARK_DEFAULT_URL
 
     impark_features = _fetch_impark_lots(impark_url)
     easypark_features = _fetch_easypark_lots(EASYPARK_API_URL)
     indigo_features = _fetch_indigo_lots(INDIGO_LIST_URL)
 
-    if not impark_features or not easypark_features or not indigo_features:
-        existing = load_existing_geojson("vancouver_impark.geojson") or {}
-        existing_feats = existing.get("features") or []
-        if not impark_features:
-            print("ℹ️ ImPark 本次未取得資料，保留現有快取...")
-            impark_features = [
-                f for f in existing_feats if ((f.get("properties") or {}).get("company") or "impark") == "impark"
-            ]
-        if not easypark_features:
-            print("ℹ️ EasyPark 本次未取得資料，保留現有快取...")
-            easypark_features = [
-                f for f in existing_feats if (f.get("properties") or {}).get("company") == "easypark"
-            ]
-        if not indigo_features:
-            print("ℹ️ Indigo 本次未取得資料，保留現有快取...")
-            indigo_features = [
-                f for f in existing_feats if (f.get("properties") or {}).get("company") == "indigo"
-            ]
+    existing = load_existing_geojson("vancouver_impark.geojson") or {}
+    existing_feats = existing.get("features") or []
+    existing_by_co = {
+        "impark": [
+            f for f in existing_feats if ((f.get("properties") or {}).get("company") or "impark") == "impark"
+        ],
+        "easypark": [
+            f for f in existing_feats if (f.get("properties") or {}).get("company") == "easypark"
+        ],
+        "indigo": [
+            f for f in existing_feats if (f.get("properties") or {}).get("company") == "indigo"
+        ],
+    }
+
+    if not impark_features or (existing_by_co["impark"] and len(impark_features) < len(existing_by_co["impark"]) * 0.5):
+        print(
+            f"ℹ️ ImPark 本次僅取得 {len(impark_features)} 筆（低於現有 {len(existing_by_co['impark'])} 筆之安全閾值），保留現有快取..."
+        )
+        impark_features = existing_by_co["impark"]
+    if not easypark_features or (existing_by_co["easypark"] and len(easypark_features) < len(existing_by_co["easypark"]) * 0.5):
+        print(
+            f"ℹ️ EasyPark 本次僅取得 {len(easypark_features)} 筆（低於現有 {len(existing_by_co['easypark'])} 筆之安全閾值），保留現有快取..."
+        )
+        easypark_features = existing_by_co["easypark"]
+    if not indigo_features or (existing_by_co["indigo"] and len(indigo_features) < len(existing_by_co["indigo"]) * 0.5):
+        print(
+            f"ℹ️ Indigo 本次僅取得 {len(indigo_features)} 筆（低於現有 {len(existing_by_co['indigo'])} 筆之安全閾值），保留現有快取..."
+        )
+        indigo_features = existing_by_co["indigo"]
 
     combined = impark_features + easypark_features + indigo_features
     if combined:

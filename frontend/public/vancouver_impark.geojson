@@ -1,8 +1,8 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
-  "total_count": 730,
-  "updated_at": "2026-11-21T01:42:14.023Z",
+  "total_count": 752,
+  "updated_at": "2026-11-21T04:01:19.523Z",
   "features": [
     {
       "type": "Feature",
@@ -91,6 +91,88 @@
         "features": [],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2624907042673,-123.10211030897283&heading=114.72992619301847&fov=90&pitch=-7.2372712061660565&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_175",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.667272,
+          49.217961
+        ]
+      },
+      "properties": {
+        "id": "impark_175",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 175,
+        "lot_number": 1020,
+        "lot_name": "WCE - Maple Meadows",
+        "address1": "20010 Dunn Ave",
+        "address2": "",
+        "city": "Maple Ridge",
+        "postal_code": "V2X 2P3",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "daily",
+          "value": "$3.00 DailyPass"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [
+          "Block Heater Plugin"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.21800119954506,-122.66723528931607&heading=189.52065980195502&fov=90&pitch=-9.162221951798458&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_176",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.688325,
+          49.225386
+        ]
+      },
+      "properties": {
+        "id": "impark_176",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 176,
+        "lot_number": 1021,
+        "lot_name": "WCE - Pitt Meadows",
+        "address1": "12280 Harris Road",
+        "address2": "",
+        "city": "Pitt Meadows",
+        "postal_code": "V3Y 2E9",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "daily",
+          "value": "$3.00 Daily Pass"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2256462109552,-122.6888455410442&heading=106.96374459278175&fov=90&pitch=0.13133747726620015&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
         "directions_url": ""
       }
     },
@@ -2321,6 +2403,46 @@
     },
     {
       "type": "Feature",
+      "id": "impark_291",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.599262,
+          49.220434
+        ]
+      },
+      "properties": {
+        "id": "impark_291",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 291,
+        "lot_number": 1372,
+        "lot_name": "Maple Ridge Municipal Holdings",
+        "address1": "22470 Dewdney Trunk Road",
+        "address2": "",
+        "city": "Maple Ridge",
+        "postal_code": "V2X 5Z6",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$1.25 per hr"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2204,-122.599&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
       "id": "impark_292",
       "geometry": {
         "type": "Point",
@@ -3000,6 +3122,48 @@
     },
     {
       "type": "Feature",
+      "id": "impark_323",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.631907,
+          49.215013
+        ]
+      },
+      "properties": {
+        "id": "impark_323",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 323,
+        "lot_number": 1505,
+        "lot_name": "Ridge Meadows Hospital",
+        "address1": "11666 Laity Street",
+        "address2": "",
+        "city": "Maple Ridge",
+        "postal_code": "V2X 5A3",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$3.50 for first hour, $3.00 per each additional hour"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": true,
+        "capacity": null,
+        "features": [
+          "EV Charger"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.21474750348737,-122.6319563174189&heading=97.98168318176633&fov=90&pitch=-3.822145418875408&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
       "id": "impark_324",
       "geometry": {
         "type": "Point",
@@ -3159,6 +3323,168 @@
         "features": [],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.17711719181715,-122.84447783726591&heading=358.5304975679958&fov=90&pitch=5.651266919159667&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_334",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.612079,
+          49.092813
+        ]
+      },
+      "properties": {
+        "id": "impark_334",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 334,
+        "lot_number": 1516,
+        "lot_name": "LMH - Main Visitor Lot",
+        "address1": "22051 Fraser Highway",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V3A 4H4",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$3.50 per hour"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": true,
+        "capacity": null,
+        "features": [
+          "EV Charger"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.0928,-122.612&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_335",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.612079,
+          49.092813
+        ]
+      },
+      "properties": {
+        "id": "impark_335",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 335,
+        "lot_number": 1517,
+        "lot_name": "LMH - Staff Lot",
+        "address1": "22051 Fraser Highway",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V3A 4H4",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$3.75 per hour"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.0959184958488,-122.61108279172215&heading=151.14290451246706&fov=90&pitch=0.7058429218089373&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_336",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.612086,
+          49.095968
+        ]
+      },
+      "properties": {
+        "id": "impark_336",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 336,
+        "lot_number": 1518,
+        "lot_name": "LMH - EMERGENCY",
+        "address1": "22051 Fraser Highway",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V3A 4H4",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$3.50 per hour | $4.25 per hour (at Emergency)"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.09590960087887,-122.6115359512995&heading=256.4144596299288&fov=90&pitch=-0.06490713523014335&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_345",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.612079,
+          49.092813
+        ]
+      },
+      "properties": {
+        "id": "impark_345",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 345,
+        "lot_number": 1528,
+        "lot_name": "Memorial Cottage",
+        "address1": "22051 Fraser Highway",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V3A 4H4",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$2.50 per hour"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.0928,-122.612&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
         "directions_url": ""
       }
     },
@@ -3498,6 +3824,51 @@
     },
     {
       "type": "Feature",
+      "id": "impark_352",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2725,
+          49.373198
+        ]
+      },
+      "properties": {
+        "id": "impark_352",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 352,
+        "lot_number": 1621,
+        "lot_name": "Horseshoe Bay Ferry Terminal",
+        "address1": "The Terminal, Horseshoe Bay",
+        "address2": "6750 Keith Road",
+        "city": "West Vancouver",
+        "postal_code": "V7W 2V1",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$2.00 Each Half Hour or Portion"
+        },
+        "hasMonthlyRates": true,
+        "lowestMonthlyRate": {
+          "label": "Random Mon-Fri LT Parkade Only",
+          "value": "$130.00"
+        },
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [
+          "Parker Pete"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.37361791891286,-123.27301979099428&heading=128.68385645812023&fov=90&pitch=1.7846230148111317&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
       "id": "impark_354",
       "geometry": {
         "type": "Point",
@@ -3790,6 +4161,46 @@
         "features": [],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.191596530382235,-122.79933660744553&heading=304.6667508214927&fov=90&pitch=-6.340845710330143&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_375",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.61152,
+          49.096235
+        ]
+      },
+      "properties": {
+        "id": "impark_375",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 375,
+        "lot_number": 1661,
+        "lot_name": "Murrayville Health Care Centre",
+        "address1": "22112 52nd Avenue",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V2Y 2M6",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "4.00/hr, $10.75/6am-6pm, $5.75/6pm-6am, $15.75/6am-6am"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.0959184958488,-122.61108279172215&heading=180.17045613104207&fov=90&pitch=-7.604399635923912&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
         "directions_url": ""
       }
     },
@@ -4100,6 +4511,48 @@
     },
     {
       "type": "Feature",
+      "id": "impark_2211",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.273234,
+          49.37264
+        ]
+      },
+      "properties": {
+        "id": "impark_2211",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 2211,
+        "lot_number": 1748,
+        "lot_name": "Horseshoe Bay Ferry Long Term",
+        "address1": "6750 Keith Road",
+        "address2": "",
+        "city": "West Vancouver",
+        "postal_code": "V7W 2V1",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$12.50 Each 6 Hours or Portion"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [
+          "Parker Pete"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.37273619047606,-123.2728936169664&heading=258.7527451759014&fov=90&pitch=-6.085173629985064&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
       "id": "impark_2963",
       "geometry": {
         "type": "Point",
@@ -4138,6 +4591,46 @@
         "features": [],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.3143410465696,-123.09922747288266&heading=259.0489940866936&fov=90&pitch=-8.908904447953404&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_2215",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.659118,
+          49.159819
+        ]
+      },
+      "properties": {
+        "id": "impark_2215",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 2215,
+        "lot_number": 1754,
+        "lot_name": "Carvolth Exchange",
+        "address1": "20255 - 86th Ave",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V3L0E7",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "daily",
+          "value": "$2.00 Daily Pass"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.15922368990762,-122.66018248361945&heading=340.2892897663946&fov=90&pitch=-10.04680359307308&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
         "directions_url": ""
       }
     },
@@ -4183,6 +4676,46 @@
         ],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24158489658489,-123.05764009968557&heading=164.74097625036035&fov=90&pitch=-13.967228658990507&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_2222",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.822144,
+          49.07231
+        ]
+      },
+      "properties": {
+        "id": "impark_2222",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 2222,
+        "lot_number": 1761,
+        "lot_name": "South Surrey Park & Ride",
+        "address1": "3800 King George Highway",
+        "address2": "",
+        "city": "Surrey",
+        "postal_code": "V3L0E7",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "daily",
+          "value": "$2.00 Daily Pass"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.07243232569157,-122.82336269206951&heading=95.81102621931271&fov=90&pitch=-3.5160855903810244&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
         "directions_url": ""
       }
     },
@@ -4979,6 +5512,46 @@
         ],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26205896353991,-123.11756408797874&heading=241.440142628858&fov=90&pitch=-0.4426510697246613&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_422",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.63161,
+          49.215996
+        ]
+      },
+      "properties": {
+        "id": "impark_422",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 422,
+        "lot_number": 1850,
+        "lot_name": "CareLife Maple Ridge",
+        "address1": "11762 Laity Street",
+        "address2": "",
+        "city": "Maple Ridge",
+        "postal_code": "V2X 5A3",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$3.25 per hr"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.21603485984965,-122.63199265116315&heading=96.72930567687978&fov=90&pitch=-1.3367505980639152&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
         "directions_url": ""
       }
     },
@@ -7644,6 +8217,46 @@
     },
     {
       "type": "Feature",
+      "id": "impark_540",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.610423,
+          49.096386
+        ]
+      },
+      "properties": {
+        "id": "impark_540",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 540,
+        "lot_number": 2285,
+        "lot_name": "TLC Medical Centre",
+        "address1": "5171 221A Street",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V2Y 0A2",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "3.50/hr, $10.25/6am-6pm, $5.25/6pm-6am, $15.25/6am-6am"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.096456704342295,-122.61034200381826&heading=262.96632393174883&fov=90&pitch=-2.9307355485844226&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
       "id": "impark_5116",
       "geometry": {
         "type": "Point",
@@ -8138,6 +8751,46 @@
     },
     {
       "type": "Feature",
+      "id": "impark_5208",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.275352,
+          49.374218
+        ]
+      },
+      "properties": {
+        "id": "impark_5208",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 5208,
+        "lot_number": 2320,
+        "lot_name": "6417 Bruce Street",
+        "address1": "6417 Bruce Street",
+        "address2": "",
+        "city": "West Vancouver",
+        "postal_code": "V7W 2G7",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$2.71/30Min, $4.74/Hr, $9.48/2Hr, $14.22/3Hr, $18.96/4Hr, $23.70/5Hr"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
       "id": "impark_5206",
       "geometry": {
         "type": "Point",
@@ -8379,6 +9032,49 @@
         "features": [],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.324148930845745,-123.14872541549934&heading=62.58874947636287&fov=90&pitch=-3.1844269303766737&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_5248",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.600962,
+          49.220134
+        ]
+      },
+      "properties": {
+        "id": "impark_5248",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 5248,
+        "lot_number": 2332,
+        "lot_name": "Spire Professional Centre",
+        "address1": "22420 Dewdney Trunk Road",
+        "address2": "",
+        "city": "Maple Ridge",
+        "postal_code": "V2X 3J5",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$3.20 per hr"
+        },
+        "hasMonthlyRates": true,
+        "lowestMonthlyRate": {
+          "label": "Random Parking",
+          "value": "$80.00"
+        },
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "",
         "directions_url": ""
       }
     },
@@ -9476,6 +10172,46 @@
         "features": [
           "Motorcycle Rates"
         ],
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_5348",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.651044,
+          49.105433
+        ]
+      },
+      "properties": {
+        "id": "impark_5348",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 5348,
+        "lot_number": 2365,
+        "lot_name": "Baytree Plaza",
+        "address1": "20641 Logan Ave",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V3A 7R3",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$2.50 per hour, no daily max."
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
         "rates": [],
         "street_view_url": "",
         "directions_url": ""
@@ -11604,6 +12340,49 @@
     },
     {
       "type": "Feature",
+      "id": "impark_5077",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.273613,
+          49.373618
+        ]
+      },
+      "properties": {
+        "id": "impark_5077",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 5077,
+        "lot_number": 390,
+        "lot_name": "6355 Bruce Street",
+        "address1": "6355 Bruce Street",
+        "address2": "",
+        "city": "West Vancouver",
+        "postal_code": "V7W 2G5",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$1.63 per 30 min"
+        },
+        "hasMonthlyRates": true,
+        "lowestMonthlyRate": {
+          "label": "Random 24/7",
+          "value": "$225.00"
+        },
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.373676855995946,-123.27299852959048&heading=320.18524007378966&fov=90&pitch=-5.133092147820349&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
       "id": "impark_5078",
       "geometry": {
         "type": "Point",
@@ -12117,6 +12896,49 @@
         ],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28499470469318,-123.11147485401739&heading=64.36170410671369&fov=90&pitch=1.2533031989323433&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_54",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.273045,
+          49.373451
+        ]
+      },
+      "properties": {
+        "id": "impark_54",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 54,
+        "lot_number": 545,
+        "lot_name": "Lion's Mark",
+        "address1": "6343 Bruce Street",
+        "address2": "",
+        "city": "West Vancouver",
+        "postal_code": "V7W 2G5",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$2 for first 30 Mins, $3.50/Hr | $18/12Hr | $24/1 Day"
+        },
+        "hasMonthlyRates": true,
+        "lowestMonthlyRate": {
+          "label": "Random Mon-Fri ONLY",
+          "value": "$135.00"
+        },
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.3735,-123.273&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
         "directions_url": ""
       }
     },
@@ -12812,6 +13634,46 @@
     },
     {
       "type": "Feature",
+      "id": "impark_4610",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.597841,
+          49.219576
+        ]
+      },
+      "properties": {
+        "id": "impark_4610",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 4610,
+        "lot_number": 65,
+        "lot_name": "Maple Ridge Park and Ride",
+        "address1": "22558 McIntosh Avenue",
+        "address2": "",
+        "city": "Maple Ridge",
+        "postal_code": "V2X 3C1",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$1"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.21904967433768,-122.5978934660862&heading=33.49066588523224&fov=90&pitch=0.451208619410977&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
       "id": "impark_82",
       "geometry": {
         "type": "Point",
@@ -13417,6 +14279,49 @@
         "features": [],
         "rates": [],
         "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.162805503691814,-123.13473041606676&heading=22.360458685688386&fov=90&pitch=-3.1400618083933267&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "impark_4656",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.669224,
+          49.16174
+        ]
+      },
+      "properties": {
+        "id": "impark_4656",
+        "facility_type": "impark",
+        "company": "impark",
+        "operator": "ImPark",
+        "lot_id": 4656,
+        "lot_number": 76,
+        "lot_name": "PCI Carvolth Project Corp.",
+        "address1": "19933 88th Ave",
+        "address2": "",
+        "city": "Langley",
+        "postal_code": "V2Y 4K5",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$3.26/hour (taxes included)"
+        },
+        "hasMonthlyRates": true,
+        "lowestMonthlyRate": {
+          "label": "Non Tenant Random 24/7 UG",
+          "value": "$220.00"
+        },
+        "hasSeasonalRates": false,
+        "hasAnnualRates": false,
+        "hasSparc": false,
+        "hasEvCharger": false,
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.16254414001284,-122.6712474540297&heading=24.071202075616903&fov=90&pitch=-4.250809887982101&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
         "directions_url": ""
       }
     },
@@ -31198,20 +32103,27 @@
         "postal_code": "V5N 5Y9",
         "capacity": 222,
         "phone": "+1 (604) 669-7275",
-        "email": "",
+        "email": "guestservices.bc@group-indigo.com",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 06:00-23:00 · 週二: 06:00-23:00 · 週三: 06:00-23:00 · 週四: 06:00-23:00 · 週五: 06:00-23:00 · 週六: 06:00-23:00 · 週日: 06:00-23:00",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Customer and monthly parking in an underground location. Open from 6:00am to 11:00 pm. Please contact our office for availability and rates.",
+          "Points of interests:Price Smart Foods, Public Library, TD Bank"
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express"
+        ],
         "prices": [],
         "reservations_enabled": false,
         "season_tickets_enabled": true,
         "pay_as_you_go_enabled": false,
-        "hasTransientRates": false,
+        "hasTransientRates": true,
         "lowestTransientRate": null,
         "hasMonthlyRates": true,
         "lowestMonthlyRate": null,
@@ -31386,15 +32298,22 @@
         "postal_code": "V5Y 4B7",
         "capacity": 5,
         "phone": "+1 (604) 669-7275",
-        "email": "",
+        "email": "guestservices.bc@group-indigo.com",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 07:30-21:45 · 週二: 07:30-21:45 · 週三: 07:30-21:45 · 週四: 07:30-21:45 · 週五: 07:30-21:45 · 週六: 07:30-21:45 · 週日: 07:30-21:45",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Monthly, daily and hourly parking.",
+          "Gate is closed at 9:45pm daily."
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": true,
@@ -31576,15 +32495,21 @@
         "postal_code": "V6H 1G9",
         "capacity": 419,
         "phone": "+1 (604) 669-7275",
-        "email": "",
+        "email": "guestservices.bc@group-indigo.com",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 07:00-21:00 · 週二: 07:00-21:00 · 週三: 07:00-21:00 · 週四: 07:00-21:00 · 週五: 07:00-21:00 · 週六: 08:00-21:00 · 週日: 11:00-21:00",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Underground location with monthly, daily, and hourly parking. Open from 6:00 a.m. to 8:00 p.m."
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": true,
@@ -31702,15 +32627,23 @@
         "postal_code": "V6B 5W7",
         "capacity": 25,
         "phone": "+1 (604) 669-7275",
-        "email": "",
-        "is_open_247": false,
-        "hours": "",
+        "email": "guestservices.bc@group-indigo.com",
+        "is_open_247": true,
+        "hours": "24 小時全天開放",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Monthly parking in a 24/7 gated underground location. Please contact our office for availability and rates.",
+          "Points of interests: Granville Street Bridge, Yaletown, Entertainment District"
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express",
+          "Debit"
+        ],
         "prices": [],
         "reservations_enabled": false,
         "season_tickets_enabled": true,
@@ -31724,6 +32657,7 @@
         "hasSparc": false,
         "hasEvCharger": false,
         "features": [
+          "24 小時開放",
           "月租方案"
         ],
         "pay_zones": [],
@@ -32550,13 +33484,15 @@
         "postal_code": "V5S 1J9",
         "capacity": 129,
         "phone": "+1 (604) 669-7275",
-        "email": "",
-        "is_open_247": false,
-        "hours": "",
+        "email": "guestservices.bc@group-indigo.com",
+        "is_open_247": true,
+        "hours": "24 小時全天開放",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "露天地面停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Customer parking only."
+        ],
         "short_description": "",
         "payment_methods": [],
         "prices": [],
@@ -32571,7 +33507,9 @@
         "hasAnnualRates": false,
         "hasSparc": false,
         "hasEvCharger": false,
-        "features": [],
+        "features": [
+          "24 小時開放"
+        ],
         "pay_zones": [],
         "rates": [],
         "street_view_url": "",
@@ -33638,15 +34576,21 @@
         "postal_code": "V5Z 1E3",
         "capacity": 31,
         "phone": "+1 (604) 669-7275",
-        "email": "",
+        "email": "guestservices.bc@group-indigo.com",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 07:45-18:00 · 週二: 07:45-18:00 · 週三: 07:45-18:00 · 週四: 07:45-18:00 · 週五: 07:45-18:00 · 週六: 07:45-13:00",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Underground location with hourly parking."
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": false,
@@ -33951,13 +34895,16 @@
         "postal_code": "V5P 3T9",
         "capacity": 11,
         "phone": "+1 (604) 669-7275",
-        "email": "",
-        "is_open_247": false,
-        "hours": "",
+        "email": "guestservices.bc@group-indigo.com",
+        "is_open_247": true,
+        "hours": "24 小時全天開放",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "露天地面停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Tenant and visitor parking.",
+          "Points of interests: Teng's Market, Victoria Drive"
+        ],
         "short_description": "",
         "payment_methods": [],
         "prices": [],
@@ -33972,7 +34919,9 @@
         "hasAnnualRates": false,
         "hasSparc": false,
         "hasEvCharger": false,
-        "features": [],
+        "features": [
+          "24 小時開放"
+        ],
         "pay_zones": [],
         "rates": [],
         "street_view_url": "",
@@ -34263,15 +35212,23 @@
         "postal_code": "V5T 0H6",
         "capacity": 122,
         "phone": "+1 (604) 669-7275",
-        "email": "",
+        "email": "guestservices.bc@group-indigo.com",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 06:00-21:00 · 週二: 06:00-21:00 · 週三: 06:00-21:00 · 週四: 06:00-21:00 · 週五: 06:00-21:00 · 週六: 06:00-21:00 · 週日: 06:00-21:00",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Underground location with monthly, daily, hourly, overnight parking. Gate Closed from midnight to 6:00 a.m.",
+          "Points of interests: Kinsgate Mall, Broadway"
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express",
+          "Debit"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": true,
@@ -34384,13 +35341,16 @@
         "postal_code": "V3E 3J6",
         "capacity": 25,
         "phone": "+1 (604) 669-7275",
-        "email": "",
-        "is_open_247": false,
-        "hours": "",
+        "email": "guestservices.bc@group-indigo.com",
+        "is_open_247": true,
+        "hours": "24 小時全天開放",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "露天地面停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "4 hour customer parking only.",
+          "Points of interests: Cedar Cottage"
+        ],
         "short_description": "",
         "payment_methods": [],
         "prices": [],
@@ -34405,7 +35365,9 @@
         "hasAnnualRates": false,
         "hasSparc": false,
         "hasEvCharger": false,
-        "features": [],
+        "features": [
+          "24 小時開放"
+        ],
         "pay_zones": [],
         "rates": [],
         "street_view_url": "",
@@ -34567,15 +35529,23 @@
         "postal_code": "V6Z 2R9",
         "capacity": 377,
         "phone": "+1 (604) 669-7275",
-        "email": "",
-        "is_open_247": false,
-        "hours": "",
+        "email": "guestservices.bc@group-indigo.com",
+        "is_open_247": true,
+        "hours": "24 小時全天開放",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Hourly, daily, overnight, and monthly parking. Open from 7:00 a.m. to 10:00 p.m.",
+          "Points of interests: Sheraton Wall Centre Vancouver Hotel, St. Paul's Hospital, Law Courts"
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express",
+          "Debit"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": true,
@@ -34590,6 +35560,7 @@
         "hasEvCharger": false,
         "features": [
           "洗車服務",
+          "24 小時開放",
           "支援線上預約",
           "月租方案"
         ],
@@ -34832,15 +35803,29 @@
         "postal_code": "V6B 0P9",
         "capacity": 59,
         "phone": "+1 (604) 669-7275",
-        "email": "",
-        "is_open_247": false,
-        "hours": "",
+        "email": "guestservices.bc@group-indigo.com",
+        "is_open_247": true,
+        "hours": "24 小時全天開放",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Underground location with monthly parking. Please contact our office for availability and rates.",
+          "Points of interest: Yaletown shops and resutrants",
+          "Monthly Parking Only",
+          "Hours:",
+          "24 hours per day, 7 days per week",
+          "Points of interests:",
+          "Sea Wall, Yaletown",
+          "Lot Type:",
+          "1"
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express"
+        ],
         "prices": [],
         "reservations_enabled": false,
         "season_tickets_enabled": true,
@@ -34854,6 +35839,7 @@
         "hasSparc": false,
         "hasEvCharger": false,
         "features": [
+          "24 小時開放",
           "月租方案"
         ],
         "pay_zones": [],
@@ -38317,15 +39303,22 @@
         "postal_code": "V5Y 0E8",
         "capacity": 52,
         "phone": "+1 (604) 669-7275",
-        "email": "",
+        "email": "guestservices.bc@group-indigo.com",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 06:00-22:00 · 週二: 06:00-22:00 · 週三: 06:00-22:00 · 週四: 06:00-22:00 · 週五: 06:00-22:00 · 週六: 06:00-22:00 · 週日: 06:00-22:00",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Underground parkad with hourly, daily and monthly parking.",
+          "Points of interests:Olympic Village, Cambie Village, Canada Line. Gate open from 6:00am - 10:00pm."
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": true,
@@ -39775,15 +40768,23 @@
         "postal_code": "V6Z 2E1",
         "capacity": 330,
         "phone": "+1 (604) 669-7275",
-        "email": "",
-        "is_open_247": false,
-        "hours": "",
+        "email": "guestservices.bc@group-indigo.com",
+        "is_open_247": true,
+        "hours": "24 小時全天開放",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
-        "long_description_lines": [],
+        "long_description_lines": [
+          "Undergournd location with hourly, daily, and monthly parking.",
+          "Points of interests: Art Gallery, Pacific Centre, UBC, Robson Square"
+        ],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express",
+          "Debit"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": true,
@@ -39797,6 +40798,7 @@
         "hasSparc": false,
         "hasEvCharger": false,
         "features": [
+          "24 小時開放",
           "支援線上預約",
           "月租方案"
         ],
@@ -41022,11 +42024,11 @@
         "postal_code": "V5V 0J1",
         "capacity": 40,
         "phone": "+1 (604) 669-7275",
-        "email": "",
+        "email": "guestservices.bc@group-indigo.com",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 07:00-21:00 · 週二: 07:00-21:00 · 週三: 07:00-21:00 · 週四: 07:00-21:00 · 週五: 07:00-21:00 · 週六: 07:00-21:00 · 週日: 07:00-21:00",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "露天地面停車場",
         "stay_restrictions": "",
         "long_description_lines": [],
         "short_description": "",
@@ -41081,15 +42083,19 @@
         "postal_code": "V5V 4E3",
         "capacity": 26,
         "phone": "+1 (604) 669-7275",
-        "email": "",
+        "email": "guestservices.bc@group-indigo.com",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 08:00-19:00 · 週二: 08:00-19:00 · 週三: 08:00-19:00 · 週四: 08:00-19:00 · 週五: 08:00-19:00 · 週六: 08:00-19:00 · 週日: 08:00-19:00",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
         "long_description_lines": [],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": true,
@@ -43711,13 +44717,17 @@
         "phone": "",
         "email": "",
         "is_open_247": false,
-        "hours": "",
+        "hours": "週一: 07:00-18:00 · 週二: 07:00-18:00 · 週三: 07:00-18:00 · 週四: 07:00-18:00 · 週五: 07:00-18:00 · 週六: 07:00-18:00 · 週日: 07:00-18:00",
         "height_restriction": "",
-        "structure_type": "",
+        "structure_type": "地下停車場",
         "stay_restrictions": "",
         "long_description_lines": [],
         "short_description": "",
-        "payment_methods": [],
+        "payment_methods": [
+          "Visa",
+          "MasterCard",
+          "American Express"
+        ],
         "prices": [],
         "reservations_enabled": true,
         "season_tickets_enabled": false,

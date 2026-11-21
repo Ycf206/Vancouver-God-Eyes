@@ -31,7 +31,7 @@ import {
   RotateCcw, RotateCw, MapPin, MapPinned, Crosshair, Activity, Ban, Cone, Ship,
   Camera, Gauge, Mail, AlertCircle, Radio, RadioTower, Anchor, CreditCard, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert,
   CircleDollarSign, Globe, Ticket, Accessibility,
-  BusFront, Repeat, TrainFront, ShipCargo, Plane, PlaneLanding, PlaneTakeoff, Minimize2, Maximize2, RefreshCw, Wind, Thermometer, Eye, Road,
+  BusFront, Repeat, TrainFront, ShipCargo, Plane, PlaneLanding, PlaneTakeoff, Minimize2, Maximize2, RefreshCw, Wind, Thermometer, Eye, EyeOff, Road,
   EvCharger, TrafficCone, Trees, Earth, Parasol, CloudSun, Newspaper, CalendarDays,
   CableCar, Sparkles, Waypoints, SquareExclamationPoint, Fence, GitCommitHorizontal,
   Sun, Moon, Sunrise, Sunset, RotateCwClock, Weight, SquareParking, Trophy,
@@ -290,7 +290,7 @@ const STREET_LIGHTING_OPTIONS: ReadonlyArray<{
   {
     key: 'nightLights',
     label: '夜間燈光',
-    desc: 'NASA Black Marble 一年中位數',
+    desc: '全加拿大一年中位數',
     swatchClass: 'bg-purple-500 border-white',
     activeTextClass: 'text-purple-300',
     toggleBgClass: 'bg-purple-600',
@@ -298,79 +298,41 @@ const STREET_LIGHTING_OPTIONS: ReadonlyArray<{
   },
 ];
 
-function pushClusteredStreetLightingLayers(
+function pushDirectStreetLightingPointLayers(
   targetLayers: Array<Record<string, unknown>>,
   opts: {
     prefix: string;
     sourceId: string;
-    clusterColors: [string, string, string];
-    dotGlowColor?: string;
-    dotCoreColor?: string;
-    clusterOnlyMaxZoom?: number;
+    dotGlowColor: string;
+    dotCoreColor: string;
   }
 ) {
-  const { prefix, sourceId, clusterColors, dotGlowColor, dotCoreColor, clusterOnlyMaxZoom } = opts;
-  const clusterCircle: Record<string, unknown> = {
-    id: `${prefix}-cluster-layer`,
-    type: 'circle',
-    source: sourceId,
-    filter: ['has', 'point_count'],
-    paint: {
-      'circle-color': ['step', ['get', 'point_count'], clusterColors[0], 20, clusterColors[1], 100, clusterColors[2]],
-      'circle-radius': ['step', ['get', 'point_count'], 15, 20, 20, 100, 26],
-      'circle-stroke-width': 2,
-      'circle-stroke-color': '#ffffff',
-      'circle-opacity': 0.92,
-    },
-  };
-  const clusterCount: Record<string, unknown> = {
-    id: `${prefix}-cluster-count`,
-    type: 'symbol',
-    source: sourceId,
-    filter: ['has', 'point_count'],
-    layout: {
-      'text-field': '{point_count_abbreviated}',
-      'text-size': 12,
-      'text-font': ['Open Sans Bold'],
-    },
-    paint: { 'text-color': '#ffffff' },
-  };
-  if (clusterOnlyMaxZoom !== undefined) {
-    clusterCircle.maxzoom = clusterOnlyMaxZoom;
-    clusterCount.maxzoom = clusterOnlyMaxZoom;
-  }
-  targetLayers.push(clusterCircle, clusterCount);
-
-  if (dotGlowColor && dotCoreColor) {
-    targetLayers.push(
-      {
-        id: `${prefix}-glow`,
-        type: 'circle',
-        source: sourceId,
-        filter: ['!', ['has', 'point_count']],
-        minzoom: 12,
-        paint: {
-          'circle-color': dotGlowColor,
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 3, 14, 5, 16, 7.5, 18, 10],
-          'circle-opacity': 0.35,
-          'circle-blur': 0.8,
-        },
+  const { prefix, sourceId, dotGlowColor, dotCoreColor } = opts;
+  targetLayers.push(
+    {
+      id: `${prefix}-glow`,
+      type: 'circle',
+      source: sourceId,
+      paint: {
+        'circle-color': dotGlowColor,
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 1.8, 12, 3.0, 14, 4.8, 16, 7.2, 18, 9.5],
+        'circle-opacity': ['interpolate', ['linear'], ['zoom'], 9, 0.22, 12, 0.3, 15, 0.36],
+        'circle-blur': 0.8,
       },
-      {
-        id: `${prefix}-layer`,
-        type: 'circle',
-        source: sourceId,
-        filter: ['!', ['has', 'point_count']],
-        minzoom: 12,
-        paint: {
-          'circle-color': dotCoreColor,
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 2.2, 14, 3.6, 16, 5.2, 18, 6.5],
-          'circle-stroke-width': 1.2,
-          'circle-stroke-color': '#ffffff',
-        },
-      }
-    );
-  }
+    },
+    {
+      id: `${prefix}-layer`,
+      type: 'circle',
+      source: sourceId,
+      paint: {
+        'circle-color': dotCoreColor,
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 0.9, 12, 1.8, 14, 3.0, 16, 4.8, 18, 6.2],
+        'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 12, 0, 14, 0.8, 16, 1.2],
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.92,
+      },
+    }
+  );
 }
 
 const MV_UTILITY_ATTR_ROWS: Array<{ key: string; label: string; format?: (v: unknown) => string }> = [
@@ -2090,8 +2052,9 @@ export default function AppMap() {
   const [showTimePeriodInfo, setShowTimePeriodInfo] = useState(false);
   const [timeInfoHovered, setTimeInfoHovered] = useState(false);
   const [timeInfoPinned, setTimeInfoPinned] = useState(false);
-  const [easyparkAboutHovered, setEasyparkAboutHovered] = useState(false);
-  const [easyparkAboutPinned, setEasyparkAboutPinned] = useState(false);
+  const [easyparkTipHovered, setEasyparkTipHovered] = useState<'daily' | 'monthly' | 'about' | null>(null);
+  const [easyparkTipPinned, setEasyparkTipPinned] = useState<'daily' | 'monthly' | 'about' | null>(null);
+  const [easyparkImgZoom, setEasyparkImgZoom] = useState<number>(1);
   const [easyparkImageModal, setEasyparkImageModal] = useState<{
     title: string;
     images: string[];
@@ -3207,6 +3170,11 @@ export default function AppMap() {
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
 
+  useEffect(() => {
+    setEasyparkTipHovered(null);
+    setEasyparkTipPinned(null);
+  }, [selectedFacility?.id]);
+
   // Auto-dismiss popup if the selected facility is filtered out
   useEffect(() => {
     if (!selectedFacility) return;
@@ -3280,11 +3248,6 @@ export default function AppMap() {
       if (!matchRate || !matchSparc || !matchEv) setSelectedFacility(null);
     }
   }, [selectedFacility, carSharingFilter, bikewaysFilter, zoningFilter, safetyCamerasFilter, imparkFilter]);
-
-  useEffect(() => {
-    setEasyparkAboutHovered(false);
-    setEasyparkAboutPinned(false);
-  }, [selectedFacility?.id]);
 
   useEffect(() => {
     if (!layers.airQuality) return;
@@ -5635,9 +5598,14 @@ export default function AppMap() {
     }
     if (layers.streetLighting) {
       if (streetLightingFilter.nightLights) {
+        const apiBase = getApiUrl();
         style.sources['street_lighting_night_lights'] = {
-          type: 'geojson',
-          data: '/vancouver_night_lights.geojson',
+          type: 'raster',
+          tiles: [`${apiBase}/api/night-lights/tiles/{z}/{x}/{y}.png`],
+          tileSize: 256,
+          minzoom: 2,
+          maxzoom: 8,
+          bounds: [-146.25, 40.9799, -45.0, 74.0195],
         };
       }
       if (streetLightingFilter.conduits) {
@@ -5645,30 +5613,17 @@ export default function AppMap() {
           type: 'geojson',
           data: '/vancouver_street_lighting_conduits.geojson',
         };
-        style.sources['street_lighting_conduits_clusters'] = {
-          type: 'geojson',
-          data: '/vancouver_street_lighting_conduits_clusters.geojson',
-          cluster: true,
-          clusterMaxZoom: 14,
-          clusterRadius: 45,
-        };
       }
       if (streetLightingFilter.poles) {
         style.sources['street_lighting_poles'] = {
           type: 'geojson',
           data: '/vancouver_street_lighting_poles.geojson',
-          cluster: true,
-          clusterMaxZoom: 14,
-          clusterRadius: 45,
         };
       }
       if (streetLightingFilter.junctionBoxes) {
         style.sources['street_lighting_junction_boxes'] = {
           type: 'geojson',
           data: '/vancouver_street_lighting_junction_boxes.geojson',
-          cluster: true,
-          clusterMaxZoom: 14,
-          clusterRadius: 45,
         };
       }
     }
@@ -6093,15 +6048,16 @@ export default function AppMap() {
       });
     }
 
-    // Energy / Lighting: NASA Black Marble (VIIRS) 夜間燈光一年中位數色塊圖層 (置於底圖之上、點位之下，無點擊 Popup)
+    // Energy / Lighting: NASA Black Marble (VIIRS) 全加拿大 + 南卑詩高解析夜間燈光光柵瓦片圖層 (置於底圖之上、點位之下，無點擊 Popup)
     if (layers.streetLighting && streetLightingFilter.nightLights) {
       style.layers.push({
-        id: 'street-lighting-night-lights-fill',
-        type: 'fill',
+        id: 'street-lighting-night-lights-raster',
+        type: 'raster',
         source: 'street_lighting_night_lights',
         paint: {
-          'fill-color': ['coalesce', ['get', 'color'], '#7e22ce'],
-          'fill-opacity': 0.56,
+          'raster-opacity': 0.72,
+          'raster-resampling': 'nearest',
+          'raster-fade-duration': 150,
         },
       });
     }
@@ -7282,9 +7238,9 @@ export default function AppMap() {
         type: 'circle',
         source: 'picnic_sites',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 4.5, 13, 7, 15, 9.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': layerCustomColors?.picnicSites || '#d97706',
-          'circle-stroke-width': 1.8,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -7292,10 +7248,10 @@ export default function AppMap() {
         id: 'picnic-sites-icon-layer',
         type: 'symbol',
         source: 'picnic_sites',
-        minzoom: 12,
+        minzoom: 14,
         layout: {
           'icon-image': 'lucide-tent-tree',
-          'icon-size': ['interpolate', ['linear'], ['zoom'], 12, 0.24, 14, 0.34, 16, 0.46],
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 14, 0.22, 15, 0.36, 17, 0.46],
           'icon-allow-overlap': true,
           'icon-ignore-placement': true
         }
@@ -7380,38 +7336,29 @@ export default function AppMap() {
       });
     }
 
-    // Energy / Utilities: Street Lighting (燈光 - 路燈網絡 / 路燈 / 路燈接線盒，聚合顯示無 popup)
+    // Energy / Utilities: Street Lighting (燈光 - 路燈網絡 / 路燈 / 路燈接線盒，全縮放直接顯示無數字聚合與無 popup)
     if (layers.streetLighting) {
       if (streetLightingFilter.conduits) {
-        const conduitCfg = STREET_LIGHTING_OPTIONS[0];
-        pushClusteredStreetLightingLayers(style.layers, {
-          prefix: 'street-lighting-conduits',
-          sourceId: 'street_lighting_conduits_clusters',
-          clusterColors: conduitCfg.clusterColors,
-          clusterOnlyMaxZoom: 14,
-        });
         style.layers.push(
           {
             id: 'street-lighting-conduits-casing',
             type: 'line',
             source: 'street_lighting_conduits',
-            minzoom: 14,
             layout: { 'line-cap': 'round', 'line-join': 'round' },
             paint: {
               'line-color': '#1e1b18',
-              'line-width': ['interpolate', ['linear'], ['zoom'], 14, 2.4, 16, 3.6, 18, 5.2],
-              'line-opacity': 0.55,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.9, 12, 1.5, 14, 2.4, 16, 3.6, 18, 5.2],
+              'line-opacity': ['interpolate', ['linear'], ['zoom'], 10, 0.3, 13, 0.45, 15, 0.55],
             },
           },
           {
             id: 'street-lighting-conduits-layer',
             type: 'line',
             source: 'street_lighting_conduits',
-            minzoom: 14,
             layout: { 'line-cap': 'round', 'line-join': 'round' },
             paint: {
               'line-color': layerCustomColors?.streetLighting || '#f59e0b',
-              'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1.4, 16, 2.2, 18, 3.4],
+              'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.5, 12, 0.9, 14, 1.5, 16, 2.3, 18, 3.4],
               'line-opacity': 0.9,
             },
           }
@@ -7419,22 +7366,20 @@ export default function AppMap() {
       }
       if (streetLightingFilter.poles) {
         const poleCfg = STREET_LIGHTING_OPTIONS[1];
-        pushClusteredStreetLightingLayers(style.layers, {
+        pushDirectStreetLightingPointLayers(style.layers, {
           prefix: 'street-lighting-poles',
           sourceId: 'street_lighting_poles',
-          clusterColors: poleCfg.clusterColors,
-          dotGlowColor: poleCfg.dotGlowColor,
-          dotCoreColor: poleCfg.dotCoreColor,
+          dotGlowColor: poleCfg.dotGlowColor || '#fde047',
+          dotCoreColor: poleCfg.dotCoreColor || '#eab308',
         });
       }
       if (streetLightingFilter.junctionBoxes) {
         const jbCfg = STREET_LIGHTING_OPTIONS[2];
-        pushClusteredStreetLightingLayers(style.layers, {
+        pushDirectStreetLightingPointLayers(style.layers, {
           prefix: 'street-lighting-junction-boxes',
           sourceId: 'street_lighting_junction_boxes',
-          clusterColors: jbCfg.clusterColors,
-          dotGlowColor: jbCfg.dotGlowColor,
-          dotCoreColor: jbCfg.dotCoreColor,
+          dotGlowColor: jbCfg.dotGlowColor || '#fdba74',
+          dotCoreColor: jbCfg.dotCoreColor || '#ea580c',
         });
       }
     }
@@ -13178,7 +13123,7 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'police') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'consulates') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'pharmacies') return selectedFacility.properties?.address || selectedFacility.local_area || 'British Columbia';
-                              if (selectedFacility.facility_type === 'picnic_sites') return `${selectedFacility.properties?.category_zh || '公園野餐區'} · 溫哥華公園局`;
+                              if (selectedFacility.facility_type === 'picnic_sites') return selectedFacility.properties?.address || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'water_supply') {
                                 return selectedFacility.properties?.plan_area || '';
                               }
@@ -13471,10 +13416,11 @@ export default function AppMap() {
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
+                              setEasyparkImgZoom(1);
                               setEasyparkImageModal({ title: displayName, images, index: 0 });
                             }}
                             className="shrink-0 p-1.5 rounded-lg bg-orange-500/15 hover:bg-orange-500/25 text-orange-700 border border-orange-400/40 transition-colors cursor-pointer flex items-center justify-center"
-                            title={`查看停車場實景圖片 (${images.length} 張)`}
+                            title={`查看圖片 (${images.length} 張)`}
                           >
                             <Images className="w-4 h-4" />
                           </button>
@@ -13505,12 +13451,50 @@ export default function AppMap() {
                                 </div>
                               )}
                               {dailyTerms.length > 0 && (
-                                <div className="flex flex-col gap-1 pt-0.5">
+                                <div className="flex items-center justify-between gap-2 pt-0.5">
                                   <span className="text-gray-600 font-medium">時租詳情</span>
-                                  <div className="bg-white/85 rounded border border-gray-200/70 px-2 py-1.5 text-[10.5px] text-gray-700 space-y-1 leading-snug">
-                                    {dailyTerms.map((line, i) => (
-                                      <div key={i} className="break-words">{translateEasyParkTextToZh(line)}</div>
-                                    ))}
+                                  <div
+                                    className="relative shrink-0"
+                                    onPointerEnter={(e) => {
+                                      if (e.pointerType !== 'touch') setEasyparkTipHovered('daily');
+                                    }}
+                                    onPointerLeave={(e) => {
+                                      if (e.pointerType !== 'touch') setEasyparkTipHovered((prev) => (prev === 'daily' ? null : prev));
+                                    }}
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setEasyparkTipPinned((prev) => (prev === 'daily' ? null : 'daily'));
+                                      }}
+                                      aria-expanded={easyparkTipHovered === 'daily' || easyparkTipPinned === 'daily'}
+                                      className="p-1.5 -m-0.5 rounded-full text-orange-700 hover:text-orange-950 hover:bg-orange-500/20 transition-all cursor-pointer flex items-center justify-center"
+                                      title="查看時租詳情"
+                                    >
+                                      <Info className="w-3.5 h-3.5" />
+                                    </button>
+
+                                    <div
+                                      onClick={(e) => e.stopPropagation()}
+                                      className={`absolute right-0 top-full mt-1.5 w-[250px] max-w-[calc(100vw-64px)] max-h-[220px] overflow-y-auto z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
+                                        (easyparkTipHovered === 'daily' || easyparkTipPinned === 'daily')
+                                          ? 'opacity-100 scale-100 pointer-events-auto'
+                                          : 'opacity-0 scale-95 pointer-events-none'
+                                      }`}
+                                    >
+                                      <div className="flex items-center justify-between pb-1 border-b border-gray-700/60">
+                                        <span className="font-bold text-white text-[11px] flex items-center gap-1">
+                                          <Info className="w-3 h-3 text-orange-400" />
+                                          時租詳情
+                                        </span>
+                                      </div>
+                                      <div className="flex flex-col gap-1 text-[10.5px] text-gray-200 leading-snug">
+                                        {dailyTerms.map((line, i) => (
+                                          <div key={i} className="break-words">{translateEasyParkTextToZh(line)}</div>
+                                        ))}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               )}
@@ -13526,21 +13510,65 @@ export default function AppMap() {
                                 </div>
                               )}
                               {(monthlyTerms.length > 0 || monthlyApplyUrl) && (
-                                <div className="flex flex-col gap-1">
+                                <div className="flex items-center justify-between gap-2">
                                   <span className="text-gray-600 font-medium">月租詳情</span>
-                                  <div className="bg-white/85 rounded border border-gray-200/70 px-2 py-1.5 text-[10.5px] text-gray-700 space-y-1 leading-snug">
-                                    {monthlyTerms.map((line, i) => (
-                                      <div key={i} className="break-words">{translateEasyParkTextToZh(line)}</div>
-                                    ))}
+                                  <div className="flex items-center gap-1 shrink-0">
+                                    {monthlyTerms.length > 0 && (
+                                      <div
+                                        className="relative shrink-0"
+                                        onPointerEnter={(e) => {
+                                          if (e.pointerType !== 'touch') setEasyparkTipHovered('monthly');
+                                        }}
+                                        onPointerLeave={(e) => {
+                                          if (e.pointerType !== 'touch') setEasyparkTipHovered((prev) => (prev === 'monthly' ? null : prev));
+                                        }}
+                                      >
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setEasyparkTipPinned((prev) => (prev === 'monthly' ? null : 'monthly'));
+                                          }}
+                                          aria-expanded={easyparkTipHovered === 'monthly' || easyparkTipPinned === 'monthly'}
+                                          className="p-1.5 -m-0.5 rounded-full text-orange-700 hover:text-orange-950 hover:bg-orange-500/20 transition-all cursor-pointer flex items-center justify-center"
+                                          title="查看月租詳情"
+                                        >
+                                          <Info className="w-3.5 h-3.5" />
+                                        </button>
+
+                                        <div
+                                          onClick={(e) => e.stopPropagation()}
+                                          className={`absolute right-0 top-full mt-1.5 w-[250px] max-w-[calc(100vw-64px)] max-h-[220px] overflow-y-auto z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
+                                            (easyparkTipHovered === 'monthly' || easyparkTipPinned === 'monthly')
+                                              ? 'opacity-100 scale-100 pointer-events-auto'
+                                              : 'opacity-0 scale-95 pointer-events-none'
+                                          }`}
+                                        >
+                                          <div className="flex items-center justify-between pb-1 border-b border-gray-700/60">
+                                            <span className="font-bold text-white text-[11px] flex items-center gap-1">
+                                              <Info className="w-3 h-3 text-orange-400" />
+                                              月租詳情
+                                            </span>
+                                          </div>
+                                          <div className="flex flex-col gap-1 text-[10.5px] text-gray-200 leading-snug">
+                                            {monthlyTerms.map((line, i) => (
+                                              <div key={i} className="break-words">{translateEasyParkTextToZh(line)}</div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
                                     {monthlyApplyUrl && (
                                       <a
                                         href={monthlyApplyUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1 text-orange-700 hover:underline font-medium"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="p-1.5 -m-0.5 rounded-full text-orange-700 hover:text-orange-950 hover:bg-orange-500/20 transition-all cursor-pointer flex items-center justify-center"
+                                        title="申請月租車位"
+                                        aria-label="申請月租車位"
                                       >
-                                        <span>申請月租車位</span>
-                                        <ExternalLink className="w-3 h-3" />
+                                        <ExternalLink className="w-3.5 h-3.5" />
                                       </a>
                                     )}
                                   </div>
@@ -13609,19 +13637,19 @@ export default function AppMap() {
                                       <div
                                         className="relative shrink-0"
                                         onPointerEnter={(e) => {
-                                          if (e.pointerType !== 'touch') setEasyparkAboutHovered(true);
+                                          if (e.pointerType !== 'touch') setEasyparkTipHovered('about');
                                         }}
                                         onPointerLeave={(e) => {
-                                          if (e.pointerType !== 'touch') setEasyparkAboutHovered(false);
+                                          if (e.pointerType !== 'touch') setEasyparkTipHovered((prev) => (prev === 'about' ? null : prev));
                                         }}
                                       >
                                         <button
                                           type="button"
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            setEasyparkAboutPinned((prev) => !prev);
+                                            setEasyparkTipPinned((prev) => (prev === 'about' ? null : 'about'));
                                           }}
-                                          aria-expanded={easyparkAboutHovered || easyparkAboutPinned}
+                                          aria-expanded={easyparkTipHovered === 'about' || easyparkTipPinned === 'about'}
                                           className="p-1.5 -m-0.5 rounded-full text-orange-700 hover:text-orange-950 hover:bg-orange-500/20 transition-all cursor-pointer flex items-center justify-center"
                                           title="查看場地詳細說明"
                                         >
@@ -13631,7 +13659,7 @@ export default function AppMap() {
                                         <div
                                           onClick={(e) => e.stopPropagation()}
                                           className={`absolute right-0 bottom-full mb-1.5 w-[250px] max-w-[calc(100vw-64px)] max-h-[220px] overflow-y-auto z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
-                                            (easyparkAboutHovered || easyparkAboutPinned)
+                                            (easyparkTipHovered === 'about' || easyparkTipPinned === 'about')
                                               ? 'opacity-100 scale-100 pointer-events-auto'
                                               : 'opacity-0 scale-95 pointer-events-none'
                                           }`}
@@ -15996,7 +16024,7 @@ export default function AppMap() {
                 const importantNoteZh = p.important_note_zh ? String(p.important_note_zh) : '';
                 const residentialRate = p.residential_rate ? String(p.residential_rate) : '';
                 const corporateRate = p.corporate_rate ? String(p.corporate_rate) : '';
-                const website = p.website || 'https://vancouver.ca/parks-recreation-culture/picnics.aspx';
+                const website = p.website || 'https://anc.ca.apm.activecommunities.com/vancouver/reservation/search?onlineSiteId=0&facilityTypeIds=25';
 
                 return (
                   <div className="flex flex-col gap-2 text-xs text-gray-700">
@@ -16109,7 +16137,7 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
                       >
-                        <span className="truncate">前往溫哥華市政府野餐預約網頁</span>
+                        <span className="truncate">前往市政府野餐預約網頁</span>
                         <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                       </a>
                     </div>
@@ -22098,7 +22126,7 @@ export default function AppMap() {
         </div>
       </div>
 
-      {(layers.crimeAreas || layers.trafficConditions || layers.airQuality || layers.wildfire) && (
+      {(layers.crimeAreas || layers.trafficConditions || layers.airQuality || layers.wildfire || (layers.streetLighting && streetLightingFilter.nightLights)) && (
         <div className="absolute bottom-[calc(68px+env(safe-area-inset-bottom,0px))] left-2 sm:left-4 z-20 flex flex-col-reverse gap-2 items-start max-w-[calc(100vw-16px)] pointer-events-none">
           {/* 罪案地區圖例卡片 (Crime Rate Legend) */}
           {layers.crimeAreas && (
@@ -22214,7 +22242,7 @@ export default function AppMap() {
                   <Lightbulb className="w-3.5 h-3.5 text-amber-300" />
                   <span>夜間燈光亮度</span>
                 </span>
-                <span className="text-[9.5px] text-gray-400">NASA Black Marble (VIIRS) · 一年中位數</span>
+                <span className="text-[9.5px] text-gray-400">NASA Black Marble (VIIRS) · 全加拿大一年中位數</span>
               </div>
 
               <div className="grid grid-cols-7 h-5 rounded-md overflow-hidden border border-white/15">
@@ -24693,18 +24721,20 @@ export default function AppMap() {
               <div className="flex flex-col gap-2 text-[11px]">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-gray-400">
-                    縮小顯示區域數量，放大顯示精確位置 ({activeCount}/{STREET_LIGHTING_OPTIONS.length})
+                    已顯示 {activeCount}/{STREET_LIGHTING_OPTIONS.length}
                   </span>
                   <button
                     type="button"
                     onClick={handleToggleAll}
-                    className={`px-2 py-0.5 rounded text-[10px] font-medium border transition-colors cursor-pointer ${
+                    className={`p-1.5 rounded-md border transition-colors cursor-pointer flex items-center justify-center ${
                       allActive
-                        ? 'bg-amber-500/20 border-amber-400/60 text-amber-200'
-                        : 'bg-[#10141e]/80 border-[#262b38] text-gray-300 hover:text-white'
+                        ? 'bg-amber-500/20 border-amber-400/60 text-amber-200 hover:bg-amber-500/30'
+                        : 'bg-[#10141e]/80 border-[#262b38] text-gray-400 hover:text-white hover:border-gray-500'
                     }`}
+                    title={allActive ? '全部關閉' : '全部顯示'}
+                    aria-label={allActive ? '全部關閉' : '全部顯示'}
                   >
-                    {allActive ? '全部關閉' : '全部顯示'}
+                    {allActive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                   </button>
                 </div>
 
@@ -27530,17 +27560,20 @@ export default function AppMap() {
         </div>
       )}
 
-      {/* EasyPark 停車場實景圖片 Lightbox Modal */}
+      {/* EasyPark 圖片 Lightbox Modal */}
       {easyparkImageModal && easyparkImageModal.images.length > 0 && typeof document !== 'undefined' && createPortal(
         <div
           className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
-          onClick={() => setEasyparkImageModal(null)}
+          onClick={() => {
+            setEasyparkImgZoom(1);
+            setEasyparkImageModal(null);
+          }}
         >
           <div
             className="relative max-w-4xl w-full bg-[#161922] border border-orange-500/50 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[86vh]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0 gap-2">
               <div className="flex items-center gap-2.5 min-w-0">
                 <span className="p-1 rounded bg-orange-500/20 text-orange-400 shrink-0">
                   <Images className="w-4 h-4" />
@@ -27549,12 +27582,33 @@ export default function AppMap() {
                   <h4 className="text-sm font-bold text-gray-100 truncate">
                     {easyparkImageModal.title}
                   </h4>
-                  <span className="text-[11px] text-gray-400">
-                    停車場實景圖片 ({easyparkImageModal.index + 1} / {easyparkImageModal.images.length})
+                  <span className="text-[11px] text-gray-400 font-mono">
+                    {easyparkImageModal.index + 1} / {easyparkImageModal.images.length}
+                    {easyparkImgZoom !== 1 ? ` · ${Math.round(easyparkImgZoom * 100)}%` : ''}
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setEasyparkImgZoom((z) => Math.max(0.5, Number((z - 0.25).toFixed(2))))}
+                  disabled={easyparkImgZoom <= 0.5}
+                  className="p-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  title="縮小"
+                  aria-label="縮小"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEasyparkImgZoom((z) => Math.min(3, Number((z + 0.25).toFixed(2))))}
+                  disabled={easyparkImgZoom >= 3}
+                  className="p-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  title="放大"
+                  aria-label="放大"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
                 <a
                   href={easyparkImageModal.images[easyparkImageModal.index]}
                   target="_blank"
@@ -27566,7 +27620,10 @@ export default function AppMap() {
                 </a>
                 <button
                   type="button"
-                  onClick={() => setEasyparkImageModal(null)}
+                  onClick={() => {
+                    setEasyparkImgZoom(1);
+                    setEasyparkImageModal(null);
+                  }}
                   className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                   title="關閉"
                 >
@@ -27579,7 +27636,8 @@ export default function AppMap() {
               {easyparkImageModal.images.length > 1 && (
                 <button
                   type="button"
-                  onClick={() =>
+                  onClick={() => {
+                    setEasyparkImgZoom(1);
                     setEasyparkImageModal((prev) =>
                       prev
                         ? {
@@ -27587,8 +27645,8 @@ export default function AppMap() {
                             index: (prev.index - 1 + prev.images.length) % prev.images.length,
                           }
                         : null
-                    )
-                  }
+                    );
+                  }}
                   className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/70 hover:bg-orange-600/80 text-white border border-white/20 transition-colors cursor-pointer z-10"
                   title="上一張"
                 >
@@ -27600,13 +27658,19 @@ export default function AppMap() {
               <img
                 src={easyparkImageModal.images[easyparkImageModal.index]}
                 alt={easyparkImageModal.title}
-                className="max-w-full max-h-[66vh] object-contain rounded-lg shadow-2xl border border-white/10"
+                style={{
+                  maxHeight: `${Math.round(66 * easyparkImgZoom)}vh`,
+                  maxWidth: easyparkImgZoom <= 1 ? `${Math.round(100 * easyparkImgZoom)}%` : 'none',
+                  height: easyparkImgZoom > 1 ? `${Math.round(66 * easyparkImgZoom)}vh` : undefined,
+                }}
+                className="object-contain rounded-lg shadow-2xl border border-white/10 transition-all duration-150 shrink-0"
               />
 
               {easyparkImageModal.images.length > 1 && (
                 <button
                   type="button"
-                  onClick={() =>
+                  onClick={() => {
+                    setEasyparkImgZoom(1);
                     setEasyparkImageModal((prev) =>
                       prev
                         ? {
@@ -27614,8 +27678,8 @@ export default function AppMap() {
                             index: (prev.index + 1) % prev.images.length,
                           }
                         : null
-                    )
-                  }
+                    );
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/70 hover:bg-orange-600/80 text-white border border-white/20 transition-colors cursor-pointer z-10"
                   title="下一張"
                 >

@@ -1,59 +1,108 @@
+#!/usr/bin/env python3
+"""
+Canada & Southern BC Night Lights Updater (NASA Black Marble VIIRS via NASA GIBS).
+
+Generates two compact 8-color indexed palette PNGs (index 0 = transparent, 1..7 = radiance tiers)
+representing a 1-year median composite of NASA GIBS
+`VIIRS_NOAA20_GapFilled_BRDF_Corrected_DayNightBand_Radiance`:
+
+1. `backend/data/canada_night_lights_z5.png`
+   - Covers all of Canada (z=5, x=3..11, y=6..11 -> lon -146.25°..-45.0°, lat 40.98°..74.02°)
+   - 2304 x 1536 px (~2.5 km/px at 49°N), 12 monthly nights median (~100-180 KB PNG)
+2. `backend/data/bc_night_lights_z8.png`
+   - Covers Southern BC, Metro Vancouver, Vancouver Island, Fraser Valley, Whistler & Okanagan
+     (z=8, x=38..42, y=86..88 -> lon -126.56°..-119.53°, lat 47.99°..50.74°)
+   - 1280 x 768 px (~310 m/px native VIIRS resolution), 24 biweekly nights median (~40-80 KB PNG)
+3. `backend/data/vancouver_night_lights_meta.json` (+ copy in `frontend/public/`)
+   - Metadata, sample date range, bounds, tile configs, and 7-tier legend definitions.
+
+Tiles are served on the fly by FastAPI `GET /api/night-lights/tiles/{z}/{x}/{y}.png`.
+"""
+
+from __future__ import annotations
+
 import io
 import math
 import os
 import re
 import statistics
 import sys
+import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 import requests
-from PIL import Image
+from PIL import Image, ImageChops
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(CURRENT_DIR)
+if CURRENT_DIR not in sys.path:
+    sys.path.append(CURRENT_DIR)
+
 from base import (
     BACKEND_DATA_DIR,
     FRONTEND_DATA_DIR,
     atomic_write_json,
-    load_existing_geojson,
 )
 
-OUTPUT_FILENAME = "vancouver_night_lights.geojson"
+CANADA_PNG_FILENAME = "canada_night_lights_z5.png"
+BC_PNG_FILENAME = "bc_night_lights_z8.png"
+META_FILENAME = "vancouver_night_lights_meta.json"
+LEGACY_GEOJSON_FILENAME = "vancouver_night_lights.geojson"
 
 # NASA Black Marble (VIIRS NOAA-20 Gap-Filled BRDF-Corrected Day/Night Band Radiance) via NASA GIBS
 GIBS_LAYER_ID = "VIIRS_NOAA20_GapFilled_BRDF_Corrected_DayNightBand_Radiance"
 GIBS_FALLBACK_LAYER_ID = "VIIRS_SNPP_GapFilled_BRDF_Corrected_DayNightBand_Radiance"
 GIBS_TMS = "GoogleMapsCompatible_Level8"
-GIBS_ZOOM = 8
 GIBS_CAPABILITIES_URL = "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/1.0.0/WMTSCapabilities.xml"
 GIBS_TILE_URL_TEMPLATE = (
     "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/"
     "{layer}/default/{date}/" + GIBS_TMS + "/{z}/{y}/{x}.png"
 )
 
-# Metro Vancouver & Fraser Valley crop window (falls cleanly within z=8, y=87, x in [40, 41])
-BBOX_LAT_MIN = 48.98
-BBOX_LAT_MAX = 49.48
-BBOX_LON_MIN = -123.42
-BBOX_LON_MAX = -122.25
+# Full Canada z=5 grid (9 x 6 = 54 tiles -> 2304 x 1536 px)
+# lon: -146.25° to -45.00° | lat: 40.98° to 74.02°
+CANADA_GRID = {
+    "zoom": 5,
+    "tx_min": 3,
+    "tx_max": 11,
+    "ty_min": 6,
+    "ty_max": 11,
+    "sample_count": 12,
+    "step_days": 30,
+    "min_valid_nights": 3,
+}
 
-# Sample ~24 nights spaced evenly over the past 365 days (~every 15 days) for a stable 1-year median
-NIGHT_SAMPLE_COUNT = 24
-SAMPLE_STEP_DAYS = 15
+# Southern BC / Metro Vancouver / Vancouver Island / Okanagan high-res z=8 grid (5 x 3 = 15 tiles -> 1280 x 768 px)
+# lon: -126.5625° to -119.53125° | lat: 47.99° to 50.74°
+BC_GRID = {
+    "zoom": 8,
+    "tx_min": 38,
+    "tx_max": 42,
+    "ty_min": 86,
+    "ty_max": 88,
+    "sample_count": 24,
+    "step_days": 15,
+    "min_valid_nights": 3,
+}
 
 # Radiance brightness (0-255 median pixel value) -> 7 discrete color tiers (inspired by Bortle / VIIRS palettes)
-# Pixels with median <= 24 (dark ocean & unlit wilderness) are omitted so the basemap remains crisp and readable.
+# Pixels with median <= 24 (dark ocean & unlit wilderness) map to index 0 (fully transparent).
 NIGHT_LIGHT_TIERS: list[dict[str, Any]] = [
-    {"level": 1, "min_val": 25, "max_val": 54, "color": "#1e3a8a", "label_zh": "極弱", "group": "低亮度"},
-    {"level": 2, "min_val": 55, "max_val": 89, "color": "#4338ca", "label_zh": "微弱", "group": "低亮度"},
-    {"level": 3, "min_val": 90, "max_val": 124, "color": "#7e22ce", "label_zh": "輕中", "group": "中亮度"},
-    {"level": 4, "min_val": 125, "max_val": 159, "color": "#be185d", "label_zh": "中等", "group": "中亮度"},
-    {"level": 5, "min_val": 160, "max_val": 194, "color": "#ea580c", "label_zh": "較強", "group": "高亮度"},
-    {"level": 6, "min_val": 195, "max_val": 229, "color": "#f59e0b", "label_zh": "強光", "group": "高亮度"},
-    {"level": 7, "min_val": 230, "max_val": 255, "color": "#fef08a", "label_zh": "極強", "group": "都會核心"},
+    {"level": 1, "min_val": 25, "max_val": 54, "color": "#1e3a8a", "rgb": [30, 58, 138], "label_zh": "極弱", "group": "低亮度"},
+    {"level": 2, "min_val": 55, "max_val": 89, "color": "#4338ca", "rgb": [67, 56, 202], "label_zh": "微弱", "group": "低亮度"},
+    {"level": 3, "min_val": 90, "max_val": 124, "color": "#7e22ce", "rgb": [126, 34, 206], "label_zh": "輕中", "group": "中亮度"},
+    {"level": 4, "min_val": 125, "max_val": 159, "color": "#be185d", "rgb": [190, 24, 93], "label_zh": "中等", "group": "中亮度"},
+    {"level": 5, "min_val": 160, "max_val": 194, "color": "#ea580c", "rgb": [234, 88, 12], "label_zh": "較強", "group": "高亮度"},
+    {"level": 6, "min_val": 195, "max_val": 229, "color": "#f59e0b", "rgb": [245, 158, 11], "label_zh": "強光", "group": "高亮度"},
+    {"level": 7, "min_val": 230, "max_val": 255, "color": "#fef08a", "rgb": [254, 240, 138], "label_zh": "極強", "group": "都會核心"},
 ]
+
+# Precomputed lookup table: grayscale 0..255 -> tier index 0..7
+BRIGHTNESS_TO_TIER = [0] * 256
+for _tier in NIGHT_LIGHT_TIERS:
+    for _v in range(_tier["min_val"], _tier["max_val"] + 1):
+        BRIGHTNESS_TO_TIER[_v] = _tier["level"]
 
 HEADERS = {
     "User-Agent": (
@@ -64,26 +113,48 @@ HEADERS = {
 }
 
 
-def _lon_to_global_px(lon: float, z: int) -> float:
+def _tile_bounds_wgs84(z: int, tx_min: int, tx_max: int, ty_min: int, ty_max: int) -> list[float]:
+    """Return [west, south, east, north] WGS84 bounds for inclusive XYZ tile range."""
     n = 2**z
-    return (lon + 180.0) / 360.0 * n * 256.0
+    west = tx_min / n * 360.0 - 180.0
+    east = (tx_max + 1) / n * 360.0 - 180.0
+    north = math.degrees(math.atan(math.sinh(math.pi * (1.0 - 2.0 * ty_min / n))))
+    south = math.degrees(math.atan(math.sinh(math.pi * (1.0 - 2.0 * (ty_max + 1) / n))))
+    return [round(west, 6), round(south, 6), round(east, 6), round(north, 6)]
 
 
-def _lat_to_global_px(lat: float, z: int) -> float:
-    n = 2**z
-    rad = math.radians(lat)
-    return (1.0 - math.asinh(math.tan(rad)) / math.pi) / 2.0 * n * 256.0
+def _build_palette() -> list[int]:
+    """Build 768-byte RGB palette for Pillow mode='P' (index 0 = black/transparent, 1..7 = tier colors)."""
+    pal = [0, 0, 0]
+    for tier in NIGHT_LIGHT_TIERS:
+        pal.extend(tier["rgb"])
+    pal.extend([0, 0, 0] * (256 - (1 + len(NIGHT_LIGHT_TIERS))))
+    return pal
 
 
-def _global_px_to_lon(gx: float, z: int) -> float:
-    n = 2**z
-    return gx / (n * 256.0) * 360.0 - 180.0
+def _atomic_save_indexed_png(path: str, index_img: Image.Image) -> int:
+    """Save an 8-color indexed palette PNG with transparency index 0 atomically."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    p_img = index_img.convert("P")
+    p_img.putpalette(_build_palette())
 
-
-def _global_px_to_lat(gy: float, z: int) -> float:
-    n = 2**z
-    merc = math.pi * (1.0 - 2.0 * gy / (n * 256.0))
-    return math.degrees(math.atan(math.sinh(merc)))
+    fd, tmp_path = tempfile.mkstemp(
+        dir=os.path.dirname(path),
+        prefix=".tmp_night_lights_",
+        suffix=".png",
+    )
+    os.close(fd)
+    try:
+        p_img.save(tmp_path, format="PNG", optimize=True, transparency=0)
+        os.replace(tmp_path, path)
+    except Exception:
+        try:
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+    return os.path.getsize(path)
 
 
 def _discover_latest_gibs_date(layer_id: str) -> date:
@@ -105,62 +176,68 @@ def _discover_latest_gibs_date(layer_id: str) -> date:
     return fallback
 
 
-def _fetch_tile_grayscale(layer_id: str, dt_str: str, tx: int, ty: int) -> Image.Image | None:
-    url = GIBS_TILE_URL_TEMPLATE.format(layer=layer_id, date=dt_str, z=GIBS_ZOOM, y=ty, x=tx)
-    try:
-        resp = requests.get(url, headers=HEADERS, timeout=20)
-        if resp.status_code != 200 or not resp.content:
+def _fetch_tile_grayscale(
+    session: requests.Session,
+    layer_id: str,
+    dt_str: str,
+    z: int,
+    tx: int,
+    ty: int,
+) -> Image.Image | None:
+    url = GIBS_TILE_URL_TEMPLATE.format(layer=layer_id, date=dt_str, z=z, y=ty, x=tx)
+    for attempt in range(2):
+        try:
+            resp = session.get(url, headers=HEADERS, timeout=20)
+            if resp.status_code != 200 or not resp.content:
+                if attempt == 0 and resp.status_code >= 500:
+                    continue
+                return None
+            im = Image.open(io.BytesIO(resp.content)).convert("RGBA").convert("L")
+            if im.size != (256, 256):
+                return None
+            return im
+        except Exception:
+            if attempt == 0:
+                continue
             return None
-        im = Image.open(io.BytesIO(resp.content)).convert("RGBA").convert("L")
-        if im.size != (256, 256):
-            return None
-        # Reject completely empty / corrupted black tiles
-        extrema = im.getextrema()
-        if not extrema or extrema[1] <= 0:
-            return None
-        return im
-    except Exception:
-        return None
-
-
-def _classify_brightness(val: float) -> dict[str, Any] | None:
-    for tier in NIGHT_LIGHT_TIERS:
-        if tier["min_val"] <= val <= tier["max_val"]:
-            return tier
     return None
 
 
-def update_night_lights() -> list[dict[str, Any]]:
-    print("🌌 正在從 NASA GIBS 擷取 NASA Black Marble (VIIRS) 近一年夜間燈光中位數圖資...")
+def _compute_median_index_mosaic(
+    label: str,
+    latest_dt: date,
+    grid_cfg: dict[str, Any],
+) -> tuple[Image.Image | None, dict[str, Any]]:
+    z = grid_cfg["zoom"]
+    tx_min, tx_max = grid_cfg["tx_min"], grid_cfg["tx_max"]
+    ty_min, ty_max = grid_cfg["ty_min"], grid_cfg["ty_max"]
+    sample_count = grid_cfg["sample_count"]
+    step_days = grid_cfg["step_days"]
+    min_valid_nights = grid_cfg["min_valid_nights"]
 
-    latest_dt = _discover_latest_gibs_date(GIBS_LAYER_ID)
+    cols = tx_max - tx_min + 1
+    rows = ty_max - ty_min + 1
+    width = cols * 256
+    height = rows * 256
+    tile_coords = [(tx, ty) for ty in range(ty_min, ty_max + 1) for tx in range(tx_min, tx_max + 1)]
     sample_dates = [
-        (latest_dt - timedelta(days=i * SAMPLE_STEP_DAYS)).isoformat()
-        for i in range(NIGHT_SAMPLE_COUNT)
+        (latest_dt - timedelta(days=i * step_days)).isoformat()
+        for i in range(sample_count)
     ]
 
-    # Compute exact global pixel bounds for the Metro Vancouver / Fraser Valley crop window
-    gx_min = int(math.floor(_lon_to_global_px(BBOX_LON_MIN, GIBS_ZOOM)))
-    gx_max = int(math.ceil(_lon_to_global_px(BBOX_LON_MAX, GIBS_ZOOM)))
-    gy_min = int(math.floor(_lat_to_global_px(BBOX_LAT_MAX, GIBS_ZOOM)))
-    gy_max = int(math.ceil(_lat_to_global_px(BBOX_LAT_MIN, GIBS_ZOOM)))
-
-    tx_min, tx_max = gx_min // 256, (gx_max - 1) // 256
-    ty_min, ty_max = gy_min // 256, (gy_max - 1) // 256
-    tile_coords = [(tx, ty) for ty in range(ty_min, ty_max + 1) for tx in range(tx_min, tx_max + 1)]
-
-    width = gx_max - gx_min
-    height = gy_max - gy_min
     print(
-        f"  🛰️ 圖層: {GIBS_LAYER_ID} | 日期區間: {sample_dates[-1]} ~ {sample_dates[0]} "
-        f"| 取樣 {len(sample_dates)} 晚 × {len(tile_coords)} 瓦片 ({width}×{height} 網格)"
+        f"  🛰️ [{label}] z={z} ({cols}×{rows}={len(tile_coords)} 瓦片, {width}×{height} px) "
+        f"| 取樣 {len(sample_dates)} 晚 ({sample_dates[-1]} ~ {sample_dates[0]})"
     )
 
-    # Fetch all (date, tx, ty) tiles concurrently
+    session = requests.Session()
+    adapter = requests.adapters.HTTPAdapter(pool_connections=24, pool_maxsize=24)
+    session.mount("https://", adapter)
+
     fetched_by_date: dict[str, dict[tuple[int, int], Image.Image]] = {}
-    with ThreadPoolExecutor(max_workers=12) as pool:
+    with ThreadPoolExecutor(max_workers=20) as pool:
         futs = {
-            pool.submit(_fetch_tile_grayscale, GIBS_LAYER_ID, dt_str, tx, ty): (dt_str, tx, ty)
+            pool.submit(_fetch_tile_grayscale, session, GIBS_LAYER_ID, dt_str, z, tx, ty): (dt_str, tx, ty)
             for dt_str in sample_dates
             for (tx, ty) in tile_coords
         }
@@ -170,118 +247,180 @@ def update_night_lights() -> list[dict[str, Any]]:
             if im is not None:
                 fetched_by_date.setdefault(dt_str, {})[(tx, ty)] = im
 
-    valid_nights: list[tuple[str, bytes]] = []
+    session.close()
+
+    valid_nights: list[tuple[str, Image.Image]] = []
     for dt_str in sorted(fetched_by_date.keys()):
         tmap = fetched_by_date[dt_str]
-        if len(tmap) != len(tile_coords):
+        # Require at least 95% of tiles to succeed for a night; missing dark Arctic tiles stay 0
+        if len(tmap) < max(1, int(len(tile_coords) * 0.95)):
             continue
         mosaic = Image.new("L", (width, height), 0)
+        max_val = 0
         for (tx, ty), im in tmap.items():
-            ox = tx * 256 - gx_min
-            oy = ty * 256 - gy_min
-            mosaic.paste(im, (ox, oy))
-        valid_nights.append((dt_str, mosaic.tobytes()))
+            ext = im.getextrema()
+            if ext and ext[1] > max_val:
+                max_val = ext[1]
+            mosaic.paste(im, ((tx - tx_min) * 256, (ty - ty_min) * 256))
+        if max_val <= 0:
+            continue
+        valid_nights.append((dt_str, mosaic))
 
-    if len(valid_nights) < 3:
-        print(f"⚠️ NASA GIBS 有效取樣夜數不足 ({len(valid_nights)} 晚)，嘗試保留現有快取...")
-        existing = load_existing_geojson(OUTPUT_FILENAME)
-        if isinstance(existing, dict) and existing.get("features"):
-            return existing["features"]
-        return []
+    if len(valid_nights) < min_valid_nights:
+        print(f"  ⚠️ [{label}] NASA GIBS 有效取樣夜數不足 ({len(valid_nights)} 晚)")
+        return None, {}
 
-    print(f"  📊 成功取得 {len(valid_nights)} 晚完整影像，正在計算像素級一年中位數與合併色塊...")
+    print(f"  📊 [{label}] 成功合成 {len(valid_nights)} 晚完整影像，正在計算像素級一年中位數...")
 
-    # Precompute lat/lon edge coordinates for each grid row & column
-    lon_edges = [round(_global_px_to_lon(gx_min + c, GIBS_ZOOM), 5) for c in range(width + 1)]
-    lat_edges = [round(_global_px_to_lat(gy_min + r, GIBS_ZOOM), 5) for r in range(height + 1)]
+    # Fast C-accelerated mask: only pixels whose max across all nights >= 25 can ever have median >= 25
+    max_mosaic = valid_nights[0][1]
+    for _, im in valid_nights[1:]:
+        max_mosaic = ImageChops.lighter(max_mosaic, im)
+    lit_mask = max_mosaic.point(lambda v: 1 if v >= 25 else 0).tobytes()
 
-    # Compute pixel-wise median across all valid nights, then run-length merge adjacent horizontal cells per tier
-    night_buffers = [buf for _, buf in valid_nights]
-    features: list[dict[str, Any]] = []
+    night_buffers = [im.tobytes() for _, im in valid_nights]
+    n_nights = len(night_buffers)
+    mid = n_nights // 2
+    is_even = (n_nights % 2 == 0)
+
+    out_buf = bytearray(width * height)
     tier_counts: dict[int, int] = {t["level"]: 0 for t in NIGHT_LIGHT_TIERS}
+    lit_pixels = 0
+    lut = BRIGHTNESS_TO_TIER
 
     for r in range(height):
-        row_off = r * width
-        lat_n = lat_edges[r]
-        lat_s = lat_edges[r + 1]
+        row_start = r * width
+        row_end = row_start + width
+        row_mask = lit_mask[row_start:row_end]
+        if b"\x01" not in row_mask:
+            continue
+        for c, flag in enumerate(row_mask):
+            if not flag:
+                continue
+            idx = row_start + c
+            vals = sorted(buf[idx] for buf in night_buffers)
+            med = (vals[mid - 1] + vals[mid]) // 2 if is_even else vals[mid]
+            tier_idx = lut[med]
+            if tier_idx:
+                out_buf[idx] = tier_idx
+                tier_counts[tier_idx] += 1
+                lit_pixels += 1
 
-        run_tier: dict[str, Any] | None = None
-        run_start_c = 0
+    index_img = Image.frombytes("L", (width, height), bytes(out_buf))
+    info = {
+        "zoom": z,
+        "tx_min": tx_min,
+        "tx_max": tx_max,
+        "ty_min": ty_min,
+        "ty_max": ty_max,
+        "width": width,
+        "height": height,
+        "bounds": _tile_bounds_wgs84(z, tx_min, tx_max, ty_min, ty_max),
+        "nights_sampled": len(valid_nights),
+        "sample_start": valid_nights[0][0],
+        "sample_end": valid_nights[-1][0],
+        "lit_pixels": lit_pixels,
+        "tier_counts": {str(k): v for k, v in tier_counts.items()},
+    }
+    return index_img, info
 
-        def _flush_run(end_c: int) -> None:
-            if run_tier is None:
-                return
-            lon_w = lon_edges[run_start_c]
-            lon_e = lon_edges[end_c]
-            features.append(
-                {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [
-                            [
-                                [lon_w, lat_n],
-                                [lon_e, lat_n],
-                                [lon_e, lat_s],
-                                [lon_w, lat_s],
-                                [lon_w, lat_n],
-                            ]
-                        ],
-                    },
-                    "properties": {
-                        "level": run_tier["level"],
-                        "color": run_tier["color"],
-                    },
-                }
-            )
 
-        for c in range(width):
-            idx = row_off + c
-            vals = [buf[idx] for buf in night_buffers]
-            med = statistics.median(vals)
-            tier = _classify_brightness(med)
-            if tier is not None:
-                tier_counts[tier["level"]] += 1
+def update_night_lights() -> dict[str, Any]:
+    print("🌌 正在從 NASA GIBS 擷取 NASA Black Marble (VIIRS) 全加拿大 & 南卑詩省一年中位數夜間燈光圖資...")
+    latest_dt = _discover_latest_gibs_date(GIBS_LAYER_ID)
+    print(f"  📅 NASA GIBS 最新日期: {latest_dt.isoformat()} ({GIBS_LAYER_ID})")
 
-            if tier is not run_tier:
-                _flush_run(c)
-                run_tier = tier
-                run_start_c = c
-        _flush_run(width)
+    canada_img, canada_info = _compute_median_index_mosaic("全加拿大 z=5", latest_dt, CANADA_GRID)
+    bc_img, bc_info = _compute_median_index_mosaic("南卑詩省/大溫 z=8", latest_dt, BC_GRID)
+
+    canada_path = os.path.join(BACKEND_DATA_DIR, CANADA_PNG_FILENAME)
+    bc_path = os.path.join(BACKEND_DATA_DIR, BC_PNG_FILENAME)
+
+    if canada_img is not None:
+        canada_bytes = _atomic_save_indexed_png(canada_path, canada_img)
+        canada_info["file"] = CANADA_PNG_FILENAME
+        canada_info["size_bytes"] = canada_bytes
+        print(
+            f"  ✅ 已儲存 {CANADA_PNG_FILENAME}: {canada_bytes / 1024:.1f} KB "
+            f"(點亮像素 {canada_info['lit_pixels']:,})"
+        )
+    elif os.path.exists(canada_path):
+        print(f"  ℹ️ 保留現有 {CANADA_PNG_FILENAME} 快取")
+
+    if bc_img is not None:
+        bc_bytes = _atomic_save_indexed_png(bc_path, bc_img)
+        bc_info["file"] = BC_PNG_FILENAME
+        bc_info["size_bytes"] = bc_bytes
+        print(
+            f"  ✅ 已儲存 {BC_PNG_FILENAME}: {bc_bytes / 1024:.1f} KB "
+            f"(點亮像素 {bc_info['lit_pixels']:,})"
+        )
+    elif os.path.exists(bc_path):
+        print(f"  ℹ️ 保留現有 {BC_PNG_FILENAME} 快取")
+
+    # Clean up legacy bloated GeoJSON if still present locally
+    for target_dir in (BACKEND_DATA_DIR, FRONTEND_DATA_DIR):
+        legacy_path = os.path.join(target_dir, LEGACY_GEOJSON_FILENAME)
+        if os.path.exists(legacy_path):
+            try:
+                os.remove(legacy_path)
+            except OSError:
+                pass
+
+    if not canada_info and not bc_info:
+        meta_path = os.path.join(BACKEND_DATA_DIR, META_FILENAME)
+        if os.path.exists(meta_path):
+            import json
+            with open(meta_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        return {"total_count": 0}
 
     now_iso = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
-    payload = {
-        "type": "FeatureCollection",
+    total_lit = int(canada_info.get("lit_pixels", 0)) + int(bc_info.get("lit_pixels", 0))
+    meta_payload: dict[str, Any] = {
         "generator": "VancouverGodsEye",
         "source": "NASA Black Marble (VIIRS) via NASA GIBS",
         "gibs_layer": GIBS_LAYER_ID,
+        "coverage": "Canada (z=5) + Southern BC / Metro Vancouver High-Res (z=8)",
         "aggregation": "1-year median",
-        "sample_start": valid_nights[0][0],
-        "sample_end": valid_nights[-1][0],
-        "nights_sampled": len(valid_nights),
-        "total_count": len(features),
+        "sample_start": canada_info.get("sample_start") or bc_info.get("sample_start"),
+        "sample_end": canada_info.get("sample_end") or bc_info.get("sample_end"),
         "updated_at": now_iso,
-        "legend_tiers": NIGHT_LIGHT_TIERS,
-        "features": features,
+        "total_count": total_lit,
+        "bounds": canada_info.get("bounds") or _tile_bounds_wgs84(
+            CANADA_GRID["zoom"],
+            CANADA_GRID["tx_min"],
+            CANADA_GRID["tx_max"],
+            CANADA_GRID["ty_min"],
+            CANADA_GRID["ty_max"],
+        ),
+        "grids": {
+            "canada_z5": canada_info,
+            "bc_z8": bc_info,
+        },
+        "legend_tiers": [
+            {k: v for k, v in tier.items() if k != "rgb"}
+            for tier in NIGHT_LIGHT_TIERS
+        ],
     }
 
     for target_dir in (BACKEND_DATA_DIR, FRONTEND_DATA_DIR):
         os.makedirs(target_dir, exist_ok=True)
-        out_path = os.path.join(target_dir, OUTPUT_FILENAME)
+        out_path = os.path.join(target_dir, META_FILENAME)
         atomic_write_json(
             out_path,
-            payload,
-            indent=None,
-            separators=(",", ":"),
-            prefix=".tmp_night_lights_",
-            suffix=".geojson",
+            meta_payload,
+            indent=2,
+            prefix=".tmp_night_lights_meta_",
+            suffix=".json",
         )
 
+    total_kb = (canada_info.get("size_bytes", 0) + bc_info.get("size_bytes", 0)) / 1024
     print(
-        f"✅ 夜間燈光圖資更新完成：{len(features):,} 個色塊多邊形 "
-        f"({valid_nights[0][0]} ~ {valid_nights[-1][0]}，取樣 {len(valid_nights)} 晚) | 等級分佈: {tier_counts}"
+        f"✅ 全加拿大 & 南卑詩省夜間燈光圖資更新完成！"
+        f"總容量 {total_kb:.1f} KB，合計 {total_lit:,} 個點亮像素。"
     )
-    return features
+    return meta_payload
 
 
 if __name__ == "__main__":

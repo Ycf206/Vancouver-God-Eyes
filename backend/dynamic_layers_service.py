@@ -313,6 +313,30 @@ def refresh_building_permits(target_count: int = 1000) -> int:
         return 0
 
 
+def refresh_threads_posts() -> int:
+    """每 1 小時透過 Meta Threads Graph API 刷新帳號最新帖文快取"""
+    file_path = "backend/scripts/layers/update_threads_posts.py"
+    target_file = "vancouver_threads_posts.json"
+    try:
+        from update_threads_posts import update_threads_posts
+        res = update_threads_posts()
+        if not isinstance(res, dict):
+            return 0
+        if not res.get("configured"):
+            return 0
+        posts = res.get("posts") or []
+        cnt = len(posts)
+        if res.get("status") == "ok":
+            log_data_source_update("threads_posts", "Threads 帖文", cnt, target_file, file_path)
+        elif res.get("error"):
+            log_data_source_update("threads_posts", "Threads 帖文", cnt, target_file, file_path, error=res.get("error"))
+        return cnt
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_threads_posts 異常: {e}")
+        log_data_source_update("threads_posts", "Threads 帖文", None, target_file, file_path, error=e)
+        return 0
+
+
 _flo_ev_task: Optional[asyncio.Future[Any]] = None
 _flo_fast_task: Optional[asyncio.Future[Any]] = None
 _cp_ev_task: Optional[asyncio.Future[Any]] = None
@@ -469,6 +493,9 @@ async def run_dynamic_layers_background_loop():
         if not _is_layer_recent("vancouver_building_permits.json", 86400):
             print("🔨 [Dynamic Layers] 初始預熱溫哥華建築許可 (Building Permits) 快取...")
             await loop.run_in_executor(None, refresh_building_permits, 1000)
+        if not _is_layer_recent("vancouver_threads_posts.json", 3600):
+            print("🧵 [Dynamic Layers] 初始預熱 Threads 帳號最新帖文快取...")
+            await loop.run_in_executor(None, refresh_threads_posts)
         if not _is_layer_recent("flo_ev_live_cache.json", 3600):
             print("⚡ [Dynamic Layers] 初始預熱 FLO 電動車充電站即時可用狀態 (API2 背景執行)...")
             _schedule_flo_ev_background(loop)
@@ -497,6 +524,7 @@ async def run_dynamic_layers_background_loop():
     last_wildfire_time = time.time()
     last_business_licences_time = time.time()
     last_building_permits_time = time.time()
+    last_threads_time = time.time()
     last_flo_ev_time = time.time()
     last_flo_fast_time = time.time()
     last_cp_ev_time = time.time()
@@ -583,6 +611,12 @@ async def run_dynamic_layers_background_loop():
                 last_building_permits_time = now
                 print("🔨 [Dynamic Layers] 觸發排程: 溫哥華建築許可 (Building Permits) 24 小時同步...")
                 await loop.run_in_executor(None, refresh_building_permits, 1000)
+
+            # 8.8. Threads 帳號最新帖文 (每 3600 秒 = 1 小時)
+            if now - last_threads_time >= 3600:
+                last_threads_time = now
+                print("🧵 [Dynamic Layers] 觸發排程: Threads 帳號帖文每小時同步...")
+                await loop.run_in_executor(None, refresh_threads_posts)
 
             # 9. FLO 電動車充電站即時可用狀態 API2 詳細更新 (每 3600 秒) + 輕量 API1 即時狀態校對 (每 180 秒)
             if now - last_flo_ev_time >= 3600:

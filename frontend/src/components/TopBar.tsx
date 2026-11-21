@@ -8,11 +8,12 @@ import {
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
   UserShield, FireExtinguisher, Flame, Zap, ZapOff, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
-  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle, Faucet, TentTree
+  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle, Faucet, TentTree, AtSign
 } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
+import ThreadsModal from '@/components/ThreadsModal';
 import SettingsModal from '@/components/SettingsModal';
 import ExplorePanel from '@/components/ExplorePanel';
 import ExportModal from '@/components/ExportModal';
@@ -237,6 +238,7 @@ export default function TopBar() {
   const [time, setTime] = useState<Date | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
+  const [isThreadsModalOpen, setIsThreadsModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -1201,6 +1203,13 @@ export default function TopBar() {
                   <span>匯出</span>
                 </button>
                 <button
+                  onClick={() => { setIsThreadsModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
+                >
+                  <AtSign className="w-4 h-4 text-zinc-200 shrink-0" />
+                  <span>Threads 帖文</span>
+                </button>
+                <button
                   onClick={() => { setIsDonateModalOpen(true); setIsMobileMenuOpen(false); }}
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
                 >
@@ -1258,6 +1267,22 @@ export default function TopBar() {
           </span>
         </button>
 
+        {/* Threads 帖文按鈕 (位於贊助按鈕左方) */}
+        <button 
+          onClick={() => setIsThreadsModalOpen(true)}
+          className={`flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border rounded-md transition-all shadow-sm text-xs font-semibold select-none ${
+            isThreadsModalOpen
+              ? 'border-white/60 text-white bg-[#2c2d33]'
+              : 'border-[#373a40] text-gray-300 hover:border-zinc-400/60 hover:text-white'
+          }`}
+          title="查看 Threads 最新帖文"
+        >
+          <AtSign className="w-4 h-4 text-zinc-300 group-hover:text-white group-hover:scale-110 transition-transform shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[96px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            Threads
+          </span>
+        </button>
+
         {/* 贊助支持按鈕 (愛心圖示，位於回報問題左側) */}
         <button 
           onClick={() => setIsDonateModalOpen(true)}
@@ -1307,6 +1332,12 @@ export default function TopBar() {
         </div>
       </div>
       </div>
+
+      {/* Threads 帖文彈出視窗 */}
+      <ThreadsModal
+        isOpen={isThreadsModalOpen}
+        onClose={() => setIsThreadsModalOpen(false)}
+      />
 
       {/* 贊助支持彈出視窗 */}
       <DonateModal 

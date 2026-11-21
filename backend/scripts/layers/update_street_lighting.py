@@ -279,12 +279,15 @@ def update_street_lighting() -> dict[str, int]:
     if box_points:
         save_layer_geojson(JUNCTION_BOXES_FILE, box_points, compact=True)
 
-    # 4. 夜間燈光 (NASA Black Marble VIIRS 一年夜晚中位數，經由 NASA GIBS)
+    # 4. 夜間燈光 (NASA Black Marble VIIRS 全加拿大 z=5 + 南卑詩省 z=8 一年夜晚中位數，經由 NASA GIBS)
     night_lights_count = 0
     try:
         from update_night_lights import update_night_lights
-        nl_feats = update_night_lights()
-        night_lights_count = len(nl_feats)
+        nl_res = update_night_lights()
+        if isinstance(nl_res, dict):
+            night_lights_count = int(nl_res.get("total_count") or 0)
+        elif isinstance(nl_res, list):
+            night_lights_count = len(nl_res)
     except Exception as exc:
         print(f"⚠️ 夜間燈光更新失敗（不影響路燈資料）: {exc}")
 
@@ -293,7 +296,7 @@ def update_street_lighting() -> dict[str, int]:
     print(
         f"✅ 燈光圖層更新完成：路燈網絡 {len(conduit_lines):,} 條、"
         f"路燈 {len(pole_points):,} 座、路燈接線盒 {len(box_points):,} 處、"
-        f"夜間燈光 {night_lights_count:,} 色塊（總計 {total:,} 筆）。"
+        f"夜間燈光 {night_lights_count:,} 點亮像素（總計 {total:,} 筆）。"
     )
     return {
         "conduits": len(conduit_lines),

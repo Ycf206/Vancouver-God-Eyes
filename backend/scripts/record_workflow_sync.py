@@ -80,8 +80,9 @@ SOURCE_DATA_FILES = {
         "vancouver_street_lighting_conduits.geojson",
         "vancouver_street_lighting_poles.geojson",
         "vancouver_street_lighting_junction_boxes.geojson",
-        "vancouver_night_lights.geojson",
+        "vancouver_night_lights_meta.json",
     ],
+    "threads_posts": ["vancouver_threads_posts.json"],
 }
 
 

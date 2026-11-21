@@ -3139,6 +3139,360 @@ def get_wildfire_geojson():
     )
 
 
+# ==========================================
+# 🌌 全加拿大 & 南卑詩省夜間燈光光柵瓦片服務 (NASA Black Marble VIIRS)
+# ==========================================
+_night_lights_lock = threading.Lock()
+_night_lights_rasters: dict[str, dict] = {}
+_night_lights_tile_cache: OrderedDict[tuple[int, int, int, str], bytes] = OrderedDict()
+_NIGHT_LIGHTS_TILE_CACHE_MAX = 600
+_NIGHT_LIGHTS_EMPTY_PNG: bytes | None = None
+
+_NIGHT_LIGHTS_GRIDS = {
+    "canada_z5": {
+        "file": "canada_night_lights_z5.png",
+        "zoom": 5,
+        "tx_min": 3,
+        "tx_max": 11,
+        "ty_min": 6,
+        "ty_max": 11,
+    },
+    "bc_z8": {
+        "file": "bc_night_lights_z8.png",
+        "zoom": 8,
+        "tx_min": 38,
+        "tx_max": 42,
+        "ty_min": 86,
+        "ty_max": 88,
+    },
+}
+
+_NIGHT_LIGHTS_PALETTE = [
+    0, 0, 0,          # 0: transparent
+    30, 58, 138,      # 1: #1e3a8a
+    67, 56, 202,      # 2: #4338ca
+    126, 34, 206,     # 3: #7e22ce
+    190, 24, 93,      # 4: #be185d
+    234, 88, 12,      # 5: #ea580c
+    245, 158, 11,     # 6: #f59e0b
+    254, 240, 138,    # 7: #fef08a
+] + [0, 0, 0] * 248
+
+
+def _get_empty_night_light_png() -> bytes:
+    global _NIGHT_LIGHTS_EMPTY_PNG
+    if _NIGHT_LIGHTS_EMPTY_PNG is None:
+        import io
+        from PIL import Image
+        buf = io.BytesIO()
+        im = Image.new("P", (1, 1), 0)
+        im.putpalette(_NIGHT_LIGHTS_PALETTE)
+        im.save(buf, format="PNG", transparency=0)
+        _NIGHT_LIGHTS_EMPTY_PNG = buf.getvalue()
+    return _NIGHT_LIGHTS_EMPTY_PNG
+
+
+def _load_night_light_raster(key: str) -> tuple[object | None, float]:
+    """Load indexed night-lights PNG as mode='L' tier matrix (0..7) with mtime invalidation."""
+    from PIL import Image
+
+    cfg = _NIGHT_LIGHTS_GRIDS[key]
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(base_dir, "data", cfg["file"])
+    if not os.path.exists(path):
+        return None, 0.0
+    try:
+        mtime = os.path.getmtime(path)
+    except OSError:
+        return None, 0.0
+
+    with _night_lights_lock:
+        cached = _night_lights_rasters.get(key)
+        if cached and cached.get("mtime") == mtime:
+            return cached.get("img"), mtime
+
+    try:
+        with Image.open(path) as raw:
+            # Indexed PNG ('P') preserves exact tier indices 0..7 in raw bytes
+            if raw.mode == "P":
+                idx_img = Image.frombytes("L", raw.size, raw.tobytes())
+            else:
+                idx_img = raw.convert("L")
+    except Exception as exc:
+        print(f"[NightLights] Failed to load {cfg['file']}: {exc}")
+        return None, 0.0
+
+    with _night_lights_lock:
+        _night_lights_rasters[key] = {"mtime": mtime, "img": idx_img}
+        _night_lights_tile_cache.clear()
+    return idx_img, mtime
+
+
+def _blit_night_light_grid(
+    out_tile,
+    src_img,
+    cfg: dict,
+    z: int,
+    x: int,
+    y: int,
+) -> bool:
+    """Slice & resample (max-pool down / nearest up) a grid mosaic onto a 256x256 mode='L' tile."""
+    import math
+    from PIL import Image, ImageFilter
+
+    src_z = cfg["zoom"]
+    tx_min = cfg["tx_min"]
+    ty_min = cfg["ty_min"]
+    src_w, src_h = src_img.size
+
+    scale = 2.0 ** (src_z - z)
+    sx0 = x * 256.0 * scale - tx_min * 256.0
+    sy0 = y * 256.0 * scale - ty_min * 256.0
+    sx1 = (x + 1) * 256.0 * scale - tx_min * 256.0
+    sy1 = (y + 1) * 256.0 * scale - ty_min * 256.0
+
+    ix0 = max(0.0, sx0)
+    iy0 = max(0.0, sy0)
+    ix1 = min(float(src_w), sx1)
+    iy1 = min(float(src_h), sy1)
+    if ix1 <= ix0 or iy1 <= iy0:
+        return False
+
+    inv_scale = 256.0 / (sx1 - sx0)
+    dx0 = max(0, min(256, int(round((ix0 - sx0) * inv_scale))))
+    dy0 = max(0, min(256, int(round((iy0 - sy0) * inv_scale))))
+    dx1 = max(0, min(256, int(round((ix1 - sx0) * inv_scale))))
+    dy1 = max(0, min(256, int(round((iy1 - sy0) * inv_scale))))
+    dw, dh = dx1 - dx0, dy1 - dy0
+    if dw <= 0 or dh <= 0:
+        return False
+
+    cx0 = max(0, min(src_w - 1, int(math.floor(ix0))))
+    cy0 = max(0, min(src_h - 1, int(math.floor(iy0))))
+    cx1 = max(cx0 + 1, min(src_w, int(math.ceil(ix1))))
+    cy1 = max(cy0 + 1, min(src_h, int(math.ceil(iy1))))
+
+    patch = src_img.crop((cx0, cy0, cx1, cy1))
+    # When zooming out (z < src_z), iteratively 2x max-pool so bright urban cores never vanish
+    if z < src_z:
+        steps = src_z - z
+        for _ in range(steps):
+            pw, ph = patch.size
+            if pw <= dw and ph <= dh:
+                break
+            patch = patch.filter(ImageFilter.MaxFilter(3))
+            patch = patch.resize(
+                (max(dw, (pw + 1) // 2), max(dh, (ph + 1) // 2)),
+                Image.Resampling.NEAREST,
+            )
+
+    if patch.size != (dw, dh):
+        patch = patch.resize((dw, dh), Image.Resampling.NEAREST)
+
+    out_tile.paste(patch, (dx0, dy0))
+    return True
+
+
+@app.get("/api/night-lights/tiles/{z}/{x}/{y}.png")
+def get_night_lights_tile(z: int, x: int, y: int):
+    """動態切片提供全加拿大 (z=5) + 南卑詩省高解析度 (z=8) NASA Black Marble 夜間燈光透明 PNG 瓦片。"""
+    import io
+    from PIL import Image
+
+    if z < 0 or z > 14 or x < 0 or y < 0 or x >= (1 << z) or y >= (1 << z):
+        return Response(
+            content=_get_empty_night_light_png(),
+            media_type="image/png",
+            headers={"Cache-Control": "public, max-age=86400"},
+        )
+
+    canada_img, canada_mtime = _load_night_light_raster("canada_z5")
+    bc_img, bc_mtime = _load_night_light_raster("bc_z8") if z >= 7 else (None, 0.0)
+    if canada_img is None and bc_img is None:
+        return Response(
+            content=_get_empty_night_light_png(),
+            media_type="image/png",
+            headers={"Cache-Control": "public, max-age=300"},
+        )
+
+    ver_key = f"{int(canada_mtime)}:{int(bc_mtime)}"
+    cache_key = (z, x, y, ver_key)
+    with _night_lights_lock:
+        hit = _night_lights_tile_cache.get(cache_key)
+        if hit is not None:
+            _night_lights_tile_cache.move_to_end(cache_key)
+            return Response(
+                content=hit,
+                media_type="image/png",
+                headers={"Cache-Control": "public, max-age=86400"},
+            )
+
+    out_tile = Image.new("L", (256, 256), 0)
+    touched = False
+    if canada_img is not None:
+        touched = _blit_night_light_grid(out_tile, canada_img, _NIGHT_LIGHTS_GRIDS["canada_z5"], z, x, y) or touched
+    if bc_img is not None and z >= 7:
+        touched = _blit_night_light_grid(out_tile, bc_img, _NIGHT_LIGHTS_GRIDS["bc_z8"], z, x, y) or touched
+
+    if not touched or (out_tile.getextrema() or (0, 0))[1] == 0:
+        png_bytes = _get_empty_night_light_png()
+    else:
+        p_tile = out_tile.convert("P")
+        p_tile.putpalette(_NIGHT_LIGHTS_PALETTE)
+        buf = io.BytesIO()
+        p_tile.save(buf, format="PNG", optimize=False, transparency=0)
+        png_bytes = buf.getvalue()
+
+    with _night_lights_lock:
+        _night_lights_tile_cache[cache_key] = png_bytes
+        if len(_night_lights_tile_cache) > _NIGHT_LIGHTS_TILE_CACHE_MAX:
+            _night_lights_tile_cache.popitem(last=False)
+
+    return Response(
+        content=png_bytes,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
+
+
+@app.get("/api/night-lights/meta")
+def get_night_lights_meta():
+    """回傳全加拿大 & 南卑詩省夜間燈光圖資中繼資料。"""
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(base_dir, "data", "vancouver_night_lights_meta.json")
+    if os.path.exists(path):
+        return FileResponse(
+            path,
+            media_type="application/json",
+            headers={"Cache-Control": "public, max-age=600"},
+        )
+    return JSONResponse(content={"total_count": 0}, headers={"Cache-Control": "no-cache"})
+
+
+# ==========================================
+# 🧵 Threads 帳號帖文快取與即時查詢 API (OCI 每小時排程 + 手動刷新)
+# ==========================================
+_threads_refresh_lock = threading.Lock()
+_threads_last_manual_refresh_ts = 0.0
+_THREADS_MANUAL_COOLDOWN_SEC = 15.0
+
+
+@app.get("/api/threads/posts")
+def get_threads_posts(
+    refresh: bool = Query(False),
+    q: str = Query(""),
+    sort: str = Query("newest"),
+    media_type: str = Query("all"),
+):
+    """取得設定之 Threads 帳號最新帖文，支援手動重新整理、關鍵字搜尋與排序。"""
+    global _threads_last_manual_refresh_ts
+    import json
+    import sys
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    layers_dir = os.path.join(base_dir, "scripts", "layers")
+    if layers_dir not in sys.path:
+        sys.path.append(layers_dir)
+    cache_path = os.path.join(base_dir, "data", "vancouver_threads_posts.json")
+
+    from update_threads_posts import get_threads_credentials, update_threads_posts
+
+    token, _ = get_threads_credentials()
+    has_token = bool(token)
+    cooldown_remaining = 0
+    refreshed_now = False
+
+    if refresh and has_token:
+        with _threads_refresh_lock:
+            now = time.time()
+            elapsed = now - _threads_last_manual_refresh_ts
+            if elapsed >= _THREADS_MANUAL_COOLDOWN_SEC:
+                _threads_last_manual_refresh_ts = now
+                data = update_threads_posts()
+                refreshed_now = True
+                _oci_runtime_ts["threads_posts"] = time.time()
+            else:
+                cooldown_remaining = max(1, int(_THREADS_MANUAL_COOLDOWN_SEC - elapsed))
+                data = None
+    else:
+        data = None
+
+    if data is None:
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+            except Exception:
+                data = None
+        if not isinstance(data, dict) or (has_token and not data.get("configured")):
+            if has_token:
+                with _threads_refresh_lock:
+                    data = update_threads_posts()
+                    _oci_runtime_ts["threads_posts"] = time.time()
+            else:
+                data = {
+                    "configured": False,
+                    "status": "unconfigured",
+                    "error": "尚未設定 THREADS_ACCESS_TOKEN，請於後端環境變數或 GitHub Secrets 完成設定。",
+                    "updated_at": None,
+                    "profile": None,
+                    "total_count": 0,
+                    "posts": [],
+                }
+
+    posts = list(data.get("posts") or [])
+    total_all = len(posts)
+
+    # Filter by media_type
+    mt = (media_type or "all").strip().lower()
+    if mt == "media":
+        posts = [p for p in posts if p.get("has_media")]
+    elif mt == "image":
+        posts = [p for p in posts if str(p.get("media_type") or "").upper() in ("IMAGE", "CAROUSEL_ALBUM")]
+    elif mt == "video":
+        posts = [p for p in posts if str(p.get("media_type") or "").upper() == "VIDEO"]
+    elif mt == "text":
+        posts = [p for p in posts if not p.get("has_media")]
+
+    # Keyword search (text, username, shortcode)
+    kw = (q or "").strip().lower()
+    if kw:
+        tokens = [t for t in kw.split() if t]
+        posts = [
+            p
+            for p in posts
+            if all(
+                t in f"{p.get('text') or ''} {p.get('username') or ''} {p.get('shortcode') or ''}".lower()
+                for t in tokens
+            )
+        ]
+
+    # Sort
+    sort_mode = (sort or "newest").strip().lower()
+    if sort_mode == "oldest":
+        posts.sort(key=lambda p: p.get("timestamp") or "")
+    elif sort_mode == "media_first":
+        posts.sort(key=lambda p: (1 if p.get("has_media") else 0, p.get("timestamp") or ""), reverse=True)
+    else:
+        posts.sort(key=lambda p: p.get("timestamp") or "", reverse=True)
+
+    return JSONResponse(
+        content={
+            "configured": has_token if has_token else bool(data.get("configured")),
+            "status": data.get("status") or ("ok" if has_token else "unconfigured"),
+            "error": data.get("error"),
+            "updated_at": data.get("updated_at"),
+            "profile": data.get("profile"),
+            "total_all": total_all,
+            "total_count": len(posts),
+            "refreshed": refreshed_now,
+            "cooldown_remaining": cooldown_remaining,
+            "posts": posts,
+        },
+        headers={"Cache-Control": "no-store" if refresh else "public, max-age=60"},
+    )
+
+
 _ev_fast_sync_lock = threading.Lock()
 _ev_fast_sync_last_trigger: dict[str, float] = {}
 
@@ -5290,11 +5644,11 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     "pharmacies": ["vancouver_pharmacies.geojson"],
     "street_lighting": [
         "vancouver_street_lighting_conduits.geojson",
-        "vancouver_street_lighting_conduits_clusters.geojson",
         "vancouver_street_lighting_poles.geojson",
         "vancouver_street_lighting_junction_boxes.geojson",
-        "vancouver_night_lights.geojson",
+        "vancouver_night_lights_meta.json",
     ],
+    "threads_posts": ["vancouver_threads_posts.json"],
 }
 
 
@@ -5646,6 +6000,12 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
         bp_cnt, bp_ts = _extract_disk_file_meta(bp_file)
         bp_runtime = _unix_to_iso(_oci_runtime_ts.get("building_permits"))
         oci_live_updates["building_permits"] = (_max_iso_ts(bp_runtime, bp_ts), bp_cnt if bp_cnt > 0 else None)
+
+    if "threads_posts" in src_by_id:
+        th_file = os.path.join(data_dir, "vancouver_threads_posts.json")
+        th_cnt, th_ts = _extract_disk_file_meta(th_file)
+        th_runtime = _unix_to_iso(_oci_runtime_ts.get("threads_posts"))
+        oci_live_updates["threads_posts"] = (_max_iso_ts(th_runtime, th_ts), th_cnt if th_cnt > 0 else None)
 
     for sid, (live_iso, live_cnt) in oci_live_updates.items():
         s = src_by_id.get(sid)
@@ -6015,6 +6375,11 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         cnt = dynamic_layers_service.refresh_sewer_system()
         _oci_runtime_ts["sewer_system"] = time.time()
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 Metro Vancouver 污水系統設施，共載入 {cnt} 筆位置資料。")
+    if sid == "threads_posts":
+        import dynamic_layers_service
+        cnt = dynamic_layers_service.refresh_threads_posts()
+        _oci_runtime_ts["threads_posts"] = time.time()
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時透過 Meta Threads Graph API 同步帳號帖文，共載入 {cnt} 篇。")
     return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
 
 

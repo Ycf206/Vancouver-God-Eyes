@@ -437,9 +437,9 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "type": "api",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
-    "record_count": 730,
+    "record_count": 752,
     "unit": "處商業停車場場域",
-    "last_updated": "2026-11-21T01:42:14Z",
+    "last_updated": "2026-11-21T04:01:19Z",
     "status": "healthy",
     "data_pipeline_notes": "ImPark (Reef Parking) API + EasyPark 新版公開 API + Indigo (indigoneo.ca API1/API2) -> 每月經 GitHub Actions 一次更新三間停車場營運商大溫哥華位置、時租/月租/活動/季節性費率、場地圖片、SPARC 無障礙、EV 充電與 Zone 區域編號 -> 寫入 vancouver_impark.geojson",
     "runner": "github_actions",
@@ -450,7 +450,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       {
         "type": "api",
         "label": "ImPark Lots API",
-        "url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.231405747636195&lngLoc=-123.10900119980765&latMin=49.098730747823055&lngMin=-123.48699955185843&latMax=49.36372538454293&lngMax=-122.73100284775687&csr=0&branchName="
+        "url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.304039344629544&lngLoc=-123.28565867846936&latMin=49.03872383213182&lngMin=-124.04165538257092&latMax=49.56793395318879&lngMax=-122.5296619743678&csr=0&branchName="
       },
       {
         "type": "api",
@@ -468,7 +468,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
         "url": "https://indigoneo.ca/en/map"
       }
     ],
-    "source_url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.231405747636195&lngLoc=-123.10900119980765&latMin=49.098730747823055&lngMin=-123.48699955185843&latMax=49.36372538454293&lngMax=-122.73100284775687&csr=0&branchName="
+    "source_url": "https://lots.impark.com/api/lots/IMP/en?latLoc=49.304039344629544&lngLoc=-123.28565867846936&latMin=49.03872383213182&lngMin=-124.04165538257092&latMax=49.56793395318879&lngMax=-122.5296619743678&csr=0&branchName="
   },
   {
     "id": "border_wait_times",
@@ -1914,11 +1914,11 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "type": "api",
     "cron_expr": "0 4 1 * *",
     "schedule_interval": "每月 1 號 04:00",
-    "record_count": 136753,
-    "unit": "筆路燈設施與夜間燈光色塊圖徵",
-    "last_updated": "2026-11-21T01:43:00Z",
+    "record_count": 254652,
+    "unit": "筆路燈設施與夜間燈光像素",
+    "last_updated": "2026-11-21T04:00:31Z",
     "status": "healthy",
-    "data_pipeline_notes": "Vancouver Open Data v2.1 API (conduits / poles / junction-boxes) + NASA Black Marble (VIIRS NOAA-20) 近一年夜晚中位數 (經由 NASA GIBS WMTS) -> GitHub Actions 每月 1 號同步產出聚合切片與夜間燈光色塊 -> 寫入 vancouver_street_lighting_*.geojson 與 vancouver_night_lights.geojson",
+    "data_pipeline_notes": "Vancouver Open Data v2.1 API (conduits / poles / junction-boxes) + NASA Black Marble (VIIRS NOAA-20) 全加拿大 (z=5) 與南卑詩高解析 (z=8) 一年中位數光柵 (經由 NASA GIBS WMTS) -> GitHub Actions 每月 1 號同步 -> 寫入 vancouver_street_lighting_*.geojson、canada_night_lights_z5.png、bc_night_lights_z8.png 與 vancouver_night_lights_meta.json，並由 FastAPI 動態供應 XYZ 透明瓦片",
     "runner": "github_actions",
     "workflow_file": "update-street-lighting.yml",
     "category": "能源",
@@ -1973,5 +1973,33 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://www.bcpharmacists.org/list-community-pharmacies"
+  },
+  {
+    "id": "threads_posts",
+    "name": "Threads 帖文",
+    "type": "api",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每 1 小時",
+    "record_count": 0,
+    "unit": "篇 Threads 帖文",
+    "last_updated": "2026-11-21T04:15:00Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Meta Threads Graph API (/v1.0/{user_id}/threads) -> OCI 後端每小時自動同步並支援頂部視窗手動刷新 -> 寫入 vancouver_threads_posts.json，供頂部 Threads 視窗搜尋、排序與預覽媒體",
+    "runner": "oci",
+    "workflow_file": "",
+    "category": "生活",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "Meta Threads Graph API",
+        "url": "https://graph.threads.net/v1.0/me/threads"
+      },
+      {
+        "type": "web",
+        "label": "Threads API 官方文件 (Retrieve Posts)",
+        "url": "https://developers.facebook.com/documentation/threads/retrieve-and-discover-posts/retrieve-posts"
+      }
+    ],
+    "source_url": "https://graph.threads.net/v1.0/me/threads"
   }
 ];
