@@ -22,7 +22,7 @@ import uuid
 import hashlib
 import logging
 from datetime import datetime, timezone, timedelta
-from typing import Optional
+from typing import Any, Optional
 from search_engine import search_engine
 
 logger = logging.getLogger(__name__)
@@ -2970,7 +2970,7 @@ def get_hospital_waittimes():
 import json
 import re
 import math
-from typing import Optional
+from typing import Any, Optional
 from sqlalchemy import func
 
 _bikeways_geojson_cache = {"data": None, "mtime": 0}
@@ -5328,7 +5328,7 @@ def get_debug_gtfs_routes():
     return {"total": len(routes), "route_short_names": list(set(routes))}
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Any, Optional
 import smtplib
 import base64
 from email.mime.text import MIMEText

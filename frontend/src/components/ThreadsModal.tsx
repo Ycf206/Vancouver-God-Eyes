@@ -431,7 +431,7 @@ export default function ThreadsModal({ isOpen, onClose }: ThreadsModalProps) {
                 </div>
               ))}
             </div>
-          ) : data && !data.configured && totalAll === 0 ? (
+          ) : data && data.status !== 'error' && !data.configured && totalAll === 0 ? (
             <div className="bg-[#24262d] border border-amber-500/30 rounded-xl p-5 flex flex-col items-center text-center gap-3">
               <div className="w-11 h-11 rounded-full bg-amber-500/15 border border-amber-500/35 flex items-center justify-center text-amber-400">
                 <KeyRound className="w-5 h-5" />

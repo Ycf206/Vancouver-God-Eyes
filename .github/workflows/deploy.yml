@@ -131,6 +131,28 @@ jobs:
             frontend/public/vancouver_wildfire.geojson \
             backend/data/vancouver_fuel_cache.json \
             frontend/public/vancouver_fuel_cache.json \
+            backend/data/canada_night_lights_z5.png \
+            backend/data/canada_mask_z5.png \
+            backend/data/bc_night_lights_z8.png \
+            backend/data/bc_mask_z8.png \
+            backend/data/vancouver_night_lights_meta.json \
+            frontend/public/vancouver_night_lights_meta.json \
+            backend/data/via_rail_routes.geojson \
+            frontend/public/via_rail_routes.geojson \
+            backend/data/via_rail_stations.geojson \
+            frontend/public/via_rail_stations.geojson \
+            backend/data/canada_public_services.json \
+            frontend/public/canada_public_services.json \
+            backend/data/vancouver_picnic_sites.geojson \
+            frontend/public/vancouver_picnic_sites.geojson \
+            backend/data/vancouver_pharmacies.geojson \
+            frontend/public/vancouver_pharmacies.geojson \
+            backend/data/vancouver_street_lighting_conduits.geojson \
+            frontend/public/vancouver_street_lighting_conduits.geojson \
+            backend/data/vancouver_street_lighting_poles.geojson \
+            frontend/public/vancouver_street_lighting_poles.geojson \
+            backend/data/vancouver_street_lighting_junction_boxes.geojson \
+            frontend/public/vancouver_street_lighting_junction_boxes.geojson \
             frontend/public/logo-mobile.jpg \
             frontend/public/logo-web.jpg \
             backend/data/admin_sources_config.json 2>/dev/null || true
@@ -201,43 +223,36 @@ jobs:
             echo "✅ ADMIN_PASSWORD successfully synced to backend"
           fi
 
-          # 如果 GitHub Secrets 有設定 THREADS_ACCESS_TOKEN / THREADS_USER_ID，僅同步至後端與根目錄 .env
-          if [ -n "$THREADS_ACCESS_TOKEN" ]; then
-            mkdir -p backend
-            touch backend/.env .env
-            for env_f in backend/.env .env; do
-              if grep -q "^THREADS_ACCESS_TOKEN=" "$env_f" 2>/dev/null; then
-                sed -i "s|^THREADS_ACCESS_TOKEN=.*|THREADS_ACCESS_TOKEN=$THREADS_ACCESS_TOKEN|" "$env_f"
-              else
-                echo "THREADS_ACCESS_TOKEN=$THREADS_ACCESS_TOKEN" >> "$env_f"
-              fi
-            done
-            echo "✅ THREADS_ACCESS_TOKEN successfully synced to backend"
-          fi
-          if [ -n "$THREADS_USER_ID" ]; then
-            mkdir -p backend
-            touch backend/.env .env
-            for env_f in backend/.env .env; do
-              if grep -q "^THREADS_USER_ID=" "$env_f" 2>/dev/null; then
-                sed -i "s|^THREADS_USER_ID=.*|THREADS_USER_ID=$THREADS_USER_ID|" "$env_f"
-              else
-                echo "THREADS_USER_ID=$THREADS_USER_ID" >> "$env_f"
-              fi
-            done
-            echo "✅ THREADS_USER_ID successfully synced to backend"
-          fi
-          if [ -n "$THREADS_APP_SECRET" ]; then
-            mkdir -p backend
-            touch backend/.env .env
-            for env_f in backend/.env .env; do
-              if grep -q "^THREADS_APP_SECRET=" "$env_f" 2>/dev/null; then
-                sed -i "s|^THREADS_APP_SECRET=.*|THREADS_APP_SECRET=$THREADS_APP_SECRET|" "$env_f"
-              else
-                echo "THREADS_APP_SECRET=$THREADS_APP_SECRET" >> "$env_f"
-              fi
-            done
-            echo "✅ THREADS_APP_SECRET successfully synced to backend"
-          fi
+          # 如果 GitHub Secrets 有設定 THREADS_ACCESS_TOKEN / THREADS_USER_ID / THREADS_APP_SECRET，安全同步至後端與根目錄 .env (避免 sed 跳脫字元問題)
+          python3 - <<'PYEOF'
+          import os
+          from pathlib import Path
+
+          keys = ["THREADS_ACCESS_TOKEN", "THREADS_USER_ID", "THREADS_APP_SECRET"]
+          updates = {k: os.environ.get(k, "").strip() for k in keys if os.environ.get(k, "").strip()}
+          if updates:
+              Path("backend").mkdir(parents=True, exist_ok=True)
+              for env_path in (Path("backend/.env"), Path(".env")):
+                  lines = env_path.read_text(encoding="utf-8").splitlines() if env_path.exists() else []
+                  out = []
+                  seen = set()
+                  for line in lines:
+                      matched = False
+                      for k, v in updates.items():
+                          if line.startswith(f"{k}="):
+                              out.append(f"{k}={v}")
+                              seen.add(k)
+                              matched = True
+                              break
+                      if not matched:
+                          out.append(line)
+                  for k, v in updates.items():
+                      if k not in seen:
+                          out.append(f"{k}={v}")
+                  env_path.write_text("\n".join(out) + "\n", encoding="utf-8")
+              for k in updates:
+                  print(f"✅ {k} successfully synced to backend")
+          PYEOF
 
           # 自動清除舊版曾寫入前端公開變數的機密項目，並收緊 .env 檔案權限
           [ -f .env ] && sed -i '/^NEXT_PUBLIC_ADMIN_API_SECRET=/d; /^NEXT_PUBLIC_TOMTOM_API_KEY=/d' .env || true
@@ -252,6 +267,18 @@ jobs:
           docker compose build frontend backend
           docker compose down --remove-orphans || true
           docker compose up -d db redis frontend backend nginx
-          sleep 5
           docker compose ps
-          docker compose logs --tail=20 backend
+          HEALTH_OK=0
+          for attempt in $(seq 1 20); do
+            if curl -fsS --max-time 3 http://127.0.0.1/health >/dev/null 2>&1; then
+              HEALTH_OK=1
+              echo "✅ Backend healthcheck passed on attempt $attempt"
+              break
+            fi
+            sleep 2
+          done
+          docker compose logs --tail=40 backend
+          if [ "$HEALTH_OK" -ne 1 ]; then
+            echo "❌ Backend failed healthcheck after deployment!"
+            exit 1
+          fi
