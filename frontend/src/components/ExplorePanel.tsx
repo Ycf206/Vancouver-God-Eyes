@@ -11869,16 +11869,16 @@ function ExploreContent() {
               </div>
             </div>
 
-            {/* Search Bar + Per-page (left of Sort) + Sort Selector */}
-            <div className="flex flex-col gap-1.5 shrink-0">
-              <div className="relative w-full">
+            {/* Search Bar + Per-page (left of Sort) + Sort Selector on one row */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <div className="relative flex-1 min-w-0">
                 <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={viaSearchQuery}
                   onChange={(e) => setViaSearchQuery(e.target.value)}
                   placeholder="搜尋車次、起訖站或車站代碼..."
-                  className="w-full bg-[#10131c] border border-[#262c3d] focus:border-amber-500/60 rounded-lg pl-8 pr-7 py-1.5 text-xs text-gray-100 placeholder-gray-500 outline-none transition-colors"
+                  className="w-full bg-[#10131c] border border-[#262c3d] focus:border-amber-500/60 rounded-lg pl-8 pr-6 py-1.5 text-xs text-gray-100 placeholder-gray-500 outline-none transition-colors"
                 />
                 {viaSearchQuery && (
                   <button
@@ -11892,36 +11892,34 @@ function ExploreContent() {
                 )}
               </div>
 
-              <div className="flex items-center justify-end gap-1.5">
-                <div className="flex items-center gap-1 bg-[#10131c] border border-[#262c3d] rounded-lg px-2 py-1 text-[11px] text-gray-300 shrink-0">
-                  <span className="text-gray-400">每頁</span>
-                  <select
-                    value={viaPageSize}
-                    onChange={(e) => setViaPageSize(Number(e.target.value))}
-                    className="bg-transparent text-[11px] font-mono text-gray-100 outline-none cursor-pointer"
-                    title="每頁顯示班次數量"
-                  >
-                    <option value={10} className="bg-[#10131c]">10</option>
-                    <option value={20} className="bg-[#10131c]">20</option>
-                    <option value={50} className="bg-[#10131c]">50</option>
-                  </select>
-                  <span className="text-gray-400">班</span>
-                </div>
+              <div className="flex items-center gap-1 bg-[#10131c] border border-[#262c3d] rounded-lg px-1.5 py-1.5 text-[11px] text-gray-300 shrink-0">
+                <span className="text-gray-400">每頁</span>
+                <select
+                  value={viaPageSize}
+                  onChange={(e) => setViaPageSize(Number(e.target.value))}
+                  className="bg-transparent text-[11px] font-mono text-gray-100 outline-none cursor-pointer"
+                  title="每頁顯示班次數量"
+                >
+                  <option value={10} className="bg-[#10131c]">10</option>
+                  <option value={20} className="bg-[#10131c]">20</option>
+                  <option value={50} className="bg-[#10131c]">50</option>
+                </select>
+                <span className="text-gray-400">班</span>
+              </div>
 
-                <div className="relative flex items-center shrink-0">
-                  <ArrowUpDown className="w-3 h-3 text-amber-400 absolute left-2 pointer-events-none" />
-                  <select
-                    value={viaSortBy}
-                    onChange={(e) => setViaSortBy(e.target.value as any)}
-                    className="bg-[#10131c] border border-[#262c3d] focus:border-amber-500/60 rounded-lg pl-6 pr-2 py-1 text-[11px] text-gray-200 outline-none cursor-pointer"
-                    title="排序方式"
-                  >
-                    <option value="train_asc">車次編號</option>
-                    <option value="speed_desc">時速最高</option>
-                    <option value="delay_desc">延誤最長</option>
-                    <option value="from_asc">起站名稱</option>
-                  </select>
-                </div>
+              <div className="relative flex items-center shrink-0">
+                <ArrowUpDown className="w-3 h-3 text-amber-400 absolute left-2 pointer-events-none" />
+                <select
+                  value={viaSortBy}
+                  onChange={(e) => setViaSortBy(e.target.value as any)}
+                  className="bg-[#10131c] border border-[#262c3d] focus:border-amber-500/60 rounded-lg pl-6 pr-1.5 py-1.5 text-[11px] text-gray-200 outline-none cursor-pointer"
+                  title="排序方式"
+                >
+                  <option value="train_asc">車次編號</option>
+                  <option value="speed_desc">時速最高</option>
+                  <option value="delay_desc">延誤最長</option>
+                  <option value="from_asc">起站名稱</option>
+                </select>
               </div>
             </div>
 
@@ -12061,22 +12059,20 @@ function ExploreContent() {
                           : 'bg-[#131722] border-[#252b3b] hover:border-amber-500/40'
                       }`}
                     >
-                      {/* Top Header Row */}
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="inline-flex items-center gap-1 text-[10.5px] font-bold font-mono px-1.5 py-0.5 rounded bg-amber-600 text-white shadow-xs">
-                              <TramFront className="w-3 h-3" />
-                              #{train.id}
-                            </span>
-                            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${delayBadge.cls}`}>
-                              {delayBadge.label}
-                            </span>
-                            {train.instance && (
-                              <span className="text-[10px] text-gray-500 font-mono">{train.instance}</span>
-                            )}
-                          </div>
-                          <h4 className="text-xs font-bold text-white mt-1 leading-snug break-words">
+                      {/* Top Header Row: #ID + Status + Origin→Dest on same line */}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                          <span className="inline-flex items-center gap-1 text-[10.5px] font-bold font-mono px-1.5 py-0.5 rounded bg-amber-600 text-white shadow-xs shrink-0">
+                            <TramFront className="w-3 h-3" />
+                            #{train.id}
+                          </span>
+                          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border shrink-0 whitespace-nowrap ${delayBadge.cls}`}>
+                            {delayBadge.label}
+                          </span>
+                          <h4
+                            className="text-xs font-bold text-white leading-snug truncate min-w-0"
+                            title={`${formatPlaceTitle(train.from)} → ${formatPlaceTitle(train.to)}`}
+                          >
                             {formatPlaceTitle(train.from)} → {formatPlaceTitle(train.to)}
                           </h4>
                         </div>
@@ -12111,22 +12107,22 @@ function ExploreContent() {
                         </div>
                       </div>
 
-                      {/* Live Telemetry Row */}
+                      {/* Live Telemetry Row (Single-line per metric) */}
                       <div className="grid grid-cols-3 gap-1.5 text-[10.5px]">
-                        <div className="bg-[#0e121b] border border-[#1f2535] rounded-lg px-2 py-1">
-                          <span className="text-[9.5px] text-gray-500 block">時速</span>
+                        <div className="bg-[#0e121b] border border-[#1f2535] rounded-lg px-2 py-1 flex items-center justify-between gap-1 whitespace-nowrap">
+                          <span className="text-[10px] text-gray-500">時速</span>
                           <span className="font-bold font-mono text-amber-200">
                             {train.speed != null ? `${Math.round(train.speed)} km/h` : '—'}
                           </span>
                         </div>
-                        <div className="bg-[#0e121b] border border-[#1f2535] rounded-lg px-2 py-1">
-                          <span className="text-[9.5px] text-gray-500 block">航向</span>
-                          <span className="font-bold font-mono text-gray-200 truncate block">
+                        <div className="bg-[#0e121b] border border-[#1f2535] rounded-lg px-2 py-1 flex items-center justify-between gap-1 whitespace-nowrap min-w-0">
+                          <span className="text-[10px] text-gray-500 shrink-0">航向</span>
+                          <span className="font-bold font-mono text-gray-200 truncate">
                             {formatHeading(train.direction)}
                           </span>
                         </div>
-                        <div className="bg-[#0e121b] border border-[#1f2535] rounded-lg px-2 py-1">
-                          <span className="text-[9.5px] text-gray-500 block">進度</span>
+                        <div className="bg-[#0e121b] border border-[#1f2535] rounded-lg px-2 py-1 flex items-center justify-between gap-1 whitespace-nowrap">
+                          <span className="text-[10px] text-gray-500">進度</span>
                           <span className="font-bold font-mono text-emerald-300">
                             {train.stops_completed}/{train.stops_total} 站
                           </span>
