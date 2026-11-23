@@ -277,18 +277,28 @@ function applyCoupledTransitLayers(
   active: boolean
 ): UIState['layers'] {
   const updated = { ...layers, [layer]: active };
-  if (layer === 'skytrainRoutes' || layer === 'skytrainStops') {
+  if (layer === 'skytrainTrains' || layer === 'skytrainRoutes' || layer === 'skytrainStops') {
+    updated.skytrainTrains = active;
     updated.skytrainRoutes = active;
     updated.skytrainStops = active;
-  } else if (layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
+  } else if (layer === 'bcferriesVehicles' || layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
+    updated.bcferriesVehicles = active;
     updated.bcferriesRoutes = active;
     updated.bcferriesTerminals = active;
-  } else if (layer === 'busRoutes' || layer === 'busStops') {
+  } else if (layer === 'bus' || layer === 'busRoutes' || layer === 'busStops') {
+    updated.bus = active;
     updated.busRoutes = active;
     updated.busStops = active;
-  } else if (layer === 'seabusRoutes' || layer === 'seabusStops') {
+  } else if (layer === 'seabusVehicles' || layer === 'seabusRoutes' || layer === 'seabusStops') {
+    updated.seabusVehicles = active;
     updated.seabusRoutes = active;
     updated.seabusStops = active;
+  } else if (layer === 'maritimeShipping' || layer === 'marineTerminals') {
+    updated.maritimeShipping = active;
+    updated.marineTerminals = active;
+  } else if (layer === 'viaRailTrains' || layer === 'viaRailRoutes') {
+    updated.viaRailTrains = active;
+    updated.viaRailRoutes = active;
   }
   return updated;
 }
@@ -556,18 +566,15 @@ export const useUIStore = create<UIState>()(
               (layer === 'picnicSites' && st.category === 'picnic_sites') ||
               (layer === 'waterSupply' && st.category === 'water_supply') ||
               (layer === 'sewerSystem' && st.category === 'sewer_system') ||
-              ((layer === 'bcferriesTerminals' || layer === 'bcferriesRoutes') && st.category === 'ferry_terminal') ||
-              (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
-              (layer === 'maritimeShipping' && st.category === 'maritime_vessel') ||
-              (layer === 'marineTerminals' && st.category === 'marine_terminals') ||
+              ((layer === 'bcferriesVehicles' || layer === 'bcferriesTerminals' || layer === 'bcferriesRoutes') && (st.category === 'ferry_terminal' || st.category === 'ferry_vehicle')) ||
+              ((layer === 'maritimeShipping' || layer === 'marineTerminals') && (st.category === 'maritime_vessel' || st.category === 'marine_terminals')) ||
               (layer === 'oneWayStreets' && (st.category === 'one_way_streets' || String(st.id ?? '').startsWith('oneway_'))) ||
               (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || String(st.id ?? '').startsWith('snow_'))) ||
               (layer === 'driveBC' && (st.category === 'drivebc' || String(st.id ?? '').startsWith('RIDE-') || String(st.id ?? '').startsWith('drivebc_'))) ||
-              ((layer === 'skytrainRoutes' || layer === 'skytrainStops') && st.category === 'skytrain') ||
+              ((layer === 'skytrainTrains' || layer === 'skytrainRoutes' || layer === 'skytrainStops') && st.category === 'skytrain') ||
               ((layer === 'viaRailRoutes' || layer === 'viaRailTrains') && st.category === 'via_rail') ||
-              ((layer === 'seabusRoutes' || layer === 'seabusStops') && st.category === 'seabus') ||
-              ((layer === 'busRoutes' || layer === 'busStops') && (st.category === 'bus_stop' || st.category === 'bus_route')) ||
-              (layer === 'bus' && st.category === 'bus');
+              ((layer === 'seabusVehicles' || layer === 'seabusRoutes' || layer === 'seabusStops') && st.category === 'seabus') ||
+              ((layer === 'bus' || layer === 'busRoutes' || layer === 'busStops') && (st.category === 'bus' || st.category === 'bus_stop' || st.category === 'bus_route'));
             if (isTargetMatch) {
               nextSearchTarget = null;
             }
@@ -794,9 +801,19 @@ export const useUIStore = create<UIState>()(
           oneWayStreets: persistedState?.layers?.oneWayStreets || false,
           snowRemovalRoutes: persistedState?.layers?.snowRemovalRoutes || false,
           driveBC: persistedState?.layers?.driveBC || false,
-          marineTerminals: persistedState?.layers?.marineTerminals ?? true,
           crimeAreas: persistedState?.layers?.crimeAreas || false,
         };
+        // Keep merged transit vehicles and their coupled routes/stops/terminals synchronized on rehydrate
+        mergedLayers.busRoutes = Boolean(mergedLayers.bus);
+        mergedLayers.busStops = Boolean(mergedLayers.bus);
+        mergedLayers.skytrainRoutes = Boolean(mergedLayers.skytrainTrains);
+        mergedLayers.skytrainStops = Boolean(mergedLayers.skytrainTrains);
+        mergedLayers.viaRailRoutes = Boolean(mergedLayers.viaRailTrains);
+        mergedLayers.seabusRoutes = Boolean(mergedLayers.seabusVehicles);
+        mergedLayers.seabusStops = Boolean(mergedLayers.seabusVehicles);
+        mergedLayers.bcferriesRoutes = Boolean(mergedLayers.bcferriesVehicles);
+        mergedLayers.bcferriesTerminals = Boolean(mergedLayers.bcferriesVehicles);
+        mergedLayers.marineTerminals = Boolean(mergedLayers.maritimeShipping);
         for (const [k, v] of Object.entries(disabled)) {
           if (v && k in mergedLayers) {
             mergedLayers[k] = false;

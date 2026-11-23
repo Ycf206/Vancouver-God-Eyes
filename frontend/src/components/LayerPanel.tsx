@@ -342,7 +342,22 @@ export default function LayerPanel() {
   };
 
   const activeLayerCount = React.useMemo(() => {
-    const enabledCount = Object.entries(layers).filter(([key, val]) => Boolean(val) && !disabledLayers?.[key]).length;
+    const coupledSecondaryKeys = new Set([
+      'busRoutes',
+      'busStops',
+      'skytrainRoutes',
+      'skytrainStops',
+      'viaRailRoutes',
+      'seabusRoutes',
+      'seabusStops',
+      'bcferriesRoutes',
+      'bcferriesTerminals',
+      'marineTerminals',
+      'contours',
+    ]);
+    const enabledCount = Object.entries(layers).filter(
+      ([key, val]) => !coupledSecondaryKeys.has(key) && Boolean(val) && !disabledLayers?.[key]
+    ).length;
     return enabledCount + (contourInterval !== 'off' ? 1 : 0);
   }, [layers, disabledLayers, contourInterval]);
 
@@ -471,11 +486,13 @@ export default function LayerPanel() {
     const Icon = ICON_MAP[entry.iconKey];
     const iconOnly = forceIconOnly ?? Boolean(entry.iconOnly);
     const mobileCompactLabelMap: Record<string, string> = {
-      skytrainTrains: '列車',
-      skytrainRoutes: '車站',
+      bus: '車輛路線',
+      skytrainTrains: '列車路線',
       skytrainFareZones: '車區',
-      viaRailTrains: '列車',
-      viaRailRoutes: '車站',
+      viaRailTrains: '列車路線',
+      seabusVehicles: '船隻航線',
+      bcferriesVehicles: '渡輪航線',
+      maritimeShipping: '船隻碼頭',
       airportIndoor: '航廈圖',
     };
     const compactLabel = mobileCompactLabelMap[entry.id] || entry.buttonLabel;

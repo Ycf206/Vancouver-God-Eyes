@@ -100,17 +100,7 @@ def _safe_int(val: Any) -> int | None:
 
 def _normalize_live_train(train_key: str, raw: dict[str, Any]) -> dict[str, Any]:
     departed = bool(raw.get("departed"))
-    arrived = bool(raw.get("arrived"))
-    in_service = departed and (not arrived)
-
-    if in_service:
-        service_status = "in_service"
-    elif arrived:
-        service_status = "arrived"
-    elif not departed:
-        service_status = "scheduled"
-    else:
-        service_status = "not_in_service"
+    api_arrived = bool(raw.get("arrived"))
 
     lat = _safe_float(raw.get("lat"))
     lng = _safe_float(raw.get("lng"))
@@ -168,6 +158,21 @@ def _normalize_live_train(train_key: str, raw: dict[str, Any]) -> dict[str, Any]
         elif next_stop is None:
             next_stop = stop_item
 
+    # VIA Rail TSI API occasionally leaves completed long-distance trains (e.g. #1 parked at Vancouver yard)
+    # with departed=true & arrived=false even after every stop in `times[]` already has eta == "ARR".
+    all_stops_arrived = len(times_clean) > 0 and stops_completed >= len(times_clean)
+    arrived = api_arrived or all_stops_arrived
+    in_service = departed and (not arrived)
+
+    if in_service:
+        service_status = "in_service"
+    elif arrived:
+        service_status = "arrived"
+    elif not departed:
+        service_status = "scheduled"
+    else:
+        service_status = "not_in_service"
+
     # Determine effective delay minutes & status
     delay_src = next_stop or last_stop or (times_clean[-1] if times_clean else None)
     delay_min = delay_src.get("diff_min") if delay_src else None
@@ -192,6 +197,7 @@ def _normalize_live_train(train_key: str, raw: dict[str, Any]) -> dict[str, Any]
         "to": str(raw.get("to") or "").strip(),
         "departed": departed,
         "arrived": arrived,
+        "api_arrived": api_arrived,
         "in_service": in_service,
         "service_status": service_status,
         "has_gps": has_gps,
@@ -348,16 +354,19 @@ def _infer_province_zh(lat: float, lon: float, tz: str) -> str:
     return "ON 安大略省"
 
 
-def _is_us_amtrak_partner_stop(lat: float, lon: float, tz: str, name: str = "") -> bool:
-    """Exclude US-only Amtrak partner stations (e.g. New York, Albany, Yonkers, Buffalo)."""
+def _is_us_amtrak_partner_stop(lat: float, lon: float, tz: str, name: str = "", code: str = "") -> bool:
+    """Exclude US-only Amtrak partner stations (e.g. New York, Albany, Yonkers, Buffalo, Niagara Falls NY)."""
+    if code.strip().upper() == "NFNY":
+        return True
     us_names = {
         "new york", "yonkers", "croton-harmon", "poughkeepsie", "rhinecliff",
         "hudson", "albany-rensselaer", "schenectady", "amsterdam", "utica",
         "rome", "syracuse", "rochester", "buffalo", "niagara falls (ny)",
+        "niagara falls station",
     }
     if name.strip().lower() in us_names:
         return True
-    if tz == "America/New_York" and not ("niagara falls" in name.strip().lower() and lon < -79.05):
+    if tz == "America/New_York" and not ("niagara falls" in name.strip().lower() and lon < -79.055):
         return True
     if lat < 41.6:
         return True
@@ -394,15 +403,16 @@ def update_via_rail_network() -> dict[str, int]:
             }
 
     trip_to_route: dict[str, str] = {}
-    route_to_shapes: dict[str, set[str]] = defaultdict(set)
+    route_dir_to_shapes: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
     for tr in trips_rows:
         tid = (tr.get("trip_id") or "").strip()
         rid = (tr.get("route_id") or "").strip()
         shid = (tr.get("shape_id") or "").strip()
+        dir_id = (tr.get("direction_id") or "0").strip()
         if tid and rid:
             trip_to_route[tid] = rid
         if rid and shid:
-            route_to_shapes[rid].add(shid)
+            route_dir_to_shapes[rid][dir_id].add(shid)
 
     stop_to_routes: dict[str, set[str]] = defaultdict(set)
     for st in stop_times_rows:
@@ -422,42 +432,76 @@ def update_via_rail_network() -> dict[str, int]:
         if shid and lat is not None and lon is not None and seq is not None:
             shape_pts[shid].append((seq, lon, lat))
 
-    # Build route features (pick the longest shape per unique route_id, clipping US-only Maple Leaf tail)
+    def _shapes_diverge(coords_a: list[list[float]], coords_b: list[list[float]], threshold_deg: float = 0.0025) -> bool:
+        """Return True if coords_b deviates from coords_a by > ~275m (e.g. directional running on CN vs CP tracks)."""
+        if not coords_a or not coords_b:
+            return False
+        thresh_sq = threshold_deg * threshold_deg
+        step_b = max(1, len(coords_b) // 160)
+        for bx, by in coords_b[::step_b]:
+            min_d_sq = min((bx - ax) ** 2 + (by - ay) ** 2 for ax, ay in coords_a)
+            if min_d_sq > thresh_sq:
+                return True
+        return False
+
+    # Build route features (include both directions when directional running uses separate physical tracks,
+    # e.g., Fraser Canyon CN south bank via Hope/Chilliwack/Abbotsford vs CPKC north bank via Katz/Agassiz)
     route_features: list[dict[str, Any]] = []
-    seen_route_names: set[str] = set()
+    seen_route_keys: set[str] = set()
     for rid, rmeta in route_info.items():
         rname = rmeta["name"]
-        if "new york" in rname.lower():
+        is_maple_leaf = "new york" in rname.lower()
+        dir_map = route_dir_to_shapes.get(rid) or {}
+        if not dir_map:
             continue
-        cand_shapes = list(route_to_shapes.get(rid) or [])
-        if not cand_shapes:
-            continue
-        # Pick shape with most points (fullest corridor coverage)
-        best_shid = max(cand_shapes, key=lambda s: len(shape_pts.get(s) or []))
-        pts_sorted = sorted(shape_pts.get(best_shid) or [], key=lambda x: x[0])
-        if len(pts_sorted) < 2:
-            continue
-        raw_coords = [(lon, lat) for _, lon, lat in pts_sorted]
-        simplified = _simplify_rdp(raw_coords, eps=0.0006)
-        if len(simplified) < 2:
-            continue
-        if rname in seen_route_names:
-            continue
-        seen_route_names.add(rname)
-        route_features.append(
-            {
-                "type": "Feature",
-                "id": f"via_route_{rid}",
-                "geometry": {"type": "LineString", "coordinates": simplified},
-                "properties": {
-                    "id": f"via_route_{rid}",
-                    "route_id": rid,
-                    "name": rname,
-                    "operator": "VIA Rail Canada",
-                    "color": rmeta["color"],
-                },
-            }
-        )
+
+        # Sort directions so longest shape comes first
+        dir_candidates: list[tuple[str, str, list[list[float]]]] = []
+        for dir_id, cand_shapes in sorted(dir_map.items()):
+            if not cand_shapes:
+                continue
+            best_shid = max(cand_shapes, key=lambda s: len(shape_pts.get(s) or []))
+            pts_sorted = sorted(shape_pts.get(best_shid) or [], key=lambda x: x[0])
+            if len(pts_sorted) < 2:
+                continue
+            raw_coords = [(lon, lat) for _, lon, lat in pts_sorted]
+            if is_maple_leaf:
+                # Keep only the Canadian portion (Toronto -> Grimsby -> St. Catharines -> Niagara Falls ON)
+                raw_coords = [(lon, lat) for lon, lat in raw_coords if lon <= -79.055 and lat >= 43.09]
+                if len(raw_coords) < 2:
+                    continue
+            simplified = _simplify_rdp(raw_coords, eps=0.0006)
+            if len(simplified) >= 2:
+                dir_candidates.append((dir_id, best_shid, simplified))
+
+        dir_candidates.sort(key=lambda x: len(x[2]), reverse=True)
+        emitted_coords: list[list[list[float]]] = []
+        for dir_id, shid, simplified in dir_candidates:
+            if emitted_coords and not any(_shapes_diverge(existing, simplified) for existing in emitted_coords):
+                continue
+            display_rname = "Toronto - Niagara Falls" if is_maple_leaf else rname
+            dedup_key = f"{display_rname}::d{dir_id}"
+            if dedup_key in seen_route_keys:
+                continue
+            seen_route_keys.add(dedup_key)
+            emitted_coords.append(simplified)
+            feat_id = f"via_route_{rid}" if len(emitted_coords) == 1 else f"via_route_{rid}_d{dir_id}"
+            route_features.append(
+                {
+                    "type": "Feature",
+                    "id": feat_id,
+                    "geometry": {"type": "LineString", "coordinates": simplified},
+                    "properties": {
+                        "id": feat_id,
+                        "route_id": rid,
+                        "direction_id": dir_id,
+                        "shape_id": shid,
+                        "name": display_rname,
+                        "operator": "VIA Rail Canada",
+                        "color": rmeta["color"],
+                    },
+                }
+            )
 
     # Build station features (all Canadian VIA Rail stations)
     station_features: list[dict[str, Any]] = []
@@ -471,7 +515,7 @@ def update_via_rail_network() -> dict[str, int]:
         tz = (st.get("stop_timezone") or "").strip()
         if not name or lat is None or lon is None:
             continue
-        if _is_us_amtrak_partner_stop(lat, lon, tz, name):
+        if _is_us_amtrak_partner_stop(lat, lon, tz, name, code):
             continue
         if code in seen_codes:
             continue

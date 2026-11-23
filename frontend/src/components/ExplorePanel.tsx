@@ -13,7 +13,7 @@ import { Landmark,
   Parasol, CableCar, EvCharger, Waypoints, SquareExclamationPoint, Fence,
   Umbrella, CloudLightning, Dam, Lighthouse, Telescope, TrainFront, TramFront, BusFront, Trophy, Ticket,
   CircleChevronLeft, CircleChevronRight, Globe, BarChart2, ChartNoAxesCombined, ArrowLeftRight,
-  BuildingComplex, Hammer, ArrowLeftToLine, ArrowRightToLine, Map as MapIcon
+  BuildingComplex, Hammer, ArrowLeftToLine, ArrowRightToLine, Map as MapIcon, CalendarClock, GitCommitHorizontal
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
@@ -1550,19 +1550,24 @@ function ExploreContent() {
     return false;
   }, []);
 
+  const isViaTrainActive = React.useCallback((t: ViaExploreTrain) => {
+    const allStopsArrived = t.stops_total > 0 && t.stops_completed >= t.stops_total;
+    return t.departed === true && t.arrived === false && t.in_service !== false && !allStopsArrived;
+  }, []);
+
   const filteredViaInService = useMemo(() => {
-    const raw = (viaRailData?.in_service || []).filter((t) => t.departed === true && t.arrived === false);
+    const raw = (viaRailData?.in_service || []).filter(isViaTrainActive);
     const q = viaSearchQuery.trim();
     return sortViaTrains(q ? raw.filter((t) => matchesViaQuery(t, q)) : raw);
-  }, [viaRailData, viaSearchQuery, sortViaTrains, matchesViaQuery]);
+  }, [viaRailData, viaSearchQuery, sortViaTrains, matchesViaQuery, isViaTrainActive]);
 
   const filteredViaNotInService = useMemo(() => {
     const fromNotIn = viaRailData?.not_in_service || [];
-    const misplaced = (viaRailData?.in_service || []).filter((t) => !(t.departed === true && t.arrived === false));
+    const misplaced = (viaRailData?.in_service || []).filter((t) => !isViaTrainActive(t));
     const combined = [...fromNotIn, ...misplaced];
     const q = viaSearchQuery.trim();
     return sortViaTrains(q ? combined.filter((t) => matchesViaQuery(t, q)) : combined);
-  }, [viaRailData, viaSearchQuery, sortViaTrains, matchesViaQuery]);
+  }, [viaRailData, viaSearchQuery, sortViaTrains, matchesViaQuery, isViaTrainActive]);
 
   const viaTotalPages = Math.max(1, Math.ceil(filteredViaInService.length / viaPageSize));
 
@@ -11703,6 +11708,31 @@ function ExploreContent() {
       {/* ==================== VIA Rail Canada 即時列車分頁 (VIA Rail Live Trains) ==================== */}
       {activeTab === 'viarail' && (() => {
         const isValidIso = (v?: string | null) => Boolean(v && v !== '&mdash;' && !Number.isNaN(new Date(v).getTime()));
+        const formatPlaceTitle = (raw?: string | null) => {
+          if (!raw) return '';
+          return String(raw)
+            .trim()
+            .toLowerCase()
+            .replace(/(^|[\s\-/.(])([a-z\u00c0-\u024f])/g, (_, sep, ch) => `${sep}${ch.toUpperCase()}`);
+        };
+        const formatEtaZh = (eta?: string | null) => {
+          if (!eta) return '';
+          const s = String(eta).trim();
+          if (!s || s === '&mdash;' || s === '-') return '';
+          if (s.toUpperCase() === 'ARR') return '已抵達';
+          if (/^<\s*1\s*min/i.test(s) || /^0\s*min/i.test(s)) return '即將進站';
+          const hm = s.match(/^(\d+)\s*h\s*(\d+)?/i);
+          if (hm) {
+            const h = parseInt(hm[1], 10);
+            const m = hm[2] ? parseInt(hm[2], 10) : 0;
+            if (h > 0 && m > 0) return `${h} 小時 ${m} 分鐘`;
+            if (h > 0) return `${h} 小時`;
+            return `${m} 分鐘`;
+          }
+          const mm = s.match(/^(\d+)\s*mins?$/i);
+          if (mm) return `${parseInt(mm[1], 10)} 分鐘`;
+          return s.replace(/\bhours?\b/gi, '小時').replace(/\bmins?\b/gi, '分鐘');
+        };
         const formatHeading = (deg?: number | null) => {
           if (deg == null || !Number.isFinite(deg)) return '—';
           const dirs = ['北', '東北', '東', '東南', '南', '西南', '西', '西北'];
@@ -11711,10 +11741,10 @@ function ExploreContent() {
         };
         const getDelayBadge = (delayMin?: number | null) => {
           if (delayMin == null) return { label: '狀態正常', cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' };
-          if (delayMin > 30) return { label: `誤點 ${delayMin} 分`, cls: 'bg-rose-500/20 text-rose-300 border-rose-500/40' };
-          if (delayMin > 5) return { label: `誤點 ${delayMin} 分`, cls: 'bg-orange-500/20 text-orange-300 border-orange-500/40' };
-          if (delayMin < -2) return { label: `提早 ${Math.abs(delayMin)} 分`, cls: 'bg-sky-500/20 text-sky-300 border-sky-500/40' };
-          return { label: '準點', cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' };
+          if (delayMin > 30) return { label: `延誤 ${delayMin} 分鐘`, cls: 'bg-rose-500/20 text-rose-300 border-rose-500/40' };
+          if (delayMin > 5) return { label: `延誤 ${delayMin} 分鐘`, cls: 'bg-orange-500/20 text-orange-300 border-orange-500/40' };
+          if (delayMin < -2) return { label: `提早 ${Math.abs(delayMin)} 分鐘`, cls: 'bg-sky-500/20 text-sky-300 border-sky-500/40' };
+          return { label: '準時', cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' };
         };
         const commitViaPage = (raw: string) => {
           const parsed = parseInt(raw, 10);
@@ -11726,8 +11756,10 @@ function ExploreContent() {
           setViaPage(clamped);
           setViaPageInput(String(clamped));
         };
-        const notDepartedCount = filteredViaNotInService.filter((t) => !t.departed && !t.arrived).length;
-        const arrivedCount = filteredViaNotInService.filter((t) => t.arrived).length;
+        const isTrainEffectivelyArrived = (t: ViaExploreTrain) =>
+          Boolean(t.arrived || (t.stops_total > 0 && t.stops_completed >= t.stops_total));
+        const notDepartedCount = filteredViaNotInService.filter((t) => !t.departed && !isTrainEffectivelyArrived(t)).length;
+        const arrivedCount = filteredViaNotInService.filter(isTrainEffectivelyArrived).length;
 
         const renderStopsTable = (train: ViaExploreTrain) => {
           const stops = Array.isArray(train.times) ? train.times : [];
@@ -11780,7 +11812,7 @@ function ExploreContent() {
                     <div className="flex items-center gap-1.5 shrink-0 font-mono text-[10px]">
                       <span className={st.arrived ? 'text-gray-400' : 'text-gray-200'}>{timeDisplay}</span>
                       {diffMin != null && diffMin > 5 && (
-                        <span className="text-[9.5px] text-rose-400">+{diffMin}m</span>
+                        <span className="text-[9.5px] text-rose-400">+{diffMin}分</span>
                       )}
                     </div>
                   </div>
@@ -11797,7 +11829,7 @@ function ExploreContent() {
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className="text-xs font-bold text-white flex items-center gap-1.5 truncate">
                   <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0 inline-block" />
-                  <span className="truncate">VIA Rail Canada 列車</span>
+                  <span className="truncate">VIA Rail Canada 列車班次</span>
                 </span>
               </div>
 
@@ -11837,15 +11869,15 @@ function ExploreContent() {
               </div>
             </div>
 
-            {/* Search Bar & Sort Selector */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              <div className="relative flex-1 min-w-0">
+            {/* Search Bar + Per-page (left of Sort) + Sort Selector */}
+            <div className="flex flex-col gap-1.5 shrink-0">
+              <div className="relative w-full">
                 <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={viaSearchQuery}
                   onChange={(e) => setViaSearchQuery(e.target.value)}
-                  placeholder="搜尋車次、起訖站或車站代碼 (如 VCVR / Toronto)..."
+                  placeholder="搜尋車次、起訖站或車站代碼..."
                   className="w-full bg-[#10131c] border border-[#262c3d] focus:border-amber-500/60 rounded-lg pl-8 pr-7 py-1.5 text-xs text-gray-100 placeholder-gray-500 outline-none transition-colors"
                 />
                 {viaSearchQuery && (
@@ -11860,44 +11892,58 @@ function ExploreContent() {
                 )}
               </div>
 
-              <div className="relative flex items-center shrink-0">
-                <ArrowUpDown className="w-3 h-3 text-amber-400 absolute left-2 pointer-events-none" />
-                <select
-                  value={viaSortBy}
-                  onChange={(e) => setViaSortBy(e.target.value as any)}
-                  className="bg-[#10131c] border border-[#262c3d] focus:border-amber-500/60 rounded-lg pl-6 pr-2 py-1.5 text-[11px] text-gray-200 outline-none cursor-pointer"
-                  title="排序方式"
-                >
-                  <option value="train_asc">車次編號</option>
-                  <option value="speed_desc">時速最高</option>
-                  <option value="delay_desc">誤點最長</option>
-                  <option value="from_asc">起站名稱</option>
-                </select>
+              <div className="flex items-center justify-end gap-1.5">
+                <div className="flex items-center gap-1 bg-[#10131c] border border-[#262c3d] rounded-lg px-2 py-1 text-[11px] text-gray-300 shrink-0">
+                  <span className="text-gray-400">每頁</span>
+                  <select
+                    value={viaPageSize}
+                    onChange={(e) => setViaPageSize(Number(e.target.value))}
+                    className="bg-transparent text-[11px] font-mono text-gray-100 outline-none cursor-pointer"
+                    title="每頁顯示班次數量"
+                  >
+                    <option value={10} className="bg-[#10131c]">10</option>
+                    <option value={20} className="bg-[#10131c]">20</option>
+                    <option value={50} className="bg-[#10131c]">50</option>
+                  </select>
+                  <span className="text-gray-400">班</span>
+                </div>
+
+                <div className="relative flex items-center shrink-0">
+                  <ArrowUpDown className="w-3 h-3 text-amber-400 absolute left-2 pointer-events-none" />
+                  <select
+                    value={viaSortBy}
+                    onChange={(e) => setViaSortBy(e.target.value as any)}
+                    className="bg-[#10131c] border border-[#262c3d] focus:border-amber-500/60 rounded-lg pl-6 pr-2 py-1 text-[11px] text-gray-200 outline-none cursor-pointer"
+                    title="排序方式"
+                  >
+                    <option value="train_asc">車次編號</option>
+                    <option value="speed_desc">時速最高</option>
+                    <option value="delay_desc">延誤最長</option>
+                    <option value="from_asc">起站名稱</option>
+                  </select>
+                </div>
               </div>
             </div>
 
             {/* Scrollable List Body */}
             <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2.5 pr-1 min-h-0">
-              {/* TOP: Collapsible Not In Service Accordion (Collapsed & hidden by default) */}
+              {/* TOP: Collapsible 非服務中 Accordion (Collapsed & hidden by default) */}
               <div className="rounded-xl border border-[#272e3f] bg-[#121622] overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setViaNotInServiceOpen((prev) => !prev)}
                   className="w-full flex items-center justify-between gap-2 px-3 py-2 text-left hover:bg-[#191f2f] transition-colors cursor-pointer"
+                  title={viaNotInServiceOpen ? '收合非服務中列車清單' : '展開非服務中列車清單'}
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-700/80 text-slate-200 border border-slate-600/60 shrink-0">
-                      Not In Service
+                      非服務中
                     </span>
-                    <span className="text-xs font-semibold text-gray-200 truncate">
-                      非行駛中列車 ({filteredViaNotInService.length})
-                    </span>
-                    <span className="text-[10px] text-gray-500 hidden sm:inline shrink-0">
-                      尚未發車 {notDepartedCount} · 已抵達 {arrivedCount}
+                    <span className="text-xs font-semibold text-gray-100 truncate">
+                      尚未發車 ({notDepartedCount}) / 已抵達 ({arrivedCount})
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] text-gray-400 shrink-0">
-                    <span>{viaNotInServiceOpen ? '隱藏' : '展開'}</span>
+                  <div className="flex items-center text-gray-400 shrink-0">
                     {viaNotInServiceOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                   </div>
                 </button>
@@ -11905,12 +11951,13 @@ function ExploreContent() {
                 {viaNotInServiceOpen && (
                   <div className="px-2.5 pb-2.5 pt-1 border-t border-[#212737] space-y-1.5 max-h-72 overflow-y-auto custom-scrollbar bg-[#0e111a]">
                     {filteredViaNotInService.length === 0 ? (
-                      <div className="text-[11px] text-gray-500 py-3 text-center">沒有符合條件的非行駛中列車</div>
+                      <div className="text-[11px] text-gray-500 py-3 text-center">沒有符合條件的非服務中列車</div>
                     ) : (
                       filteredViaNotInService.map((train) => {
                         const isExpanded = Boolean(viaExpandedTrainIds[`nis_${train.id}`]);
-                        const statusLabel = train.arrived ? '已抵達' : !train.departed ? '尚未發車' : '非服務中';
-                        const statusCls = train.arrived
+                        const arrivedFlag = isTrainEffectivelyArrived(train);
+                        const statusLabel = arrivedFlag ? '已抵達' : !train.departed ? '尚未發車' : '非服務中';
+                        const statusCls = arrivedFlag
                           ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
                           : 'bg-slate-600/30 text-slate-300 border-slate-500/40';
                         const firstStop = train.times?.[0];
@@ -11929,7 +11976,7 @@ function ExploreContent() {
                                   {statusLabel}
                                 </span>
                                 <span className="text-gray-200 font-semibold truncate">
-                                  {train.from} → {train.to}
+                                  {formatPlaceTitle(train.from)} → {formatPlaceTitle(train.to)}
                                 </span>
                               </div>
                               <button
@@ -11940,17 +11987,21 @@ function ExploreContent() {
                                     [`nis_${train.id}`]: !prev[`nis_${train.id}`],
                                   }))
                                 }
-                                className="text-[10px] text-gray-400 hover:text-amber-300 shrink-0 flex items-center gap-0.5 cursor-pointer"
+                                className={`p-1 rounded-md border transition-colors shrink-0 cursor-pointer ${
+                                  isExpanded
+                                    ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
+                                    : 'bg-[#1b2130] border-[#2a3245] text-gray-400 hover:text-amber-300 hover:border-amber-500/40'
+                                }`}
+                                title={isExpanded ? '收起時刻表' : '查看時刻表'}
                               >
-                                <span>{isExpanded ? '收起' : '時刻表'}</span>
-                                {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                                <CalendarClock className="w-3.5 h-3.5" />
                               </button>
                             </div>
                             <div className="flex items-center justify-between gap-2 mt-1 text-[10.5px] text-gray-400">
                               <span>班次日期：{train.instance || '—'}</span>
                               {isValidIso(depRaw) && (
                                 <span className="font-mono">
-                                  表定發車：{formatDateTime(depRaw!, timeFormat, timeZone)}
+                                  預計出發：{formatDateTime(depRaw!, timeFormat, timeZone)}
                                 </span>
                               )}
                             </div>
@@ -11967,16 +12018,8 @@ function ExploreContent() {
               <div className="flex items-center justify-between px-0.5 text-[11px]">
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="font-bold text-amber-300">行駛中列車 (In Service)</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                    {filteredViaInService.length} 班
-                  </span>
+                  <span className="font-bold text-amber-300">行駛中列車 ({filteredViaInService.length})</span>
                 </div>
-                {viaRailData?.updated_at && (
-                  <span className="text-[10px] text-gray-500 font-mono">
-                    同步：{formatTimeOnly(viaRailData.updated_at, timeFormat, timeZone)}
-                  </span>
-                )}
               </div>
 
               {/* In Service Train Cards */}
@@ -11993,7 +12036,7 @@ function ExploreContent() {
                   </div>
                   {filteredViaNotInService.length > 0 && (
                     <div className="text-[11px] text-gray-500">
-                      可展開上方「Not In Service」清單查看 {filteredViaNotInService.length} 班尚未發車或已抵達班次
+                      可展開上方「非服務中」清單查看 {filteredViaNotInService.length} 班尚未發車或已抵達班次
                     </div>
                   )}
                 </div>
@@ -12008,7 +12051,7 @@ function ExploreContent() {
                     : isValidIso(nextStop?.scheduled)
                       ? nextStop!.scheduled!
                       : null;
-                  const nextEtaStr = nextStop?.eta && nextStop.eta !== '&mdash;' ? nextStop.eta : null;
+                  const nextEtaZh = formatEtaZh(nextStop?.eta);
                   return (
                     <div
                       key={train.id}
@@ -12034,21 +12077,38 @@ function ExploreContent() {
                             )}
                           </div>
                           <h4 className="text-xs font-bold text-white mt-1 leading-snug break-words">
-                            {train.from} → {train.to}
+                            {formatPlaceTitle(train.from)} → {formatPlaceTitle(train.to)}
                           </h4>
                         </div>
 
-                        {train.has_gps && train.lat != null && train.lng != null && (
+                        <div className="flex items-center gap-1 shrink-0">
                           <button
                             type="button"
-                            onClick={() => setSelectedViaTrainId(train.id)}
-                            className="px-2 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10.5px] font-semibold flex items-center gap-1 shrink-0 transition-colors cursor-pointer"
-                            title="在地圖上定位此列車"
+                            onClick={() =>
+                              setViaExpandedTrainIds((prev) => ({ ...prev, [train.id]: !prev[train.id] }))
+                            }
+                            className={`px-1.5 py-1 rounded-lg border text-[10.5px] font-mono font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                              isExpanded
+                                ? 'bg-amber-500/25 border-amber-400/70 text-amber-200'
+                                : 'bg-[#191f2e] hover:bg-[#222a3d] border-[#2a3347] text-amber-300'
+                            }`}
+                            title={isExpanded ? '收合停靠站時刻表' : '展開停靠站時刻表'}
                           >
-                            <Navigation className="w-3 h-3" />
-                            <span>定位</span>
+                            <GitCommitHorizontal className="w-3.5 h-3.5" />
+                            <span>{train.times?.length || 0}</span>
                           </button>
-                        )}
+
+                          {train.has_gps && train.lat != null && train.lng != null && (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedViaTrainId(train.id)}
+                              className="p-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition-colors cursor-pointer"
+                              title="在地圖上定位此列車"
+                            >
+                              <MapPin className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </div>
 
                       {/* Live Telemetry Row */}
@@ -12086,10 +12146,10 @@ function ExploreContent() {
                             </div>
                             <div className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-2 flex-wrap">
                               <span>
-                                預計：{nextTimeIso ? formatDateTime(nextTimeIso, timeFormat, timeZone) : (nextEtaStr || '—')}
+                                預計：{nextTimeIso ? formatDateTime(nextTimeIso, timeFormat, timeZone) : (nextEtaZh || '—')}
                               </span>
-                              {nextEtaStr && nextTimeIso && (
-                                <span className="text-amber-300 font-mono">({nextEtaStr})</span>
+                              {nextEtaZh && nextTimeIso && (
+                                <span className="text-amber-300 font-medium">({nextEtaZh})</span>
                               )}
                               {nextStop.platform && (
                                 <span className="text-amber-300 font-semibold">月台 {nextStop.platform}</span>
@@ -12099,26 +12159,6 @@ function ExploreContent() {
                         </div>
                       )}
 
-                      {/* Footer: GPS Poll Time + Expandable Timetable Toggle */}
-                      <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#1e2433] text-[10px] text-gray-400">
-                        <span className="font-mono flex items-center gap-1 truncate">
-                          <Clock className="w-3 h-3 text-gray-500 shrink-0" />
-                          {isValidIso(train.poll)
-                            ? `回報：${formatDateTime(train.poll!, timeFormat, timeZone)}`
-                            : 'GPS 即時追蹤中'}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setViaExpandedTrainIds((prev) => ({ ...prev, [train.id]: !prev[train.id] }))
-                          }
-                          className="text-amber-300 hover:text-amber-200 font-semibold flex items-center gap-0.5 shrink-0 cursor-pointer"
-                        >
-                          <span>{isExpanded ? '收起時刻表' : `停靠站 (${train.times?.length || 0})`}</span>
-                          {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                        </button>
-                      </div>
-
                       {isExpanded && renderStopsTable(train)}
                     </div>
                   );
@@ -12126,72 +12166,56 @@ function ExploreContent() {
               )}
             </div>
 
-            {/* Pagination Bar (Prev / Page Input / Next + Page Size) */}
-            <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#23293a] shrink-0 text-[11px]">
-              <div className="flex items-center gap-1.5 text-gray-400">
-                <span>每頁</span>
-                <select
-                  value={viaPageSize}
-                  onChange={(e) => setViaPageSize(Number(e.target.value))}
-                  className="bg-[#10131c] border border-[#262c3d] rounded px-1.5 py-0.5 text-[11px] text-gray-200 outline-none cursor-pointer"
-                >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
-                <span>班</span>
+            {/* Pagination Bar (Prev / Page Input / Next) */}
+            <div className="flex items-center justify-center gap-1.5 pt-2 border-t border-[#23293a] shrink-0 text-[11px]">
+              <button
+                type="button"
+                disabled={viaPage <= 1}
+                onClick={() => {
+                  const next = Math.max(1, viaPage - 1);
+                  setViaPage(next);
+                  setViaPageInput(String(next));
+                }}
+                className="px-2.5 py-1 rounded-md bg-[#181d2b] hover:bg-[#232a3e] disabled:opacity-40 disabled:cursor-not-allowed text-gray-200 border border-[#2a3247] flex items-center gap-0.5 transition-colors cursor-pointer"
+                title="上一頁"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>上一頁</span>
+              </button>
+
+              <div className="flex items-center gap-1 font-mono text-gray-300 px-1">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={viaPageInput}
+                  onChange={(e) => setViaPageInput(e.target.value.replace(/[^\d]/g, ''))}
+                  onBlur={() => commitViaPage(viaPageInput)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      commitViaPage(viaPageInput);
+                      (e.target as HTMLInputElement).blur();
+                    }
+                  }}
+                  className="w-10 text-center bg-[#10131c] border border-[#2a3247] focus:border-amber-500/70 rounded px-1 py-0.5 text-xs text-white outline-none"
+                  aria-label="輸入頁碼"
+                />
+                <span className="text-gray-500">/ {viaTotalPages}</span>
               </div>
 
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  disabled={viaPage <= 1}
-                  onClick={() => {
-                    const next = Math.max(1, viaPage - 1);
-                    setViaPage(next);
-                    setViaPageInput(String(next));
-                  }}
-                  className="px-2 py-1 rounded-md bg-[#181d2b] hover:bg-[#232a3e] disabled:opacity-40 disabled:cursor-not-allowed text-gray-200 border border-[#2a3247] flex items-center gap-0.5 transition-colors cursor-pointer"
-                  title="上一頁"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                  <span>上一頁</span>
-                </button>
-
-                <div className="flex items-center gap-1 font-mono text-gray-300">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={viaPageInput}
-                    onChange={(e) => setViaPageInput(e.target.value.replace(/[^\d]/g, ''))}
-                    onBlur={() => commitViaPage(viaPageInput)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        commitViaPage(viaPageInput);
-                        (e.target as HTMLInputElement).blur();
-                      }
-                    }}
-                    className="w-10 text-center bg-[#10131c] border border-[#2a3247] focus:border-amber-500/70 rounded px-1 py-0.5 text-xs text-white outline-none"
-                    aria-label="輸入頁碼"
-                  />
-                  <span className="text-gray-500">/ {viaTotalPages}</span>
-                </div>
-
-                <button
-                  type="button"
-                  disabled={viaPage >= viaTotalPages}
-                  onClick={() => {
-                    const next = Math.min(viaTotalPages, viaPage + 1);
-                    setViaPage(next);
-                    setViaPageInput(String(next));
-                  }}
-                  className="px-2 py-1 rounded-md bg-[#181d2b] hover:bg-[#232a3e] disabled:opacity-40 disabled:cursor-not-allowed text-gray-200 border border-[#2a3247] flex items-center gap-0.5 transition-colors cursor-pointer"
-                  title="下一頁"
-                >
-                  <span>下一頁</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <button
+                type="button"
+                disabled={viaPage >= viaTotalPages}
+                onClick={() => {
+                  const next = Math.min(viaTotalPages, viaPage + 1);
+                  setViaPage(next);
+                  setViaPageInput(String(next));
+                }}
+                className="px-2.5 py-1 rounded-md bg-[#181d2b] hover:bg-[#232a3e] disabled:opacity-40 disabled:cursor-not-allowed text-gray-200 border border-[#2a3247] flex items-center gap-0.5 transition-colors cursor-pointer"
+                title="下一頁"
+              >
+                <span>下一頁</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         );
@@ -13210,7 +13234,7 @@ function ExploreContent() {
               <span>共 {filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報</span>
             )}
             {activeTab === 'viarail' && (
-              <span>行駛中 {filteredViaInService.length} 班 · Not In Service {filteredViaNotInService.length} 班</span>
+              <span>行駛中 {filteredViaInService.length} 班 · 非服務中 {filteredViaNotInService.length} 班</span>
             )}
             {activeTab === 'traffic' && (() => {
               const currentTabItemCount = trafficFilter === 'all'

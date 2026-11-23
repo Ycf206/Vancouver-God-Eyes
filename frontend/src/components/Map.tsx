@@ -1895,17 +1895,127 @@ export default function AppMap() {
     times?: ViaRailLiveStop[];
   }
 
+  interface ViaRailStationDetail {
+    id: string;
+    stop_id?: string;
+    code: string;
+    name: string;
+    province: string;
+    timezone?: string;
+    wheelchair_accessible: boolean;
+    is_major?: boolean;
+    routes: string[];
+    lon: number;
+    lat: number;
+  }
+
+  const formatViaPlaceName = React.useCallback((raw?: string | null): string => {
+    if (!raw) return '';
+    return String(raw)
+      .trim()
+      .toLowerCase()
+      .replace(/(^|[\s\-/.(])([a-z\u00c0-\u024f])/g, (_, sep, ch) => `${sep}${ch.toUpperCase()}`);
+  }, []);
+
+  const formatViaEtaZh = React.useCallback((eta?: string | null): string => {
+    if (!eta) return '';
+    const s = String(eta).trim();
+    if (!s || s === '&mdash;' || s === '-') return '';
+    if (s.toUpperCase() === 'ARR') return '已抵達';
+    if (/^<\s*1\s*min/i.test(s) || /^0\s*min/i.test(s)) return '即將進站';
+    const hm = s.match(/^(\d+)\s*h\s*(\d+)?/i);
+    if (hm) {
+      const h = parseInt(hm[1], 10);
+      const m = hm[2] ? parseInt(hm[2], 10) : 0;
+      if (h > 0 && m > 0) return `${h} 小時 ${m} 分鐘`;
+      if (h > 0) return `${h} 小時`;
+      return `${m} 分鐘`;
+    }
+    const mm = s.match(/^(\d+)\s*mins?$/i);
+    if (mm) return `${parseInt(mm[1], 10)} 分鐘`;
+    return s.replace(/\bhours?\b/gi, '小時').replace(/\bmins?\b/gi, '分鐘');
+  }, []);
+
+  const isValidViaIso = React.useCallback((v?: string | null): boolean => {
+    return Boolean(v && v !== '&mdash;' && !Number.isNaN(new Date(v).getTime()));
+  }, []);
+
+  const parseViaStationProps = React.useCallback((
+    props: Record<string, any>,
+    lon: number,
+    lat: number,
+    fallbackId?: string,
+    fallbackName?: string
+  ): ViaRailStationDetail => {
+    let routes: string[] = [];
+    if (Array.isArray(props.routes)) {
+      routes = props.routes.map(String);
+    } else if (typeof props.routes === 'string' && props.routes.trim()) {
+      try {
+        const parsed = JSON.parse(props.routes);
+        if (Array.isArray(parsed)) routes = parsed.map(String);
+      } catch {
+        routes = props.routes.split(',').map((s: string) => s.trim()).filter(Boolean);
+      }
+    }
+    const rawName = String(props.name || fallbackName || 'VIA 車站').replace(/\s*\(VIA\)\s*$/i, '').trim();
+    return {
+      id: String(props.id || fallbackId || `via_station_${props.code || rawName}`),
+      stop_id: props.stop_id ? String(props.stop_id) : undefined,
+      code: String(props.code || '').trim().toUpperCase(),
+      name: rawName,
+      province: String(props.province || 'Canada'),
+      timezone: props.timezone ? String(props.timezone) : undefined,
+      wheelchair_accessible: props.wheelchair_accessible === true || props.wheelchair_accessible === 'true',
+      is_major: props.is_major === true || props.is_major === 'true',
+      routes,
+      lon,
+      lat,
+    };
+  }, []);
+
   const [viaLiveTrains, setViaLiveTrains] = useState<ViaRailLiveTrain[]>([]);
+  const [viaAllTrains, setViaAllTrains] = useState<ViaRailLiveTrain[]>([]);
   const [selectedViaTrain, setSelectedViaTrain] = useState<ViaRailLiveTrain | null>(null);
+  const [selectedViaStation, setSelectedViaStation] = useState<ViaRailStationDetail | null>(null);
+  const [viaStationDetailTab, setViaStationDetailTab] = useState<'trains' | 'routes' | 'facilities'>('trains');
+  const [viaStationsCoordsMap, setViaStationsCoordsMap] = useState<Record<string, { lon: number; lat: number }>>({});
   const isViaExploreActive = Boolean(isExploreOpen && exploreTab === 'viarail');
   const showViaTrainsOnMap = Boolean(layers.viaRailTrains || isViaExploreActive);
   const showViaRoutesOnMap = Boolean(layers.viaRailRoutes || isViaExploreActive);
   const isAnyViaActive = showViaTrainsOnMap || showViaRoutesOnMap;
 
-  // Poll VIA Rail live trains every 15 seconds while VIA layer or VIA Explore tab is open
+  // Load VIA station coordinates lookup once when VIA is active (for clicking stops inside right-side train panel)
   useEffect(() => {
-    if (!showViaTrainsOnMap) {
+    if (!isAnyViaActive && !selectedViaTrain && !selectedViaStation) return;
+    if (Object.keys(viaStationsCoordsMap).length > 0) return;
+    let cancelled = false;
+    fetch('/via_rail_stations.geojson')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((geo) => {
+        if (cancelled || !geo || !Array.isArray(geo.features)) return;
+        const mapObj: Record<string, { lon: number; lat: number }> = {};
+        for (const f of geo.features) {
+          const coords = f?.geometry?.coordinates;
+          const props = f?.properties || {};
+          if (!Array.isArray(coords) || coords.length < 2) continue;
+          const pt = { lon: Number(coords[0]), lat: Number(coords[1]) };
+          if (props.code) mapObj[String(props.code).toUpperCase()] = pt;
+          if (props.name) mapObj[String(props.name).trim().toLowerCase()] = pt;
+        }
+        setViaStationsCoordsMap(mapObj);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [isAnyViaActive, selectedViaTrain, selectedViaStation, viaStationsCoordsMap]);
+
+  // Poll VIA Rail live trains every 15 seconds while VIA layer, VIA Explore tab, or a VIA station panel is open
+  useEffect(() => {
+    if (!showViaTrainsOnMap && !selectedViaStation) {
       setViaLiveTrains([]);
+      setViaAllTrains([]);
       setSelectedViaTrain(null);
       return;
     }
@@ -1924,12 +2034,16 @@ export default function AppMap() {
         }
         if (!res.ok || cancelled) return;
         const data = await res.json();
-        const rawList: ViaRailLiveTrain[] = Array.isArray(data?.in_service) ? data.in_service : [];
-        // Strictly filter departed=true && arrived=false with valid GPS coordinates
-        const activeGps = rawList.filter(
+        const rawInService: ViaRailLiveTrain[] = Array.isArray(data?.in_service) ? data.in_service : [];
+        const rawNotInService: ViaRailLiveTrain[] = Array.isArray(data?.not_in_service) ? data.not_in_service : [];
+        const combinedAll = [...rawInService, ...rawNotInService];
+        // Strictly filter active in-service trains (departed=true, arrived=false, not all stops ARR) with valid GPS
+        const activeGps = rawInService.filter(
           (t) =>
             t.departed === true &&
             t.arrived === false &&
+            t.in_service !== false &&
+            !(t.stops_total > 0 && t.stops_completed >= t.stops_total) &&
             t.lat != null &&
             t.lng != null &&
             Number.isFinite(t.lat) &&
@@ -1937,6 +2051,7 @@ export default function AppMap() {
         );
         if (!cancelled) {
           setViaLiveTrains(activeGps);
+          setViaAllTrains(combinedAll);
           setSelectedViaTrain((prev) => (prev ? activeGps.find((x) => x.id === prev.id) || null : null));
         }
       } catch {
@@ -1949,7 +2064,7 @@ export default function AppMap() {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [showViaTrainsOnMap]);
+  }, [showViaTrainsOnMap, selectedViaStation]);
 
   // Focus & select VIA train when clicked from VIA Explore tab
   useEffect(() => {
@@ -1957,7 +2072,11 @@ export default function AppMap() {
     const target = viaLiveTrains.find((t) => t.id === selectedViaTrainId);
     if (!target || target.lat == null || target.lng == null) return;
     setSelectedViaTrain(target);
+    setSelectedViaStation(null);
     setSelectedFacility(null);
+    setSelectedBus(null);
+    setSelectedTrain(null);
+    setSelectedSkytrainStation(null);
     const map = mapRef.current?.getMap();
     if (map) {
       map.flyTo({
@@ -1990,6 +2109,7 @@ export default function AppMap() {
       }
     } else if (!isAnyViaActive && prevViaActiveRef.current) {
       setSelectedViaTrain(null);
+      setSelectedViaStation(null);
       setSelectedViaTrainId(null);
       map.flyTo({
         center: [-123.05, 49.25],
@@ -3894,6 +4014,16 @@ export default function AppMap() {
         setSearchTarget(null);
       }
     }
+    if (selectedViaStation && !showViaRoutesOnMap) {
+      setSelectedViaStation(null);
+      if (searchTarget && searchTarget.category === 'via_rail') {
+        setSearchTarget(null);
+      }
+    }
+    if (selectedViaTrain && !showViaTrainsOnMap) {
+      setSelectedViaTrain(null);
+      setSelectedViaTrainId(null);
+    }
 
     // 5. 搜尋目標 (Search Target) 直接聯動圖層開關
     if (searchTarget) {
@@ -3919,7 +4049,7 @@ export default function AppMap() {
         setSearchTarget(null);
       }
     }
-  }, [layers, showViaRoutesOnMap, selectedFacility, selectedAirport, selectedTerminal, selectedBusExchange, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility, courierFilter]);
+  }, [layers, showViaRoutesOnMap, showViaTrainsOnMap, selectedFacility, selectedAirport, selectedTerminal, selectedBusExchange, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, selectedViaStation, selectedViaTrain, setSelectedViaTrainId, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility, courierFilter]);
 
 
   const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lon?: number, lat?: number) => {
@@ -5408,6 +5538,17 @@ export default function AppMap() {
       setSelectedAirport(null);
       const facType = searchTarget.meta?.facility_type || searchTarget.meta?.properties?.facility_type || (searchTarget.category === 'road' ? (String(searchTarget.id ?? '').startsWith('fuel_') ? 'fuel' : 'ev_charging') : searchTarget.category);
       const propsObj = searchTarget.meta?.properties || searchTarget.meta || {};
+      if (searchTarget.category === 'via_rail' || facType === 'via_rail_station') {
+        setSelectedFacility(null);
+        setSelectedViaTrain(null);
+        setSelectedViaTrainId(null);
+        setSelectedBus(null);
+        setSelectedTrain(null);
+        setSelectedSkytrainStation(null);
+        setViaStationDetailTab('trains');
+        setSelectedViaStation(parseViaStationProps(propsObj, searchTarget.lon, searchTarget.lat, searchTarget.id, searchTarget.title));
+        return;
+      }
       if (facType === 'canada_post') {
         setCourierFilter(prev => prev.canadaPost ? prev : { ...prev, canadaPost: true });
       } else if (facType === 'fedex') {
@@ -9835,6 +9976,9 @@ export default function AppMap() {
             // 只有點擊搜尋卡片右上角 X 按鈕時才關閉路線，點擊地圖背景不關閉 searchedBusRoute
             setSelectedTrain(null);
             setSelectedSkytrainStation(null);
+            setSelectedViaTrain(null);
+            setSelectedViaStation(null);
+            setSelectedViaTrainId(null);
             setSelectedTerminal(null);
             setSelectedFerry(null);
             if (searchTarget?.category !== 'bus_route') {
@@ -10250,12 +10394,24 @@ export default function AppMap() {
             const clickLat = e.lngLat?.lat ?? (Array.isArray(coords?.[0]) ? (Array.isArray(coords[0][0]) ? coords[0][0][1] : coords[0][1]) : coords?.[1]);
 
             let facilityType = props.facility_type || derivedFacilityType || 'fac';
+            if (layerId.startsWith('via-rail-stations')) {
+              const stLon = Array.isArray(coords) && typeof coords[0] === 'number' ? coords[0] : clickLon;
+              const stLat = Array.isArray(coords) && typeof coords[1] === 'number' ? coords[1] : clickLat;
+              setSelectedFacility(null);
+              setSelectedViaTrain(null);
+              setSelectedViaTrainId(null);
+              setSelectedBus(null);
+              setSelectedTrain(null);
+              setSelectedSkytrainStation(null);
+              setViaStationDetailTab('trains');
+              setSelectedViaStation(parseViaStationProps(props, stLon, stLat));
+              return;
+            }
             if (layerId.startsWith('fedex')) facilityType = 'fedex';
             else if (layerId.startsWith('purolator')) facilityType = 'purolator';
             else if (layerId.startsWith('consulates')) facilityType = 'consulates';
             else if (layerId.startsWith('pharmacies')) facilityType = 'pharmacies';
             else if (layerId.startsWith('picnic-sites')) facilityType = 'picnic_sites';
-            else if (layerId.startsWith('via-rail-stations')) facilityType = 'via_rail_station';
             else if (layerId.startsWith('water-supply')) facilityType = 'water_supply';
             else if (layerId.startsWith('sewer-system')) facilityType = 'sewer_system';
             else if (isImpark) facilityType = 'impark';
@@ -10343,6 +10499,9 @@ export default function AppMap() {
             }
             setSelectedTrain(null);
             setSelectedSkytrainStation(null);
+            setSelectedViaTrain(null);
+            setSelectedViaStation(null);
+            setSelectedViaTrainId(null);
             setSelectedTerminal(null);
             setSelectedFerry(null);
           }
@@ -10958,6 +11117,14 @@ export default function AppMap() {
           const delayMin = train.delay_min ?? 0;
           const dotColor = delayMin > 30 ? '#dc2626' : delayMin > 5 ? '#ea580c' : '#ca8a04';
           const hasDir = train.direction != null && Number.isFinite(train.direction);
+          const openViaTrainPanel = () => {
+            setSelectedViaTrain(train);
+            setSelectedViaStation(null);
+            setSelectedFacility(null);
+            setSelectedBus(null);
+            setSelectedTrain(null);
+            setSelectedSkytrainStation(null);
+          };
           return (
             <Marker
               key={`via_train_${train.id}`}
@@ -10966,8 +11133,7 @@ export default function AppMap() {
               anchor="center"
               onClick={(e) => {
                 e.originalEvent?.stopPropagation();
-                setSelectedViaTrain(train);
-                setSelectedFacility(null);
+                openViaTrainPanel();
               }}
             >
               <div
@@ -10982,11 +11148,10 @@ export default function AppMap() {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.nativeEvent?.stopImmediatePropagation();
-                  setSelectedViaTrain(train);
-                  setSelectedFacility(null);
+                  openViaTrainPanel();
                 }}
                 className="relative flex flex-col items-center cursor-pointer select-none group z-30"
-                title={`VIA #${train.id} · ${train.from} → ${train.to}${train.speed != null ? ` · ${Math.round(train.speed)} km/h` : ''}`}
+                title={`VIA #${train.id} · ${formatViaPlaceName(train.from)} → ${formatViaPlaceName(train.to)}${train.speed != null ? ` · ${Math.round(train.speed)} km/h` : ''}`}
               >
                 <div
                   className={`relative flex items-center justify-center w-7 h-7 rounded-full border-[2px] border-white shadow-lg transition-transform group-hover:scale-125 ${
@@ -11024,140 +11189,6 @@ export default function AppMap() {
             </Marker>
           );
         })}
-
-        {/* VIA Rail 即時列車 Popup */}
-        {selectedViaTrain && selectedViaTrain.lat != null && selectedViaTrain.lng != null && (() => {
-          const delayMin = selectedViaTrain.delay_min;
-          const delayBadge =
-            delayMin == null
-              ? { text: '狀態正常', cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' }
-              : delayMin > 5
-                ? { text: `誤點 ${delayMin} 分`, cls: 'bg-rose-100 text-rose-800 border-rose-200' }
-                : delayMin < -2
-                  ? { text: `提早 ${Math.abs(delayMin)} 分`, cls: 'bg-sky-100 text-sky-800 border-sky-200' }
-                  : { text: '準點行駛', cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' };
-          const headingText = (() => {
-            const d = selectedViaTrain.direction;
-            if (d == null || !Number.isFinite(d)) return '—';
-            const dirs = ['北', '東北', '東', '東南', '南', '西南', '西', '西北'];
-            const idx = Math.round((((d % 360) + 360) % 360) / 45) % 8;
-            return `${Math.round(d)}° (${dirs[idx]})`;
-          })();
-          const nextStop = selectedViaTrain.next_stop;
-          const isValidTime = (v?: string | null) => Boolean(v && v !== '&mdash;' && !Number.isNaN(new Date(v).getTime()));
-          const nextEtaRaw = isValidTime(nextStop?.estimated) ? nextStop?.estimated : (isValidTime(nextStop?.scheduled) ? nextStop?.scheduled : null);
-          const nextEtaFallback = nextStop?.eta && nextStop.eta !== '&mdash;' ? nextStop.eta : '—';
-          return (
-            <Popup
-              longitude={selectedViaTrain.lng}
-              latitude={selectedViaTrain.lat}
-              anchor="bottom"
-              onClose={() => {
-                setSelectedViaTrain(null);
-                setSelectedViaTrainId(null);
-              }}
-              closeButton={false}
-              closeOnClick={false}
-              className="z-50"
-              offset={[0, -16]}
-              maxWidth="none"
-            >
-              <div
-                onWheel={(e) => e.stopPropagation()}
-                onMouseDown={(e) => e.stopPropagation()}
-                className="p-3 w-[310px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800"
-              >
-                <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100 gap-2">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shadow-xs">
-                        <TramFront className="w-3 h-3" />
-                        VIA #{selectedViaTrain.id}
-                      </span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${delayBadge.cls}`}>
-                        {delayBadge.text}
-                      </span>
-                    </div>
-                    <h3 className="font-bold text-gray-900 text-sm leading-snug mt-1 break-words">
-                      {selectedViaTrain.from} → {selectedViaTrain.to}
-                    </h3>
-                    {selectedViaTrain.instance && (
-                      <span className="text-[10.5px] text-gray-400 block">發車日期：{selectedViaTrain.instance}</span>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedViaTrain(null);
-                      setSelectedViaTrainId(null);
-                    }}
-                    className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors shrink-0 cursor-pointer"
-                    title="關閉"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-3 gap-1.5 text-[11px] mb-2">
-                  <div className="bg-amber-50/90 border border-amber-200/80 rounded-lg px-2 py-1.5">
-                    <span className="text-[10px] text-amber-800/80 block">即時時速</span>
-                    <span className="font-bold text-amber-950 font-mono">
-                      {selectedViaTrain.speed != null ? `${Math.round(selectedViaTrain.speed)} km/h` : '—'}
-                    </span>
-                  </div>
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-lg px-2 py-1.5">
-                    <span className="text-[10px] text-slate-500 block">航向</span>
-                    <span className="font-bold text-slate-800 font-mono text-[10.5px]">{headingText}</span>
-                  </div>
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-lg px-2 py-1.5">
-                    <span className="text-[10px] text-slate-500 block">行駛進度</span>
-                    <span className="font-bold text-slate-800 font-mono">
-                      {selectedViaTrain.stops_completed}/{selectedViaTrain.stops_total} 站
-                    </span>
-                  </div>
-                </div>
-
-                {nextStop && (
-                  <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-lg px-2.5 py-2 mb-2 text-[11px]">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-semibold text-emerald-700">下一站停靠</span>
-                      {nextStop.code && (
-                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                          {nextStop.code}
-                        </span>
-                      )}
-                    </div>
-                    <div className="font-bold text-gray-900 mt-0.5">{nextStop.station}</div>
-                    <div className="flex items-center justify-between gap-2 text-[10.5px] text-gray-600 mt-1">
-                      <span>預計抵達：{nextEtaRaw ? formatDateTime(nextEtaRaw, timeFormat, timeZone) : nextEtaFallback}</span>
-                      {nextStop.platform && <span className="font-semibold text-amber-700">月台 {nextStop.platform}</span>}
-                    </div>
-                  </div>
-                )}
-
-                {selectedViaTrain.poll && (
-                  <div className="text-[10px] text-gray-400 mb-2 flex items-center justify-between">
-                    <span>GPS 回報時間</span>
-                    <span className="font-mono">{formatDateTime(selectedViaTrain.poll, timeFormat, timeZone)}</span>
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (isExploreMinimized) setExploreMinimized(false);
-                    openExploreTab('viarail');
-                    setSelectedViaTrainId(selectedViaTrain.id);
-                  }}
-                  className="w-full py-1.5 px-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                >
-                  <TrainTrack className="w-3.5 h-3.5" />
-                  在探索分頁查看完整時刻表
-                </button>
-              </div>
-            </Popup>
-          );
-        })()}
 
 
 
@@ -23109,6 +23140,217 @@ export default function AppMap() {
         );
       })()}
 
+      {/* 點選 VIA Rail 列車時固定在右方展示之即時動態資料面板 (仿巴士車輛面板) */}
+      {selectedViaTrain && (() => {
+        const originName = formatViaPlaceName(selectedViaTrain.from) || '起點站';
+        const destName = formatViaPlaceName(selectedViaTrain.to) || '終點站';
+        const nextStop = selectedViaTrain.next_stop;
+        const nextTimeIso = isValidViaIso(nextStop?.estimated)
+          ? nextStop!.estimated!
+          : isValidViaIso(nextStop?.scheduled)
+            ? nextStop!.scheduled!
+            : null;
+        const nextEtaZh = formatViaEtaZh(nextStop?.eta);
+        const delayMin = selectedViaTrain.delay_min;
+        const statusInfo =
+          delayMin == null
+            ? { label: '正常行駛', cls: 'text-emerald-400' }
+            : delayMin > 30
+              ? { label: `延誤 ${delayMin} 分鐘`, cls: 'text-rose-400' }
+              : delayMin > 5
+                ? { label: `延誤 ${delayMin} 分鐘`, cls: 'text-orange-400' }
+                : delayMin < -2
+                  ? { label: `提早 ${Math.abs(delayMin)} 分鐘`, cls: 'text-sky-400' }
+                  : { label: '準時', cls: 'text-emerald-400' };
+        const headingText = (() => {
+          const d = selectedViaTrain.direction;
+          if (d == null || !Number.isFinite(d)) return '';
+          const dirs = ['北', '東北', '東', '東南', '南', '西南', '西', '西北'];
+          const idx = Math.round((((d % 360) + 360) % 360) / 45) % 8;
+          return `${Math.round(d)}° (${dirs[idx]})`;
+        })();
+        const stopList = Array.isArray(selectedViaTrain.times) ? selectedViaTrain.times : [];
+
+        return (
+          <div
+            onWheel={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="fixed top-[72px] right-4 z-[46] w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+          >
+            {/* Header */}
+            <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
+              <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                  <TramFront className="w-4 h-4 text-amber-400" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
+                    VIA #{selectedViaTrain.train_number || selectedViaTrain.id} 往 {destName}
+                  </h3>
+                  <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.9)] animate-pulse"></span>
+                    <span className="text-[11px] font-semibold text-amber-400">即時行駛中</span>
+                    <span className="text-[10px] text-gray-400 font-mono ml-0.5">#{selectedViaTrain.id}</span>
+                    {selectedViaTrain.instance && (
+                      <span className="text-[10px] text-gray-500 font-mono">· {selectedViaTrain.instance}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isExploreMinimized) setExploreMinimized(false);
+                    openExploreTab('viarail');
+                    setSelectedViaTrainId(selectedViaTrain.id);
+                  }}
+                  className="text-gray-400 hover:text-amber-300 p-1.5 rounded-lg hover:bg-amber-500/15 transition-colors cursor-pointer"
+                  title="在探索分頁開啟 VIA 列車班次"
+                >
+                  <TrainTrack className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedViaTrain(null);
+                    setSelectedViaTrainId(null);
+                  }}
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-[#252a38] transition-colors shrink-0 cursor-pointer"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Info Rows (Follows Bus Panel Layout) */}
+            <div className="flex flex-col gap-2 text-xs shrink-0">
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">營辦商</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">VIA Rail Canada</span>
+              </div>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">起點</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">{originName}</span>
+              </div>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">終點</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">{destName}</span>
+              </div>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">當前</span>
+                <span className="font-bold text-amber-300 text-right break-words leading-tight flex-1">
+                  開往 {destName}
+                  {selectedViaTrain.speed != null ? ` · ${Math.round(selectedViaTrain.speed)} km/h` : ''}
+                  {headingText ? ` · ${headingText}` : ''}
+                </span>
+              </div>
+              <div className="flex justify-between items-start gap-2 pt-0.5">
+                <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
+                <div className="flex flex-col items-end text-right min-w-0 flex-1">
+                  <span className="font-bold text-white leading-snug break-words">
+                    {nextStop ? `${nextStop.station}${nextStop.code ? ` (${nextStop.code})` : ''}` : '沿線行駛中'}
+                  </span>
+                  <span className="text-[11px] font-bold text-amber-400 mt-0.5">
+                    {nextTimeIso
+                      ? `預計 ${formatDateTime(nextTimeIso, timeFormat, timeZone)}${nextEtaZh ? ` (${nextEtaZh})` : ''}`
+                      : nextEtaZh || '即時定位中'}
+                    {nextStop?.platform ? ` · 月台 ${nextStop.platform}` : ''}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">運行</span>
+                <span className={`font-bold ${statusInfo.cls}`}>{statusInfo.label}</span>
+              </div>
+            </div>
+
+            {/* Stops List Box */}
+            <div className="mt-3 pt-2.5 border-t border-[#262b38] flex-1 flex flex-col min-h-0">
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2 flex-1 flex flex-col min-h-0">
+                <div className="text-[11px] text-gray-400 font-medium mb-1.5 px-1 flex items-center justify-between shrink-0">
+                  <span>{stopList.length} 個停靠站</span>
+                  <span className="text-[10px] text-amber-400/90 font-mono">
+                    已過 {selectedViaTrain.stops_completed}/{selectedViaTrain.stops_total} 站
+                  </span>
+                </div>
+                {stopList.length > 0 ? (
+                  <div className="overflow-y-auto flex-1 flex flex-col gap-0.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+                    {stopList.map((st, idx) => {
+                      const isNext = Boolean(nextStop && nextStop.seq === st.seq);
+                      const isPassed = Boolean(st.arrived);
+                      const stTimeIso = isValidViaIso(st.estimated)
+                        ? st.estimated!
+                        : isValidViaIso(st.scheduled)
+                          ? st.scheduled!
+                          : null;
+                      const stEtaZh = formatViaEtaZh(st.eta);
+                      const coordHit =
+                        (st.code && viaStationsCoordsMap[st.code.toUpperCase()]) ||
+                        viaStationsCoordsMap[st.station.trim().toLowerCase()];
+                      return (
+                        <div
+                          key={`via-stop-${st.seq ?? idx}`}
+                          ref={isNext ? (el) => { el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } : undefined}
+                          onClick={() => {
+                            if (coordHit) {
+                              mapRef.current?.flyTo({ center: [coordHit.lon, coordHit.lat], zoom: 11, duration: 850 });
+                            }
+                          }}
+                          className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-[11.5px] transition-colors ${
+                            coordHit ? 'cursor-pointer' : ''
+                          } ${
+                            isNext
+                              ? 'bg-amber-500/20 border-l-2 border-amber-400 text-white font-bold'
+                              : isPassed
+                                ? 'text-gray-500 hover:bg-[#1a1f2c]'
+                                : 'text-gray-200 hover:bg-[#1a1f2c]'
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                            <span className="truncate">
+                              {st.seq ?? idx + 1}. {st.station}
+                            </span>
+                            {st.code && (
+                              <span className="text-[9.5px] font-mono text-gray-500 shrink-0">({st.code})</span>
+                            )}
+                            {st.platform && (
+                              <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 shrink-0">
+                                月台 {st.platform}
+                              </span>
+                            )}
+                          </div>
+                          <span
+                            className={`shrink-0 text-[10.5px] font-semibold font-mono text-right ${
+                              isNext
+                                ? 'text-amber-400 font-bold'
+                                : isPassed
+                                  ? 'text-gray-600'
+                                  : 'text-emerald-400/90'
+                            }`}
+                          >
+                            {isNext
+                              ? `下個站${stEtaZh ? ` · ${stEtaZh}` : ''}`
+                              : isPassed
+                                ? `已過站${stTimeIso ? ` (${formatTimeOnly(stTimeIso, timeFormat, timeZone)})` : ''}`
+                                : stTimeIso
+                                  ? formatDateTime(stTimeIso, timeFormat, timeZone)
+                                  : stEtaZh || '—'}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-[11px] text-gray-500 py-2 text-center">暫無詳細站序資料</div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* 點選天車列車時固定在右方展示之即時動態資料面板 */}
       {selectedTrain && (() => {
         const lineName = selectedTrain.line_name;
@@ -26279,6 +26521,384 @@ export default function AppMap() {
           )}
         </div>
       )}
+
+      {/* 點選 VIA Rail 車站時固定在右方展示之班次、路線與設施綜合面板 (仿天車站點面板) */}
+      {selectedViaStation && (() => {
+        const stCode = selectedViaStation.code.toUpperCase();
+        const stNameLow = selectedViaStation.name.trim().toLowerCase();
+
+        const passingTrains = viaAllTrains
+          .map((train) => {
+            const matchedStop = (train.times || []).find(
+              (s) =>
+                (stCode && s.code && s.code.toUpperCase() === stCode) ||
+                (stNameLow && s.station && s.station.trim().toLowerCase() === stNameLow)
+            );
+            if (!matchedStop) return null;
+            const timeIso = isValidViaIso(matchedStop.estimated)
+              ? matchedStop.estimated!
+              : isValidViaIso(matchedStop.scheduled)
+                ? matchedStop.scheduled!
+                : null;
+            const sortTs = timeIso ? new Date(timeIso).getTime() : Number.MAX_SAFE_INTEGER;
+            return { train, stop: matchedStop, timeIso, sortTs };
+          })
+          .filter((x): x is { train: ViaRailLiveTrain; stop: ViaRailLiveStop; timeIso: string | null; sortTs: number } => x !== null);
+
+        const upcomingPassing = passingTrains
+          .filter((x) => !x.stop.arrived && !x.train.arrived)
+          .sort((a, b) => a.sortTs - b.sortTs);
+        const passedToday = passingTrains
+          .filter((x) => x.stop.arrived || x.train.arrived)
+          .sort((a, b) => b.sortTs - a.sortTs);
+        const nextPassing = upcomingPassing[0] || null;
+
+        return (
+          <div
+            onWheel={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="fixed top-[72px] right-4 z-[46] w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#131620] text-gray-100 rounded-xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-150 select-none"
+          >
+            {/* Header (Follows SkyTrain Station Panel Layout) */}
+            <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
+              <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0 mt-0.5 shadow-sm">
+                  <TramFront className="w-4 h-4 text-amber-400" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
+                    {selectedViaStation.name}
+                  </h3>
+                  <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                    {stCode && (
+                      <span className="text-[10px] font-bold font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                        {stCode}
+                      </span>
+                    )}
+                    <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                      {selectedViaStation.province}
+                    </span>
+                    {selectedViaStation.is_major && (
+                      <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                        主要車站
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => copyNameToClipboard(`${selectedViaStation.name} VIA Rail Station`)}
+                  className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors cursor-pointer"
+                  title="複製車站名稱"
+                >
+                  <Copy className="w-4 h-4 text-cyan-400" />
+                </button>
+                <a
+                  href={getGoogleNavUrl(selectedViaStation.lat, selectedViaStation.lon)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-blue-500/20 hover:text-blue-400 transition-colors"
+                  title="Google Map 導航至此"
+                >
+                  <Navigation className="w-4 h-4 text-blue-400" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedViaStation(null);
+                    if (searchTarget?.category === 'via_rail') setSearchTarget(null);
+                  }}
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-[#252a38] transition-colors cursor-pointer"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* 導覽頁籤 (Tabs) */}
+            <div className="flex border-b border-[#262b38] mb-2.5 shrink-0 text-xs">
+              <button
+                type="button"
+                onClick={() => setViaStationDetailTab('trains')}
+                className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer ${
+                  viaStationDetailTab === 'trains'
+                    ? 'border-amber-400 text-amber-400 font-bold'
+                    : 'border-transparent text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                經過列車 ({upcomingPassing.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setViaStationDetailTab('routes')}
+                className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer ${
+                  viaStationDetailTab === 'routes'
+                    ? 'border-amber-400 text-amber-400 font-bold'
+                    : 'border-transparent text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                途經路線 ({selectedViaStation.routes.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setViaStationDetailTab('facilities')}
+                className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all cursor-pointer ${
+                  viaStationDetailTab === 'facilities'
+                    ? 'border-amber-400 text-amber-400 font-bold'
+                    : 'border-transparent text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                設施與資訊
+              </button>
+            </div>
+
+            {/* Tab 1: 下一班及今日經過列車 */}
+            {viaStationDetailTab === 'trains' && (
+              <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+                {nextPassing ? (
+                  <div className="bg-amber-950/35 border border-amber-500/45 rounded-lg p-2.5 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10.5px] font-bold text-amber-300 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                        下輛經過此站列車
+                      </span>
+                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white">
+                        VIA #{nextPassing.train.id}
+                      </span>
+                    </div>
+                    <div className="text-xs font-bold text-white">
+                      {formatViaPlaceName(nextPassing.train.from)} → {formatViaPlaceName(nextPassing.train.to)}
+                    </div>
+                    <div className="flex items-center justify-between gap-2 text-[11px]">
+                      <span className="text-gray-300 font-mono">
+                        {nextPassing.timeIso
+                          ? formatDateTime(nextPassing.timeIso, timeFormat, timeZone)
+                          : formatViaEtaZh(nextPassing.stop.eta) || '依現場時刻'}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {formatViaEtaZh(nextPassing.stop.eta) && (
+                          <span className="text-amber-300 font-bold">{formatViaEtaZh(nextPassing.stop.eta)}</span>
+                        )}
+                        {nextPassing.stop.platform && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200">
+                            月台 {nextPassing.stop.platform}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-amber-500/20 text-[10.5px]">
+                      <span className={nextPassing.train.in_service ? 'text-emerald-400 font-semibold' : 'text-gray-400'}>
+                        {nextPassing.train.in_service ? '行駛中' : '尚未發車'}
+                        {nextPassing.stop.diff_min != null && nextPassing.stop.diff_min > 5
+                          ? ` · 延誤 ${nextPassing.stop.diff_min} 分鐘`
+                          : nextPassing.stop.diff_min != null && nextPassing.stop.diff_min < -2
+                            ? ` · 提早 ${Math.abs(nextPassing.stop.diff_min)} 分鐘`
+                            : ' · 準時'}
+                      </span>
+                      {nextPassing.train.in_service && nextPassing.train.has_gps && nextPassing.train.lat != null && nextPassing.train.lng != null && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedViaStation(null);
+                            setSelectedViaTrain(nextPassing.train);
+                            setSelectedViaTrainId(nextPassing.train.id);
+                          }}
+                          className="text-amber-300 hover:text-amber-200 font-semibold flex items-center gap-1 cursor-pointer"
+                        >
+                          <MapPin className="w-3 h-3" />
+                          <span>追蹤此班次</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-5 px-3 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836] space-y-1">
+                    <div className="font-semibold text-gray-300">目前即時表單中尚無即將經過此站的班次</div>
+                    <div className="text-[10.5px] text-gray-500">長途路線（如 The Canadian）每週固定開行數班，發車當日將自動顯示於此</div>
+                  </div>
+                )}
+
+                {upcomingPassing.length > 1 && (
+                  <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-1.5">
+                    <span className="text-[11px] font-bold text-gray-300">後續預計經過班次 ({upcomingPassing.length - 1})</span>
+                    {upcomingPassing.slice(1).map(({ train, stop, timeIso }) => {
+                      const etaZh = formatViaEtaZh(stop.eta);
+                      return (
+                        <div
+                          key={`via-st-up-${train.id}`}
+                          className="px-2 py-1.5 rounded bg-[#151a26] border border-[#242b3c] flex items-center justify-between gap-2 text-[11px]"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-mono font-bold text-amber-300">#{train.id}</span>
+                              <span className="text-gray-200 font-medium truncate">
+                                {formatViaPlaceName(train.from)} → {formatViaPlaceName(train.to)}
+                              </span>
+                            </div>
+                            <div className="text-[10px] text-gray-400 mt-0.5 font-mono">
+                              {timeIso ? formatDateTime(timeIso, timeFormat, timeZone) : '—'}
+                              {etaZh ? ` (${etaZh})` : ''}
+                              {stop.platform ? ` · 月台 ${stop.platform}` : ''}
+                            </div>
+                          </div>
+                          {train.in_service && train.has_gps && train.lat != null && train.lng != null ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedViaStation(null);
+                                setSelectedViaTrain(train);
+                                setSelectedViaTrainId(train.id);
+                              }}
+                              className="p-1 rounded bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 cursor-pointer shrink-0"
+                              title="在地圖上定位此列車"
+                            >
+                              <MapPin className="w-3.5 h-3.5" />
+                            </button>
+                          ) : (
+                            <span className="text-[10px] text-gray-500 shrink-0">
+                              {train.in_service ? '行駛中' : '尚未發車'}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {passedToday.length > 0 && (
+                  <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-1.5">
+                    <span className="text-[11px] font-bold text-gray-400">今日已過站班次 ({passedToday.length})</span>
+                    {passedToday.slice(0, 6).map(({ train, timeIso }) => (
+                      <div
+                        key={`via-st-past-${train.id}`}
+                        className="px-2 py-1 rounded bg-[#141822] flex items-center justify-between gap-2 text-[10.5px] text-gray-400"
+                      >
+                        <span className="truncate">
+                          <span className="font-mono text-gray-300 mr-1.5">#{train.id}</span>
+                          {formatViaPlaceName(train.from)} → {formatViaPlaceName(train.to)}
+                        </span>
+                        <span className="font-mono shrink-0 text-gray-500">
+                          {timeIso ? formatTimeOnly(timeIso, timeFormat, timeZone) : '已抵達'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isExploreMinimized) setExploreMinimized(false);
+                    openExploreTab('viarail');
+                  }}
+                  className="w-full py-2 px-3 rounded-lg bg-amber-600/90 hover:bg-amber-600 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                >
+                  <TrainTrack className="w-3.5 h-3.5" />
+                  在探索分頁查看全加拿大 VIA 班次
+                </button>
+              </div>
+            )}
+
+            {/* Tab 2: 途經路線 */}
+            {viaStationDetailTab === 'routes' && (
+              <div className="overflow-y-auto flex-1 flex flex-col gap-2 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+                {selectedViaStation.routes.length > 0 ? (
+                  selectedViaStation.routes.map((routeName) => (
+                    <div
+                      key={routeName}
+                      className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex items-center justify-between gap-2"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0 shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
+                        <div className="min-w-0">
+                          <div className="font-bold text-white truncate">{routeName}</div>
+                          <div className="text-[10.5px] text-gray-400">VIA Rail Canada 客運鐵路走廊</div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 shrink-0">
+                        VIA
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="py-6 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+                    暫無途經路線資料
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Tab 3: 設施與車站資訊 */}
+            {viaStationDetailTab === 'facilities' && (
+              <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+                <a
+                  href={`https://www.viarail.ca/en/explore-our-destinations/stations`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 p-2.5 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-300 hover:text-white text-xs font-medium transition-all group shadow-sm"
+                >
+                  <ExternalLink className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
+                  <span className="font-bold text-white truncate">VIA Rail 官方車站資訊與訂票網頁</span>
+                </a>
+
+                <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2">
+                  <span className="font-bold text-white text-xs">車站基本資料與設施</span>
+                  <div className="flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                      <span className="text-gray-400">車站代碼</span>
+                      <span className="font-mono font-bold text-amber-300">{stCode || '—'}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                      <span className="text-gray-400">所屬省份</span>
+                      <span className="text-gray-100 font-medium">{selectedViaStation.province}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                      <span className="text-gray-400 flex items-center gap-1.5">
+                        <Accessibility className="w-3.5 h-3.5 text-sky-400" /> 無障礙登車設施
+                      </span>
+                      <span className={selectedViaStation.wheelchair_accessible ? 'text-emerald-400 font-medium' : 'text-gray-400'}>
+                        {selectedViaStation.wheelchair_accessible ? '支援輪椅無障礙登車' : '一般月台 / 請提前預約'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                      <span className="text-gray-400 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-amber-400" /> 當地時區
+                      </span>
+                      <span className="font-mono text-gray-200">{selectedViaStation.timezone || '—'}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                      <span className="text-gray-400">車站等級</span>
+                      <span className="text-sky-300 font-medium">
+                        {selectedViaStation.is_major ? '主要樞紐車站 (設候車大廳／櫃檯)' : '沿線停靠站 (部分需提前預訂停靠)'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between py-1">
+                      <span className="text-gray-400">地理座標</span>
+                      <span className="font-mono text-gray-300">
+                        {selectedViaStation.lat.toFixed(4)}, {selectedViaStation.lon.toFixed(4)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-amber-950/20 border border-amber-500/25 p-2 rounded-lg text-[10.5px] text-amber-200/90 flex flex-col gap-1">
+                  <span className="font-bold flex items-center gap-1 text-amber-300">
+                    <Info className="w-3.5 h-3.5 text-amber-400" />
+                    乘車與行李小提示
+                  </span>
+                  <span>
+                    偏遠沿線小站多屬「預約停靠站 (Flag Stop)」，須提前至少 48 小時購票確認停靠；主要樞紐車站建議於發車前 45 分鐘抵達辦理託運行李與登車。
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* SeaBus 水上巴士碼頭浮動面板 (仿天車站點面板) */}
       {selectedStop && (selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.toLowerCase().includes('seabus') || selectedStop.name.toLowerCase().includes('lonsdale quay') || (selectedStop.name.toLowerCase().includes('waterfront') && String(selectedStop.id).length <= 4)) && (() => {
