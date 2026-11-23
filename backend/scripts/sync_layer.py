@@ -64,6 +64,7 @@ LAYERS_MAP = {
     "pharmacies": "update_pharmacies",
     "threads_posts": "update_threads_posts",
     "via_rail": "update_via_rail",
+    "public_services": "update_public_services",
 }
 
 def run_layer(layer_id):

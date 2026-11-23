@@ -37,7 +37,7 @@ import {
   Sun, Moon, Sunrise, Sunset, RotateCwClock, Weight, SquareParking, Trophy,
   TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
   Layers, Building2, BuildingComplex, Hammer, Faucet, Droplets, Telescope, Lightbulb, Images, TentTree,
-  ChevronLeft, ChevronRight, ArrowLeftToLine, ArrowRightToLine, TramFront, TrainTrack
+  ChevronLeft, ChevronRight, ArrowLeftToLine, ArrowRightToLine, TramFront, TrainTrack, Landmark
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -3728,50 +3728,6 @@ export default function AppMap() {
     bikewaysFilter['Shared Lanes'],
   ]);
 
-  // 實時動態切換土地規劃分區類別篩選 (Zoning Districts Filter)
-  useEffect(() => {
-    const map = mapRef.current?.getMap();
-    if (!map || !layers.zoningDistricts) return;
-
-    const activeCls = Object.entries(zoningFilter)
-      .filter(([, active]) => active)
-      .map(([cls]) => cls);
-
-    const expandedCls = activeCls.flatMap((c) =>
-      c === 'Residential' ? ['Residential', 'Residential Rental'] : [c]
-    );
-
-    const zoningMapFilter: any =
-      activeCls.length === ZONING_CLASSIFICATION_ITEMS.length
-        ? null
-        : activeCls.length === 0
-          ? ['==', ['get', 'zoning_classification'], '__NONE__']
-          : ['any', ...expandedCls.map((c) => ['==', ['get', 'zoning_classification'], c])];
-
-    const applyZoningFilter = () => {
-      try {
-        if (map.getLayer('zoning-districts-fill')) {
-          map.setFilter('zoning-districts-fill', zoningMapFilter);
-        }
-        if (map.getLayer('zoning-districts-line')) {
-          map.setFilter('zoning-districts-line', zoningMapFilter);
-        }
-        if (map.getLayer('zoning-districts-label')) {
-          map.setFilter('zoning-districts-label', zoningMapFilter);
-        }
-      } catch {
-        // Ignore if map or layer is not yet loaded
-      }
-    };
-
-    applyZoningFilter();
-    map.on('styledata', applyZoningFilter);
-    const timer = setTimeout(applyZoningFilter, 120);
-    return () => {
-      clearTimeout(timer);
-      map.off('styledata', applyZoningFilter);
-    };
-  }, [layers.zoningDistricts, mapStyleType, zoningFilter]);
   const [selectedBus, setSelectedBus] = useState<Vehicle | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [busDetails, setBusDetails] = useState<any | null>(null);
@@ -3902,6 +3858,7 @@ export default function AppMap() {
         else if (type === 'sewer_system' && !layers.sewerSystem) facilityClosed = true;
         else if (type === 'via_rail_station' && !showViaRoutesOnMap) facilityClosed = true;
         else if (type === 'job' && (!isExploreOpen || !openExploreTabs?.includes('jobs'))) facilityClosed = true;
+        else if (type === 'public_service_place' && (!isExploreOpen || !openExploreTabs?.includes('publicservices'))) facilityClosed = true;
 
         if (facilityClosed) {
           setSelectedFacility(null);
@@ -5547,6 +5504,10 @@ export default function AppMap() {
         setSelectedSkytrainStation(null);
         setViaStationDetailTab('trains');
         setSelectedViaStation(parseViaStationProps(propsObj, searchTarget.lon, searchTarget.lat, searchTarget.id, searchTarget.title));
+        return;
+      }
+      if (searchTarget.category === 'public_service_place' || facType === 'public_service_place') {
+        setSelectedFacility(null);
         return;
       }
       if (facType === 'canada_post') {
@@ -8755,6 +8716,19 @@ export default function AppMap() {
 
     // Geography: Zoning Districts (土地規劃分區 - 每3個月更新)
     if (layers.zoningDistricts) {
+      const activeZoningCls = ZONING_CLASSIFICATION_ITEMS.filter((item) => zoningFilter[item.key] !== false).map(
+        (item) => item.key
+      );
+      const expandedZoningCls = activeZoningCls.flatMap((c) =>
+        c === 'Residential' ? ['Residential', 'Residential Rental'] : [c]
+      );
+      const zoningFilterExpr: any =
+        activeZoningCls.length === ZONING_CLASSIFICATION_ITEMS.length
+          ? undefined
+          : activeZoningCls.length === 0
+            ? ['==', ['get', 'zoning_classification'], '__NONE__']
+            : ['any', ...expandedZoningCls.map((c) => ['==', ['get', 'zoning_classification'], c])];
+
       style.sources['zoning_districts'] = {
         type: 'geojson',
         data: '/vancouver_zoning_districts.geojson'
@@ -8764,6 +8738,7 @@ export default function AppMap() {
         id: 'zoning-districts-fill',
         type: 'fill',
         source: 'zoning_districts',
+        ...(zoningFilterExpr ? { filter: zoningFilterExpr } : {}),
         paint: {
           'fill-color': [
             'match',
@@ -8786,6 +8761,7 @@ export default function AppMap() {
         id: 'zoning-districts-line',
         type: 'line',
         source: 'zoning_districts',
+        ...(zoningFilterExpr ? { filter: zoningFilterExpr } : {}),
         paint: {
           'line-color': [
             'match',
@@ -8809,6 +8785,7 @@ export default function AppMap() {
         id: 'zoning-districts-label',
         type: 'symbol',
         source: 'zoning_districts',
+        ...(zoningFilterExpr ? { filter: zoningFilterExpr } : {}),
         minzoom: 13,
         layout: {
           'text-field': ['get', 'zoning_district'],
@@ -9835,6 +9812,7 @@ export default function AppMap() {
     layers.beachWaterQuality,
     layers.fireHydrants,
     layers.zoningDistricts,
+    zoningFilter,
     layers.trafficCrosswalks,
     layers.litterContainers,
     layers.publicTrees,
@@ -10664,6 +10642,7 @@ export default function AppMap() {
                 <span className="text-xs group-hover:hidden">
                   {searchTarget.category === 'tide_stations' ? <Dam className="w-3.5 h-3.5 text-cyan-300" /> :
                    searchTarget.category === 'via_rail' ? <TramFront className="w-3.5 h-3.5 text-amber-300" /> :
+                   searchTarget.category === 'public_service_place' ? <Landmark className="w-3.5 h-3.5 text-sky-300" /> :
                    searchTarget.category === 'water_supply' ? <Faucet className="w-3.5 h-3.5 text-sky-300" /> :
                    searchTarget.category === 'sewer_system' ? <Droplets className="w-3.5 h-3.5 text-teal-300" /> :
                    searchTarget.icon}
@@ -13178,6 +13157,7 @@ export default function AppMap() {
                   if (t === 'building_permit') return { label: '建築許可', bg: 'bg-orange-600 text-white' };
                   if (t === 'wildfire') return { label: '山火', bg: 'bg-orange-600 text-white rounded-full px-2' };
                   if (t === 'via_rail_station') return { label: 'VIA 車站', bg: 'bg-amber-600 text-white' };
+                  if (t === 'public_service_place') return { label: selectedFacility.properties?.type || '公共服務', bg: 'bg-sky-600 text-white' };
                   return null;
                 })();
 
@@ -13436,6 +13416,9 @@ export default function AppMap() {
                   if (selectedFacility.facility_type === 'via_rail_station') {
                     return selectedFacility.properties?.name || selectedFacility.name?.replace(/\s*\(VIA\)\s*$/i, '') || 'VIA 車站';
                   }
+                  if (selectedFacility.facility_type === 'public_service_place') {
+                    return selectedFacility.properties?.name || selectedFacility.name || '公共服務據點';
+                  }
 
                   // 0.4 標題的英文確保統一每個英文字中首個英文字母大階 (如 Heather Street, 13th Ave…)
                   title = formatTitleCase(title);
@@ -13555,7 +13538,7 @@ export default function AppMap() {
                             : selectedFacility.facility_type === 'wildfire'
                               ? !!(selectedFacility.properties?.incidentLocation || selectedFacility.local_area)
                               : (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'consulates' || selectedFacility.facility_type === 'pharmacies' || selectedFacility.facility_type === 'picnic_sites' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
-                              selectedFacility.facility_type === 'ev_charging' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || selectedFacility.facility_type === 'business_licence' || selectedFacility.facility_type === 'building_permit' || selectedFacility.facility_type === 'via_rail_station' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark))) && (
+                              selectedFacility.facility_type === 'ev_charging' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || selectedFacility.facility_type === 'business_licence' || selectedFacility.facility_type === 'building_permit' || selectedFacility.facility_type === 'via_rail_station' || selectedFacility.facility_type === 'public_service_place' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark))) && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
                               if (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋')) {
@@ -13720,6 +13703,10 @@ export default function AppMap() {
                               }
                               if (selectedFacility.facility_type === 'building_permit') {
                                 return selectedFacility.properties?.geolocalarea || selectedFacility.local_area || 'Vancouver';
+                              }
+                              if (selectedFacility.facility_type === 'public_service_place') {
+                                const p = selectedFacility.properties || {};
+                                return [p.address, p.city, p.postal].filter(Boolean).join(', ') || 'Canada';
                               }
                               return selectedFacility.local_area;
                             })()}
@@ -22059,6 +22046,76 @@ export default function AppMap() {
                 );
               })()}
 
+              {/* 加拿大公共服務據點 (Canada Service Map — Public Service Place) */}
+              {selectedFacility.facility_type === 'public_service_place' && (() => {
+                const props = selectedFacility.properties || {};
+                const rows: Array<{ label: string; value: string; mono?: boolean }> = [
+                  ...(props.type ? [{ label: '服務類別', value: String(props.type) }] : []),
+                  ...(props.operator ? [{ label: '營運機構', value: String(props.operator) }] : []),
+                  ...(props.address ? [{ label: '地址', value: String(props.address) }] : []),
+                  ...(props.city ? [{ label: '城市', value: String(props.city) }] : []),
+                  ...(props.postal ? [{ label: '郵遞區號', value: String(props.postal), mono: true }] : []),
+                  ...(typeof props.km === 'number' && Number.isFinite(props.km)
+                    ? [{ label: '距離', value: `${props.km.toFixed(1)} 公里`, mono: true }]
+                    : []),
+                ];
+                return (
+                  <div className="space-y-2.5">
+                    {rows.length > 0 && (
+                      <div className="bg-slate-50 border border-slate-200/90 rounded-xl px-3 py-1 divide-y divide-slate-200/70">
+                        {rows.map((row) => (
+                          <div key={row.label} className="flex items-start justify-between gap-3 py-1.5 text-[11.5px]">
+                            <span className="text-slate-500 shrink-0">{row.label}</span>
+                            <span className={`text-slate-900 font-medium text-right break-words ${row.mono ? 'font-mono tabular-nums' : ''}`}>
+                              {row.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {props.website && (
+                        <a
+                          href={String(props.website)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-[11px] font-semibold transition-colors shadow-xs"
+                        >
+                          <Globe className="w-3.5 h-3.5" />
+                          <span>官方網站</span>
+                          <ExternalLink className="w-3 h-3 opacity-80" />
+                        </a>
+                      )}
+                      {props.directions && (
+                        <a
+                          href={String(props.directions)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold transition-colors shadow-xs"
+                        >
+                          <Navigation className="w-3.5 h-3.5" />
+                          <span>路線導航</span>
+                        </a>
+                      )}
+                    </div>
+                    <div className="text-[10px] text-slate-400 pt-1 border-t border-slate-100 flex items-center justify-between gap-2">
+                      <span>
+                        資料來源：
+                        <a
+                          href={String(props.source_url || 'https://canadaservicemap.ca')}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sky-600 hover:underline font-medium"
+                        >
+                          Canada Service Map
+                        </a>
+                      </span>
+                      <span className="text-[9.5px] text-slate-400">以政府官方網頁為準</span>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* 門牌地址 (Civic Address) */}
               {selectedFacility.facility_type === 'address' && (() => {
                 const p = selectedFacility.properties || {};
@@ -22530,6 +22587,7 @@ export default function AppMap() {
                   { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
                   { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
                   { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
+                  { id: 'publicservices', label: '公共服務', icon: Landmark, color: 'text-sky-400' },
                   { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
                   { id: 'business', label: '商業牌照', icon: BuildingComplex, color: 'text-sky-400' },
                   { id: 'permits', label: '建築許可', icon: Hammer, color: 'text-orange-400' },
@@ -22558,6 +22616,7 @@ export default function AppMap() {
                 { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
                 { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
                 { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
+                { id: 'publicservices', label: '公共服務', icon: Landmark, color: 'text-sky-400' },
                 { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
                 { id: 'business', label: '商業牌照', icon: BuildingComplex, color: 'text-sky-400' },
                 { id: 'permits', label: '建築許可', icon: Hammer, color: 'text-orange-400' },
@@ -22656,6 +22715,7 @@ export default function AppMap() {
             { id: 'ski', label: '滑雪', icon: CableCar, color: 'text-cyan-400' },
             { id: 'aurora', label: '極光', icon: Sparkles, color: 'text-fuchsia-400' },
             { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
+            { id: 'publicservices', label: '公共服務', icon: Landmark, color: 'text-sky-400' },
             { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
             { id: 'business', label: '商業牌照', icon: BuildingComplex, color: 'text-sky-400' },
             { id: 'permits', label: '建築許可', icon: Hammer, color: 'text-orange-400' },

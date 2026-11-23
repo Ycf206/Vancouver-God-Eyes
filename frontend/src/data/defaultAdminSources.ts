@@ -2031,5 +2031,38 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://graph.threads.net/v1.0/me/threads"
+  },
+  {
+    "id": "public_services",
+    "name": "公共服務 (Canada Service Map)",
+    "type": "api",
+    "cron_expr": "45 4 1 * *",
+    "schedule_interval": "每月更新 1 次",
+    "record_count": 140,
+    "unit": "項公共服務指南",
+    "last_updated": "2026-11-23T17:41:19.430Z",
+    "status": "healthy",
+    "data_pipeline_notes": "Canada Service Map Open API (/api/services、/provinces/{slug}.json、/benefit-payment-dates.json，僅英文資料) -> GitHub Actions 每月 1 日自動更新並同步至 OCI 後端 -> 寫入 canada_public_services.json，並提供即時快取查詢 /api/public-services/* (Services / Nearby Places / Benefits & Bodies)",
+    "runner": "github_actions",
+    "workflow_file": "update-public-services.yml",
+    "category": "生活",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "Canada Service Map Developers API",
+        "url": "https://canadaservicemap.ca/developers"
+      },
+      {
+        "type": "web",
+        "label": "Provinces & Territories Directory",
+        "url": "https://canadaservicemap.ca/provinces"
+      },
+      {
+        "type": "api",
+        "label": "OpenAPI 3.1 Specification",
+        "url": "https://canadaservicemap.ca/openapi.json"
+      }
+    ],
+    "source_url": "https://canadaservicemap.ca/developers"
   }
 ];

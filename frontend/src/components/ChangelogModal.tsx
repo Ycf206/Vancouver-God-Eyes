@@ -14,10 +14,24 @@ interface ChangelogEntry {
 
 const CHANGELOG_DATA: ChangelogEntry[] = [
   {
+    version: 'v2026.11.4',
+    title: '更新內容',
+    date: '2026-11-23',
+    isLatest: true,
+    highlights: [
+      '新增路燈, 路燈網絡, 接線盒, 全加拿大夜間燈光圖層',
+      '新增藥房圖層',
+      '新增野餐圖層',
+      '新增 "yvr_journal.ca" Threads 帖文連接',
+      '新增 VIA 加拿大維亞鐵路圖層及探索分頁',
+      '新增公共服務探索分頁',
+      '優化交通工具, 路線, 站點資料合併顯示'
+    ]
+  },
+  {
     version: 'v2026.11.3',
     title: '更新內容',
     date: '2026-11-16',
-    isLatest: true,
     highlights: [
       '新增電動車充電站 (FLO, ChargePoint)',
       '新增私人停車場 (EasyPark)',
@@ -78,7 +92,8 @@ interface ChangelogModalProps {
 export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
   // 記錄展開的分頁，預設展開最新版本
   const [expandedVersions, setExpandedVersions] = useState<Record<string, boolean>>({
-    'v2026.11.3': true,
+    'v2026.11.4': true,
+    'v2026.11.3': false,
     'v2026.11.2': false,
     'v2026.11.1': false,
     'v2026.11.0': false

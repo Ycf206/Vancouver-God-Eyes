@@ -3428,6 +3428,179 @@ def get_via_rail_live(refresh: bool = Query(False)):
 
 
 # ==========================================
+# 🏛️ Canada Public Services API (Canada Service Map — English Only + TTL Cache)
+# ==========================================
+_PUBSVC_BASE = "https://canadaservicemap.ca"
+_pubsvc_cache_lock = threading.Lock()
+_pubsvc_file_cache: tuple[float, dict] | None = None
+_pubsvc_proxy_cache: dict[str, tuple[float, dict]] = {}
+_PUBSVC_PROXY_MAX_ENTRIES = 500
+
+
+def _load_public_services_directory() -> dict | None:
+    global _pubsvc_file_cache
+    data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "canada_public_services.json")
+    if not os.path.exists(data_path):
+        return None
+    try:
+        mtime = os.path.getmtime(data_path)
+        with _pubsvc_cache_lock:
+            if _pubsvc_file_cache and _pubsvc_file_cache[0] == mtime:
+                return _pubsvc_file_cache[1]
+        with open(data_path, "r", encoding="utf-8") as f:
+            loaded = json.load(f)
+        if isinstance(loaded, dict):
+            with _pubsvc_cache_lock:
+                _pubsvc_file_cache = (mtime, loaded)
+            return loaded
+    except Exception as exc:
+        print(f"⚠️ [PublicServices] Failed reading directory cache: {exc}")
+    return None
+
+
+def _strip_french_fields(obj: Any) -> Any:
+    if isinstance(obj, dict):
+        return {k: _strip_french_fields(v) for k, v in obj.items() if k != "nameFr"}
+    if isinstance(obj, list):
+        return [_strip_french_fields(item) for item in obj]
+    return obj
+
+
+def _proxy_canadaservicemap(cache_key: str, upstream_url: str, ttl_sec: float = 21600.0) -> dict:
+    now = time.time()
+    with _pubsvc_cache_lock:
+        hit = _pubsvc_proxy_cache.get(cache_key)
+        if hit and (now - hit[0]) < ttl_sec:
+            return hit[1]
+    headers = {
+        "User-Agent": "VancouverGodsEye/1.0 (+https://canadaservicemap.ca/developers)",
+        "Accept": "application/json",
+    }
+    resp = requests.get(upstream_url, headers=headers, timeout=15)
+    resp.raise_for_status()
+    data = _strip_french_fields(resp.json())
+    with _pubsvc_cache_lock:
+        if len(_pubsvc_proxy_cache) >= _PUBSVC_PROXY_MAX_ENTRIES:
+            oldest_key = min(_pubsvc_proxy_cache.items(), key=lambda kv: kv[1][0])[0]
+            _pubsvc_proxy_cache.pop(oldest_key, None)
+        _pubsvc_proxy_cache[cache_key] = (now, data)
+    return data
+
+
+@app.get("/api/public-services/overview")
+def get_public_services_overview(province: str = Query("bc")):
+    """Return monthly cached Canada Service Map directory + selected province details (English only)."""
+    directory = _load_public_services_directory()
+    if not directory:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "error", "error": "Public services directory cache not initialized."},
+        )
+    prov_code = (province or "bc").strip().lower()
+    provinces_map = directory.get("provinces") or {}
+    prov_obj = provinces_map.get(prov_code) or provinces_map.get("bc")
+    prov_name_low = str((prov_obj or {}).get("name") or "").strip().lower()
+    matching_benefits = [
+        b
+        for b in (directory.get("benefits") or [])
+        if str(b.get("where") or "").strip().lower() in ("canada", prov_name_low)
+    ]
+    return JSONResponse(
+        content={
+            "status": "ok",
+            "source": directory.get("source", "Canada Service Map"),
+            "source_url": directory.get("source_url", f"{_PUBSVC_BASE}/provinces"),
+            "disclaimer": directory.get("disclaimer", "Not a government website. The official page always has the final word."),
+            "licence": directory.get("licence"),
+            "updated_at": directory.get("updated_at"),
+            "last_reviewed": directory.get("last_reviewed"),
+            "total_count": directory.get("total_count", 0),
+            "categories": directory.get("categories") or [],
+            "services": directory.get("services") or [],
+            "provinces_index": directory.get("provinces_index") or [],
+            "province": prov_obj,
+            "benefits": matching_benefits,
+        },
+        headers={"Cache-Control": "public, max-age=300"},
+    )
+
+
+@app.get("/api/public-services/find")
+def find_public_service(q: str = Query(...), near: str = Query("Vancouver")):
+    """Proxy & cache /api/find?q=&near= from Canada Service Map."""
+    q_clean = q.strip()
+    near_clean = near.strip()
+    if not q_clean:
+        return JSONResponse(status_code=400, content={"status": "error", "error": "Query q is required."})
+    from urllib.parse import urlencode
+    params = {"q": q_clean}
+    if near_clean:
+        params["near"] = near_clean
+    url = f"{_PUBSVC_BASE}/api/find?{urlencode(params)}"
+    try:
+        data = _proxy_canadaservicemap(f"find:{q_clean.lower()}:{near_clean.lower()}", url, ttl_sec=21600.0)
+        return JSONResponse(content=data, headers={"Cache-Control": "public, max-age=300"})
+    except Exception as exc:
+        return JSONResponse(status_code=502, content={"status": "error", "error": f"Upstream find failed: {exc}"})
+
+
+@app.get("/api/public-services/service/{service_id}")
+def get_public_service_detail(service_id: str, province: str = Query("bc")):
+    """Proxy & cache /api/services/{id}?province= from Canada Service Map."""
+    sid = service_id.strip()
+    prov = province.strip().lower()
+    url = f"{_PUBSVC_BASE}/api/services/{sid}" + (f"?province={prov}" if prov else "")
+    try:
+        data = _proxy_canadaservicemap(f"svc:{sid}:{prov}", url, ttl_sec=86400.0)
+        return JSONResponse(content=data, headers={"Cache-Control": "public, max-age=600"})
+    except Exception as exc:
+        return JSONResponse(status_code=502, content={"status": "error", "error": f"Upstream service detail failed: {exc}"})
+
+
+@app.get("/api/public-services/places")
+def get_public_service_places(near: str = Query("Vancouver"), type: str = Query("service-canada-centres")):
+    """Proxy & cache /api/places?near=&type= from Canada Service Map."""
+    from urllib.parse import urlencode
+    near_clean = near.strip() or "Vancouver"
+    type_clean = type.strip() or "service-canada-centres"
+    url = f"{_PUBSVC_BASE}/api/places?{urlencode({'near': near_clean, 'type': type_clean})}"
+    try:
+        data = _proxy_canadaservicemap(f"places:{near_clean.lower()}:{type_clean.lower()}", url, ttl_sec=86400.0)
+        return JSONResponse(content=data, headers={"Cache-Control": "public, max-age=600"})
+    except Exception as exc:
+        return JSONResponse(status_code=502, content={"status": "error", "error": f"Upstream places failed: {exc}"})
+
+
+@app.get("/api/public-services/bodies")
+def search_public_service_bodies(q: str = Query(""), province: str = Query("bc")):
+    """Proxy & cache /api/bodies/search?q=&province= from Canada Service Map."""
+    from urllib.parse import urlencode
+    q_clean = q.strip()
+    prov_clean = province.strip().lower()
+    params: dict[str, str] = {"q": q_clean}
+    if prov_clean:
+        params["province"] = prov_clean
+    url = f"{_PUBSVC_BASE}/api/bodies/search?{urlencode(params)}"
+    try:
+        data = _proxy_canadaservicemap(f"bodies:{q_clean.lower()}:{prov_clean}", url, ttl_sec=86400.0)
+        return JSONResponse(content=data, headers={"Cache-Control": "public, max-age=600"})
+    except Exception as exc:
+        return JSONResponse(status_code=502, content={"status": "error", "error": f"Upstream bodies search failed: {exc}"})
+
+
+@app.get("/api/public-services/body/{body_id:path}")
+def get_public_service_body_detail(body_id: str):
+    """Proxy & cache /api/bodies/{id} from Canada Service Map."""
+    bid = body_id.strip().strip("/")
+    url = f"{_PUBSVC_BASE}/api/bodies/{bid}"
+    try:
+        data = _proxy_canadaservicemap(f"body:{bid.lower()}", url, ttl_sec=86400.0)
+        return JSONResponse(content=data, headers={"Cache-Control": "public, max-age=600"})
+    except Exception as exc:
+        return JSONResponse(status_code=502, content={"status": "error", "error": f"Upstream body detail failed: {exc}"})
+
+
+# ==========================================
 # 🧵 Threads 帳號帖文快取與即時查詢 API (OCI 每小時排程 + 手動刷新)
 # ==========================================
 _threads_refresh_lock = threading.Lock()
@@ -5708,6 +5881,7 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
     ],
     "threads_posts": ["vancouver_threads_posts.json"],
     "via_rail": ["vancouver_via_rail_live.json", "via_rail_stations.geojson", "via_rail_routes.geojson"],
+    "public_services": ["canada_public_services.json"],
 }
 
 

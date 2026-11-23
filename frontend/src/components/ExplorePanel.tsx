@@ -18,6 +18,7 @@ import { Landmark,
 import { SportShoeIcon } from './SportShoeIcon';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { FinanceTab } from './FinanceTab';
+import { PublicServicesTab } from './PublicServicesTab';
 
 export function HockeyStickIcon({ className = "w-4 h-4", ...props }: React.SVGProps<SVGSVGElement>) {
   return (
@@ -5088,6 +5089,7 @@ function ExploreContent() {
     ski: { label: '滑雪場現況', icon: CableCar, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
     jobs: { label: '工作職位', icon: Briefcase, color: 'text-indigo-400' },
+    publicservices: { label: '公共服務', icon: Landmark, color: 'text-sky-400' },
     '311': { label: '3-1-1 市政服務', icon: PhoneCall, color: 'text-emerald-400' },
     business: { label: '商業牌照', icon: BuildingComplex, color: 'text-sky-400' },
     permits: { label: '建築許可', icon: Hammer, color: 'text-orange-400' },
@@ -5119,6 +5121,7 @@ function ExploreContent() {
     ski: '滑雪',
     aurora: '極光',
     jobs: '工作',
+    publicservices: '公共服務',
     '311': '3-1-1',
     business: '商業牌照',
     permits: '建築許可',
@@ -5190,7 +5193,7 @@ function ExploreContent() {
   return (
     <div 
       className={`fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-[45] sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-88px)] lg:max-w-[calc(100vw-328px)] bottom-[calc(62px+env(safe-area-inset-bottom,0px))] sm:bottom-auto ${
-        activeTab === '311' || activeTab === 'business' || activeTab === 'permits' || activeTab === 'viarail'
+        activeTab === '311' || activeTab === 'business' || activeTab === 'permits' || activeTab === 'viarail' || activeTab === 'publicservices'
           ? 'h-[calc(100dvh-130px)] sm:h-[calc(100dvh-148px)]'
           : ''
       } max-h-[calc(100dvh-130px)] sm:max-h-[calc(100dvh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden`}
@@ -12400,6 +12403,11 @@ function ExploreContent() {
         <FinanceTab />
       )}
 
+      {/* ==================== 5.6 公共服務分頁 (Canada Service Map — All 13 Provinces & Territories) ==================== */}
+      {activeTab === 'publicservices' && (
+        <PublicServicesTab />
+      )}
+
       {/* ==================== 6. 活動分頁 (Vancouver Events - Eventbrite & Destination Vancouver) ==================== */}
       {activeTab === 'events' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
@@ -13161,7 +13169,7 @@ function ExploreContent() {
       )}
 
       {/* Footer */}
-      {!(activeTab === 'weather' && weatherSubTab !== 'marine') && (
+      {!(activeTab === 'weather' && weatherSubTab !== 'marine') && activeTab !== 'publicservices' && (
         <div className="mt-2.5 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
           <div className="flex flex-col text-[10.5px] leading-tight text-gray-400 min-w-0 pr-2">
             {activeTab === 'weather' && weatherSubTab === 'marine' && (

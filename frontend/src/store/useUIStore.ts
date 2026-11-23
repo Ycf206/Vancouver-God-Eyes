@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'finance' | 'events' | 'sports' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'business' | 'permits' | 'shopping' | 'lottery' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'viarail' | 'traffic' | 'crashes';
+export type ExploreTabType = 'weather' | 'news' | 'finance' | 'events' | 'sports' | 'beach' | 'ski' | 'aurora' | 'jobs' | 'publicservices' | '311' | 'business' | 'permits' | 'shopping' | 'lottery' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'viarail' | 'traffic' | 'crashes';
 
 export interface SearchTarget {
   id: string;
@@ -439,6 +439,7 @@ export const useUIStore = create<UIState>()(
         business_licences: '每 24 小時',
         building_permits: '每 24 小時',
         crashes: '每月更新 1 次',
+        public_services: '每月更新 1 次',
       },
       setAdminSourceIntervals: (intervals) => set((state) => ({ adminSourceIntervals: { ...state.adminSourceIntervals, ...intervals } })),
       weatherSubTab: 'city',
@@ -495,7 +496,13 @@ export const useUIStore = create<UIState>()(
           nextLayers.fuel = false;
         }
         let nextSearchTarget = state.searchTarget;
-        if (state.searchTarget?.category === 'job' || String(state.searchTarget?.id ?? '').startsWith('job_') || (state.searchTarget?.layer_key as string) === 'job') {
+        if (
+          state.searchTarget?.category === 'job' ||
+          String(state.searchTarget?.id ?? '').startsWith('job_') ||
+          (state.searchTarget?.layer_key as string) === 'job' ||
+          state.searchTarget?.category === 'public_service_place' ||
+          String(state.searchTarget?.id ?? '').startsWith('pubsvc_')
+        ) {
           nextSearchTarget = null;
         }
         return { 
@@ -518,6 +525,9 @@ export const useUIStore = create<UIState>()(
         }
         let nextSearchTarget = state.searchTarget;
         if (tab === 'jobs' && (state.searchTarget?.category === 'job' || String(state.searchTarget?.id ?? '').startsWith('job_') || (state.searchTarget?.layer_key as string) === 'job')) {
+          nextSearchTarget = null;
+        }
+        if (tab === 'publicservices' && (state.searchTarget?.category === 'public_service_place' || String(state.searchTarget?.id ?? '').startsWith('pubsvc_'))) {
           nextSearchTarget = null;
         }
         if (newTabs.length === 0) {
