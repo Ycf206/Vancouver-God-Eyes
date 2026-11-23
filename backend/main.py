@@ -1325,6 +1325,7 @@ async def startup_event():
     try:
         import dynamic_layers_service
         asyncio.create_task(dynamic_layers_service.run_dynamic_layers_background_loop())
+        asyncio.create_task(dynamic_layers_service.run_via_rail_background_loop())
     except Exception as e:
         print(f"Failed to start dynamic_layers_service task: {e}")
 
@@ -3383,6 +3384,47 @@ def get_night_lights_meta():
             headers={"Cache-Control": "public, max-age=600"},
         )
     return JSONResponse(content={"total_count": 0}, headers={"Cache-Control": "no-cache"})
+
+
+# ==========================================
+# 🚆 VIA Rail 全加拿大即時列車 API (OCI 每 15 秒快取)
+# ==========================================
+_via_rail_manual_lock = threading.Lock()
+_via_rail_last_manual_ts = 0.0
+
+
+@app.get("/api/via-rail/live")
+def get_via_rail_live(refresh: bool = Query(False)):
+    """回傳 VIA Rail 全加拿大即時行駛中 (departed=true, arrived=false) 與 Not In Service 列車狀態。"""
+    global _via_rail_last_manual_ts
+    import dynamic_layers_service
+
+    data = dynamic_layers_service.get_via_rail_live_snapshot()
+    if refresh:
+        with _via_rail_manual_lock:
+            now = time.time()
+            if now - _via_rail_last_manual_ts >= 5.0:
+                _via_rail_last_manual_ts = now
+                data = dynamic_layers_service.refresh_via_rail_live(force_admin_meta=False)
+                _oci_runtime_ts["via_rail"] = time.time()
+    elif data is None:
+        with _via_rail_manual_lock:
+            data = dynamic_layers_service.refresh_via_rail_live(force_admin_meta=False)
+            _oci_runtime_ts["via_rail"] = time.time()
+
+    return JSONResponse(
+        content=data or {
+            "status": "ok",
+            "updated_at": None,
+            "total_count": 0,
+            "in_service_count": 0,
+            "in_service_gps_count": 0,
+            "not_in_service_count": 0,
+            "in_service": [],
+            "not_in_service": [],
+        },
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 # ==========================================
@@ -5665,6 +5707,7 @@ ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
         "vancouver_night_lights_meta.json",
     ],
     "threads_posts": ["vancouver_threads_posts.json"],
+    "via_rail": ["vancouver_via_rail_live.json", "via_rail_stations.geojson", "via_rail_routes.geojson"],
 }
 
 
@@ -6022,6 +6065,14 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
         th_cnt, th_ts = _extract_disk_file_meta(th_file)
         th_runtime = _unix_to_iso(_oci_runtime_ts.get("threads_posts"))
         oci_live_updates["threads_posts"] = (_max_iso_ts(th_runtime, th_ts), th_cnt if th_cnt > 0 else None)
+
+    if "via_rail" in src_by_id:
+        import dynamic_layers_service as _dls_vr
+        vr_snap = _dls_vr.get_via_rail_live_snapshot()
+        vr_cnt = int((vr_snap or {}).get("in_service_count") or 0) if isinstance(vr_snap, dict) else 0
+        vr_ts = (vr_snap or {}).get("updated_at") if isinstance(vr_snap, dict) else None
+        vr_runtime = _unix_to_iso(_oci_runtime_ts.get("via_rail"))
+        oci_live_updates["via_rail"] = (_max_iso_ts(vr_runtime, vr_ts), vr_cnt if vr_cnt > 0 else None)
 
     for sid, (live_iso, live_cnt) in oci_live_updates.items():
         s = src_by_id.get(sid)
@@ -6396,6 +6447,13 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
         cnt = dynamic_layers_service.refresh_threads_posts()
         _oci_runtime_ts["threads_posts"] = time.time()
         return (cnt if cnt > 0 else None, f"OCI 伺服器已即時透過 Meta Threads Graph API 同步帳號帖文，共載入 {cnt} 篇。")
+    if sid == "via_rail":
+        import dynamic_layers_service
+        res = dynamic_layers_service.refresh_via_rail_live(force_admin_meta=True)
+        _oci_runtime_ts["via_rail"] = time.time()
+        in_svc = int((res or {}).get("in_service_count") or 0)
+        tot = int((res or {}).get("total_count") or 0)
+        return (in_svc if in_svc > 0 else tot, f"OCI 伺服器已即時同步 VIA Rail 全加拿大列車動態：行駛中 {in_svc} 班（全部 {tot} 班）。")
     return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
 
 

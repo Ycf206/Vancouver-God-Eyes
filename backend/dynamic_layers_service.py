@@ -337,6 +337,75 @@ def refresh_threads_posts() -> int:
         return 0
 
 
+_via_rail_live_cache: Optional[dict[str, Any]] = None
+
+
+def get_via_rail_live_snapshot() -> Optional[dict[str, Any]]:
+    """Return latest in-memory VIA Rail live snapshot (falls back to disk cache)."""
+    global _via_rail_live_cache
+    if _via_rail_live_cache is not None:
+        return _via_rail_live_cache
+    path = os.path.join(BACKEND_DATA_DIR, "vancouver_via_rail_live.json")
+    if os.path.exists(path):
+        try:
+            import json
+            with open(path, "r", encoding="utf-8") as f:
+                loaded = json.load(f)
+                if isinstance(loaded, dict):
+                    _via_rail_live_cache = loaded
+                    return loaded
+        except Exception:
+            pass
+    return None
+
+
+def refresh_via_rail_live(force_admin_meta: bool = False) -> dict[str, Any]:
+    """Fetch VIA Rail live train telemetry (tsimobile.viarail.ca/data/allData.json) every 15s."""
+    global _via_rail_live_cache
+    try:
+        from update_via_rail import fetch_via_rail_live
+        data = fetch_via_rail_live(update_admin_meta=True, force_admin_meta=force_admin_meta)
+        if isinstance(data, dict):
+            _via_rail_live_cache = data
+            if force_admin_meta:
+                log_data_source_update(
+                    "via_rail",
+                    "VIA 列車",
+                    int(data.get("in_service_count", 0)),
+                    "vancouver_via_rail_live.json",
+                    "backend/scripts/layers/update_via_rail.py",
+                    error=data.get("error") if data.get("status") != "ok" else None,
+                )
+            return data
+    except Exception as e:
+        print(f"⚠️ [Dynamic Layers] refresh_via_rail_live 異常: {e}")
+    return get_via_rail_live_snapshot() or {
+        "status": "error",
+        "error": "VIA Rail 即時資料暫時無法取得",
+        "in_service_count": 0,
+        "in_service_gps_count": 0,
+        "not_in_service_count": 0,
+        "in_service": [],
+        "not_in_service": [],
+    }
+
+
+async def run_via_rail_background_loop():
+    """OCI 高頻獨立排程：每 15 秒更新 VIA Rail 全加拿大即時列車位置與狀態。"""
+    print("🚆 [VIA Rail Live] 啟動 15 秒即時列車快取排程 (tsimobile.viarail.ca)...")
+    loop = asyncio.get_event_loop()
+    await asyncio.sleep(3)
+    while True:
+        try:
+            await loop.run_in_executor(None, refresh_via_rail_live, False)
+        except asyncio.CancelledError:
+            print("🛑 [VIA Rail Live] 15 秒即時列車排程已停止。")
+            break
+        except Exception as e:
+            print(f"⚠️ [VIA Rail Live] 排程執行異常: {e}")
+        await asyncio.sleep(15)
+
+
 _flo_ev_task: Optional[asyncio.Future[Any]] = None
 _flo_fast_task: Optional[asyncio.Future[Any]] = None
 _cp_ev_task: Optional[asyncio.Future[Any]] = None

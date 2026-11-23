@@ -8,7 +8,7 @@ import {
   Ship, ShipCargo, Plane, Truck, Route, TrainTrack, TrafficCone, LineSquiggle, UserRoundGroup, Palette, Soup, HeartHandshake, Park, TreePine,
   UserShield, FireExtinguisher, Flame, Zap, ZapOff, Earth, Grid3x2, Parasol, CableCar, Siren, GitCommitHorizontal,
   Anchor, Car, Bike, Motorbike, Scooter, Footprints, GraduationCap, BookOpen, Recycle, Trash2, Bed, HeartPulse, Flower2, LifeBuoy, Wifi, Lightbulb, MapPin,
-  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle, Faucet, TentTree, AtSign
+  Camera, Megaphone, Ban, Accessibility, Gauge, Construction, Boxes, Castle, Faucet, TentTree, AtSign, TramFront
 } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
@@ -117,7 +117,7 @@ type QuickGroupTab = 'all' | 'poi' | 'transit' | 'road' | 'area';
 function inferUiGroup(item: SearchTarget): Exclude<QuickGroupTab, 'all'> {
   if (item.ui_group) return item.ui_group;
   const c = item.category;
-  if (['skytrain', 'seabus', 'bus_route', 'bus_stop', 'bus_exchange', 'ferry_terminal', 'ferry_vehicle', 'airports', 'airport_indoor', 'maritime_vessel', 'marine_terminals', 'railways'].includes(c)) {
+  if (['skytrain', 'via_rail', 'seabus', 'bus_route', 'bus_stop', 'bus_exchange', 'ferry_terminal', 'ferry_vehicle', 'airports', 'airport_indoor', 'maritime_vessel', 'marine_terminals', 'railways'].includes(c)) {
     return 'transit';
   }
   if (['address', 'coordinate', 'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'garbage_collection', 'crime_areas'].includes(c)) {
@@ -139,6 +139,7 @@ function renderSearchItemIcon(item: SearchTarget) {
   if (c === 'bus_stop' || lk === 'busStops') return <GitCommitHorizontal className={`${cls} text-emerald-400`} />;
   if (c === 'bus_exchange' || lk === 'busExchanges') return <Repeat className={`${cls} text-emerald-400`} />;
   if (c === 'skytrain' || c === 'skytrain_station' || c === 'skytrain_train' || lk === 'skytrain' || lk === 'skytrainStations') return <TrainFront className={`${cls} text-sky-400`} />;
+  if (c === 'via_rail' || lk === 'viaRailTrains' || lk === 'viaRailRoutes') return <TramFront className={`${cls} text-amber-400`} />;
   if (c === 'seabus' || lk === 'seabus' || c === 'ferry_vehicle' || lk === 'bcferriesVehicles') return <Ship className={`${cls} text-sky-400`} />;
   if (c === 'ferry_terminal' || lk === 'bcferriesRoutes') return <Anchor className={`${cls} text-sky-400`} />;
   if (c === 'maritime_vessel' || lk === 'maritimeShipping') return <ShipCargo className={`${cls} text-cyan-400`} />;
@@ -252,12 +253,12 @@ export default function TopBar() {
       iconColor: 'text-emerald-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
-          'bus', 'busRoutes', 'busStops', 'busExchanges', 'skytrainTrains', 'skytrainRoutes', 'skytrainStops',
+          'bus', 'busRoutes', 'busStops', 'busExchanges', 'skytrainTrains', 'skytrainRoutes', 'skytrainStops', 'viaRailTrains', 'viaRailRoutes',
           'seabusVehicles', 'seabusRoutes', 'seabusStops', 'bcferriesVehicles', 'bcferriesRoutes',
           'bcferriesTerminals', 'maritimeShipping', 'marineTerminals', 'airports', 'airportIndoor', 'railways'
         ];
         const targetCats = [
-          'bus_route', 'bus_stop', 'bus_exchange', 'skytrain', 'seabus', 'bcferries', 'ferry_terminal',
+          'bus_route', 'bus_stop', 'bus_exchange', 'skytrain', 'via_rail', 'seabus', 'bcferries', 'ferry_terminal',
           'ferry_vehicle', 'transit', 'airports', 'airport_indoor', 'marine_terminals', 'maritimeShipping', 'flights', 'maritime_vessel', 'railways'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
@@ -1089,6 +1090,7 @@ export default function TopBar() {
                             item.category === 'bus_route' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60 font-bold' :
                             item.category === 'bus_stop' ? 'bg-emerald-950/70 text-emerald-300 border-emerald-800/50' :
                             item.category === 'skytrain' ? 'bg-sky-950/80 text-sky-400 border-sky-800/60' :
+                            item.category === 'via_rail' ? 'bg-amber-950/80 text-amber-300 border-amber-700/60 font-semibold' :
                             item.category === 'ferry_terminal' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
                             item.category === 'ferry_vehicle' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
                             item.category === 'seabus' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :

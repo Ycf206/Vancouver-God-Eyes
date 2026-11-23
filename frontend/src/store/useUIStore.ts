@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'finance' | 'events' | 'sports' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'business' | 'permits' | 'shopping' | 'lottery' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic' | 'crashes';
+export type ExploreTabType = 'weather' | 'news' | 'finance' | 'events' | 'sports' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'business' | 'permits' | 'shopping' | 'lottery' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'viarail' | 'traffic' | 'crashes';
 
 export interface SearchTarget {
   id: string;
@@ -35,6 +35,8 @@ export interface UIState {
     skytrainRoutes: boolean;
     skytrainStops: boolean;
     skytrainFareZones: boolean;
+    viaRailTrains: boolean;
+    viaRailRoutes: boolean;
     seabusVehicles: boolean;
     seabusRoutes: boolean;
     seabusStops: boolean;
@@ -230,6 +232,8 @@ export interface UIState {
   } | null;
   setRadiusExploration: (exp: { active: boolean; lat: number; lon: number; radiusM: number } | null) => void;
   searchTarget: SearchTarget | null;
+  selectedViaTrainId: string | null;
+  setSelectedViaTrainId: (id: string | null) => void;
   autoEnabledSearchLayer: keyof UIState['layers'] | null;
   setAutoEnabledSearchLayer: (layer: keyof UIState['layers'] | null) => void;
   setSearchTarget: (target: SearchTarget | null) => void;
@@ -312,6 +316,8 @@ export const useUIStore = create<UIState>()(
         skytrainRoutes: true,
         skytrainStops: true,
         skytrainFareZones: false,
+        viaRailTrains: false,
+        viaRailRoutes: false,
         seabusVehicles: true,
         seabusRoutes: true,
         seabusStops: true,
@@ -449,6 +455,8 @@ export const useUIStore = create<UIState>()(
         };
       }),
       exploreTab: 'weather',
+      selectedViaTrainId: null,
+      setSelectedViaTrainId: (id) => set({ selectedViaTrainId: id }),
       openExploreTabs: [],
       setExploreTab: (tab) => set((state) => {
         const tabs = state.isExploreOpen ? (state.openExploreTabs || []) : [];
@@ -556,6 +564,7 @@ export const useUIStore = create<UIState>()(
               (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || String(st.id ?? '').startsWith('snow_'))) ||
               (layer === 'driveBC' && (st.category === 'drivebc' || String(st.id ?? '').startsWith('RIDE-') || String(st.id ?? '').startsWith('drivebc_'))) ||
               ((layer === 'skytrainRoutes' || layer === 'skytrainStops') && st.category === 'skytrain') ||
+              ((layer === 'viaRailRoutes' || layer === 'viaRailTrains') && st.category === 'via_rail') ||
               ((layer === 'seabusRoutes' || layer === 'seabusStops') && st.category === 'seabus') ||
               ((layer === 'busRoutes' || layer === 'busStops') && (st.category === 'bus_stop' || st.category === 'bus_route')) ||
               (layer === 'bus' && st.category === 'bus');

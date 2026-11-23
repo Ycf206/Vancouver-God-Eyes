@@ -126,6 +126,36 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "source_url": "https://getaway.translink.ca/api/allalerts"
   },
   {
+    "id": "via_rail",
+    "name": "VIA 列車",
+    "type": "api",
+    "cron_expr": "*/15 * * * * *",
+    "schedule_interval": "每 15 秒",
+    "record_count": 13,
+    "unit": "班行駛中列車",
+    "last_updated": "2026-11-23T04:13:34Z",
+    "status": "healthy",
+    "data_pipeline_notes": "VIA Rail Canada Live Train Tracker API (tsimobile.viarail.ca/data/allData.json) -> 每 15 秒 OCI 背景輪詢快取，篩選行駛中列車 (departed=true & arrived=false) 與非服務中清單 -> 搭配官方 GTFS (viarail.zip) 18 條全加路線與 371 座加拿大車站 GeoJSON 呈現於地圖、全域搜尋與探索分頁",
+    "runner": "oci",
+    "category": "交通",
+    "workflow_file": null,
+    "source_links": [
+      {
+        "label": "VIA Rail Live Tracker JSON",
+        "url": "https://tsimobile.viarail.ca/data/allData.json"
+      },
+      {
+        "label": "VIA Rail Official GTFS",
+        "url": "https://www.viarail.ca/sites/all/files/gtfs/viarail.zip"
+      },
+      {
+        "label": "VIA Rail 即時列車地圖",
+        "url": "https://tsimobile.viarail.ca/"
+      }
+    ],
+    "source_url": "https://tsimobile.viarail.ca/data/allData.json"
+  },
+  {
     "id": "weather_monitoring",
     "name": "天氣",
     "type": "api",

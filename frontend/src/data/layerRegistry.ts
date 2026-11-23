@@ -78,6 +78,7 @@ export type LayerIconKey =
   | 'TrafficLightIcon'
   | 'TrainFront'
   | 'TrainTrack'
+  | 'TramFront'
   | 'Trash2'
   | 'TreePine'
   | 'Trees'
@@ -93,6 +94,7 @@ export type LayerIconKey =
 export type TransportGroupId =
   | 'bus'
   | 'skytrain'
+  | 'viarail'
   | 'seabus'
   | 'bcferries'
   | 'maritime'
@@ -145,6 +147,7 @@ export const TRANSPORT_GROUPS: Array<{
 }> = [
   { id: 'bus', label: '巴士', labelClass: 'text-emerald-400', gridClass: 'grid-cols-[48px_1fr_1fr_1fr]' },
   { id: 'skytrain', label: '天車', labelClass: 'text-blue-400', gridClass: 'grid-cols-[48px_1fr_1fr_1fr]' },
+  { id: 'viarail', label: 'VIA', labelClass: 'text-amber-400', gridClass: 'grid-cols-[48px_1fr_1fr]' },
   { id: 'seabus', label: '海上巴士', labelClass: 'text-[#00a4e4]', gridClass: 'grid-cols-[48px_1fr_1fr]' },
   { id: 'bcferries', label: '卑詩渡輪', labelClass: 'text-[#3399ff]', gridClass: 'grid-cols-[48px_1fr_1fr_1fr]' },
   { id: 'maritime', label: '船運', labelClass: 'text-cyan-400', gridClass: 'grid-cols-[48px_1fr_1fr_1fr]' },
@@ -258,6 +261,41 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     activeShadow: 'shadow-[0_0_6px_rgba(59,130,246,0.15)]',
     defaultColor: '#3b82f6',
     transportGroup: 'skytrain',
+  },
+  {
+    id: 'viaRailTrains',
+    layerKey: 'viaRailTrains',
+    name: 'VIA 即時列車',
+    buttonLabel: '列車',
+    title: 'VIA Rail 全加拿大即時行駛中列車',
+    categoryId: 'transport',
+    category: '交通',
+    keywords: ['via', 'via rail', 'viarail', 'train', 'canada rail', '火車', '列車', '加拿大鐵路', '跨國鐵路'],
+    iconKey: 'TramFront',
+    iconOnly: true,
+    colorClass: 'text-amber-400',
+    activeBg: 'bg-[#2c2414]',
+    activeBorder: 'border-amber-500/60',
+    activeShadow: 'shadow-[0_0_8px_rgba(245,158,11,0.25)]',
+    defaultColor: '#eab308',
+    transportGroup: 'viarail',
+  },
+  {
+    id: 'viaRailRoutes',
+    layerKey: 'viaRailRoutes',
+    name: 'VIA 路線與車站',
+    buttonLabel: '車站',
+    title: 'VIA Rail 全加拿大鐵路路線與車站',
+    categoryId: 'transport',
+    category: '交通',
+    keywords: ['via', 'via rail', 'station', 'route', 'pacific central', 'union station', '火車站', '列車站', '鐵路路線'],
+    iconKey: 'Route',
+    iconOnly: true,
+    colorClass: 'text-amber-400',
+    activeBg: 'bg-[#2c2414]',
+    activeBorder: 'border-amber-500/60',
+    defaultColor: '#eab308',
+    transportGroup: 'viarail',
   },
   {
     id: 'seabusVehicles',

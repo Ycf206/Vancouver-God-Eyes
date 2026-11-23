@@ -456,9 +456,14 @@ CATEGORY_INTENTS: dict[str, tuple[str, ...]] = {
     "貨輪": ("maritime_vessel",),
     "船運": ("maritime_vessel", "marine_terminals"),
     "vessel": ("maritime_vessel",),
-    "鐵路": ("railways",),
-    "火車": ("railways",),
-    "railway": ("railways",),
+    "鐵路": ("railways", "via_rail"),
+    "火車": ("railways", "via_rail"),
+    "火車站": ("via_rail",),
+    "列車站": ("via_rail",),
+    "via": ("via_rail",),
+    "via rail": ("via_rail",),
+    "viarail": ("via_rail",),
+    "railway": ("railways", "via_rail"),
     "關口": ("border_crossing",),
     "邊境": ("border_crossing",),
     "海關": ("border_crossing",),
@@ -521,6 +526,7 @@ CATEGORY_TIER_BONUS: dict[str, int] = {
     # Tier 1 (+34): Major Landmarks, Rapid Transit, Aviation, Ferries, Emergency, Civic, Neighbourhoods
     "airports": 34,
     "skytrain": 34,
+    "via_rail": 30,
     "seabus": 34,
     "ferry_terminal": 34,
     "bus_exchange": 35,
@@ -607,6 +613,7 @@ CATEGORY_TIER_BONUS: dict[str, int] = {
 # Broad UI Group mapping for instant dropdown quick-tabs
 CATEGORY_UI_GROUP: dict[str, str] = {
     "skytrain": "transit",
+    "via_rail": "transit",
     "seabus": "transit",
     "bus_route": "transit",
     "bus_stop": "transit",
@@ -1203,6 +1210,7 @@ class LayerSearchEngine:
             "yvr_indoor_pois.json",
             "translink_gtfs_metadata.json",
             "skytrain_network.json",
+            "via_rail_stations.geojson",
             "vancouver_local_area_boundary.geojson",
             "flo_ev_live_cache.json",
             "chargepoint_ev_live_cache.json",
@@ -1840,6 +1848,60 @@ class LayerSearchEngine:
                 extra_keywords=f"skytrain station 天車 天車站 地鐵 捷運 {lines_str}",
                 exact_codes=[st_obj["stop_id"]],
             )
+
+        # 6b-2. VIA Rail Canada Stations (from via_rail_stations.geojson)
+        via_stations_path = os.path.join(self.data_dir, "via_rail_stations.geojson")
+        via_aliases: dict[str, str] = {
+            "VCVR": "Pacific Central Station 太平洋中央車站 溫哥華火車站 溫哥華",
+            "TRTO": "Union Station 多倫多聯合車站 多倫多",
+            "MTRL": "Central Station Gare Centrale 蒙特婁中央車站 蒙特婁",
+            "OTTW": "Ottawa Train Station 渥太華火車站 渥太華",
+            "EDMO": "Edmonton Train Station 愛民頓火車站 愛民頓",
+            "WNPG": "Winnipeg Union Station 溫尼伯火車站 溫尼伯",
+            "JASP": "Jasper Train Station 賈斯珀火車站 賈斯珀",
+            "HLFX": "Halifax Train Station 哈利法克斯火車站 哈利法克斯",
+            "QBEC": "Gare du Palais 魁北克城火車站 魁北克",
+            "SASK": "Saskatoon Train Station 薩斯卡通火車站",
+            "KAMN": "Kamloops North Station 甘露市火車站",
+            "PRUP": "Prince Rupert Station 魯珀特王子港火車站",
+            "CHUR": "Churchill Station 邱吉爾火車站",
+            "LNDN": "London Ontario Station 倫敦火車站",
+            "WDON": "Windsor Ontario Station 溫莎火車站",
+        }
+        if os.path.exists(via_stations_path):
+            try:
+                with open(via_stations_path, "r", encoding="utf-8") as f:
+                    vdata = json.load(f)
+                for feat in vdata.get("features", []):
+                    props = feat.get("properties") or {}
+                    lon, lat = _extract_representative_coord(feat.get("geometry") or {}, props)
+                    if lon is None or lat is None:
+                        continue
+                    code = str(props.get("code") or "").strip().upper()
+                    sname = str(props.get("name") or code or "VIA Station").strip()
+                    prov = str(props.get("province") or "").strip()
+                    routes = props.get("routes") if isinstance(props.get("routes"), list) else []
+                    routes_str = " / ".join(str(r) for r in routes[:4])
+                    sub_parts = [p for p in [f"VIA Rail ({code})" if code else "VIA Rail", prov, routes_str] if p]
+                    alias_kw = via_aliases.get(code, "")
+                    self._add_doc(
+                        snap,
+                        item_id=str(feat.get("id") or f"via_station_{code}"),
+                        title=f"{sname} (VIA)",
+                        subtitle=" · ".join(sub_parts),
+                        category="via_rail",
+                        badge="VIA 車站",
+                        icon="🚆",
+                        lon=lon,
+                        lat=lat,
+                        zoom=13,
+                        layer_key="viaRailRoutes",
+                        meta=props,
+                        extra_keywords=f"via rail train station 火車站 列車站 鐵路 {sname} {code} {prov} {routes_str} {alias_kw}",
+                        exact_codes=[code] if code else [],
+                    )
+            except Exception as exc:
+                print(f"[SearchEngine] via_rail_stations.geojson warning: {exc}")
 
         # 6c. SeaBus Terminals
         seabus_terminals = [

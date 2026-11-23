@@ -37,7 +37,7 @@ import {
   Sun, Moon, Sunrise, Sunset, RotateCwClock, Weight, SquareParking, Trophy,
   TowerControl, CalendarClock, ChartNoAxesCombined, Dam, TriangleAlert, Construction,
   Layers, Building2, BuildingComplex, Hammer, Faucet, Droplets, Telescope, Lightbulb, Images, TentTree,
-  ChevronLeft, ChevronRight, ArrowLeftToLine, ArrowRightToLine
+  ChevronLeft, ChevronRight, ArrowLeftToLine, ArrowRightToLine, TramFront, TrainTrack
 } from 'lucide-react';
 import { SportShoeIcon } from './SportShoeIcon';
 
@@ -71,6 +71,7 @@ const LUCIDE_DROPLETS_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" 
 const LUCIDE_FLAME_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`;
 const LUCIDE_PILL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>`;
 const LUCIDE_TENT_TREE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="2"/><path d="m14 5 3-3 3 3"/><path d="m14 10 3-3 3 3"/><path d="M17 14V2"/><path d="M17 14H7l-5 8h20Z"/><path d="M8 14v8"/><path d="m9 14 5 8"/></svg>`;
+const LUCIDE_TRAM_FRONT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="3" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h.01"/><path d="M16 15h.01"/></svg>`;
 const registerAllVectorSvgIcons = (mapInstance: Parameters<typeof registerDamIcon>[0]) => {
   registerDamIcon(mapInstance);
   registerCastleIcon(mapInstance);
@@ -79,6 +80,7 @@ const registerAllVectorSvgIcons = (mapInstance: Parameters<typeof registerDamIco
   registerSvgIcon(mapInstance, 'lucide-flame', LUCIDE_FLAME_SVG);
   registerSvgIcon(mapInstance, 'lucide-pill', LUCIDE_PILL_SVG);
   registerSvgIcon(mapInstance, 'lucide-tent-tree', LUCIDE_TENT_TREE_SVG);
+  registerSvgIcon(mapInstance, 'lucide-tram-front', LUCIDE_TRAM_FRONT_SVG);
   registerYvrIndoorIcons(mapInstance);
 };
 
@@ -1348,6 +1350,8 @@ const INTERACTIVE_LAYER_IDS: string[] = [
   'pharmacies-icon-layer',
   'picnic-sites-layer',
   'picnic-sites-icon-layer',
+  'via-rail-stations-layer',
+  'via-rail-stations-icon-layer',
   'water-supply-mains-layer',
   'water-supply-cluster-layer',
   'water-supply-layer',
@@ -1846,9 +1850,158 @@ export default function AppMap() {
     setPowerOutagesOpen,
     setSelectedOutageId,
     airportIndoorFilter,
-    setAirportIndoorFilter
+    setAirportIndoorFilter,
+    selectedViaTrainId,
+    setSelectedViaTrainId
   } = useUIStore();
   const mapRef = useRef<MapRef>(null);
+
+  interface ViaRailLiveStop {
+    seq?: number;
+    station: string;
+    code?: string;
+    tz?: string;
+    scheduled?: string | null;
+    estimated?: string | null;
+    eta?: string | null;
+    diff?: string | null;
+    diff_min?: number | null;
+    platform?: string | null;
+    arrived?: boolean;
+  }
+
+  interface ViaRailLiveTrain {
+    id: string;
+    train_number: string;
+    instance?: string;
+    from: string;
+    to: string;
+    departed: boolean;
+    arrived: boolean;
+    in_service: boolean;
+    service_status: string;
+    has_gps: boolean;
+    lat: number | null;
+    lng: number | null;
+    speed: number | null;
+    direction: number | null;
+    poll?: string | null;
+    delay_min: number | null;
+    delay_status?: string | null;
+    stops_completed: number;
+    stops_total: number;
+    last_stop?: ViaRailLiveStop | null;
+    next_stop?: ViaRailLiveStop | null;
+    times?: ViaRailLiveStop[];
+  }
+
+  const [viaLiveTrains, setViaLiveTrains] = useState<ViaRailLiveTrain[]>([]);
+  const [selectedViaTrain, setSelectedViaTrain] = useState<ViaRailLiveTrain | null>(null);
+  const isViaExploreActive = Boolean(isExploreOpen && exploreTab === 'viarail');
+  const showViaTrainsOnMap = Boolean(layers.viaRailTrains || isViaExploreActive);
+  const showViaRoutesOnMap = Boolean(layers.viaRailRoutes || isViaExploreActive);
+  const isAnyViaActive = showViaTrainsOnMap || showViaRoutesOnMap;
+
+  // Poll VIA Rail live trains every 15 seconds while VIA layer or VIA Explore tab is open
+  useEffect(() => {
+    if (!showViaTrainsOnMap) {
+      setViaLiveTrains([]);
+      setSelectedViaTrain(null);
+      return;
+    }
+    let cancelled = false;
+    const fetchLive = async () => {
+      try {
+        const apiUrl = getApiUrl();
+        let res: Response | null = null;
+        try {
+          res = await fetch(`${apiUrl}/api/via-rail/live`, { cache: 'no-store' });
+        } catch {
+          res = null;
+        }
+        if (!res || !res.ok) {
+          res = await fetch('/api/via-rail/live', { cache: 'no-store' });
+        }
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+        const rawList: ViaRailLiveTrain[] = Array.isArray(data?.in_service) ? data.in_service : [];
+        // Strictly filter departed=true && arrived=false with valid GPS coordinates
+        const activeGps = rawList.filter(
+          (t) =>
+            t.departed === true &&
+            t.arrived === false &&
+            t.lat != null &&
+            t.lng != null &&
+            Number.isFinite(t.lat) &&
+            Number.isFinite(t.lng)
+        );
+        if (!cancelled) {
+          setViaLiveTrains(activeGps);
+          setSelectedViaTrain((prev) => (prev ? activeGps.find((x) => x.id === prev.id) || null : null));
+        }
+      } catch {
+        // Keep previous positions on transient network error
+      }
+    };
+    fetchLive();
+    const timer = window.setInterval(fetchLive, 15000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [showViaTrainsOnMap]);
+
+  // Focus & select VIA train when clicked from VIA Explore tab
+  useEffect(() => {
+    if (!selectedViaTrainId) return;
+    const target = viaLiveTrains.find((t) => t.id === selectedViaTrainId);
+    if (!target || target.lat == null || target.lng == null) return;
+    setSelectedViaTrain(target);
+    setSelectedFacility(null);
+    const map = mapRef.current?.getMap();
+    if (map) {
+      map.flyTo({
+        center: [target.lng, target.lat],
+        zoom: Math.max(map.getZoom(), 7.5),
+        pitch: 0,
+        bearing: 0,
+        duration: 1100,
+        essential: true,
+      });
+    }
+  }, [selectedViaTrainId, viaLiveTrains]);
+
+  // Auto-zoom to show all of Canada when opening VIA layer or Explore tab; reset to Vancouver when closed
+  const prevViaActiveRef = useRef(isAnyViaActive);
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) {
+      prevViaActiveRef.current = isAnyViaActive;
+      return;
+    }
+    if (isAnyViaActive && !prevViaActiveRef.current) {
+      // If opened via searching a specific VIA station, let searchTarget fly directly to that station
+      if (searchTarget?.category !== 'via_rail') {
+        const rightPad = isExploreOpen && !isExploreMinimized && typeof window !== 'undefined' && window.innerWidth >= 640 ? 410 : 40;
+        map.fitBounds(
+          [[-139.0, 41.5], [-52.5, 62.5]],
+          { padding: { top: 80, bottom: 70, left: 40, right: rightPad }, duration: 1200, essential: true }
+        );
+      }
+    } else if (!isAnyViaActive && prevViaActiveRef.current) {
+      setSelectedViaTrain(null);
+      setSelectedViaTrainId(null);
+      map.flyTo({
+        center: [-123.05, 49.25],
+        zoom: 11,
+        pitch: 0,
+        bearing: 0,
+        duration: 1200,
+        essential: true,
+      });
+    }
+    prevViaActiveRef.current = isAnyViaActive;
+  }, [isAnyViaActive, isExploreOpen, isExploreMinimized, searchTarget?.category, setSelectedViaTrainId]);
 
   const getGoogleNavUrl = (destLat: number, destLon: number) => {
     const base = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLon}`;
@@ -3627,6 +3780,7 @@ export default function AppMap() {
         else if (type === 'picnic_sites' && !layers.picnicSites) facilityClosed = true;
         else if (type === 'water_supply' && !layers.waterSupply) facilityClosed = true;
         else if (type === 'sewer_system' && !layers.sewerSystem) facilityClosed = true;
+        else if (type === 'via_rail_station' && !showViaRoutesOnMap) facilityClosed = true;
         else if (type === 'job' && (!isExploreOpen || !openExploreTabs?.includes('jobs'))) facilityClosed = true;
 
         if (facilityClosed) {
@@ -3765,7 +3919,7 @@ export default function AppMap() {
         setSearchTarget(null);
       }
     }
-  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedBusExchange, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility, courierFilter]);
+  }, [layers, showViaRoutesOnMap, selectedFacility, selectedAirport, selectedTerminal, selectedBusExchange, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility, courierFilter]);
 
 
   const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lon?: number, lat?: number) => {
@@ -5464,6 +5618,10 @@ export default function AppMap() {
       style.sources['skytrain-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/skytrain` };
       style.sources['skytrain-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/skytrain` };
     }
+    if (showViaRoutesOnMap) {
+      style.sources['via_rail_routes'] = { type: 'geojson', data: '/via_rail_routes.geojson' };
+      style.sources['via_rail_stations'] = { type: 'geojson', data: '/via_rail_stations.geojson' };
+    }
     if (layers.busRoutes && !isBusTrackHidden) {
       style.sources['bus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/bus` };
       style.sources['bus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/bus` };
@@ -5794,6 +5952,91 @@ export default function AppMap() {
           'circle-stroke-color': '#22c55e'
         }
       });
+    }
+
+    // VIA Rail Canada Official Routes & Stations (GTFS)
+    if (showViaRoutesOnMap) {
+      style.layers.push(
+        {
+          id: 'via-rail-routes-casing',
+          type: 'line',
+          source: 'via_rail_routes',
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+          paint: {
+            'line-color': '#18181b',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 2, 3.2, 6, 4.4, 10, 6.2],
+            'line-opacity': 0.72,
+          },
+        },
+        {
+          id: 'via-rail-routes-layer',
+          type: 'line',
+          source: 'via_rail_routes',
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+          paint: {
+            'line-color': layerCustomColors?.viaRailRoutes || '#eab308',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 2, 1.8, 6, 2.6, 10, 3.8],
+            'line-opacity': 0.92,
+          },
+        },
+        {
+          id: 'via-rail-stations-layer',
+          type: 'circle',
+          source: 'via_rail_stations',
+          paint: {
+            'circle-radius': [
+              'interpolate', ['linear'], ['zoom'],
+              2, ['case', ['boolean', ['get', 'is_major'], false], 3.8, 0],
+              5, ['case', ['boolean', ['get', 'is_major'], false], 5.2, 2.2],
+              8, ['case', ['boolean', ['get', 'is_major'], false], 7.0, 4.2],
+              12, ['case', ['boolean', ['get', 'is_major'], false], 9.5, 7.5],
+            ],
+            'circle-color': [
+              'case',
+              ['boolean', ['get', 'is_major'], false],
+              '#d97706',
+              '#f59e0b',
+            ],
+            'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 1.0, 8, 1.6],
+            'circle-stroke-color': '#ffffff',
+          },
+        },
+        {
+          id: 'via-rail-stations-icon-layer',
+          type: 'symbol',
+          source: 'via_rail_stations',
+          minzoom: 9,
+          layout: {
+            'icon-image': 'lucide-tram-front',
+            'icon-size': ['interpolate', ['linear'], ['zoom'], 9, 0.24, 12, 0.36, 15, 0.44],
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+          },
+        },
+        {
+          id: 'via-rail-stations-label-layer',
+          type: 'symbol',
+          source: 'via_rail_stations',
+          minzoom: 4,
+          filter: [
+            'any',
+            ['boolean', ['get', 'is_major'], false],
+            ['>=', ['zoom'], 8],
+          ],
+          layout: {
+            'text-field': ['get', 'name'],
+            'text-size': ['interpolate', ['linear'], ['zoom'], 4, 10, 8, 11.5, 12, 13],
+            'text-offset': [0, 1.25],
+            'text-anchor': 'top',
+            'text-font': ['Open Sans Bold'],
+          },
+          paint: {
+            'text-color': '#fef08a',
+            'text-halo-color': '#0f172a',
+            'text-halo-width': 1.6,
+          },
+        }
+      );
     }
 
     // SkyTrain Routes & Stops (Merged under skytrainRoutes)
@@ -9338,6 +9581,9 @@ export default function AppMap() {
     return style;
   }, [
     layers.skytrainRoutes, 
+    layers.viaRailRoutes,
+    layers.viaRailTrains,
+    showViaRoutesOnMap,
     layers.busRoutes, 
     isBusTrackHidden,
     layers.seabusRoutes, 
@@ -9946,6 +10192,7 @@ export default function AppMap() {
             layerId.startsWith('consulates') ||
             layerId.startsWith('pharmacies') ||
             layerId.startsWith('picnic-sites') ||
+            layerId.startsWith('via-rail-stations') ||
             layerId.startsWith('water-supply') ||
             layerId.startsWith('sewer-system') ||
             layerId.startsWith('disaster-hubs') ||
@@ -10008,6 +10255,7 @@ export default function AppMap() {
             else if (layerId.startsWith('consulates')) facilityType = 'consulates';
             else if (layerId.startsWith('pharmacies')) facilityType = 'pharmacies';
             else if (layerId.startsWith('picnic-sites')) facilityType = 'picnic_sites';
+            else if (layerId.startsWith('via-rail-stations')) facilityType = 'via_rail_station';
             else if (layerId.startsWith('water-supply')) facilityType = 'water_supply';
             else if (layerId.startsWith('sewer-system')) facilityType = 'sewer_system';
             else if (isImpark) facilityType = 'impark';
@@ -10256,6 +10504,7 @@ export default function AppMap() {
               <span className="w-7 h-7 rounded-full border-2 border-emerald-400 bg-emerald-500/30 group-hover:bg-rose-500/60 group-hover:border-rose-400 flex items-center justify-center shadow-lg transition-all">
                 <span className="text-xs group-hover:hidden">
                   {searchTarget.category === 'tide_stations' ? <Dam className="w-3.5 h-3.5 text-cyan-300" /> :
+                   searchTarget.category === 'via_rail' ? <TramFront className="w-3.5 h-3.5 text-amber-300" /> :
                    searchTarget.category === 'water_supply' ? <Faucet className="w-3.5 h-3.5 text-sky-300" /> :
                    searchTarget.category === 'sewer_system' ? <Droplets className="w-3.5 h-3.5 text-teal-300" /> :
                    searchTarget.icon}
@@ -10701,6 +10950,214 @@ export default function AppMap() {
             </Marker>
           );
         })}
+
+        {/* VIA Rail Canada 即時行駛中列車 (departed=true && arrived=false) */}
+        {showViaTrainsOnMap && viaLiveTrains.map((train) => {
+          if (train.lat == null || train.lng == null) return null;
+          const isSelected = selectedViaTrain?.id === train.id;
+          const delayMin = train.delay_min ?? 0;
+          const dotColor = delayMin > 30 ? '#dc2626' : delayMin > 5 ? '#ea580c' : '#ca8a04';
+          const hasDir = train.direction != null && Number.isFinite(train.direction);
+          return (
+            <Marker
+              key={`via_train_${train.id}`}
+              longitude={train.lng}
+              latitude={train.lat}
+              anchor="center"
+              onClick={(e) => {
+                e.originalEvent?.stopPropagation();
+                setSelectedViaTrain(train);
+                setSelectedFacility(null);
+              }}
+            >
+              <div
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  e.nativeEvent?.stopImmediatePropagation();
+                }}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                  e.nativeEvent?.stopImmediatePropagation();
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.nativeEvent?.stopImmediatePropagation();
+                  setSelectedViaTrain(train);
+                  setSelectedFacility(null);
+                }}
+                className="relative flex flex-col items-center cursor-pointer select-none group z-30"
+                title={`VIA #${train.id} · ${train.from} → ${train.to}${train.speed != null ? ` · ${Math.round(train.speed)} km/h` : ''}`}
+              >
+                <div
+                  className={`relative flex items-center justify-center w-7 h-7 rounded-full border-[2px] border-white shadow-lg transition-transform group-hover:scale-125 ${
+                    isSelected ? 'ring-4 ring-amber-300 scale-125 z-40' : ''
+                  }`}
+                  style={{
+                    backgroundColor: dotColor,
+                    boxShadow: `0 0 12px ${dotColor}cc`,
+                  }}
+                >
+                  <TramFront className="w-3.5 h-3.5 text-white" />
+                  {hasDir && (
+                    <div
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-500 ease-out"
+                      style={{
+                        transform: `rotate(${train.direction}deg)`,
+                        transformOrigin: 'center center',
+                      }}
+                    >
+                      <svg
+                        className="w-3.5 h-3.5 text-amber-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)]"
+                        style={{ transform: 'translateY(-19px)' }}
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <polygon points="12,2 22,22 12,17 2,22" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <span className="mt-0.5 px-1.5 py-[1px] rounded bg-slate-950/90 border border-amber-400/50 text-[9.5px] font-bold font-mono text-amber-200 leading-tight shadow-md whitespace-nowrap">
+                  #{train.train_number || train.id}
+                </span>
+              </div>
+            </Marker>
+          );
+        })}
+
+        {/* VIA Rail 即時列車 Popup */}
+        {selectedViaTrain && selectedViaTrain.lat != null && selectedViaTrain.lng != null && (() => {
+          const delayMin = selectedViaTrain.delay_min;
+          const delayBadge =
+            delayMin == null
+              ? { text: '狀態正常', cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' }
+              : delayMin > 5
+                ? { text: `誤點 ${delayMin} 分`, cls: 'bg-rose-100 text-rose-800 border-rose-200' }
+                : delayMin < -2
+                  ? { text: `提早 ${Math.abs(delayMin)} 分`, cls: 'bg-sky-100 text-sky-800 border-sky-200' }
+                  : { text: '準點行駛', cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' };
+          const headingText = (() => {
+            const d = selectedViaTrain.direction;
+            if (d == null || !Number.isFinite(d)) return '—';
+            const dirs = ['北', '東北', '東', '東南', '南', '西南', '西', '西北'];
+            const idx = Math.round((((d % 360) + 360) % 360) / 45) % 8;
+            return `${Math.round(d)}° (${dirs[idx]})`;
+          })();
+          const nextStop = selectedViaTrain.next_stop;
+          const isValidTime = (v?: string | null) => Boolean(v && v !== '&mdash;' && !Number.isNaN(new Date(v).getTime()));
+          const nextEtaRaw = isValidTime(nextStop?.estimated) ? nextStop?.estimated : (isValidTime(nextStop?.scheduled) ? nextStop?.scheduled : null);
+          const nextEtaFallback = nextStop?.eta && nextStop.eta !== '&mdash;' ? nextStop.eta : '—';
+          return (
+            <Popup
+              longitude={selectedViaTrain.lng}
+              latitude={selectedViaTrain.lat}
+              anchor="bottom"
+              onClose={() => {
+                setSelectedViaTrain(null);
+                setSelectedViaTrainId(null);
+              }}
+              closeButton={false}
+              closeOnClick={false}
+              className="z-50"
+              offset={[0, -16]}
+              maxWidth="none"
+            >
+              <div
+                onWheel={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className="p-3 w-[310px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800"
+              >
+                <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100 gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shadow-xs">
+                        <TramFront className="w-3 h-3" />
+                        VIA #{selectedViaTrain.id}
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${delayBadge.cls}`}>
+                        {delayBadge.text}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-sm leading-snug mt-1 break-words">
+                      {selectedViaTrain.from} → {selectedViaTrain.to}
+                    </h3>
+                    {selectedViaTrain.instance && (
+                      <span className="text-[10.5px] text-gray-400 block">發車日期：{selectedViaTrain.instance}</span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedViaTrain(null);
+                      setSelectedViaTrainId(null);
+                    }}
+                    className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors shrink-0 cursor-pointer"
+                    title="關閉"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5 text-[11px] mb-2">
+                  <div className="bg-amber-50/90 border border-amber-200/80 rounded-lg px-2 py-1.5">
+                    <span className="text-[10px] text-amber-800/80 block">即時時速</span>
+                    <span className="font-bold text-amber-950 font-mono">
+                      {selectedViaTrain.speed != null ? `${Math.round(selectedViaTrain.speed)} km/h` : '—'}
+                    </span>
+                  </div>
+                  <div className="bg-slate-50 border border-slate-200/80 rounded-lg px-2 py-1.5">
+                    <span className="text-[10px] text-slate-500 block">航向</span>
+                    <span className="font-bold text-slate-800 font-mono text-[10.5px]">{headingText}</span>
+                  </div>
+                  <div className="bg-slate-50 border border-slate-200/80 rounded-lg px-2 py-1.5">
+                    <span className="text-[10px] text-slate-500 block">行駛進度</span>
+                    <span className="font-bold text-slate-800 font-mono">
+                      {selectedViaTrain.stops_completed}/{selectedViaTrain.stops_total} 站
+                    </span>
+                  </div>
+                </div>
+
+                {nextStop && (
+                  <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-lg px-2.5 py-2 mb-2 text-[11px]">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-semibold text-emerald-700">下一站停靠</span>
+                      {nextStop.code && (
+                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                          {nextStop.code}
+                        </span>
+                      )}
+                    </div>
+                    <div className="font-bold text-gray-900 mt-0.5">{nextStop.station}</div>
+                    <div className="flex items-center justify-between gap-2 text-[10.5px] text-gray-600 mt-1">
+                      <span>預計抵達：{nextEtaRaw ? formatDateTime(nextEtaRaw, timeFormat, timeZone) : nextEtaFallback}</span>
+                      {nextStop.platform && <span className="font-semibold text-amber-700">月台 {nextStop.platform}</span>}
+                    </div>
+                  </div>
+                )}
+
+                {selectedViaTrain.poll && (
+                  <div className="text-[10px] text-gray-400 mb-2 flex items-center justify-between">
+                    <span>GPS 回報時間</span>
+                    <span className="font-mono">{formatDateTime(selectedViaTrain.poll, timeFormat, timeZone)}</span>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isExploreMinimized) setExploreMinimized(false);
+                    openExploreTab('viarail');
+                    setSelectedViaTrainId(selectedViaTrain.id);
+                  }}
+                  className="w-full py-1.5 px-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <TrainTrack className="w-3.5 h-3.5" />
+                  在探索分頁查看完整時刻表
+                </button>
+              </div>
+            </Popup>
+          );
+        })()}
 
 
 
@@ -12689,6 +13146,7 @@ export default function AppMap() {
                   if (t === 'business_licence') return { label: '商業牌照', bg: 'bg-sky-600 text-white' };
                   if (t === 'building_permit') return { label: '建築許可', bg: 'bg-orange-600 text-white' };
                   if (t === 'wildfire') return { label: '山火', bg: 'bg-orange-600 text-white rounded-full px-2' };
+                  if (t === 'via_rail_station') return { label: 'VIA 車站', bg: 'bg-amber-600 text-white' };
                   return null;
                 })();
 
@@ -12712,7 +13170,7 @@ export default function AppMap() {
                     marine_terminals: 'marineTerminals', airport_indoor: 'airportIndoor',
                     litter_containers: 'litterContainers', public_trees: 'publicTrees', museums: 'museums',
                     recycling: 'recycling', fire_hydrants: 'fireHydrants', aed: 'aed',
-                    water_supply: 'waterSupply', sewer_system: 'sewerSystem'
+                    water_supply: 'waterSupply', sewer_system: 'sewerSystem', via_rail_station: 'viaRailRoutes'
                   };
                   const key = t ? typeToKeyMap[t] : undefined;
                   const custom = key ? layerCustomColors?.[key] : undefined;
@@ -12944,6 +13402,9 @@ export default function AppMap() {
                   if (selectedFacility.facility_type === 'wildfire') {
                     return selectedFacility.properties?.incidentName || selectedFacility.name || '山火事件';
                   }
+                  if (selectedFacility.facility_type === 'via_rail_station') {
+                    return selectedFacility.properties?.name || selectedFacility.name?.replace(/\s*\(VIA\)\s*$/i, '') || 'VIA 車站';
+                  }
 
                   // 0.4 標題的英文確保統一每個英文字中首個英文字母大階 (如 Heather Street, 13th Ave…)
                   title = formatTitleCase(title);
@@ -13063,7 +13524,7 @@ export default function AppMap() {
                             : selectedFacility.facility_type === 'wildfire'
                               ? !!(selectedFacility.properties?.incidentLocation || selectedFacility.local_area)
                               : (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋') || selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'consulates' || selectedFacility.facility_type === 'pharmacies' || selectedFacility.facility_type === 'picnic_sites' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
-                              selectedFacility.facility_type === 'ev_charging' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || selectedFacility.facility_type === 'business_licence' || selectedFacility.facility_type === 'building_permit' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark))) && (
+                              selectedFacility.facility_type === 'ev_charging' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions' || selectedFacility.facility_type === 'business_licence' || selectedFacility.facility_type === 'building_permit' || selectedFacility.facility_type === 'via_rail_station' || (selectedFacility.facility_type === 'drivebc' && !!selectedFacility.properties?.closest_landmark))) && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
                               if (selectedFacility.id === 'lions_gate_bridge_atis' || selectedFacility.name?.includes('獅門大橋')) {
@@ -13132,6 +13593,11 @@ export default function AppMap() {
                               }
                               if (selectedFacility.facility_type === 'wildfire') {
                                 return selectedFacility.properties?.incidentLocation || selectedFacility.local_area || '';
+                              }
+                              if (selectedFacility.facility_type === 'via_rail_station') {
+                                const code = selectedFacility.properties?.code ? `(${selectedFacility.properties.code})` : '';
+                                const prov = selectedFacility.properties?.province || 'Canada';
+                                return `VIA Rail ${code} · ${prov}`.replace(/\s+/g, ' ').trim();
                               }
                               if (selectedFacility.facility_type === 'fire_halls') return selectedFacility.properties?.geo_local_area || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'fire_hydrants') {
@@ -16009,6 +16475,78 @@ export default function AppMap() {
                         <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                       </a>
                     </div>
+                  </div>
+                );
+              })()}
+
+              {/* VIA Rail Canada 車站 (via_rail_station) Details */}
+              {selectedFacility.facility_type === 'via_rail_station' && (() => {
+                const p = selectedFacility.properties || {};
+                const code = p.code ? String(p.code) : '';
+                const province = p.province ? String(p.province) : '';
+                const tz = p.timezone ? String(p.timezone) : '';
+                const wheelchair = p.wheelchair_accessible === true || p.wheelchair_accessible === 'true';
+                let routes: string[] = [];
+                if (Array.isArray(p.routes)) {
+                  routes = p.routes.map(String);
+                } else if (typeof p.routes === 'string' && p.routes.trim()) {
+                  try {
+                    const parsed = JSON.parse(p.routes);
+                    if (Array.isArray(parsed)) routes = parsed.map(String);
+                  } catch {
+                    routes = p.routes.split(',').map((s: string) => s.trim()).filter(Boolean);
+                  }
+                }
+                return (
+                  <div className="flex flex-col gap-2 text-xs text-gray-700">
+                    <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                      <div className="bg-amber-50/90 border border-amber-200/80 rounded-lg px-2.5 py-1.5">
+                        <span className="text-[10px] text-amber-800/80 block">車站代碼</span>
+                        <span className="font-bold text-amber-950 font-mono">{code || '—'}</span>
+                      </div>
+                      <div className="bg-slate-50 border border-slate-200/80 rounded-lg px-2.5 py-1.5">
+                        <span className="text-[10px] text-slate-500 block">所屬省份</span>
+                        <span className="font-bold text-slate-800">{province || 'Canada'}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] bg-gray-50 border border-gray-200/80 rounded-lg px-2.5 py-1.5">
+                      <span className="text-gray-500">無障礙登車設施</span>
+                      <span className={`font-semibold ${wheelchair ? 'text-emerald-700' : 'text-gray-500'}`}>
+                        {wheelchair ? '支援輪椅登車' : '一般月台 / 請提前預約'}
+                      </span>
+                    </div>
+                    {tz && (
+                      <div className="flex items-center justify-between text-[11px] text-gray-500 px-0.5">
+                        <span>當地時區</span>
+                        <span className="font-mono text-gray-700">{tz}</span>
+                      </div>
+                    )}
+                    {routes.length > 0 && (
+                      <div className="bg-amber-50/60 border border-amber-200/70 rounded-lg p-2">
+                        <div className="text-[10px] font-semibold text-amber-900 mb-1.5">途經 VIA 路線 ({routes.length})</div>
+                        <div className="flex flex-wrap gap-1">
+                          {routes.map((r) => (
+                            <span
+                              key={r}
+                              className="text-[10.5px] font-medium px-2 py-0.5 rounded-full bg-white border border-amber-300/80 text-amber-900 shadow-2xs"
+                            >
+                              {r}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isExploreMinimized) setExploreMinimized(false);
+                        openExploreTab('viarail');
+                      }}
+                      className="w-full py-1.5 px-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <TrainTrack className="w-3.5 h-3.5" />
+                      查看 VIA 即時列車動態
+                    </button>
                   </div>
                 );
               })()}
@@ -21969,6 +22507,7 @@ export default function AppMap() {
                   { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
                   { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
                   { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+                  { id: 'viarail', label: 'VIA', icon: TrainTrack, color: 'text-amber-400' },
                   { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
                   { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
                   { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },
@@ -21996,6 +22535,7 @@ export default function AppMap() {
                 { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
                 { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
                 { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+                { id: 'viarail', label: 'VIA', icon: TrainTrack, color: 'text-amber-400' },
                 { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
                 { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
                 { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },
@@ -22093,6 +22633,7 @@ export default function AppMap() {
             { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
             { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
             { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+            { id: 'viarail', label: 'VIA', icon: TrainTrack, color: 'text-amber-400' },
             { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
             { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
             { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },

@@ -85,6 +85,7 @@ import {
   TrafficCone,
   TrainFront,
   TrainTrack,
+  TramFront,
   Trash2,
   TreePine,
   Trees,
@@ -230,6 +231,7 @@ const ICON_MAP: Record<LayerIconKey, React.ElementType> = {
   TrafficLightIcon,
   TrainFront,
   TrainTrack,
+  TramFront,
   Trash2,
   TreePine,
   Trees,
@@ -472,6 +474,8 @@ export default function LayerPanel() {
       skytrainTrains: '列車',
       skytrainRoutes: '車站',
       skytrainFareZones: '車區',
+      viaRailTrains: '列車',
+      viaRailRoutes: '車站',
       airportIndoor: '航廈圖',
     };
     const compactLabel = mobileCompactLabelMap[entry.id] || entry.buttonLabel;

@@ -52,6 +52,7 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   bus_routes: 'busRoutes',
   skytrain_realtime: 'skytrainTrains',
   skytrain_routes: 'skytrainRoutes',
+  via_rail: 'viaRailTrains',
   seabus_realtime: 'seabusVehicles',
   seabus_routes: 'seabusRoutes',
   bcferries_routes: 'bcferriesRoutes',
@@ -147,7 +148,7 @@ type SourceFreqTier = 'realtime' | 'periodic' | 'daily' | 'low';
 
 function getSystemCategory(source: { id: string; category?: string; name?: string }): AdminSystemCategory {
   const transitIds = new Set([
-    'translink_realtime', 'flight_schedules', 'yvr_flights', 'yvr_indoor',
+    'translink_realtime', 'via_rail', 'flight_schedules', 'yvr_flights', 'yvr_indoor',
     'yvr_news_rss', 'maritime_shipping', 'border_wait_times',
   ]);
   const roadIds = new Set([
