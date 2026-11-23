@@ -87,7 +87,7 @@ jobs:
           [ -f frontend/.env.local ] && cp frontend/.env.local /tmp/godseye_frontend_env.bak || true
           [ -f backend/data/admin_sources_config.json ] && cp backend/data/admin_sources_config.json /tmp/godseye_admin_cfg.bak || true
           mkdir -p /tmp/godseye_runtime_bak
-          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key .threads_token_state.json system_maintenance.json admin_layers_config.json vancouver_yvr_flights.json vancouver_air_quality.geojson flo_ev_parks.json flo_ev_live_cache.json flo_ev_details_cache.json chargepoint_ev_devices.json chargepoint_ev_live_cache.json chargepoint_ev_details_cache.json vancouver_business_licences.json vancouver_building_permits.json vancouver_threads_posts.json vancouver_via_rail_live.json; do
+          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key .threads_token_state.json system_maintenance.json admin_layers_config.json vancouver_yvr_flights.json vancouver_air_quality.geojson flo_ev_parks.json flo_ev_live_cache.json flo_ev_details_cache.json chargepoint_ev_devices.json chargepoint_ev_live_cache.json chargepoint_ev_details_cache.json vancouver_business_licences.json vancouver_building_permits.json vancouver_threads_posts.json vancouver_via_rail_live.json bchydro_outages_current.json bchydro_outages_restored.json bchydro_outages_planned.json bchydro_outages_map.geojson; do
             [ -f "backend/data/$rt_file" ] && cp -f "backend/data/$rt_file" "/tmp/godseye_runtime_bak/$rt_file" || true
           done
 
@@ -156,14 +156,14 @@ jobs:
             frontend/public/logo-mobile.jpg \
             frontend/public/logo-web.jpg \
             backend/data/admin_sources_config.json 2>/dev/null || true
-          git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/.admin_session_key -e backend/data/.threads_token_state.json -e backend/data/admin_schedule_history.json -e backend/data/schedule_history_config.json -e backend/data/system_logs.json -e backend/data/system_logs_config.json -e backend/data/stats_pv.json -e backend/data/issue_reports.jsonl -e backend/data/system_maintenance.json -e backend/data/admin_sources_config.json -e backend/data/admin_layers_config.json -e backend/data/vancouver_yvr_flights.json -e backend/data/vancouver_air_quality.geojson -e backend/data/flo_ev_parks.json -e backend/data/flo_ev_live_cache.json -e backend/data/flo_ev_details_cache.json -e backend/data/chargepoint_ev_devices.json -e backend/data/chargepoint_ev_live_cache.json -e backend/data/chargepoint_ev_details_cache.json -e backend/data/vancouver_business_licences.json -e backend/data/vancouver_building_permits.json -e backend/data/vancouver_threads_posts.json -e backend/data/vancouver_via_rail_live.json
+          git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/.admin_session_key -e backend/data/.threads_token_state.json -e backend/data/admin_schedule_history.json -e backend/data/schedule_history_config.json -e backend/data/system_logs.json -e backend/data/system_logs_config.json -e backend/data/stats_pv.json -e backend/data/issue_reports.jsonl -e backend/data/system_maintenance.json -e backend/data/admin_sources_config.json -e backend/data/admin_layers_config.json -e backend/data/vancouver_yvr_flights.json -e backend/data/vancouver_air_quality.geojson -e backend/data/flo_ev_parks.json -e backend/data/flo_ev_live_cache.json -e backend/data/flo_ev_details_cache.json -e backend/data/chargepoint_ev_devices.json -e backend/data/chargepoint_ev_live_cache.json -e backend/data/chargepoint_ev_details_cache.json -e backend/data/vancouver_business_licences.json -e backend/data/vancouver_building_permits.json -e backend/data/vancouver_threads_posts.json -e backend/data/vancouver_via_rail_live.json -e backend/data/bchydro_outages_current.json -e backend/data/bchydro_outages_restored.json -e backend/data/bchydro_outages_planned.json -e backend/data/bchydro_outages_map.geojson
 
           # 還原 .env、前端環境變數、持久化執行狀態檔與合併管理員設定檔
           [ -f /tmp/godseye_root_env.bak ] && cp /tmp/godseye_root_env.bak .env || true
           [ -f /tmp/godseye_backend_env.bak ] && cp /tmp/godseye_backend_env.bak backend/.env || true
           [ -f /tmp/godseye_frontend_env.bak ] && cp /tmp/godseye_frontend_env.bak frontend/.env.local || true
           mkdir -p backend/data
-          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key .threads_token_state.json system_maintenance.json admin_layers_config.json vancouver_yvr_flights.json vancouver_air_quality.geojson flo_ev_parks.json flo_ev_live_cache.json flo_ev_details_cache.json chargepoint_ev_devices.json chargepoint_ev_live_cache.json chargepoint_ev_details_cache.json vancouver_business_licences.json vancouver_building_permits.json vancouver_threads_posts.json vancouver_via_rail_live.json; do
+          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key .threads_token_state.json system_maintenance.json admin_layers_config.json vancouver_yvr_flights.json vancouver_air_quality.geojson flo_ev_parks.json flo_ev_live_cache.json flo_ev_details_cache.json chargepoint_ev_devices.json chargepoint_ev_live_cache.json chargepoint_ev_details_cache.json vancouver_business_licences.json vancouver_building_permits.json vancouver_threads_posts.json vancouver_via_rail_live.json bchydro_outages_current.json bchydro_outages_restored.json bchydro_outages_planned.json bchydro_outages_map.geojson; do
             [ -f "/tmp/godseye_runtime_bak/$rt_file" ] && cp -f "/tmp/godseye_runtime_bak/$rt_file" "backend/data/$rt_file" || true
           done
           rm -rf /tmp/godseye_runtime_bak || true
@@ -269,13 +269,13 @@ jobs:
           docker compose up -d db redis frontend backend nginx
           docker compose ps
           HEALTH_OK=0
-          for attempt in $(seq 1 20); do
-            if curl -fsS --max-time 3 http://127.0.0.1/health >/dev/null 2>&1; then
+          for attempt in $(seq 1 40); do
+            if docker compose exec -T backend curl -fsS --max-time 3 http://127.0.0.1:8000/health >/dev/null 2>&1; then
               HEALTH_OK=1
               echo "✅ Backend healthcheck passed on attempt $attempt"
               break
             fi
-            sleep 2
+            sleep 3
           done
           docker compose logs --tail=40 backend
           if [ "$HEALTH_OK" -ne 1 ]; then

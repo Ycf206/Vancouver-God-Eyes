@@ -67,7 +67,7 @@ export default function TermsOfServicePage() {
                   : 'Welcome to Vancouver God\'s Eye. Please read these Terms of Service carefully before using our platform. By accessing or using our services, you agree to be bound by these terms.'}
               </p>
               <div className="mt-2 text-[11px] text-gray-400 font-mono">
-                {lang === 'zh' ? '生效日期：2026年10月24日 · 適用於所有終端用戶' : 'Effective Date: October 24, 2026 · Applicable to all users'}
+                {lang === 'zh' ? '生效日期：2026年11月23日 · 適用於所有終端用戶' : 'Effective Date: November 23, 2026 · Applicable to all users'}
               </div>
             </div>
           </div>
@@ -95,13 +95,12 @@ export default function TermsOfServicePage() {
             <section className="space-y-2 pt-4 border-t border-[#1e2535]">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                2. 用戶行為規範與社群守則 (Community Guidelines)
+                2. 合理使用規範 (Acceptable Use)
               </h3>
-              <p>若您使用 Google 帳號登入並於地點彈窗發表評論或評分，您必須承諾遵守以下規範：</p>
+              <p>使用本平台及「回報問題」功能時，您同意遵守以下規範：</p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-gray-300">
-                <li>嚴禁發布包含謾罵、仇恨言論、人身攻擊、誹謗或侵犯隱私之文字。</li>
-                <li>嚴禁張貼垃圾廣告、商業宣傳連結、惡意代碼或不實詐騙資訊。</li>
-                <li>管理團隊保有隨時審核、隱藏或刪除違規評論，並對累犯者終止 Google 登入權限之權利。</li>
+                <li>嚴禁對本平台介面或 API 進行高頻惡意爬蟲、阻斷服務攻擊或未經授權之商業轉售。</li>
+                <li>嚴禁透過問題回報表單發送垃圾廣告、惡意連結、誹謗或不實訊息。</li>
               </ul>
             </section>
 
@@ -157,13 +156,12 @@ export default function TermsOfServicePage() {
             <section className="space-y-2 pt-4 border-t border-[#1e2535]">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                2. Community Guidelines & Conduct
+                2. Acceptable Use
               </h3>
-              <p>When authenticated via Google to post location reviews or ratings, you agree to:</p>
+              <p>When using this platform or submitting feedback, you agree to:</p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-gray-300">
-                <li>Refrain from publishing abusive, hateful, defamatory, or unlawful content.</li>
-                <li>Never post unsolicited commercial advertising, malware, or fraudulent links.</li>
-                <li>We reserve the right to moderate, hide, or delete non-compliant posts and suspend account access.</li>
+                <li>Refrain from abusive automated scraping, denial-of-service attempts, or unauthorized commercial redistribution.</li>
+                <li>Never submit unsolicited advertising, malware, or fraudulent links via the issue report form.</li>
               </ul>
             </section>
 

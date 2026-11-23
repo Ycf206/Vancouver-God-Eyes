@@ -1074,7 +1074,9 @@ async def fetch_translink_realtime():
                     curr_sec = curr_h * 3600 + curr_m * 60 + curr_s
                     
                     if arr_sec > dep_sec:
-                        progress = (curr_sec - dep_sec) / (arr_sec - dep_sec)
+                        raw_progress = (curr_sec - dep_sec) / (arr_sec - dep_sec)
+                        # Keep vessel slightly offshore along Burrard Inlet so it does not cover terminal station dots
+                        progress = min(0.95, max(0.05, raw_progress))
                         rem_min = max(1, int((arr_sec - curr_sec) / 60))
                         
                         # Get shape geometry to interpolate
@@ -1119,15 +1121,16 @@ async def fetch_translink_realtime():
             if not seabus_simulated:
                 now_epoch = int(time.time())
                 # Vessel 1: Waterfront -> Lonsdale Quay (cycle 900s: 720s sailing + 180s dock)
+                # Keep frac within [0.05, 0.95] so docked/departing vessels stay on the water and never block terminal dots
                 cycle_1 = now_epoch % 900
                 if cycle_1 < 720:
-                    frac_1 = cycle_1 / 720.0
-                    lat_1 = 49.2861 + (49.3103 - 49.2861) * frac_1
-                    lon_1 = -123.1118 + (-123.0829 - (-123.1118)) * frac_1
+                    frac_1 = 0.05 + 0.90 * (cycle_1 / 720.0)
                     rem_1 = max(1, int((720 - cycle_1) / 60))
                 else:
-                    lat_1, lon_1 = 49.3103, -123.0829
+                    frac_1 = 0.95
                     rem_1 = 1
+                lat_1 = 49.2861 + (49.3103 - 49.2861) * frac_1
+                lon_1 = -123.1118 + (-123.0829 - (-123.1118)) * frac_1
                 arr_m_1 = (now_seabus.minute + rem_1) % 60
                 arr_h_1 = (now_seabus.hour + (now_seabus.minute + rem_1) // 60) % 24
                 seabus_simulated.append({
@@ -1154,13 +1157,13 @@ async def fetch_translink_realtime():
                 # Vessel 2: Lonsdale Quay -> Waterfront (offset by 450s)
                 cycle_2 = (now_epoch + 450) % 900
                 if cycle_2 < 720:
-                    frac_2 = cycle_2 / 720.0
-                    lat_2 = 49.3103 + (49.2861 - 49.3103) * frac_2
-                    lon_2 = -123.0829 + (-123.1118 - (-123.0829)) * frac_2
+                    frac_2 = 0.05 + 0.90 * (cycle_2 / 720.0)
                     rem_2 = max(1, int((720 - cycle_2) / 60))
                 else:
-                    lat_2, lon_2 = 49.2861, -123.1118
+                    frac_2 = 0.95
                     rem_2 = 1
+                lat_2 = 49.3103 + (49.2861 - 49.3103) * frac_2
+                lon_2 = -123.0829 + (-123.1118 - (-123.0829)) * frac_2
                 arr_m_2 = (now_seabus.minute + rem_2) % 60
                 arr_h_2 = (now_seabus.hour + (now_seabus.minute + rem_2) // 60) % 24
                 seabus_simulated.append({
@@ -3425,6 +3428,87 @@ def get_via_rail_live(refresh: bool = Query(False)):
         },
         headers={"Cache-Control": "no-store"},
     )
+
+
+# ==========================================
+# ⚡ BC Hydro Power Outages Live Cache API (OCI 每小時更新，直接從 backend/data 回傳)
+# ==========================================
+_bchydro_refresh_lock = threading.Lock()
+_bchydro_last_refresh_attempt_ts = 0.0
+_BCHYDRO_FILE_MAP = {
+    "current": "bchydro_outages_current.json",
+    "restored": "bchydro_outages_restored.json",
+    "planned": "bchydro_outages_planned.json",
+    "map": "bchydro_outages_map.geojson",
+}
+
+
+@app.get("/api/bchydro/outages")
+def get_bchydro_outages(
+    type: str = Query("current"),
+    refresh: bool = Query(False),
+):
+    """直接從 OCI 後端最新快取回傳 BC Hydro 現正/恢復/預期停電與地圖 GeoJSON (過期自動刷新並附冷卻保護)。"""
+    global _bchydro_last_refresh_attempt_ts
+    import dynamic_layers_service
+
+    req_type = (type or "current").strip().lower()
+    if req_type not in _BCHYDRO_FILE_MAP:
+        req_type = "current"
+    fname = _BCHYDRO_FILE_MAP[req_type]
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    fpath = os.path.join(base_dir, "data", fname)
+
+    stale = True
+    if os.path.exists(fpath):
+        try:
+            stale = (time.time() - os.path.getmtime(fpath)) > 4500  # > 75 min
+        except OSError:
+            stale = True
+
+    if stale or refresh:
+        with _bchydro_refresh_lock:
+            now = time.time()
+            # Re-check after acquiring lock
+            still_stale = True
+            prev_mtime = 0.0
+            if os.path.exists(fpath):
+                try:
+                    prev_mtime = os.path.getmtime(fpath)
+                    still_stale = (now - prev_mtime) > 4500
+                except OSError:
+                    still_stale = True
+            cooldown_elapsed = (now - _bchydro_last_refresh_attempt_ts) >= 60.0
+            if (still_stale or refresh) and cooldown_elapsed:
+                _bchydro_last_refresh_attempt_ts = now
+                try:
+                    dynamic_layers_service.refresh_bchydro_outages("all")
+                    new_mtime = os.path.getmtime(fpath) if os.path.exists(fpath) else 0.0
+                    if new_mtime > prev_mtime:
+                        refreshed_ts = time.time()
+                        _oci_runtime_ts["bchydro_current"] = refreshed_ts
+                        _oci_runtime_ts["bchydro_restored"] = refreshed_ts
+                        _oci_runtime_ts["bchydro_planned"] = refreshed_ts
+                except Exception as exc:
+                    print(f"⚠️ [BC Hydro API] refresh failed: {exc}")
+
+    if os.path.exists(fpath):
+        try:
+            with open(fpath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return JSONResponse(
+                content=data,
+                headers={"Cache-Control": "no-cache, max-age=60"},
+            )
+        except Exception as exc:
+            print(f"⚠️ [BC Hydro API] failed reading {fpath}: {exc}")
+
+    empty_payload = (
+        {"type": "FeatureCollection", "features": []}
+        if req_type == "map"
+        else {"all_outages": [], "messagesMap": {}, "regions": []}
+    )
+    return JSONResponse(content=empty_payload, headers={"Cache-Control": "no-store"})
 
 
 # ==========================================
@@ -6247,6 +6331,17 @@ def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot:
         vr_ts = (vr_snap or {}).get("updated_at") if isinstance(vr_snap, dict) else None
         vr_runtime = _unix_to_iso(_oci_runtime_ts.get("via_rail"))
         oci_live_updates["via_rail"] = (_max_iso_ts(vr_runtime, vr_ts), vr_cnt if vr_cnt > 0 else None)
+
+    for _bc_sid, _bc_fname in (
+        ("bchydro_current", "bchydro_outages_current.json"),
+        ("bchydro_restored", "bchydro_outages_restored.json"),
+        ("bchydro_planned", "bchydro_outages_planned.json"),
+    ):
+        if _bc_sid in src_by_id:
+            _bc_file = os.path.join(data_dir, _bc_fname)
+            _bc_cnt, _bc_ts = _extract_disk_file_meta(_bc_file)
+            _bc_runtime = _unix_to_iso(_oci_runtime_ts.get(_bc_sid))
+            oci_live_updates[_bc_sid] = (_max_iso_ts(_bc_runtime, _bc_ts), _bc_cnt if _bc_cnt >= 0 else None)
 
     for sid, (live_iso, live_cnt) in oci_live_updates.items():
         s = src_by_id.get(sid)

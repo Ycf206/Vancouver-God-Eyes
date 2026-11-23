@@ -126,7 +126,7 @@ export interface LayerCatalogEntry {
   showInLayerPanel?: boolean;
   showInAdmin?: boolean;
   transportGroup?: TransportGroupId;
-  isSpecialAction?: 'ferrySchedule' | 'maritimeSchedule' | 'flightSchedule' | 'contours';
+  isSpecialAction?: 'ferrySchedule' | 'maritimeSchedule' | 'flightSchedule' | 'viaSchedule' | 'contours';
 }
 
 export const LAYER_CATEGORIES: LayerCategoryMeta[] = [
@@ -147,7 +147,7 @@ export const TRANSPORT_GROUPS: Array<{
 }> = [
   { id: 'bus', label: '巴士', labelClass: 'text-emerald-400', gridClass: 'grid-cols-[48px_1fr_1fr]' },
   { id: 'skytrain', label: '天車', labelClass: 'text-blue-400', gridClass: 'grid-cols-[48px_1fr_1fr]' },
-  { id: 'viarail', label: 'VIA', labelClass: 'text-amber-400', gridClass: 'grid-cols-[48px_1fr]' },
+  { id: 'viarail', label: 'VIA', labelClass: 'text-amber-400', gridClass: 'grid-cols-[48px_1fr_1fr]' },
   { id: 'seabus', label: '海上巴士', labelClass: 'text-[#00a4e4]', gridClass: 'grid-cols-[48px_1fr]' },
   { id: 'bcferries', label: '卑詩渡輪', labelClass: 'text-[#3399ff]', gridClass: 'grid-cols-[48px_1fr_1fr]' },
   { id: 'maritime', label: '船運', labelClass: 'text-cyan-400', gridClass: 'grid-cols-[48px_1fr_1fr]' },
@@ -244,6 +244,24 @@ export const LAYER_CATALOG: LayerCatalogEntry[] = [
     activeBorder: 'border-amber-500/60',
     activeShadow: 'shadow-[0_0_8px_rgba(245,158,11,0.25)]',
     defaultColor: '#eab308',
+    transportGroup: 'viarail',
+  },
+  {
+    id: 'viaSchedule',
+    name: 'VIA 列車班次',
+    buttonLabel: '班次',
+    title: 'VIA 列車班次',
+    categoryId: 'transport',
+    category: '交通',
+    keywords: ['via', 'via rail', 'viarail', 'via schedule', 'schedule', 'VIA 班次', '列車班次', '火車時刻表'],
+    iconKey: 'TrainTrack',
+    colorClass: 'text-amber-400',
+    activeBg: 'bg-[#2c2414]',
+    activeBorder: 'border-amber-500/60',
+    activeShadow: 'shadow-[0_0_8px_rgba(245,158,11,0.25)]',
+    defaultColor: '#eab308',
+    showInAdmin: false,
+    isSpecialAction: 'viaSchedule',
     transportGroup: 'viarail',
   },
   {

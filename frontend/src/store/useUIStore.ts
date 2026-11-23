@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'finance' | 'events' | 'sports' | 'beach' | 'ski' | 'aurora' | 'jobs' | 'publicservices' | '311' | 'business' | 'permits' | 'shopping' | 'lottery' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'viarail' | 'traffic' | 'crashes';
+export type ExploreTabType = 'weather' | 'news' | 'finance' | 'events' | 'sports' | 'beach' | 'ski' | 'aurora' | 'jobs' | 'publicservices' | '311' | 'business' | 'permits' | 'shopping' | 'lottery' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic' | 'crashes';
 
 export interface SearchTarget {
   id: string;
@@ -248,6 +248,9 @@ export interface UIState {
   isMaritimeScheduleOpen: boolean;
   toggleMaritimeSchedule: () => void;
   setMaritimeScheduleOpen: (open: boolean) => void;
+  isViaScheduleOpen: boolean;
+  toggleViaSchedule: () => void;
+  setViaScheduleOpen: (open: boolean) => void;
   isPowerOutagesOpen: boolean;
   togglePowerOutages: () => void;
   setPowerOutagesOpen: (open: boolean) => void;
@@ -614,6 +617,7 @@ export const useUIStore = create<UIState>()(
             contourInterval: 'off',
             searchTarget: null,
             isPowerOutagesOpen: false,
+            isViaScheduleOpen: false,
             selectedOutageId: null,
             parkingMeterFilter: {
               maxRate: 20,
@@ -725,6 +729,9 @@ export const useUIStore = create<UIState>()(
       isMaritimeScheduleOpen: false,
       toggleMaritimeSchedule: () => set((state) => ({ isMaritimeScheduleOpen: !state.isMaritimeScheduleOpen })),
       setMaritimeScheduleOpen: (open) => set({ isMaritimeScheduleOpen: open }),
+      isViaScheduleOpen: false,
+      toggleViaSchedule: () => set((state) => ({ isViaScheduleOpen: !state.isViaScheduleOpen })),
+      setViaScheduleOpen: (open) => set({ isViaScheduleOpen: open }),
       isPowerOutagesOpen: false,
       togglePowerOutages: () => set((state) => ({ isPowerOutagesOpen: !state.isPowerOutagesOpen })),
       setPowerOutagesOpen: (open) => set({ isPowerOutagesOpen: open }),

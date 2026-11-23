@@ -88,8 +88,8 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     return list;
   };
 
-  // 0. 24/7 or 24 hours
-  if (/^\s*(?:24\s*\/\s*7|24\s*hours?|open\s*24\s*hours?)\s*$/i.test(s)) {
+  // 0. 24/7 or 24 hours (含中英文全天開放格式)
+  if (/^\s*(?:24\s*\/\s*7|24\s*hours?|open\s*24\s*hours?|24\s*小時(?:全天|全日)?開放|全天\s*24\s*小時(?:開放)?|全日\s*24\s*小時(?:開放)?)\s*$/i.test(s)) {
     weekDayKeys.forEach(d => result[d] = '00:00 - 24:00');
     return result;
   }
@@ -106,9 +106,9 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     }
   }
 
-  // 2. Pre-process: Semicolon or newline separated chunks (e.g. "Monday - Friday: 9 AM - 6:30 PM; Sat 9 Am - 5:30 PM; Sunday: CLOSED")
-  if (s.includes(';') || s.includes('\n')) {
-    const chunks = s.split(/[;\n]+/).map(c => c.trim()).filter(Boolean);
+  // 2. Pre-process: Semicolon, newline, or middle-dot separated chunks (e.g. "Monday - Friday: 9 AM - 6:30 PM; ..." or "週一: 10:00-20:00 · 週二: 10:00-20:00")
+  if (s.includes(';') || s.includes('\n') || s.includes('·')) {
+    const chunks = s.split(/[;\n·]+/).map(c => c.trim()).filter(Boolean);
     let chunkCount = 0;
     for (const chunk of chunks) {
       if (/^(?:closed|休息|休館)\b/i.test(chunk) || /\b(?:closed|休息|休館)$/i.test(chunk)) {

@@ -78,7 +78,7 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   driveBC: { label: 'DriveBC 公路路況與攝影機', url: '/api/drivebc/events', category: '道路' },
   roadClosures: { label: '道路封閉管制', url: '/api/traffic/road-closures', category: '道路' },
   roadConstruction: { label: '道路施工工程', url: '/api/traffic/construction', category: '道路' },
-  powerOutages: { label: '卑詩省停電即時情況', url: '/bchydro_outages_map.geojson', category: '能源' },
+  powerOutages: { label: '卑詩省停電即時情況', url: '/api/bchydro/outages?type=map', category: '能源' },
   waterSupply: { label: '大溫區域供水系統設施', url: '/vancouver_water_supply.geojson', category: '能源' },
   sewerSystem: { label: '大溫區域污水系統設施', url: '/vancouver_sewer_system.geojson', category: '能源' },
   beachWaterQuality: { label: '海灘泳區水質監測', url: '/api/beach/water-quality', category: '自然' },

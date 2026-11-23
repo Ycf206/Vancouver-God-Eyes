@@ -286,6 +286,8 @@ export default function LayerPanel() {
     isFerryScheduleOpen,
     toggleMaritimeSchedule,
     isMaritimeScheduleOpen,
+    toggleViaSchedule,
+    isViaScheduleOpen,
     setPowerOutagesOpen,
     contourInterval,
     setContourInterval,
@@ -374,11 +376,12 @@ export default function LayerPanel() {
       if (entry.isSpecialAction === 'flightSchedule') return isFlightScheduleOpen;
       if (entry.isSpecialAction === 'ferrySchedule') return isFerryScheduleOpen;
       if (entry.isSpecialAction === 'maritimeSchedule') return isMaritimeScheduleOpen;
+      if (entry.isSpecialAction === 'viaSchedule') return isViaScheduleOpen;
       if (entry.isSpecialAction === 'contours') return contourInterval !== 'off';
       if (entry.layerKey) return !disabledLayers?.[entry.layerKey] && Boolean(layers[entry.layerKey]);
       return false;
     },
-    [isFlightScheduleOpen, isFerryScheduleOpen, isMaritimeScheduleOpen, contourInterval, disabledLayers, layers]
+    [isFlightScheduleOpen, isFerryScheduleOpen, isMaritimeScheduleOpen, isViaScheduleOpen, contourInterval, disabledLayers, layers]
   );
 
   const matchesEntry = React.useCallback(
@@ -502,6 +505,7 @@ export default function LayerPanel() {
         ferrySchedule: { active: isFerryScheduleOpen, toggle: toggleFerrySchedule },
         maritimeSchedule: { active: isMaritimeScheduleOpen, toggle: toggleMaritimeSchedule },
         flightSchedule: { active: isFlightScheduleOpen, toggle: toggleFlightSchedule },
+        viaSchedule: { active: isViaScheduleOpen, toggle: toggleViaSchedule },
       };
       const action = specialStateMap[entry.isSpecialAction];
       const isSpecialActive = action.active;

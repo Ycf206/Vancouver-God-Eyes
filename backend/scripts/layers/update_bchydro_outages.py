@@ -18,6 +18,7 @@ import sys
 import json
 import re
 import argparse
+from typing import Any
 import requests
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -72,7 +73,7 @@ def fetch_json(url: str, timeout: int = 15):
     return None
 
 
-def atomic_save_json(filename: str, data: any):
+def atomic_save_json(filename: str, data: Any):
     """同步寫入 backend/data/ 及 frontend/public/ 目錄"""
     for folder in [BACKEND_DATA_DIR, FRONTEND_DATA_DIR]:
         os.makedirs(folder, exist_ok=True)

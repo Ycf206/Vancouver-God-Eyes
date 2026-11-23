@@ -18,7 +18,6 @@ import SettingsModal from '@/components/SettingsModal';
 import ExplorePanel from '@/components/ExplorePanel';
 import ExportModal from '@/components/ExportModal';
 import ChangelogModal from '@/components/ChangelogModal';
-import AuthModal from '@/components/AuthModal';
 import { getApiUrl } from '@/utils/api';
 import { formatClock, formatDateWithTimezone } from '@/utils/time';
 import { BUS_EXCHANGES } from '@/data/busExchanges';
@@ -242,7 +241,6 @@ export default function TopBar() {
   const [isThreadsModalOpen, setIsThreadsModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // 搜尋圖層篩選類別定義 (根據圖層控制面板 7 大類別分類，全採用 SVG 圖示)
   const SEARCH_CATEGORY_FILTERS = [
@@ -1349,8 +1347,6 @@ export default function TopBar() {
 
       {/* 系統更新日誌彈出視窗 */}
       <ChangelogModal isOpen={isChangelogModalOpen} onClose={() => setIsChangelogModalOpen(false)} />
-      {/* 會員登入彈窗 (Google 帳號) */}
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 
       {/* 回報問題彈出視窗 */}
       <ReportIssueModal 

@@ -1851,6 +1851,8 @@ export default function AppMap() {
     setSelectedOutageId,
     airportIndoorFilter,
     setAirportIndoorFilter,
+    isViaScheduleOpen,
+    setViaScheduleOpen,
     selectedViaTrainId,
     setSelectedViaTrainId
   } = useUIStore();
@@ -1980,9 +1982,8 @@ export default function AppMap() {
   const [selectedViaStation, setSelectedViaStation] = useState<ViaRailStationDetail | null>(null);
   const [viaStationDetailTab, setViaStationDetailTab] = useState<'trains' | 'routes' | 'facilities'>('trains');
   const [viaStationsCoordsMap, setViaStationsCoordsMap] = useState<Record<string, { lon: number; lat: number }>>({});
-  const isViaExploreActive = Boolean(isExploreOpen && exploreTab === 'viarail');
-  const showViaTrainsOnMap = Boolean(layers.viaRailTrains || isViaExploreActive);
-  const showViaRoutesOnMap = Boolean(layers.viaRailRoutes || isViaExploreActive);
+  const showViaTrainsOnMap = Boolean(layers.viaRailTrains || isViaScheduleOpen);
+  const showViaRoutesOnMap = Boolean(layers.viaRailRoutes || isViaScheduleOpen);
   const isAnyViaActive = showViaTrainsOnMap || showViaRoutesOnMap;
 
   // Load VIA station coordinates lookup once when VIA is active (for clicking stops inside right-side train panel)
@@ -2101,7 +2102,7 @@ export default function AppMap() {
     if (isAnyViaActive && !prevViaActiveRef.current) {
       // If opened via searching a specific VIA station, let searchTarget fly directly to that station
       if (searchTarget?.category !== 'via_rail') {
-        const rightPad = isExploreOpen && !isExploreMinimized && typeof window !== 'undefined' && window.innerWidth >= 640 ? 410 : 40;
+        const rightPad = isViaScheduleOpen && typeof window !== 'undefined' && window.innerWidth >= 640 ? 550 : 40;
         map.fitBounds(
           [[-139.0, 41.5], [-52.5, 62.5]],
           { padding: { top: 80, bottom: 70, left: 40, right: rightPad }, duration: 1200, essential: true }
@@ -2121,7 +2122,7 @@ export default function AppMap() {
       });
     }
     prevViaActiveRef.current = isAnyViaActive;
-  }, [isAnyViaActive, isExploreOpen, isExploreMinimized, searchTarget?.category, setSelectedViaTrainId]);
+  }, [isAnyViaActive, isViaScheduleOpen, searchTarget?.category, setSelectedViaTrainId]);
 
   const getGoogleNavUrl = (destLat: number, destLon: number) => {
     const base = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLon}`;
@@ -4442,13 +4443,13 @@ export default function AppMap() {
     if (!hasSeaBus) {
       const nowEpoch = Math.floor(Date.now() / 1000);
       const cycle1 = nowEpoch % 900;
-      const frac1 = Math.min(1, cycle1 / 720);
+      const frac1 = 0.05 + 0.90 * Math.min(1, cycle1 / 720);
       const lat1 = 49.2861 + (49.3103 - 49.2861) * frac1;
       const lon1 = -123.1118 + (-123.0829 - (-123.1118)) * frac1;
       const rem1 = Math.max(1, Math.ceil((720 - cycle1) / 60));
 
       const cycle2 = (nowEpoch + 450) % 900;
-      const frac2 = Math.min(1, cycle2 / 720);
+      const frac2 = 0.05 + 0.90 * Math.min(1, cycle2 / 720);
       const lat2 = 49.3103 + (49.2861 - 49.3103) * frac2;
       const lon2 = -123.0829 + (-123.1118 - (-123.0829)) * frac2;
       const rem2 = Math.max(1, Math.ceil((720 - cycle2) / 60));
@@ -6251,9 +6252,9 @@ export default function AppMap() {
         type: 'circle',
         source: 'seabus-stops',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 4, 13, 6, 15, 8.5, 17, 10.5],
           'circle-color': '#ffffff',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 2.5,
           'circle-stroke-color': '#00a4e4'
         }
       });
@@ -9345,7 +9346,7 @@ export default function AppMap() {
     if (layers.powerOutages) {
       style.sources['power_outages'] = {
         type: 'geojson',
-        data: '/bchydro_outages_map.geojson'
+        data: `${apiUrl}/api/bchydro/outages?type=map`
       };
       // 半透明停電多邊形區域 (橘紅填色)
       style.layers.push({
@@ -10841,13 +10842,79 @@ export default function AppMap() {
         )}
 
         {/* 即時車輛位置 (Live TransLink Vehicles) */}
-        {displayVehicles.map(v => {
+        {(() => {
+          // 計算 SeaBus 與兩端碼頭站點的螢幕像素距離，確保停靠或靠岸時船隻圖示往海面方向偏移、永不遮擋 Waterfront / Lonsdale Quay 碼頭站點
+          const seabusOffsets: Record<string, [number, number]> = {};
+          if (layers.seabusVehicles) {
+            const seabusList = displayVehicles.filter((item) => item.is_seabus);
+            if (seabusList.length > 0) {
+              const mapInst = mapRef.current?.getMap?.();
+              const wfCoord: [number, number] = [-123.1118, 49.2861];
+              const lqCoord: [number, number] = [-123.0829, 49.3103];
+              const projectPt = (lon: number, lat: number): { x: number; y: number } => {
+                if (mapInst && typeof mapInst.project === 'function') {
+                  const pt = mapInst.project([lon, lat]);
+                  return { x: pt.x, y: pt.y };
+                }
+                const scale = 512 * Math.pow(2, currentZoom) / 360;
+                const rad = (lat * Math.PI) / 180;
+                return {
+                  x: lon * scale,
+                  y: -Math.log(Math.tan(Math.PI / 4 + rad / 2)) * (512 * Math.pow(2, currentZoom)) / (2 * Math.PI),
+                };
+              };
+              const wfPt = projectPt(wfCoord[0], wfCoord[1]);
+              const lqPt = projectPt(lqCoord[0], lqCoord[1]);
+              const routeDx = lqPt.x - wfPt.x;
+              const routeDy = lqPt.y - wfPt.y;
+              const routeLen = Math.hypot(routeDx, routeDy) || 1;
+              const minSep = Math.min(38, routeLen * 0.42);
+              const wfDockedIds: string[] = [];
+              const lqDockedIds: string[] = [];
+
+              for (const sb of seabusList) {
+                const vPt = projectPt(sb.lon, sb.lat);
+                const dWf = Math.hypot(vPt.x - wfPt.x, vPt.y - wfPt.y);
+                const dLq = Math.hypot(vPt.x - lqPt.x, vPt.y - lqPt.y);
+                if (dWf < minSep && dWf <= dLq) {
+                  wfDockedIds.push(String(sb.id));
+                } else if (dLq < minSep) {
+                  lqDockedIds.push(String(sb.id));
+                }
+              }
+
+              for (const sb of seabusList) {
+                const sbId = String(sb.id);
+                const vPt = projectPt(sb.lon, sb.lat);
+                const wfIdx = wfDockedIds.indexOf(sbId);
+                const lqIdx = lqDockedIds.indexOf(sbId);
+                if (wfIdx >= 0) {
+                  const ux = routeDx / routeLen;
+                  const uy = routeDy / routeLen;
+                  const perp = wfDockedIds.length > 1 ? (wfIdx - (wfDockedIds.length - 1) / 2) * 18 : 0;
+                  const tx = wfPt.x + ux * minSep - uy * perp;
+                  const ty = wfPt.y + uy * minSep + ux * perp;
+                  seabusOffsets[sbId] = [Math.round(tx - vPt.x), Math.round(ty - vPt.y)];
+                } else if (lqIdx >= 0) {
+                  const ux = -routeDx / routeLen;
+                  const uy = -routeDy / routeLen;
+                  const perp = lqDockedIds.length > 1 ? (lqIdx - (lqDockedIds.length - 1) / 2) * 18 : 0;
+                  const tx = lqPt.x + ux * minSep - uy * perp;
+                  const ty = lqPt.y + uy * minSep + ux * perp;
+                  seabusOffsets[sbId] = [Math.round(tx - vPt.x), Math.round(ty - vPt.y)];
+                }
+              }
+            }
+          }
+
+          return displayVehicles.map(v => {
           const isSelected = selectedBus?.id === v.id;
           const busNum = v.route_number || v.route_id;
           if (v.is_seabus) {
             if (!layers.seabusVehicles) return null;
+            const sbOffset: [number, number] = seabusOffsets[String(v.id)] || [0, 0];
             return (
-              <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
+              <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center" offset={sbOffset}>
                 <div
                   onClick={(e) => {
                     e.stopPropagation();
@@ -10929,7 +10996,8 @@ export default function AppMap() {
               </Marker>
             );
           }
-        })}
+          });
+        })()}
 
         {/* BC Ferries 即時船隻 (Live BC Ferries) */}
         {layers.bcferriesVehicles && ferryVehicles.map(v => (
@@ -13846,6 +13914,15 @@ export default function AppMap() {
                 const isEasyPark = compStr === 'easypark' || fidStr.startsWith('easypark_');
                 const isIndigo = compStr === 'indigo' || fidStr.startsWith('indigo_');
 
+                const indigoStreetViewUrl =
+                  isIndigo &&
+                  typeof selectedFacility.lat === 'number' &&
+                  typeof selectedFacility.lon === 'number' &&
+                  Number.isFinite(selectedFacility.lat) &&
+                  Number.isFinite(selectedFacility.lon)
+                    ? `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${selectedFacility.lat.toFixed(6)},${selectedFacility.lon.toFixed(6)}`
+                    : null;
+
                 // ---------- EasyPark 専用詳情版面 ----------
                 if (isEasyPark) {
                   const lotNumber = p.lot_number !== null && p.lot_number !== undefined && String(p.lot_number).trim() !== '' ? String(p.lot_number) : null;
@@ -13891,10 +13968,10 @@ export default function AppMap() {
 
                   return (
                     <div className="flex flex-col gap-2.5 text-xs text-gray-700">
-                      {/* 橙色區塊（不含英文 EasyPark Vancouver；右方附圖片預覽按鈕） */}
-                      <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2 text-[11px] text-orange-800 font-medium leading-relaxed">
-                        <span className="flex-1 min-w-0">溫哥華市政府非牟利公營停車機構，負責管理市中心商業區與各大公園之公開收費停車場。</span>
-                        {images.length > 0 && (
+                      {/* 橙色區塊（右方附 EasyPark 官方停車場實景圖片預覽按鈕） */}
+                      {images.length > 0 && (
+                        <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2 text-[11px] text-orange-800 font-medium leading-relaxed">
+                          <span className="flex-1 min-w-0">按下右方按鈕顯示停車場實景位置</span>
                           <button
                             type="button"
                             onClick={(e) => {
@@ -13903,12 +13980,12 @@ export default function AppMap() {
                               setEasyparkImageModal({ title: displayName, images, index: 0 });
                             }}
                             className="shrink-0 p-1.5 rounded-lg bg-orange-500/15 hover:bg-orange-500/25 text-orange-700 border border-orange-400/40 transition-colors cursor-pointer flex items-center justify-center"
-                            title={`查看圖片 (${images.length} 張)`}
+                            title={`查看停車場實景照片 (${images.length} 張)`}
                           >
                             <Images className="w-4 h-4" />
                           </button>
-                        )}
-                      </div>
+                        </div>
+                      )}
 
                       {/* 灰色詳細資料區塊 */}
                       {(hasSec1 || hasSec2 || hasSec3) && (
@@ -14239,9 +14316,21 @@ export default function AppMap() {
 
                   return (
                     <div className="flex flex-col gap-2.5 text-xs text-gray-700">
-                      <div className="bg-fuchsia-500/10 p-2.5 rounded-lg border border-fuchsia-500/25 flex items-center text-[11px] text-fuchsia-800 font-medium leading-relaxed">
-                        <span>全球領先的停車場管理公司 Indigo，於大溫哥華商業大樓、住宅社區、購物中心及交通樞紐提供時租、月租及線上預約泊車服務。</span>
-                      </div>
+                      {indigoStreetViewUrl && (
+                        <div className="bg-fuchsia-500/10 p-2.5 rounded-lg border border-fuchsia-500/25 flex items-center justify-between gap-2 text-[11px] text-fuchsia-800 font-medium leading-relaxed">
+                          <span className="flex-1 min-w-0">按下右方按鈕顯示停車場實景位置</span>
+                          <a
+                            href={indigoStreetViewUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="shrink-0 p-1.5 rounded-lg bg-fuchsia-500/15 hover:bg-fuchsia-500/25 text-fuchsia-700 border border-fuchsia-400/40 transition-colors cursor-pointer flex items-center justify-center"
+                            title="查看停車場實景位置 (Google 街景)"
+                          >
+                            <MapPinned className="w-4 h-4" />
+                          </a>
+                        </div>
+                      )}
 
                       {hasInfoBox && (
                         <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -14264,10 +14353,12 @@ export default function AppMap() {
                             </div>
                           )}
                           {hours && (
-                            <div className="flex justify-between items-start text-gray-700 gap-2">
-                              <span className="text-gray-600 shrink-0">開放時間</span>
-                              <span className="text-gray-900 font-medium text-right break-words">{hours}</span>
-                            </div>
+                            <FacilityWeeklyHoursSchedule
+                              label="開放時間"
+                              hours={hours}
+                              timeFormat={timeFormat}
+                              theme="violet"
+                            />
                           )}
                           {heightVal && (
                             <div className="flex justify-between items-center text-gray-700 gap-2">
@@ -14325,12 +14416,20 @@ export default function AppMap() {
                               {email && (
                                 <div className="flex justify-between items-center gap-2">
                                   <span className="text-gray-600 shrink-0">電子郵件</span>
-                                  <a
-                                    href={`mailto:${email}`}
-                                    className="text-gray-800 hover:text-fuchsia-700 font-medium truncate max-w-[185px] text-right"
-                                  >
-                                    {email}
-                                  </a>
+                                  <div className="flex items-center gap-1.5 min-w-0 justify-end">
+                                    <span className="text-gray-800 font-medium truncate max-w-[165px] text-right select-text">
+                                      {email}
+                                    </span>
+                                    <a
+                                      href={`mailto:${email}`}
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="shrink-0 p-1 rounded-md bg-fuchsia-500/10 hover:bg-fuchsia-500/20 text-fuchsia-700 border border-fuchsia-300/60 transition-colors flex items-center justify-center"
+                                      title="傳送電子郵件"
+                                      aria-label="傳送電子郵件"
+                                    >
+                                      <Mail className="w-3 h-3" />
+                                    </a>
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -14397,21 +14496,21 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2.5 text-xs text-gray-700">
-                    <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center justify-between gap-2 text-[11px] text-red-700 font-medium leading-relaxed">
-                      <span className="flex-1 min-w-0">北美規模最大的私營停車場管理公司之一，擁有超過 3,000 個停車場，涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
-                      {streetView && (
+                    {streetView && (
+                      <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center justify-between gap-2 text-[11px] text-red-700 font-medium leading-relaxed">
+                        <span className="flex-1 min-w-0">按下右方按鈕顯示停車場實景位置</span>
                         <a
                           href={streetView}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
                           className="shrink-0 p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-700 border border-red-400/40 transition-colors cursor-pointer flex items-center justify-center"
-                          title="查看街景照片"
+                          title="查看停車場實景照片"
                         >
                           <Images className="w-4 h-4" />
                         </a>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {hasRateOrDetailBox && (
                       <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
@@ -16557,13 +16656,13 @@ export default function AppMap() {
                     <button
                       type="button"
                       onClick={() => {
-                        if (isExploreMinimized) setExploreMinimized(false);
-                        openExploreTab('viarail');
+                        setSelectedFacility(null);
+                        setViaScheduleOpen(true);
                       }}
                       className="w-full py-1.5 px-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                     >
                       <TrainTrack className="w-3.5 h-3.5" />
-                      查看 VIA 即時列車動態
+                      查看 VIA 即時列車班次
                     </button>
                   </div>
                 );
@@ -22596,7 +22695,6 @@ export default function AppMap() {
                   { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
                   { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
                   { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-                  { id: 'viarail', label: 'VIA', icon: TrainTrack, color: 'text-amber-400' },
                   { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
                   { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
                   { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },
@@ -22625,7 +22723,6 @@ export default function AppMap() {
                 { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
                 { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
                 { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-                { id: 'viarail', label: 'VIA', icon: TrainTrack, color: 'text-amber-400' },
                 { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
                 { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
                 { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },
@@ -22724,7 +22821,6 @@ export default function AppMap() {
             { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
             { id: 'ev', label: '充電', icon: EvCharger, color: 'text-yellow-400' },
             { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-            { id: 'viarail', label: 'VIA', icon: TrainTrack, color: 'text-amber-400' },
             { id: 'traffic', label: '路況', icon: Waypoints, color: 'text-amber-400' },
             { id: 'crashes', label: '意外', icon: SquareExclamationPoint, color: 'text-rose-400' },
             { id: 'border', label: '關口', icon: Fence, color: 'text-blue-400' },
@@ -23261,12 +23357,12 @@ export default function AppMap() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (isExploreMinimized) setExploreMinimized(false);
-                    openExploreTab('viarail');
-                    setSelectedViaTrainId(selectedViaTrain.id);
+                    setSelectedViaTrain(null);
+                    setSelectedViaTrainId(null);
+                    setViaScheduleOpen(true);
                   }}
                   className="text-gray-400 hover:text-amber-300 p-1.5 rounded-lg hover:bg-amber-500/15 transition-colors cursor-pointer"
-                  title="在探索分頁開啟 VIA 列車班次"
+                  title="查看 VIA 列車班次清單"
                 >
                   <TrainTrack className="w-4 h-4" />
                 </button>
@@ -26852,13 +26948,13 @@ export default function AppMap() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (isExploreMinimized) setExploreMinimized(false);
-                    openExploreTab('viarail');
+                    setSelectedViaStation(null);
+                    setViaScheduleOpen(true);
                   }}
                   className="w-full py-2 px-3 rounded-lg bg-amber-600/90 hover:bg-amber-600 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
                 >
                   <TrainTrack className="w-3.5 h-3.5" />
-                  在探索分頁查看全加拿大 VIA 班次
+                  查看全加拿大 VIA 列車班次
                 </button>
               </div>
             )}

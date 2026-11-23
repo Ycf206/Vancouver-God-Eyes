@@ -7,6 +7,7 @@ import {
   Clock, Users, AlertCircle, Wrench, Calendar as CalendarIcon, Info
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
+import { getApiUrl } from '@/utils/api';
 import { formatDateTime, formatDateOnly } from '@/utils/time';
 
 // Lucide calendar-arrow-right SVG component
@@ -149,11 +150,31 @@ export default function PowerOutagesDrawer() {
     else setLoading(true);
 
     let anySucceeded = false;
+    const apiUrl = getApiUrl();
+    const fetchOutageJson = async (kind: 'current' | 'restored' | 'planned', fallbackFile: string) => {
+      const qs = `type=${kind}${isManualRefresh ? '&refresh=true' : ''}&t=${Date.now()}`;
+      const urls = [
+        `${apiUrl}/api/bchydro/outages?${qs}`,
+        `/api/bchydro/outages?${qs}`,
+        `/${fallbackFile}?t=${Date.now()}`,
+      ];
+      for (const u of urls) {
+        try {
+          const r = await fetch(u, { cache: 'no-store' });
+          if (r && r.ok) {
+            return await r.json();
+          }
+        } catch {
+          // try next fallback
+        }
+      }
+      return null;
+    };
+
     try {
       // 1. 抓取現正停電與地區警報 (current)
-      const resCurrent = await fetch('/bchydro_outages_current.json?t=' + Date.now()).catch(() => null);
-      if (resCurrent && resCurrent.ok) {
-        const dataC = await resCurrent.json();
+      const dataC = await fetchOutageJson('current', 'bchydro_outages_current.json');
+      if (dataC) {
         anySucceeded = true;
         if (dataC.messagesMap && typeof dataC.messagesMap === 'object') {
           const msgList: RegionMessage[] = Object.values(dataC.messagesMap);
@@ -165,9 +186,8 @@ export default function PowerOutagesDrawer() {
       }
 
       // 2. 抓取恢復供電 (restored)
-      const resRestored = await fetch('/bchydro_outages_restored.json?t=' + Date.now()).catch(() => null);
-      if (resRestored && resRestored.ok) {
-        const dataR = await resRestored.json();
+      const dataR = await fetchOutageJson('restored', 'bchydro_outages_restored.json');
+      if (dataR) {
         anySucceeded = true;
         if (Array.isArray(dataR.all_outages)) {
           setRestoredOutages(dataR.all_outages);
@@ -175,9 +195,8 @@ export default function PowerOutagesDrawer() {
       }
 
       // 3. 抓取預期停電 (planned)
-      const resPlanned = await fetch('/bchydro_outages_planned.json?t=' + Date.now()).catch(() => null);
-      if (resPlanned && resPlanned.ok) {
-        const dataP = await resPlanned.json();
+      const dataP = await fetchOutageJson('planned', 'bchydro_outages_planned.json');
+      if (dataP) {
         anySucceeded = true;
         if (Array.isArray(dataP.all_outages)) {
           setPlannedOutages(dataP.all_outages);

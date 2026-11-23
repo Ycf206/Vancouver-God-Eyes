@@ -22,14 +22,40 @@ export async function GET(request: Request) {
   const type = searchParams.get('type') || 'current';
 
   const fileName = FILE_MAP[type] || FILE_MAP.current;
+  const refresh = searchParams.get('refresh') === 'true' ? '&refresh=true' : '';
 
-  // 1. 優先嘗試讀取本機快取檔案
+  // 0. 優先代理至後端 FastAPI 取得 OCI 即時快取
+  const backendBases = Array.from(
+    new Set([
+      (process.env.BACKEND_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000').replace(/\/+$/, ''),
+      'http://127.0.0.1:8000',
+      'http://localhost:8000',
+    ])
+  );
+  for (const base of backendBases) {
+    try {
+      const bRes = await fetch(`${base}/api/bchydro/outages?type=${encodeURIComponent(type)}${refresh}`, {
+        cache: 'no-store',
+        signal: AbortSignal.timeout(10000),
+      });
+      if (bRes.ok) {
+        const bJson = await bRes.json();
+        return NextResponse.json(bJson, {
+          headers: { 'Cache-Control': 'no-cache, max-age=60' },
+        });
+      }
+    } catch {
+      // try next backend
+    }
+  }
+
+  // 1. 次優先嘗試讀取本機快取檔案（優先 backend/data 再到 frontend/public）
   try {
     const candidatePaths = [
-      path.join(process.cwd(), 'public', fileName),
-      path.join(process.cwd(), 'frontend', 'public', fileName),
       path.join(process.cwd(), '..', 'backend', 'data', fileName),
       path.join(process.cwd(), 'backend', 'data', fileName),
+      path.join(process.cwd(), 'public', fileName),
+      path.join(process.cwd(), 'frontend', 'public', fileName),
     ];
 
     for (const p of candidatePaths) {
